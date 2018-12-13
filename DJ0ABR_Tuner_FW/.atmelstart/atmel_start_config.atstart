@@ -1,0 +1,348 @@
+format_version: '2'
+name: My Project
+versions:
+  api: '1.0'
+  backend: 1.4.93
+  commit: 9c29f8365cf76e9937d19b1e765a83bc7a80e4e9
+  content: 1.0.1271
+  content_pack_name: acme-packs-all
+  format: '2'
+  frontend: 1.4.1787
+board:
+  identifier: CustomBoard
+  device: ATmega88PA-AU
+details: null
+application: null
+middlewares: {}
+drivers:
+  CPU:
+    user_label: CPU
+    definition: 'Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::CPU::driver_config_definition::SYSCTRL::Drivers:SYSCTRL:'
+    functionality: System
+    api: 'Drivers:SYSCTRL:'
+    configuration:
+      async_input_speed: 32768
+      clkadc_oscillator: Input clock
+      clkasy_oscillator: Async input clock
+      clkcpu_oscillator: Input clock
+      clkio_oscillator: Input clock
+      clkptc_oscillator: Input clock
+      cpu_clock_source: CLKcpu
+      cpu_sreg_i: false
+      enable_async_input: true
+      enable_clkadc: true
+      enable_clkasy: true
+      enable_clkcpu: true
+      enable_clkio: true
+      enable_clkptc: true
+      enable_core_clock: true
+      enable_input: true
+      input_speed: 8000000
+      pm_ivsel: Interrupt vector placed at the beginning of main FLASH memory
+      pm_pud: false
+      pm_se: false
+      pm_sm: Idle
+      prescaler_divider: '1'
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: Core
+          input: Core
+        configuration: {}
+  FLASH_0:
+    user_label: FLASH_0
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::EEPROM::driver_config_definition::NVMCTRL.Basic::Drivers:NVMCTRL:Basic
+    functionality: Flash
+    api: Drivers:NVMCTRL:Basic
+    configuration:
+      blbset: false
+      eempe: false
+      eepe: false
+      eepm0: false
+      eepm1: false
+      eere: false
+      eerie: false
+      nvmctrl_irq_driven: false
+      nvmctrl_relocate_flash_functions: false
+      pgers: false
+      pgwrt: false
+      rwwsb: false
+      rwwsre: false
+      sigrd: false
+      spmen: false
+      spmie: false
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group: null
+  WDT_0:
+    user_label: WDT_0
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::WDT::driver_config_definition::WDT::Drivers:WDT:Init
+    functionality: WDT
+    api: Drivers:WDT:Init
+    configuration:
+      inc_isr_harness: false
+      wdtcsr_wde: false
+      wdtcsr_wdie: false
+      wdtcsr_wdp: Oscillator Cycles 2K
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group: null
+  EXTERNAL_IRQ_0:
+    user_label: EXTERNAL_IRQ_0
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::EXINT::driver_config_definition::EXINT::Drivers:EXINT:Init
+    functionality: External_IRQ
+    api: Drivers:EXINT:Init
+    configuration:
+      exint_isc0: The low level of ISC0 generates an interrupt request
+      exint_isc1: The low level of ISC1 generates an interrupt request
+      inc_isr_harness: false
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group: null
+  ADC_0:
+    user_label: ADC_0
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::ADC::driver_config_definition::ADC.Basic::Drivers:ADC:Basic
+    functionality: ADC
+    api: Drivers:ADC:Basic
+    configuration:
+      adcsra_adate: false
+      adcsra_aden: true
+      adcsra_adie: false
+      adcsra_adps: '2'
+      adcsrb_acme: false
+      adcsrb_adts: Free Running mode
+      admux_adlar: false
+      admux_mux: ADC Single Ended Input pin 0
+      admux_refs: AREF, Internal Vref turned off
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: ADC
+          input: CLKadc
+        configuration:
+          adc_clock_source: CLKadc
+  AC_0:
+    user_label: AC_0
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::AC::driver_config_definition::AC::Drivers:AC:Init
+    functionality: AC
+    api: Drivers:AC:Init
+    configuration:
+      ac_acsr_acbg: false
+      ac_acsr_acd: false
+      ac_acsr_acic: false
+      ac_acsr_acie: false
+      ac_acsr_acis: Interrupt on Toggle
+      inc_isr_harness: false
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group: null
+  I2C_0:
+    user_label: I2C_0
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::TWI::driver_config_definition::Interrupt::Drivers:I2C:Master
+    functionality: I2C
+    api: Drivers:I2C:Master
+    configuration:
+      twi_bit_rate: 100000
+      twi_twcr_twea: false
+      twi_twcr_twen: true
+      twi_twcr_twie: false
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group: null
+  DAC_0:
+    user_label: DAC_0
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::SPI::driver_config_definition::mcp4921::External:DAC:MCP4921
+    functionality: DAC
+    api: External:DAC:MCP4921
+    configuration:
+      dac_click_buff: Buffered
+      dac_click_gain: 1x
+      inc_isr_harness: false
+      spi_cpha: Sample on leading edge
+      spi_cpol: SCK is low when idle
+      spi_dord: MSB transmitted first
+      spi_mstr: Master mode
+      spi_spe: true
+      spi_spie: false
+      spi_spr: fosc/4
+    optional_signals: []
+    variant:
+      specification: MASTER=1
+      required_signals:
+      - name: SPI/MISO
+        pad: PB4
+        label: MISO
+      - name: SPI/MOSI
+        pad: PB3
+        label: MOSI
+      - name: SPI/SCK
+        pad: PB5
+        label: SCK
+    clocks:
+      domain_group:
+        nodes:
+        - name: SPI
+          input: CLKio
+        configuration:
+          spi_clock_source: CLKio
+  PWM_0:
+    user_label: PWM_0
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::TC0::driver_config_definition::TC8.Mode.1.Phase.Correct::Drivers:PWM:Basic
+    functionality: PWM
+    api: Drivers:PWM:Basic
+    configuration:
+      callback_rate: 0
+      inc_overflow_irq: true
+      pwm_top: '0xff'
+      tc8_coma: Normal port operation, OCA disconnected
+      tc8_comb: Normal port operation, OCB disconnected
+      tc8_cs: No clock source (Timer/Counter stopped)
+      tc8_ociea: false
+      tc8_ocieb: false
+      tc8_ocra: 0
+      tc8_ocrb: 0
+      tc8_toie: false
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: TC8
+          input: CLKio
+        configuration:
+          tc8_clock_source: CLKio
+  PWM_1:
+    user_label: PWM_1
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::TC2::driver_config_definition::TC8.Mode.1.Phase.Correct::Drivers:PWM:Basic
+    functionality: PWM
+    api: Drivers:PWM:Basic
+    configuration:
+      callback_rate: 0
+      inc_overflow_irq: true
+      pwm_top: '0xff'
+      tc8_async_exclk: false
+      tc8_coma: Normal port operation, OCA disconnected
+      tc8_comb: Normal port operation, OCB disconnected
+      tc8_cs: No clock source (Timer/Counter stopped)
+      tc8_ociea: false
+      tc8_ocieb: false
+      tc8_ocra: 0
+      tc8_ocrb: 0
+      tc8_toie: false
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: TC2
+          input: CLKio
+        configuration:
+          tc2_clock_source: CLKio
+  TIMER_0:
+    user_label: TIMER_0
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::TC1::driver_config_definition::TC16.Mode.0.Normal::Drivers:TC16:Init
+    functionality: Timer
+    api: Drivers:TC16:Init
+    configuration:
+      inc_isr_harness: false
+      tc16_coma: Normal port operation, OCA disconnected
+      tc16_comb: Normal port operation, OCB disconnected
+      tc16_cs: No clock source (Timer/Counter stopped)
+      tc16_ices: Falling edge will trigger input capture
+      tc16_icie: false
+      tc16_icnc: false
+      tc16_icr: 0
+      tc16_ociea: false
+      tc16_ocieb: false
+      tc16_orca: 0
+      tc16_orcb: 0
+      tc16_psrasy: false
+      tc16_psrsync: false
+      tc16_toie: false
+      tc16_tsm: false
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: TC16
+          input: CLKio
+        configuration:
+          tc16_clock_source: CLKio
+  USART_0:
+    user_label: USART_0
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::USART0::driver_config_definition::Async.Polled.Mode::Drivers:USART:Basic
+    functionality: USART
+    api: Drivers:USART:Basic
+    configuration:
+      printf_support: false
+      usart_baud_rate: 9600
+      usart_mpcm: false
+      usart_rxcie: true
+      usart_rxen: true
+      usart_txen: true
+      usart_ucpha: Sample data on the first edge of XCK
+      usart_ucpol: false
+      usart_ucsz: 8-bit
+      usart_udord: MSB is transmitted first
+      usart_udrie: false
+      usart_upm: Disabled
+      usart_usbs: 1-bit
+    optional_signals: []
+    variant:
+      specification: UMSEL=0
+      required_signals:
+      - name: USART0/RXD
+        pad: PD0
+        label: RXD
+      - name: USART0/TXD
+        pad: PD1
+        label: TXD
+    clocks:
+      domain_group:
+        nodes:
+        - name: USART
+          input: CLKio
+        configuration:
+          usart_clock_source: CLKio
+pads:
+  PB3:
+    name: PB3
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::pad::PB3
+    mode: Digital output
+    user_label: PB3
+    configuration: null
+  PB4:
+    name: PB4
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::pad::PB4
+    mode: Digital input
+    user_label: PB4
+    configuration: null
+  PB5:
+    name: PB5
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::pad::PB5
+    mode: Digital output
+    user_label: PB5
+    configuration: null
+  PD0:
+    name: PD0
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::pad::PD0
+    mode: Digital input
+    user_label: PD0
+    configuration: null
+  PD1:
+    name: PD1
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega88PA-AU::pad::PD1
+    mode: Digital output
+    user_label: PD1
+    configuration: null
+toolchain_options: []

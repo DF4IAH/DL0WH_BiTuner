@@ -1,0 +1,15 @@
+/*------------------------------------------------------------------------*/ /**
+\defgroup doc_driver_ac AC Drivers
+
+This AC (Analog Comparator) driver provides an interface for voltage comparison
+of two input channel.
+
+\section doc_driver_ac_basic_and_practice AC Basics and Best Practice
+
+An analog comparator compares two analog voltage levels, and outputs a digital
+value indicating which is larger. The comparator has usually two analog inputs,
+V+ and V-, but internal sources in the MCU can also be used as source
+for one of the inputs. The digital output value is outputted on Vout.
+
+*/
+
