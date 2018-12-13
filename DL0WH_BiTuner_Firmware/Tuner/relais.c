@@ -156,6 +156,9 @@ void pulserelaisindex(unsigned char r)
         // V oder H
         case 16:  rn = 30; break;
         case 17:  rn = 32; break;
+		
+		default:
+				  rn = 0;
     }
     
     if(relais[r] == 0)

@@ -189,9 +189,9 @@ Tuner/command.d \
 Tuner/relais.d \
 Tuner/tuner.d
 
-OUTPUT_FILE_PATH +=DJ0ABR_Tuner_FW.elf
+OUTPUT_FILE_PATH +=DL0WH_BiTuner_Firmware.elf
 
-OUTPUT_FILE_PATH_AS_ARGS +=DJ0ABR_Tuner_FW.elf
+OUTPUT_FILE_PATH_AS_ARGS +=DL0WH_BiTuner_Firmware.elf
 
 ADDITIONAL_DEPENDENCIES:=
 
@@ -404,13 +404,13 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER_SCRIPT_DEP)
 	@echo Building target: $@
 	@echo Invoking: AVR/GNU Linker : 5.4.0
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="DJ0ABR_Tuner_FW.map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mmcu=atmega88pa -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.2.272\gcc\dev\atmega88pa"  
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="DL0WH_BiTuner_Firmware.map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mmcu=atmega88pa -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.2.272\gcc\dev\atmega88pa"  
 	@echo Finished building target: $@
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "DJ0ABR_Tuner_FW.elf" "DJ0ABR_Tuner_FW.hex"
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objcopy.exe" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "DJ0ABR_Tuner_FW.elf" "DJ0ABR_Tuner_FW.eep" || exit 0
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objdump.exe" -h -S "DJ0ABR_Tuner_FW.elf" > "DJ0ABR_Tuner_FW.lss"
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O srec -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures "DJ0ABR_Tuner_FW.elf" "DJ0ABR_Tuner_FW.srec"
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-size.exe" "DJ0ABR_Tuner_FW.elf"
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "DL0WH_BiTuner_Firmware.elf" "DL0WH_BiTuner_Firmware.hex"
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objcopy.exe" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "DL0WH_BiTuner_Firmware.elf" "DL0WH_BiTuner_Firmware.eep" || exit 0
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objdump.exe" -h -S "DL0WH_BiTuner_Firmware.elf" > "DL0WH_BiTuner_Firmware.lss"
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O srec -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures "DL0WH_BiTuner_Firmware.elf" "DL0WH_BiTuner_Firmware.srec"
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-size.exe" "DL0WH_BiTuner_Firmware.elf"
 	
 	
 
@@ -422,5 +422,5 @@ $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER
 clean:
 	-$(RM) $(OBJS_AS_ARGS) $(EXECUTABLES)  
 	-$(RM) $(C_DEPS_AS_ARGS)   
-	rm -rf "DJ0ABR_Tuner_FW.elf" "DJ0ABR_Tuner_FW.a" "DJ0ABR_Tuner_FW.hex" "DJ0ABR_Tuner_FW.lss" "DJ0ABR_Tuner_FW.eep" "DJ0ABR_Tuner_FW.map" "DJ0ABR_Tuner_FW.srec" "DJ0ABR_Tuner_FW.usersignatures"
+	rm -rf "DL0WH_BiTuner_Firmware.elf" "DL0WH_BiTuner_Firmware.a" "DL0WH_BiTuner_Firmware.hex" "DL0WH_BiTuner_Firmware.lss" "DL0WH_BiTuner_Firmware.eep" "DL0WH_BiTuner_Firmware.map" "DL0WH_BiTuner_Firmware.srec" "DL0WH_BiTuner_Firmware.usersignatures"
 	
