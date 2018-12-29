@@ -1,0 +1,9 @@
+LB = NO_LOCK
+BLB0 = NO_LOCK
+BLB1 = NO_LOCK
+
+LOCKBIT = 0xFF (valid)
+
+
+
+<EOF>

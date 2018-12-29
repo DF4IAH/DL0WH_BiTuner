@@ -1,0 +1,19 @@
+BOOTSZ = 128W_0F80
+BOOTRST = [ ]
+RSTDISBL = [ ]
+DWEN = [ ]
+SPIEN = [X]
+WDTON = [ ]
+EESAVE = [ ]
+BODLEVEL = DISABLED
+CKDIV8 = [ ]
+CKOUT = [ ]
+SUT_CKSEL = EXTFSXTAL_1KCK_14CK_0MS
+
+EXTENDED = 0xFF (valid)
+HIGH = 0xDF (valid)
+LOW = 0xE6 (valid)
+
+
+
+<EOF>
