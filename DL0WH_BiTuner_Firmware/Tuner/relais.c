@@ -257,19 +257,42 @@ void Grundstellung()
 {
 	char i;
 
-	for(i=0; i<18; i++)
-		oldrelais[(int)i] = 0xff;
+	#ifdef INIT_ON_OFF
 
-	for(i=1; i<=8; i++)
-	{
-		forceRelais('C',i-1,0);
+	/* Last state flags */
+	for(i = 0; i < 18; i++) {
+		oldrelais[(int)i] = 0x00;
 	}
-	
-	forceRelais('V',0,0);
-	forceRelais('H',0,0);
 
-	for(i=1; i<=8; i++)
+	for(i = 1; i <= 8; i++)	{
+		forceRelais('C', i - 1, 1);
+	}
+
+	forceRelais('V', 0, 1);
+	forceRelais('H', 0, 1);
+
+	for(i = 1; i <= 8; i++) {
+		forceRelais('L', i-1, 0);
+	}
+
+	#endif
+
+
+	/* Last state flags */
+	for(i = 0; i < 18; i++) {
+		oldrelais[(int)i] = 0xff;
+	}
+
+	for(i = 1; i <= 8; i++)
 	{
-		forceRelais('L',i-1,1);
+		forceRelais('C', i - 1, 0);
+	}
+
+	forceRelais('V', 0, 0);
+	forceRelais('H', 0, 0);
+
+	for(i = 1; i <= 8; i++)
+	{
+		forceRelais('L', i-1, 1);
 	}
 }
