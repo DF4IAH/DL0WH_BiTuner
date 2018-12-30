@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE eagle SYSTEM "eagle.dtd">
+<eagle version="7.7.0">
+<drawing>
+<settings>
+<setting alwaysvectorfont="no"/>
+<setting verticaltext="up"/>
+</settings>
+<grid distance="0.05" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
+<layers>
+<layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
+<layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
+<layer number="3" name="Route3" color="4" fill="3" visible="no" active="yes"/>
+<layer number="14" name="Route14" color="1" fill="6" visible="no" active="yes"/>
+<layer number="15" name="Route15" color="4" fill="6" visible="no" active="yes"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
+<layer number="17" name="Pads" color="2" fill="1" visible="yes" active="yes"/>
+<layer number="18" name="Vias" color="2" fill="1" visible="yes" active="yes"/>
+<layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="yes"/>
+<layer number="20" name="Dimension" color="15" fill="1" visible="yes" active="yes"/>
+<layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="yes"/>
+<layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="yes"/>
+<layer number="25" name="tNames" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="26" name="bNames" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="27" name="tValues" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="28" name="bValues" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="29" name="tStop" color="7" fill="3" visible="no" active="yes"/>
+<layer number="30" name="bStop" color="7" fill="6" visible="no" active="yes"/>
+<layer number="31" name="tCream" color="7" fill="4" visible="no" active="yes"/>
+<layer number="32" name="bCream" color="7" fill="5" visible="no" active="yes"/>
+<layer number="33" name="tFinish" color="6" fill="3" visible="no" active="yes"/>
+<layer number="34" name="bFinish" color="6" fill="6" visible="no" active="yes"/>
+<layer number="35" name="tGlue" color="7" fill="4" visible="no" active="yes"/>
+<layer number="36" name="bGlue" color="7" fill="5" visible="no" active="yes"/>
+<layer number="37" name="tTest" color="7" fill="1" visible="no" active="yes"/>
+<layer number="38" name="bTest" color="7" fill="1" visible="no" active="yes"/>
+<layer number="39" name="tKeepout" color="4" fill="11" visible="yes" active="yes"/>
+<layer number="40" name="bKeepout" color="1" fill="11" visible="yes" active="yes"/>
+<layer number="41" name="tRestrict" color="4" fill="10" visible="yes" active="yes"/>
+<layer number="42" name="bRestrict" color="1" fill="10" visible="yes" active="yes"/>
+<layer number="43" name="vRestrict" color="2" fill="10" visible="yes" active="yes"/>
+<layer number="44" name="Drills" color="7" fill="1" visible="no" active="yes"/>
+<layer number="45" name="Holes" color="7" fill="1" visible="no" active="yes"/>
+<layer number="46" name="Milling" color="3" fill="1" visible="no" active="yes"/>
+<layer number="47" name="Measures" color="7" fill="1" visible="no" active="yes"/>
+<layer number="48" name="Document" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
+<layer number="51" name="tDocu" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="90" name="Modules" color="5" fill="1" visible="yes" active="yes"/>
+<layer number="91" name="Nets" color="2" fill="1" visible="yes" active="yes"/>
+<layer number="92" name="Busses" color="1" fill="1" visible="yes" active="yes"/>
+<layer number="93" name="Pins" color="2" fill="1" visible="yes" active="yes"/>
+<layer number="94" name="Symbols" color="4" fill="1" visible="yes" active="yes"/>
+<layer number="95" name="Names" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="96" name="Values" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="97" name="Info" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="98" name="Guide" color="6" fill="1" visible="yes" active="yes"/>
+<layer number="99" name="SpiceOrder" color="5" fill="1" visible="yes" active="yes"/>
+<layer number="100" name="Muster" color="7" fill="1" visible="no" active="no"/>
+<layer number="101" name="Patch_Top" color="12" fill="4" visible="yes" active="yes"/>
+<layer number="116" name="Patch_BOT" color="9" fill="4" visible="yes" active="yes"/>
+<layer number="200" name="200bmp" color="1" fill="10" visible="no" active="no"/>
+<layer number="250" name="Descript" color="3" fill="1" visible="no" active="no"/>
+<layer number="251" name="SMDround" color="12" fill="11" visible="no" active="no"/>
+<layer number="254" name="cooling" color="7" fill="1" visible="yes" active="yes"/>
+</layers>
+<library>
+<description>&lt;b&gt;DF4IAH Library - GPS: GPS modules and devices&lt;/b&gt;&lt;p&gt;</description>
+<packages>
+<package name="GLOBALTOP-FIREFLY1-GMM-G3">
+<description>&lt;b&gt;GlobalTop FireFly 1&lt;/b&gt; (Gmm-g3)&lt;p&gt;
+gtop-tech.com&lt;br/&gt;
+&lt;br/&gt;
+GNSS Receiver Module based on MediaTek MT3333&lt;p&gt;
+data entry: 2015-03-17 by DF4IAH.</description>
+<smd name="1" x="-5.715" y="4.35" dx="2" dy="0.6" layer="1"/>
+<wire x1="-4.215" y1="6.65" x2="3.185" y2="6.65" width="0.2032" layer="21"/>
+<text x="1.613340625" y="-5.63880625" size="1.016" layer="21" rot="SR90">Gmm-g3</text>
+<wire x1="3.285" y1="-6.35" x2="-4.215" y2="-6.35" width="0.2032" layer="21"/>
+<wire x1="5.785" y1="5.45" x2="5.785" y2="-5.15" width="0.2032" layer="51"/>
+<wire x1="-5.715" y1="-5.15" x2="-5.715" y2="5.45" width="0.2032" layer="51"/>
+<text x="-0.081478125" y="-5.734515625" size="1.5" layer="21" rot="SR90">GlobalTop</text>
+<circle x="-3.294590625" y="5.6134375" radius="0.254" width="0.2032" layer="21"/>
+<circle x="-3.27545" y="5.590065625" radius="0.095121875" width="0.2032" layer="21"/>
+<text x="-2.54" y="6.985" size="1.016" layer="25">&gt;NAME</text>
+<text x="-4.415" y="2.85" size="0.6096" layer="51">GND</text>
+<text x="-4.415" y="-0.75" size="0.6096" layer="51">TXDB</text>
+<text x="-4.415" y="-1.95" size="0.6096" layer="51">RXDB</text>
+<text x="4.485" y="-3.75" size="0.6096" layer="51" rot="R180">1PPS</text>
+<text x="4.485" y="2.25" size="0.6096" layer="51" rot="R180">VBACKUP</text>
+<text x="-4.415" y="-3.15" size="0.6096" layer="51">NRESET</text>
+<text x="4.485" y="4.65" size="0.6096" layer="51" rot="R180">VCC_3V3</text>
+<text x="-4.415" y="4.05" size="0.6096" layer="51">Antenna_IN</text>
+<text x="-4.415" y="-4.35" size="0.6096" layer="51">GND</text>
+<text x="-4.415" y="0.45" size="0.6096" layer="51">GND</text>
+<text x="4.485" y="-2.55" size="0.6096" layer="51" rot="R180">GND</text>
+<text x="-4.415" y="1.65" size="0.6096" layer="51">VANT</text>
+<text x="4.485" y="3.45" size="0.6096" layer="51" rot="R180">GND</text>
+<text x="4.485" y="1.05" size="0.6096" layer="51" rot="R180">3D-FIX</text>
+<text x="-2.46380625" y="-9.233340625" size="0.8128" layer="21" rot="SR0">FireFly 1</text>
+<text x="-2.46380625" y="-7.963340625" size="1.27" layer="21" rot="SR0">G.top</text>
+<text x="4.485" y="-1.35" size="0.6096" layer="51" rot="R180">TXDA</text>
+<text x="4.485" y="-0.15" size="0.6096" layer="51" rot="R180">RXDA</text>
+<wire x1="-5.715" y1="-5.15" x2="-4.215" y2="-5.15" width="0.2032" layer="21"/>
+<wire x1="-4.215" y1="-5.15" x2="-4.215" y2="-6.35" width="0.2032" layer="21"/>
+<wire x1="3.285" y1="-6.35" x2="3.285" y2="-5.15" width="0.2032" layer="21"/>
+<wire x1="3.285" y1="-5.15" x2="5.785" y2="-5.15" width="0.2032" layer="21"/>
+<wire x1="3.185" y1="6.65" x2="3.185" y2="5.45" width="0.2032" layer="21"/>
+<wire x1="3.185" y1="5.45" x2="5.785" y2="5.45" width="0.2032" layer="21"/>
+<wire x1="-5.715" y1="5.45" x2="-4.215" y2="5.45" width="0.2032" layer="21"/>
+<wire x1="-4.215" y1="5.45" x2="-4.215" y2="6.65" width="0.2032" layer="21"/>
+<smd name="2" x="-5.715" y="3.15" dx="2" dy="0.6" layer="1"/>
+<smd name="3" x="-5.715" y="1.95" dx="2" dy="0.6" layer="1"/>
+<smd name="4" x="-5.715" y="0.75" dx="2" dy="0.6" layer="1"/>
+<smd name="5" x="-5.715" y="-0.45" dx="2" dy="0.6" layer="1"/>
+<smd name="6" x="-5.715" y="-1.65" dx="2" dy="0.6" layer="1"/>
+<smd name="7" x="-5.715" y="-2.85" dx="2" dy="0.6" layer="1"/>
+<smd name="8" x="-5.715" y="-4.05" dx="2" dy="0.6" layer="1"/>
+<smd name="16" x="5.785" y="4.35" dx="2" dy="0.6" layer="1"/>
+<smd name="15" x="5.785" y="3.15" dx="2" dy="0.6" layer="1"/>
+<smd name="14" x="5.785" y="1.95" dx="2" dy="0.6" layer="1"/>
+<smd name="13" x="5.785" y="0.75" dx="2" dy="0.6" layer="1"/>
+<smd name="12" x="5.785" y="-0.45" dx="2" dy="0.6" layer="1"/>
+<smd name="11" x="5.785" y="-1.65" dx="2" dy="0.6" layer="1"/>
+<smd name="10" x="5.785" y="-2.85" dx="2" dy="0.6" layer="1"/>
+<smd name="9" x="5.785" y="-4.05" dx="2" dy="0.6" layer="1"/>
+</package>
+<package name="TJ1513MTBD">
+<description>&lt;b&gt;TJ1513MTBD based on MediaTek MT3333&lt;/b&gt;&lt;p&gt;
+Many brands like: MediaTek, SkyLab, T.JWL and others&lt;br/&gt;
+GNSS Receiver Module for GPS, QZSS, Galileo and Beidou&lt;p&gt;
+data entry: 2015-04-08 by DF4IAH.</description>
+<smd name="5" x="-6.35" y="1.58" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="4" x="-6.35" y="2.83" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="6" x="-6.35" y="0.12" dx="1.75" dy="1" layer="1"/>
+<smd name="3" x="-6.35" y="4.08" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="7" x="-6.35" y="-1.35" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="8" x="-6.35" y="-2.6" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="2" x="-6.35" y="5.33" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="1" x="-6.35" y="6.58" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="9" x="-6.35" y="-3.85" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="18" x="6.65" y="1.58" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="17" x="6.65" y="0.12" dx="1.75" dy="1" layer="1"/>
+<smd name="16" x="6.65" y="-1.35" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="15" x="6.65" y="-2.6" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="14" x="6.65" y="-3.85" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="19" x="6.65" y="2.83" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="20" x="6.65" y="4.08" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="21" x="6.65" y="5.33" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="22" x="6.65" y="6.58" dx="1.75" dy="0.6667" layer="1"/>
+<wire x1="-6.35" y1="7.62" x2="6.65" y2="7.62" width="0.2032" layer="21"/>
+<wire x1="6.65" y1="-7.38" x2="-6.35" y2="-7.38" width="0.2032" layer="21"/>
+<wire x1="6.65" y1="7.62" x2="6.65" y2="-7.38" width="0.2032" layer="51"/>
+<wire x1="-6.35" y1="-7.38" x2="-6.35" y2="7.62" width="0.2032" layer="51"/>
+<circle x="-4.244590625" y="5.9634375" radius="0.254" width="0.2032" layer="21"/>
+<circle x="-4.22545" y="5.940065625" radius="0.095121875" width="0.2032" layer="21"/>
+<text x="-2.0916" y="8.716" size="1.016" layer="25">&gt;NAME</text>
+<smd name="10" x="-6.35" y="-5.1" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="11" x="-6.35" y="-6.35" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="13" x="6.65" y="-5.1" dx="1.75" dy="0.6667" layer="1"/>
+<smd name="12" x="6.65" y="-6.35" dx="1.75" dy="0.6667" layer="1"/>
+<text x="-4.3916" y="-9.319" size="1.016" layer="21" font="vector">TJ1513MTBD</text>
+<text x="-10.02" y="-0.13" size="0.6096" layer="21" font="vector">GND</text>
+<text x="7.995" y="-0.13" size="0.6096" layer="21" font="vector">GND</text>
+<text x="-10.02" y="1.27" size="0.6096" layer="21" font="vector">RXD1</text>
+<text x="-10.02" y="2.54" size="0.6096" layer="21" font="vector">TXD1</text>
+<text x="-10.02" y="3.81" size="0.6096" layer="21" font="vector">1 PPS</text>
+<text x="-10.02" y="5.08" size="0.6096" layer="21" font="vector">Rsvd.</text>
+<text x="-10.02" y="6.35" size="0.6096" layer="21" font="vector">Rsvd.</text>
+<text x="-10.02" y="-6.68" size="0.6096" layer="21" font="vector">RESET</text>
+<text x="8.015" y="-6.68" size="0.6096" layer="21" font="vector">V_BAKP</text>
+<text x="-10.02" y="-5.43" size="0.6096" layer="21" font="vector">Rsvd.</text>
+<text x="-10.02" y="-4.18" size="0.6096" layer="21" font="vector">Rsvd.</text>
+<text x="-10.02" y="-2.93" size="0.6096" layer="21" font="vector">Rsvd.</text>
+<text x="-10.02" y="-1.68" size="0.6096" layer="21" font="vector">Rsvd.</text>
+<text x="8.015" y="-5.43" size="0.6096" layer="21" font="vector">VCC</text>
+<text x="8.015" y="-4.18" size="0.6096" layer="21" font="vector">Rsvd.</text>
+<text x="8.015" y="-2.93" size="0.6096" layer="21" font="vector">Rsvd.</text>
+<text x="8.015" y="-1.68" size="0.6096" layer="21" font="vector">Rsvd.</text>
+<text x="8.015" y="6.35" size="0.6096" layer="21" font="vector">GND</text>
+<text x="8.015" y="5.08" size="0.6096" layer="21" font="vector">RF_IN</text>
+<text x="8.015" y="3.81" size="0.6096" layer="21" font="vector">GND</text>
+<text x="8.015" y="2.54" size="0.6096" layer="21" font="vector">VCC_RF</text>
+<text x="8.015" y="1.27" size="0.6096" layer="21" font="vector">BOOTSEL</text>
+<text x="1.839" y="-2.9216" size="1.016" layer="51" font="vector" rot="R90">based on 
+MediaTek
+MT3333</text>
+<text x="-5.08" y="6.35" size="0.6096" layer="51">1</text>
+<text x="-5.08" y="5.1" size="0.6096" layer="51">2</text>
+<text x="-5.08" y="3.85" size="0.6096" layer="51">3</text>
+<text x="-5.08" y="2.6" size="0.6096" layer="51">4</text>
+<text x="-5.08" y="1.35" size="0.6096" layer="51">5</text>
+<text x="-5.08" y="-0.13" size="0.6096" layer="51">6</text>
+<text x="4.42" y="6.35" size="0.6096" layer="51">22</text>
+<text x="4.42" y="5.1" size="0.6096" layer="51">21</text>
+<text x="4.42" y="3.85" size="0.6096" layer="51">20</text>
+<text x="4.42" y="2.6" size="0.6096" layer="51">19</text>
+<text x="4.42" y="1.35" size="0.6096" layer="51">18</text>
+<text x="4.42" y="-0.13" size="0.6096" layer="51">17</text>
+<text x="-5.08" y="-1.68" size="0.6096" layer="51">7</text>
+<text x="-5.08" y="-2.93" size="0.6096" layer="51">8</text>
+<text x="-5.08" y="-4.18" size="0.6096" layer="51">9</text>
+<text x="4.42" y="-4.18" size="0.6096" layer="51">14</text>
+<text x="-5.08" y="-5.43" size="0.6096" layer="51">10</text>
+<text x="-5.08" y="-6.68" size="0.6096" layer="51">11</text>
+<text x="4.42" y="-5.43" size="0.6096" layer="51">13</text>
+<text x="4.42" y="-6.68" size="0.6096" layer="51">12</text>
+<text x="4.42" y="-2.93" size="0.6096" layer="51">15</text>
+<text x="4.42" y="-1.68" size="0.6096" layer="51">16</text>
+</package>
+<package name="LINX-RXM-GNSS-TM">
+<description>&lt;b&gt;Linx TM-Series 712-RXM-GNSS-TM-B&lt;/b&gt;&lt;p&gt;
+Linx Technologies&lt;br/&gt;
+TM Series&lt;br/&gt;
+GNSS Receiver Module&lt;p&gt;
+data entry: 2015-01-11 by DF4IAH.</description>
+<smd name="5" x="-4.846953125" y="0" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="4" x="-4.846953125" y="1.0922" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="6" x="-4.846953125" y="-1.0922" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="3" x="-4.846953125" y="2.1844" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="7" x="-4.846953125" y="-2.1844" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="8" x="-4.846953125" y="-3.2766" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="2" x="-4.846953125" y="3.2766" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="1" x="-4.846953125" y="4.3688" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="9" x="-4.846953125" y="-4.3688" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="14" x="4.846953125" y="0" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="13" x="4.846953125" y="-1.0922" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="12" x="4.846953125" y="-2.1844" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="11" x="4.846953125" y="-3.2766" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="10" x="4.846953125" y="-4.3688" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="15" x="4.846953125" y="1.0922" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="16" x="4.846953125" y="2.1844" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="17" x="4.846953125" y="3.2766" dx="1.8034" dy="0.7112" layer="1"/>
+<smd name="18" x="4.846953125" y="4.3688" dx="1.8034" dy="0.7112" layer="1"/>
+<wire x1="-4.846953125" y1="5.0295375" x2="4.846953125" y2="5.0295375" width="0.2032" layer="21"/>
+<wire x1="4.846953125" y1="-5.0295375" x2="-4.846953125" y2="-5.0295375" width="0.2032" layer="21"/>
+<text x="-0.343340625" y="4.36880625" size="0.8128" layer="21" rot="SR270">RXM-GNSS-TM</text>
+<wire x1="4.846953125" y1="5.0295375" x2="4.846953125" y2="-5.0295375" width="0.2032" layer="51"/>
+<wire x1="-4.846953125" y1="-5.0295375" x2="-4.846953125" y2="5.0295375" width="0.2032" layer="51"/>
+<text x="1.351478125" y="4.464515625" size="1.778" layer="21" rot="SR270">Linx</text>
+<text x="2.7089375" y="1.617021875" size="1.778" layer="21">.</text>
+<text x="2.7089375" y="0.524821875" size="1.778" layer="21">.</text>
+<text x="2.7089375" y="-0.567378125" size="1.778" layer="21">.</text>
+<text x="2.7089375" y="-1.659578125" size="1.778" layer="21">.</text>
+<circle x="-3.294590625" y="4.3434375" radius="0.254" width="0.2032" layer="21"/>
+<circle x="-3.27545" y="4.320065625" radius="0.095121875" width="0.2032" layer="21"/>
+<text x="-2.6416" y="5.461" size="1.016" layer="25">&gt;NAME</text>
+<text x="-3.654125" y="4.07533125" size="0.6096" layer="51">GND</text>
+<text x="-3.654125" y="2.98313125" size="0.6096" layer="51">TX</text>
+<text x="-3.654125" y="1.89093125" size="0.6096" layer="51">RX</text>
+<text x="-3.654125" y="0.79873125" size="0.6096" layer="51">1 PPS</text>
+<text x="-3.654125" y="-0.29346875" size="0.6096" layer="51">NC</text>
+<text x="-3.654125" y="-1.38566875" size="0.6096" layer="51">VBACKUP</text>
+<text x="-3.654125" y="-2.47786875" size="0.6096" layer="51">NC</text>
+<text x="-3.654125" y="-3.57006875" size="0.6096" layer="51">VCC_3V3</text>
+<text x="-3.654125" y="-4.66226875" size="0.6096" layer="51">NC</text>
+<text x="1.806875" y="-3.57006875" size="0.6096" layer="51">RFIN</text>
+<text x="1.806875" y="-4.66226875" size="0.6096" layer="51">GND</text>
+<text x="1.806875" y="-2.47786875" size="0.6096" layer="51">GND</text>
+<text x="1.806875" y="-1.38566875" size="0.6096" layer="51">NC</text>
+<text x="1.806875" y="-0.29346875" size="0.6096" layer="51">VOUT</text>
+<text x="1.806875" y="0.79873125" size="0.6096" layer="51">NC</text>
+<text x="1.806875" y="1.89093125" size="0.6096" layer="51">NC</text>
+<text x="1.806875" y="2.98313125" size="0.6096" layer="51">NC</text>
+<text x="1.806875" y="4.07533125" size="0.6096" layer="51">NC</text>
+<text x="-7.62706875" y="4.02623125" size="0.6096" layer="51">1</text>
+<text x="-7.62706875" y="2.93403125" size="0.6096" layer="51">2</text>
+<text x="-7.62706875" y="1.84183125" size="0.6096" layer="51">3</text>
+<text x="-7.62706875" y="0.74963125" size="0.6096" layer="51">4</text>
+<text x="-7.62706875" y="-0.34256875" size="0.6096" layer="51">5</text>
+<text x="-7.62706875" y="-1.43476875" size="0.6096" layer="51">6</text>
+<text x="-7.62706875" y="-2.52696875" size="0.6096" layer="51">7</text>
+<text x="-7.62706875" y="-3.61916875" size="0.6096" layer="51">8</text>
+<text x="-7.62706875" y="-4.71136875" size="0.6096" layer="51">9</text>
+<text x="7.66373125" y="-4.71136875" size="0.6096" layer="51">10</text>
+<text x="7.66373125" y="-3.61916875" size="0.6096" layer="51">11</text>
+<text x="7.66373125" y="-2.52696875" size="0.6096" layer="51">12</text>
+<text x="7.66373125" y="-1.43476875" size="0.6096" layer="51">13</text>
+<text x="7.66373125" y="-0.34256875" size="0.6096" layer="51">14</text>
+<text x="7.66373125" y="0.74963125" size="0.6096" layer="51">15</text>
+<text x="7.66373125" y="1.84183125" size="0.6096" layer="51">16</text>
+<text x="7.66373125" y="2.93403125" size="0.6096" layer="51">17</text>
+<text x="7.66373125" y="4.02623125" size="0.6096" layer="51">18</text>
+</package>
+</packages>
+<symbols>
+<symbol name="GLOBALTOP-FIREFLY1-GMM-G3">
+<description>&lt;b&gt;GlobalTop FireFly 1&lt;/b&gt; (Gmm-g3)&lt;p&gt;
+gtop-tech.com&lt;br/&gt;
+&lt;br/&gt;
+GNSS Receiver Module based on MediaTek MT3333&lt;p&gt;
+data entry: 2015-03-17 by DF4IAH.</description>
+<pin name="TXDB" x="-20.32" y="-2.54" length="middle" direction="out"/>
+<pin name="GND@1" x="-20.32" y="2.54" length="middle" direction="pwr"/>
+<pin name="VANT" x="-20.32" y="7.62" length="middle" direction="pwr"/>
+<pin name="GND@0" x="-20.32" y="12.7" length="middle" direction="pwr"/>
+<pin name="RXDB" x="-20.32" y="-7.62" length="middle" direction="in"/>
+<pin name="NRESET" x="-20.32" y="-12.7" length="middle" direction="in"/>
+<pin name="GND@2" x="-20.32" y="-17.78" length="middle" direction="pwr"/>
+<pin name="ANTENNA_IN" x="-20.32" y="17.78" length="middle" direction="pas"/>
+<pin name="RXDA" x="20.32" y="-2.54" length="middle" direction="in" rot="R180"/>
+<pin name="3D_FIX" x="20.32" y="2.54" length="middle" direction="out" rot="R180"/>
+<pin name="VBACKUP" x="20.32" y="7.62" length="middle" direction="pwr" rot="R180"/>
+<pin name="GND@4" x="20.32" y="12.7" length="middle" direction="pwr" rot="R180"/>
+<pin name="VCC_3V3" x="20.32" y="17.78" length="middle" direction="pwr" rot="R180"/>
+<pin name="TXDA" x="20.32" y="-7.62" length="middle" direction="out" rot="R180"/>
+<pin name="GND@3" x="20.32" y="-12.7" length="middle" direction="pwr" rot="R180"/>
+<pin name="1PPS" x="20.32" y="-17.78" length="middle" direction="out" rot="R180"/>
+<wire x1="-15.24" y1="20.32" x2="15.24" y2="20.32" width="0.254" layer="94"/>
+<wire x1="15.24" y1="20.32" x2="15.24" y2="-20.32" width="0.254" layer="94"/>
+<wire x1="15.24" y1="-20.32" x2="-15.24" y2="-20.32" width="0.254" layer="94"/>
+<wire x1="-15.24" y1="-20.32" x2="-15.24" y2="20.32" width="0.254" layer="94"/>
+<circle x="-13.716" y="19.05" radius="0.567959375" width="0.254" layer="94"/>
+<circle x="-13.716" y="19.05" radius="0.359209375" width="0.254" layer="94"/>
+<circle x="-13.716" y="19.05" radius="0.254" width="0.254" layer="94"/>
+<circle x="-13.716" y="19.05" radius="0.254" width="0.254" layer="94"/>
+<rectangle x1="-13.97" y1="18.796" x2="-13.462" y2="19.304" layer="94"/>
+<text x="-4.826" y="21.844" size="2.032" layer="95">&gt;NAME</text>
+<text x="-4.826" y="-23.876" size="2.032" layer="96">&gt;VALUE</text>
+</symbol>
+<symbol name="TJ1513MTBD">
+<description>&lt;b&gt;TJ1513MTBD based on MediaTek MT3333&lt;/b&gt;&lt;p&gt;
+Many brands like: MediaTek, SkyLab, T.JWL and others&lt;br/&gt;
+GNSS Receiver Module for GPS, QZSS, Galileo and Beidou&lt;p&gt;
+data entry: 2015-04-08 by DF4IAH.</description>
+<pin name="RXD1" x="-25.4" y="5.08" length="middle" direction="in"/>
+<pin name="TXD1" x="-25.4" y="10.16" length="middle" direction="out"/>
+<pin name="TIMEPULSE" x="-25.4" y="15.24" length="middle" direction="out"/>
+<pin name="RESERVED@2" x="-25.4" y="20.32" length="middle" direction="nc"/>
+<pin name="GND@1" x="-25.4" y="0" length="middle" direction="pwr"/>
+<pin name="RESERVED@3" x="-25.4" y="-5.08" length="middle" direction="nc"/>
+<pin name="RESERVED@4" x="-25.4" y="-10.16" length="middle" direction="nc"/>
+<pin name="RESERVED@5" x="-25.4" y="-15.24" length="middle" direction="nc"/>
+<pin name="RESERVED@1" x="-25.4" y="25.4" length="middle" direction="nc"/>
+<pin name="RESERVED@7" x="25.4" y="-15.24" length="middle" direction="nc" rot="R180"/>
+<pin name="RESERVED@8" x="25.4" y="-10.16" length="middle" direction="nc" rot="R180"/>
+<pin name="RESERVED@9" x="25.4" y="-5.08" length="middle" direction="nc" rot="R180"/>
+<pin name="GND@2" x="25.4" y="0" length="middle" direction="pwr" rot="R180"/>
+<pin name="BOOTSEL" x="25.4" y="5.08" length="middle" direction="in" rot="R180"/>
+<pin name="VCC" x="25.4" y="-20.32" length="middle" direction="pwr" rot="R180"/>
+<pin name="V_BAKP" x="25.4" y="-25.4" length="middle" direction="pwr" rot="R180"/>
+<pin name="RESET" x="-25.4" y="-25.4" length="middle" direction="pas"/>
+<pin name="RESERVED@6" x="-25.4" y="-20.32" length="middle" direction="nc"/>
+<wire x1="-20.32" y1="27.94" x2="20.32" y2="27.94" width="0.254" layer="94"/>
+<wire x1="20.32" y1="27.94" x2="20.32" y2="-27.94" width="0.254" layer="94"/>
+<wire x1="20.32" y1="-27.94" x2="-20.32" y2="-27.94" width="0.254" layer="94"/>
+<wire x1="-20.32" y1="-27.94" x2="-20.32" y2="27.94" width="0.254" layer="94"/>
+<circle x="-18.796" y="26.67" radius="0.567959375" width="0.254" layer="94"/>
+<circle x="-18.796" y="26.67" radius="0.359209375" width="0.254" layer="94"/>
+<circle x="-18.796" y="26.67" radius="0.254" width="0.254" layer="94"/>
+<circle x="-18.796" y="26.67" radius="0.254" width="0.254" layer="94"/>
+<rectangle x1="-19.05" y1="26.416" x2="-18.542" y2="26.924" layer="94"/>
+<text x="-2.286" y="29.464" size="2.032" layer="95">&gt;NAME</text>
+<text x="-9.398" y="-31.496" size="2.032" layer="96" font="vector">TJ1513MTBD</text>
+<pin name="VCC_RF" x="25.4" y="10.16" length="middle" direction="out" rot="R180"/>
+<pin name="GND@3" x="25.4" y="15.24" length="middle" direction="pwr" rot="R180"/>
+<pin name="RF_IN" x="25.4" y="20.32" length="middle" direction="in" rot="R180"/>
+<pin name="GND@4" x="25.4" y="25.4" length="middle" direction="pwr" rot="R180"/>
+</symbol>
+<symbol name="LINX-RXM-GNSS-TM">
+<description>&lt;b&gt;Linx TM-Series RXM-GNSS-TM&lt;/b&gt;&lt;p&gt;
+Linx Technologies&lt;br/&gt;
+TM Series&lt;br/&gt;
+GNSS Receiver Module&lt;p&gt;
+data entry: 2015-01-11 by DF4IAH.</description>
+<pin name="5" x="-20.32" y="0" length="middle" direction="nc"/>
+<pin name="4" x="-20.32" y="5.08" length="middle" direction="out"/>
+<pin name="3" x="-20.32" y="10.16" length="middle" direction="out"/>
+<pin name="2" x="-20.32" y="15.24" length="middle" direction="in"/>
+<pin name="6" x="-20.32" y="-5.08" length="middle" direction="pwr"/>
+<pin name="7" x="-20.32" y="-10.16" length="middle" direction="nc"/>
+<pin name="8" x="-20.32" y="-15.24" length="middle" direction="pwr"/>
+<pin name="9" x="-20.32" y="-20.32" length="middle" direction="nc"/>
+<pin name="1" x="-20.32" y="20.32" length="middle" direction="pas"/>
+<pin name="14" x="20.32" y="0" length="middle" direction="out" rot="R180"/>
+<pin name="15" x="20.32" y="5.08" length="middle" direction="nc" rot="R180"/>
+<pin name="16" x="20.32" y="10.16" length="middle" direction="nc" rot="R180"/>
+<pin name="17" x="20.32" y="15.24" length="middle" direction="nc" rot="R180"/>
+<pin name="18" x="20.32" y="20.32" length="middle" direction="nc" rot="R180"/>
+<pin name="13" x="20.32" y="-5.08" length="middle" direction="nc" rot="R180"/>
+<pin name="12" x="20.32" y="-10.16" length="middle" direction="pas" rot="R180"/>
+<pin name="11" x="20.32" y="-15.24" length="middle" direction="in" rot="R180"/>
+<pin name="10" x="20.32" y="-20.32" length="middle" direction="pas" rot="R180"/>
+<wire x1="-15.24" y1="22.86" x2="15.24" y2="22.86" width="0.254" layer="94"/>
+<wire x1="15.24" y1="22.86" x2="15.24" y2="-22.86" width="0.254" layer="94"/>
+<wire x1="15.24" y1="-22.86" x2="-15.24" y2="-22.86" width="0.254" layer="94"/>
+<wire x1="-15.24" y1="-22.86" x2="-15.24" y2="22.86" width="0.254" layer="94"/>
+<circle x="-13.716" y="21.59" radius="0.567959375" width="0.254" layer="94"/>
+<circle x="-13.716" y="21.59" radius="0.359209375" width="0.254" layer="94"/>
+<circle x="-13.716" y="21.59" radius="0.254" width="0.254" layer="94"/>
+<circle x="-13.716" y="21.59" radius="0.254" width="0.254" layer="94"/>
+<rectangle x1="-13.97" y1="21.336" x2="-13.462" y2="21.844" layer="94"/>
+<text x="-10.414" y="19.558" size="1.6764" layer="94">GND</text>
+<text x="-10.414" y="14.478" size="1.6764" layer="94">TX</text>
+<text x="-10.414" y="9.398" size="1.6764" layer="94">RX</text>
+<text x="-10.414" y="4.318" size="1.6764" layer="94">1 PPS</text>
+<text x="-10.414" y="-0.762" size="1.6764" layer="94">NC</text>
+<text x="-10.414" y="-5.842" size="1.6764" layer="94">VBACKUP</text>
+<text x="-10.414" y="-10.922" size="1.6764" layer="94">NC</text>
+<text x="-10.414" y="-16.002" size="1.6764" layer="94">VCC_3V3</text>
+<text x="-10.414" y="-21.082" size="1.6764" layer="94">NC</text>
+<text x="4.826" y="-21.082" size="1.6764" layer="94">GND</text>
+<text x="4.826" y="-16.002" size="1.6764" layer="94">RFIN</text>
+<text x="4.826" y="-10.922" size="1.6764" layer="94">GND</text>
+<text x="4.826" y="-5.842" size="1.6764" layer="94">NC</text>
+<text x="4.826" y="-0.762" size="1.6764" layer="94">VOUT</text>
+<text x="4.826" y="4.318" size="1.6764" layer="94">NC</text>
+<text x="4.826" y="9.398" size="1.6764" layer="94">NC</text>
+<text x="4.826" y="14.478" size="1.6764" layer="94">NC</text>
+<text x="4.826" y="19.558" size="1.6764" layer="94">NC</text>
+<text x="-4.826" y="24.384" size="2.032" layer="95">&gt;NAME</text>
+<text x="-15.24" y="-25.908" size="1.778" layer="94">Linx  RXM-GNSS-TM</text>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="GLOBALTOP-FIREFLY1-GMM-G3" prefix="U">
+<description>&lt;b&gt;GlobalTop FireFly 1&lt;/b&gt; (Gmm-g3)&lt;p&gt;
+gtop-tech.com&lt;br/&gt;
+&lt;br/&gt;
+GNSS Receiver Module based on MediaTek MT3333&lt;p&gt;
+data entry: 2015-03-17 by DF4IAH.</description>
+<gates>
+<gate name="G$1" symbol="GLOBALTOP-FIREFLY1-GMM-G3" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="GLOBALTOP-FIREFLY1-GMM-G3">
+<connects>
+<connect gate="G$1" pin="1PPS" pad="9"/>
+<connect gate="G$1" pin="3D_FIX" pad="13"/>
+<connect gate="G$1" pin="ANTENNA_IN" pad="1"/>
+<connect gate="G$1" pin="GND@0" pad="2"/>
+<connect gate="G$1" pin="GND@1" pad="4"/>
+<connect gate="G$1" pin="GND@2" pad="8"/>
+<connect gate="G$1" pin="GND@3" pad="10"/>
+<connect gate="G$1" pin="GND@4" pad="15"/>
+<connect gate="G$1" pin="NRESET" pad="7"/>
+<connect gate="G$1" pin="RXDA" pad="12"/>
+<connect gate="G$1" pin="RXDB" pad="6"/>
+<connect gate="G$1" pin="TXDA" pad="11"/>
+<connect gate="G$1" pin="TXDB" pad="5"/>
+<connect gate="G$1" pin="VANT" pad="3"/>
+<connect gate="G$1" pin="VBACKUP" pad="14"/>
+<connect gate="G$1" pin="VCC_3V3" pad="16"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="TJ1513MTBD" prefix="U">
+<description>&lt;b&gt;TJ1513MTBD based on MediaTek MT3333&lt;/b&gt;&lt;p&gt;
+Many brands like: MediaTek, SkyLab, T.JWL and others&lt;br/&gt;
+GNSS Receiver Module for GPS, QZSS, Galileo and Beidou&lt;p&gt;
+data entry: 2015-04-08 by DF4IAH.</description>
+<gates>
+<gate name="G$1" symbol="TJ1513MTBD" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="TJ1513MTBD">
+<connects>
+<connect gate="G$1" pin="BOOTSEL" pad="18"/>
+<connect gate="G$1" pin="GND@1" pad="6"/>
+<connect gate="G$1" pin="GND@2" pad="17"/>
+<connect gate="G$1" pin="GND@3" pad="20"/>
+<connect gate="G$1" pin="GND@4" pad="22"/>
+<connect gate="G$1" pin="RESERVED@1" pad="1"/>
+<connect gate="G$1" pin="RESERVED@2" pad="2"/>
+<connect gate="G$1" pin="RESERVED@3" pad="7"/>
+<connect gate="G$1" pin="RESERVED@4" pad="8"/>
+<connect gate="G$1" pin="RESERVED@5" pad="9"/>
+<connect gate="G$1" pin="RESERVED@6" pad="10"/>
+<connect gate="G$1" pin="RESERVED@7" pad="14"/>
+<connect gate="G$1" pin="RESERVED@8" pad="15"/>
+<connect gate="G$1" pin="RESERVED@9" pad="16"/>
+<connect gate="G$1" pin="RESET" pad="11"/>
+<connect gate="G$1" pin="RF_IN" pad="21"/>
+<connect gate="G$1" pin="RXD1" pad="5"/>
+<connect gate="G$1" pin="TIMEPULSE" pad="3"/>
+<connect gate="G$1" pin="TXD1" pad="4"/>
+<connect gate="G$1" pin="VCC" pad="13"/>
+<connect gate="G$1" pin="VCC_RF" pad="19"/>
+<connect gate="G$1" pin="V_BAKP" pad="12"/>
+</connects>
+<technologies>
+<technology name="">
+<attribute name="OC_ALIBABA" value="TJ1513MTBD" constant="no"/>
+<attribute name="OC_FARNELL" value="-" constant="no"/>
+<attribute name="OC_NEWARK" value="-" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="LINX-RXM-GNSS-TM" prefix="U">
+<description>&lt;b&gt;Linx TM-Series RXM-GNSS-TM&lt;/b&gt;&lt;p&gt;
+Linx Technologies&lt;br/&gt;
+TM Series&lt;br/&gt;
+GNSS Receiver Module&lt;p&gt;
+data entry: 2015-01-11 by DF4IAH.</description>
+<gates>
+<gate name="G$1" symbol="LINX-RXM-GNSS-TM" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="LINX-RXM-GNSS-TM">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="10" pad="10"/>
+<connect gate="G$1" pin="11" pad="11"/>
+<connect gate="G$1" pin="12" pad="12"/>
+<connect gate="G$1" pin="13" pad="13"/>
+<connect gate="G$1" pin="14" pad="14"/>
+<connect gate="G$1" pin="15" pad="15"/>
+<connect gate="G$1" pin="16" pad="16"/>
+<connect gate="G$1" pin="17" pad="17"/>
+<connect gate="G$1" pin="18" pad="18"/>
+<connect gate="G$1" pin="2" pad="2"/>
+<connect gate="G$1" pin="3" pad="3"/>
+<connect gate="G$1" pin="4" pad="4"/>
+<connect gate="G$1" pin="5" pad="5"/>
+<connect gate="G$1" pin="6" pad="6"/>
+<connect gate="G$1" pin="7" pad="7"/>
+<connect gate="G$1" pin="8" pad="8"/>
+<connect gate="G$1" pin="9" pad="9"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
+</drawing>
+<compatibility>
+<note version="6.3" minversion="6.2.2" severity="warning">
+Since Version 6.2.2 text objects can contain more than one line,
+which will not be processed correctly with this version.
+</note>
+</compatibility>
+</eagle>
