@@ -121,7 +121,8 @@ ArcDirection=0
 AddLevel=2
 PadsSameType=0
 Layer=91
-Sheet="7"
+Views=" 1: -5.8374 -4.10556 271.291 182.968"
+Sheet="6"
 
 [Desktop]
 Screen="2560 1440"

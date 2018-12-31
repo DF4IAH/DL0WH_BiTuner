@@ -3736,9 +3736,81 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="NAME" x="8.89" y="46.99" size="0.6096" layer="26" font="vector" ratio="10" rot="MR180"/>
 <attribute name="VALUE" x="12.7" y="48.895" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
+<element name="U2001" library="df4iah_dataconvertion" package="TSSOP24_SOT355-1" value="74LVC4245A" x="24.4475" y="22.86" smashed="yes">
+<attribute name="NAME" x="19.6065" y="21.5001" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="20.5476" y="22.18" size="0.6096" layer="27" font="vector" ratio="10"/>
+</element>
+<element name="C2001" library="df4iah_rcl" package="C0402" value="100nF" x="20.955" y="28.575" smashed="yes" rot="R90">
+<attribute name="NAME" x="21.2725" y="30.48" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="22.225" y="27.305" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
+</element>
+<element name="R2020" library="df4iah_rcl" package="R0402" value="47R" x="22.86" y="28.575" smashed="yes" rot="MR90">
+<attribute name="NAME" x="22.86" y="30.48" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="21.59" y="27.305" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
+</element>
+<element name="R2021" library="df4iah_rcl" package="R0402" value="47R" x="23.495" y="28.575" smashed="yes" rot="R90">
+<attribute name="NAME" x="23.495" y="30.48" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="24.13" y="30.48" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
+</element>
+<element name="R2022" library="df4iah_rcl" package="R0402" value="47R" x="24.13" y="28.575" smashed="yes" rot="MR90">
+<attribute name="NAME" x="24.13" y="30.48" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="22.86" y="27.305" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
+</element>
+<element name="R2023" library="df4iah_rcl" package="R0402" value="47R" x="24.765" y="28.575" smashed="yes" rot="R90">
+<attribute name="NAME" x="24.765" y="30.48" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="25.0825" y="30.48" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
+</element>
+<element name="R2024" library="df4iah_rcl" package="R0402" value="47R" x="25.4" y="28.575" smashed="yes" rot="MR90">
+<attribute name="NAME" x="25.4" y="30.48" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="24.13" y="27.305" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
+</element>
+<element name="R2025" library="df4iah_rcl" package="R0402" value="47R" x="26.035" y="28.575" smashed="yes" rot="R90">
+<attribute name="NAME" x="26.035" y="30.48" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="26.3525" y="30.48" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
+</element>
+<element name="R2026" library="df4iah_rcl" package="R0402" value="47R" x="26.67" y="28.575" smashed="yes" rot="MR90">
+<attribute name="NAME" x="26.67" y="30.48" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="26.3525" y="30.48" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
+</element>
+<element name="R2027" library="df4iah_rcl" package="R0402" value="47R" x="27.305" y="28.575" smashed="yes" rot="R90">
+<attribute name="NAME" x="27.305" y="30.48" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="27.6225" y="30.48" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
+</element>
 <element name="X2411" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="3.81" y="58.42" smashed="yes" rot="R180">
 <attribute name="NAME" x="7.46125" y="56.8325" size="0.8128" layer="25" font="vector" ratio="15" rot="R90"/>
 <attribute name="VALUE" x="-0.3175" y="52.705" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
+</element>
+<element name="R2011" library="df4iah_rcl" package="R0402" value="47R" x="22.86" y="17.145" smashed="yes" rot="MR90">
+<attribute name="NAME" x="22.86" y="12.7" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="21.59" y="15.875" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
+</element>
+<element name="R2010" library="df4iah_rcl" package="R0402" value="47R" x="22.225" y="17.145" smashed="yes" rot="R90">
+<attribute name="NAME" x="22.225" y="12.7" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="23.495" y="15.875" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
+</element>
+<element name="R2012" library="df4iah_rcl" package="R0402" value="47R" x="23.495" y="17.145" smashed="yes" rot="R90">
+<attribute name="NAME" x="23.495" y="12.7" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="22.225" y="18.415" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
+<element name="R2013" library="df4iah_rcl" package="R0402" value="47R" x="24.13" y="17.145" smashed="yes" rot="MR90">
+<attribute name="NAME" x="24.13" y="12.7" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="22.86" y="15.875" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
+</element>
+<element name="R2014" library="df4iah_rcl" package="R0402" value="47R" x="24.765" y="17.145" smashed="yes" rot="R90">
+<attribute name="NAME" x="24.765" y="12.7" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="26.035" y="15.875" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
+</element>
+<element name="R2015" library="df4iah_rcl" package="R0402" value="47R" x="25.4" y="17.145" smashed="yes" rot="MR90">
+<attribute name="NAME" x="25.4" y="12.7" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="24.13" y="15.875" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
+</element>
+<element name="R2016" library="df4iah_rcl" package="R0402" value="47R" x="26.035" y="17.145" smashed="yes" rot="R90">
+<attribute name="NAME" x="26.035" y="12.7" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="27.305" y="15.875" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
+</element>
+<element name="R2017" library="df4iah_rcl" package="R0402" value="47R" x="26.67" y="17.145" smashed="yes" rot="MR90">
+<attribute name="NAME" x="26.67" y="12.7" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="25.4" y="15.875" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
 </element>
 <element name="U0101" library="df4iah_stm32l4" package="LQFP64" value="STM32L476RXT_64PIN_LDO" x="68.58" y="19.05" smashed="yes" rot="R270">
 <attribute name="NAME" x="67.35125" y="24.9675" size="0.8128" layer="25"/>
@@ -3947,6 +4019,11 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="C2421" pad="2"/>
 <contactref element="C2422" pad="2"/>
 <contactref element="C2423" pad="2"/>
+<contactref element="U2001" pad="11"/>
+<contactref element="U2001" pad="12"/>
+<contactref element="U2001" pad="13"/>
+<contactref element="U2001" pad="22"/>
+<contactref element="C2001" pad="2"/>
 <contactref element="X2411" pad="2"/>
 <contactref element="U0521" pad="21"/>
 <contactref element="U0521" pad="12"/>
@@ -4091,38 +4168,37 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="83.439" y1="3.81" x2="80.899" y2="3.81" width="0" layer="19" extent="1-1"/>
 <wire x1="92.71" y1="3.81" x2="83.439" y2="3.81" width="0" layer="19" extent="1-1"/>
 <wire x1="34.61" y1="20.32" x2="42.795" y2="25.535" width="0" layer="19" extent="1-1"/>
-<wire x1="34.29" y1="3.81" x2="42.545" y2="11.37" width="0" layer="19" extent="1-1"/>
-<wire x1="29.21" y1="3.81" x2="34.29" y2="3.81" width="0" layer="19" extent="1-1"/>
-<wire x1="32.385" y1="43.6" x2="44.45" y2="43.6" width="0" layer="19" extent="1-1"/>
-<wire x1="30.48" y1="43.6" x2="32.385" y2="43.6" width="0" layer="19" extent="1-1"/>
-<wire x1="27.94" y1="43.6" x2="30.48" y2="43.6" width="0" layer="19" extent="1-1"/>
-<wire x1="30.775" y1="47.42" x2="30.48" y2="43.6" width="0" layer="19" extent="1-1"/>
-<wire x1="31.425" y1="47.42" x2="30.775" y2="47.42" width="0" layer="19" extent="1-1"/>
-<wire x1="32.075" y1="47.42" x2="31.425" y2="47.42" width="0" layer="19" extent="1-1"/>
-<wire x1="32.725" y1="47.42" x2="32.075" y2="47.42" width="0" layer="19" extent="1-1"/>
-<wire x1="31.75" y1="52.07" x2="31.425" y2="47.42" width="0" layer="19" extent="1-1"/>
-<wire x1="32.075" y1="56.72" x2="31.75" y2="52.07" width="0" layer="19" extent="1-1"/>
-<wire x1="32.725" y1="56.72" x2="32.075" y2="56.72" width="0" layer="19" extent="1-1"/>
-<wire x1="31.425" y1="56.72" x2="32.075" y2="56.72" width="0" layer="19" extent="1-1"/>
-<wire x1="30.775" y1="56.72" x2="31.425" y2="56.72" width="0" layer="19" extent="1-1"/>
-<wire x1="20.32" y1="56.53" x2="30.775" y2="56.72" width="0" layer="19" extent="1-1"/>
-<wire x1="19.05" y1="57.8" x2="20.32" y2="56.53" width="0" layer="19" extent="1-16"/>
-<wire x1="17.1875" y1="56.87" x2="19.05" y2="57.8" width="0" layer="19" extent="1-16"/>
-<wire x1="17.1875" y1="56.22" x2="17.1875" y2="56.87" width="0" layer="19" extent="1-1"/>
-<wire x1="15.3875" y1="55.895" x2="17.1875" y2="56.22" width="0" layer="19" extent="1-1"/>
-<wire x1="14.2875" y1="55.895" x2="15.3875" y2="55.895" width="0" layer="19" extent="1-1"/>
-<wire x1="14.2875" y1="55.245" x2="14.2875" y2="55.895" width="0" layer="19" extent="1-1"/>
+<wire x1="28.1225" y1="19.935" x2="34.61" y2="20.32" width="0" layer="19" extent="1-1"/>
+<wire x1="27.3725" y1="19.935" x2="28.1225" y2="19.935" width="0" layer="19" extent="1-1"/>
+<wire x1="28.1225" y1="25.785" x2="28.1225" y2="19.935" width="0" layer="19" extent="1-1"/>
+<wire x1="22.1725" y1="25.785" x2="28.1225" y2="25.785" width="0" layer="19" extent="1-1"/>
+<wire x1="20.955" y1="29.225" x2="22.1725" y2="25.785" width="0" layer="19" extent="1-1"/>
+<wire x1="12.7" y1="28.26" x2="20.955" y2="29.225" width="0" layer="19" extent="1-16"/>
+<wire x1="11.85" y1="35.56" x2="12.7" y2="28.26" width="0" layer="19" extent="16-16"/>
+<wire x1="8.89" y1="36.83" x2="11.85" y2="35.56" width="0" layer="19" extent="16-16"/>
+<wire x1="14.74" y1="37.17" x2="11.85" y2="35.56" width="0" layer="19" extent="1-16"/>
+<wire x1="16.24" y1="37.17" x2="14.74" y2="37.17" width="0" layer="19" extent="1-1"/>
+<wire x1="15.24" y1="41.57" x2="14.74" y2="37.17" width="0" layer="19" extent="1-1"/>
+<wire x1="14.29" y1="43.18" x2="15.24" y2="41.57" width="0" layer="19" extent="1-16"/>
+<wire x1="14.62" y1="46.99" x2="14.29" y2="43.18" width="0" layer="19" extent="16-16"/>
+<wire x1="14.62" y1="48.26" x2="14.62" y2="46.99" width="0" layer="19" extent="16-16"/>
+<wire x1="14.62" y1="49.53" x2="14.62" y2="48.26" width="0" layer="19" extent="16-16"/>
+<wire x1="14.2875" y1="53.295" x2="14.62" y2="49.53" width="0" layer="19" extent="16-16"/>
+<wire x1="15.3875" y1="53.295" x2="14.2875" y2="53.295" width="0" layer="19" extent="1-1"/>
+<wire x1="13.1875" y1="53.295" x2="14.2875" y2="53.295" width="0" layer="19" extent="1-1"/>
+<wire x1="15.3875" y1="54.595" x2="15.3875" y2="53.295" width="0" layer="19" extent="1-1"/>
+<wire x1="14.2875" y1="54.595" x2="15.3875" y2="54.595" width="0" layer="19" extent="1-1"/>
+<wire x1="14.2875" y1="55.245" x2="14.2875" y2="54.595" width="0" layer="19" extent="1-1"/>
 <wire x1="14.2875" y1="55.245" x2="14.2875" y2="55.245" width="0" layer="19" extent="1-16"/>
-<wire x1="14.2875" y1="54.595" x2="14.2875" y2="55.245" width="0" layer="19" extent="1-1"/>
+<wire x1="14.2875" y1="55.895" x2="14.2875" y2="55.245" width="0" layer="19" extent="1-1"/>
+<wire x1="15.3875" y1="55.895" x2="14.2875" y2="55.895" width="0" layer="19" extent="1-1"/>
 <wire x1="13.1875" y1="55.895" x2="14.2875" y2="55.895" width="0" layer="19" extent="1-1"/>
-<wire x1="15.3875" y1="54.595" x2="14.2875" y2="54.595" width="0" layer="19" extent="1-1"/>
 <wire x1="13.1875" y1="54.595" x2="14.2875" y2="54.595" width="0" layer="19" extent="1-1"/>
 <wire x1="15.3875" y1="57.195" x2="15.3875" y2="55.895" width="0" layer="19" extent="1-1"/>
 <wire x1="14.2875" y1="57.195" x2="15.3875" y2="57.195" width="0" layer="19" extent="1-1"/>
 <wire x1="13.1875" y1="57.195" x2="14.2875" y2="57.195" width="0" layer="19" extent="1-1"/>
-<wire x1="15.3875" y1="53.295" x2="15.3875" y2="54.595" width="0" layer="19" extent="1-1"/>
-<wire x1="14.2875" y1="53.295" x2="15.3875" y2="53.295" width="0" layer="19" extent="1-1"/>
-<wire x1="13.1875" y1="53.295" x2="14.2875" y2="53.295" width="0" layer="19" extent="1-1"/>
+<wire x1="17.1875" y1="56.22" x2="15.3875" y2="55.895" width="0" layer="19" extent="1-1"/>
+<wire x1="17.1875" y1="56.87" x2="17.1875" y2="56.22" width="0" layer="19" extent="1-1"/>
 <wire x1="11.3875" y1="56.87" x2="13.1875" y2="57.195" width="0" layer="19" extent="1-1"/>
 <wire x1="11.3875" y1="53.62" x2="13.1875" y2="53.295" width="0" layer="19" extent="1-1"/>
 <wire x1="11.3875" y1="52.97" x2="11.3875" y2="53.62" width="0" layer="19" extent="1-1"/>
@@ -4130,25 +4206,31 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="8.89" y1="53.96" x2="10.16" y2="53.96" width="0" layer="19" extent="16-16"/>
 <wire x1="7.62" y1="53.96" x2="8.89" y2="53.96" width="0" layer="19" extent="16-16"/>
 <wire x1="6.35" y1="53.96" x2="7.62" y2="53.96" width="0" layer="19" extent="16-16"/>
-<wire x1="14.62" y1="49.53" x2="14.2875" y2="53.295" width="0" layer="19" extent="16-16"/>
-<wire x1="14.62" y1="48.26" x2="14.62" y2="49.53" width="0" layer="19" extent="16-16"/>
-<wire x1="14.62" y1="46.99" x2="14.62" y2="48.26" width="0" layer="19" extent="16-16"/>
-<wire x1="14.29" y1="43.18" x2="14.62" y2="46.99" width="0" layer="19" extent="16-16"/>
-<wire x1="15.24" y1="41.57" x2="14.29" y2="43.18" width="0" layer="19" extent="1-16"/>
-<wire x1="14.74" y1="37.17" x2="15.24" y2="41.57" width="0" layer="19" extent="1-1"/>
-<wire x1="16.24" y1="37.17" x2="14.74" y2="37.17" width="0" layer="19" extent="1-1"/>
-<wire x1="11.85" y1="35.56" x2="14.74" y2="37.17" width="0" layer="19" extent="1-16"/>
-<wire x1="8.89" y1="36.83" x2="11.85" y2="35.56" width="0" layer="19" extent="16-16"/>
+<wire x1="19.05" y1="57.8" x2="17.1875" y2="56.87" width="0" layer="19" extent="1-16"/>
+<wire x1="20.32" y1="56.53" x2="19.05" y2="57.8" width="0" layer="19" extent="1-16"/>
 <wire x1="8.89" y1="41.91" x2="8.89" y2="36.83" width="0" layer="19" extent="1-1"/>
 <wire x1="3.81" y1="41.91" x2="8.89" y2="41.91" width="0" layer="19" extent="1-1"/>
 <wire x1="3.81" y1="36.83" x2="8.89" y2="36.83" width="0" layer="19" extent="1-1"/>
-<wire x1="12.7" y1="28.26" x2="11.85" y2="35.56" width="0" layer="19" extent="16-16"/>
 <wire x1="3.81" y1="60.96" x2="6.35" y2="53.96" width="0" layer="19" extent="16-16"/>
 <wire x1="3.81" y1="69.215" x2="3.81" y2="60.96" width="0" layer="19" extent="1-1"/>
 <wire x1="8.89" y1="20.32" x2="12.7" y2="28.26" width="0" layer="19" extent="16-16"/>
 <wire x1="3.81" y1="20.32" x2="8.89" y2="20.32" width="0" layer="19" extent="1-1"/>
 <wire x1="8.89" y1="15.24" x2="8.89" y2="20.32" width="0" layer="19" extent="1-1"/>
 <wire x1="3.81" y1="15.24" x2="3.81" y2="20.32" width="0" layer="19" extent="1-1"/>
+<wire x1="30.775" y1="56.72" x2="20.32" y2="56.53" width="0" layer="19" extent="1-1"/>
+<wire x1="31.425" y1="56.72" x2="30.775" y2="56.72" width="0" layer="19" extent="1-1"/>
+<wire x1="32.075" y1="56.72" x2="31.425" y2="56.72" width="0" layer="19" extent="1-1"/>
+<wire x1="32.725" y1="56.72" x2="32.075" y2="56.72" width="0" layer="19" extent="1-1"/>
+<wire x1="31.75" y1="52.07" x2="31.425" y2="56.72" width="0" layer="19" extent="1-1"/>
+<wire x1="31.425" y1="47.42" x2="31.75" y2="52.07" width="0" layer="19" extent="1-1"/>
+<wire x1="30.775" y1="47.42" x2="31.425" y2="47.42" width="0" layer="19" extent="1-1"/>
+<wire x1="32.075" y1="47.42" x2="31.425" y2="47.42" width="0" layer="19" extent="1-1"/>
+<wire x1="32.725" y1="47.42" x2="32.075" y2="47.42" width="0" layer="19" extent="1-1"/>
+<wire x1="32.385" y1="43.6" x2="32.075" y2="47.42" width="0" layer="19" extent="1-1"/>
+<wire x1="30.48" y1="43.6" x2="32.385" y2="43.6" width="0" layer="19" extent="1-1"/>
+<wire x1="27.94" y1="43.6" x2="30.48" y2="43.6" width="0" layer="19" extent="1-1"/>
+<wire x1="34.29" y1="3.81" x2="42.545" y2="11.37" width="0" layer="19" extent="1-1"/>
+<wire x1="29.21" y1="3.81" x2="34.29" y2="3.81" width="0" layer="19" extent="1-1"/>
 <wire x1="3.81" y1="3.81" x2="3.81" y2="15.24" width="0" layer="19" extent="1-1"/>
 <wire x1="87.78875" y1="25.415" x2="73.53" y2="22.25" width="0" layer="19" extent="1-16"/>
 <wire x1="89.2175" y1="25.415" x2="87.78875" y2="25.415" width="0" layer="19" extent="16-16"/>
@@ -4437,6 +4519,91 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="19.05" y1="55.26" x2="19.05" y2="56.5" width="0" layer="19" extent="16-16"/>
 <wire x1="17.1875" y1="55.57" x2="19.05" y2="55.26" width="0" layer="19" extent="1-16"/>
 </signal>
+<signal name="SIM_1PPS_R">
+<contactref element="U2001" pad="10"/>
+<contactref element="R2017" pad="2"/>
+<wire x1="26.67" y1="17.795" x2="26.7225" y2="19.935" width="0" layer="19" extent="1-16"/>
+</signal>
+<signal name="MCU_LPUART_TX_OUT_R">
+<contactref element="U2001" pad="3"/>
+<contactref element="R2010" pad="2"/>
+<wire x1="22.225" y1="17.795" x2="22.1725" y2="19.935" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="SIM_UART1_TXD_R">
+<contactref element="U2001" pad="4"/>
+<contactref element="R2011" pad="2"/>
+<wire x1="22.8225" y1="19.935" x2="22.86" y2="17.795" width="0" layer="19" extent="1-16"/>
+</signal>
+<signal name="MCU_LPUART_RTS_OUT_R">
+<contactref element="U2001" pad="5"/>
+<contactref element="R2012" pad="2"/>
+<wire x1="23.495" y1="17.795" x2="23.4725" y2="19.935" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="SIM_UART1_CTS_R">
+<contactref element="U2001" pad="6"/>
+<contactref element="R2013" pad="2"/>
+<wire x1="24.13" y1="17.795" x2="24.1225" y2="19.935" width="0" layer="19" extent="1-16"/>
+</signal>
+<signal name="MCU_LPUART_DTR_OUT_R">
+<contactref element="U2001" pad="7"/>
+<contactref element="R2014" pad="2"/>
+<wire x1="24.765" y1="17.795" x2="24.7725" y2="19.935" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="SIM_UART1_RI_R">
+<contactref element="U2001" pad="8"/>
+<contactref element="R2015" pad="2"/>
+<wire x1="25.4" y1="17.795" x2="25.4225" y2="19.935" width="0" layer="19" extent="1-16"/>
+</signal>
+<signal name="SIM_UART1_DCD_R">
+<contactref element="U2001" pad="9"/>
+<contactref element="R2016" pad="2"/>
+<wire x1="26.035" y1="17.795" x2="26.0725" y2="19.935" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="SIM_UART1_RXD_R">
+<contactref element="U2001" pad="21"/>
+<contactref element="R2020" pad="1"/>
+<wire x1="22.8225" y1="25.785" x2="22.86" y2="27.925" width="0" layer="19" extent="1-16"/>
+</signal>
+<signal name="MCU_LPUART_RX_IN_R">
+<contactref element="U2001" pad="20"/>
+<contactref element="R2021" pad="1"/>
+<wire x1="23.495" y1="27.925" x2="23.4725" y2="25.785" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="SIM_UART1_RTS_R">
+<contactref element="U2001" pad="19"/>
+<contactref element="R2022" pad="1"/>
+<wire x1="24.13" y1="27.925" x2="24.1225" y2="25.785" width="0" layer="19" extent="1-16"/>
+</signal>
+<signal name="MCU_LPUART_CTS_IN_R">
+<contactref element="U2001" pad="18"/>
+<contactref element="R2023" pad="1"/>
+<wire x1="24.765" y1="27.925" x2="24.7725" y2="25.785" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="SIM_UART1_DTR_R">
+<contactref element="U2001" pad="17"/>
+<contactref element="R2024" pad="1"/>
+<wire x1="25.4" y1="27.925" x2="25.4225" y2="25.785" width="0" layer="19" extent="1-16"/>
+</signal>
+<signal name="MCU_LPUART_RI_IN_R">
+<contactref element="U2001" pad="16"/>
+<contactref element="R2025" pad="1"/>
+<wire x1="26.035" y1="27.925" x2="26.0725" y2="25.785" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="MCU_LPUART_DCD_IN_R">
+<contactref element="U2001" pad="15"/>
+<contactref element="R2026" pad="1"/>
+<wire x1="26.67" y1="27.925" x2="26.7225" y2="25.785" width="0" layer="19" extent="1-16"/>
+</signal>
+<signal name="MCU_TIMCAP_1PPS_R">
+<contactref element="U2001" pad="14"/>
+<contactref element="R2027" pad="1"/>
+<wire x1="27.305" y1="27.925" x2="27.3725" y2="25.785" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="SIM_VDD_EXT">
+<contactref element="U2001" pad="1"/>
+<contactref element="U2001" pad="2"/>
+<wire x1="21.5225" y1="19.935" x2="20.7725" y2="19.935" width="0" layer="19" extent="1-1"/>
+</signal>
 <signal name="PA12PA11_P" class="3">
 <contactref element="X3201" pad="D+"/>
 </signal>
@@ -4449,6 +4616,13 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="U0101" pad="42"/>
 <wire x1="88.0775" y1="18.7325" x2="91.4088" y2="20.29" width="0" layer="19" extent="1-1"/>
 <wire x1="73.53" y1="19.75" x2="88.0775" y2="18.7325" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="N$2">
+<contactref element="U2001" pad="23"/>
+<contactref element="U2001" pad="24"/>
+<contactref element="C2001" pad="1"/>
+<wire x1="20.7725" y1="25.785" x2="21.5225" y2="25.785" width="0" layer="19" extent="1-1"/>
+<wire x1="20.955" y1="27.925" x2="20.7725" y2="25.785" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="PH1">
 <contactref element="U0101" pad="6"/>
