@@ -15760,77 +15760,6 @@ Subminiature Tact Switch for SMT</description>
 <library name="df4iah_dataconvertion">
 <description>&lt;b&gt;DF4IAH Library - Data Convertion: convertion of data devices - but not ADCs, DACs&lt;/b&gt;&lt;p&gt;</description>
 <packages>
-<package name="TSSOP24_SOT355-1">
-<description>&lt;h3&gt;Thin Shrink Small Outline Package&lt;/h3&gt;
-&lt;h4&gt;TSSOP-24 / SOT355-1&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;body: 4.40mm width&lt;/li&gt;
-&lt;li&gt;pitch: 0.65mm&lt;/li&gt;
-&lt;/ul&gt;</description>
-<wire x1="-4.15" y1="-2.65" x2="4.15" y2="-2.65" width="0.2032" layer="51"/>
-<wire x1="4.3" y1="-2.65" x2="4.3" y2="2.65" width="0.2032" layer="21"/>
-<wire x1="4.15" y1="2.65" x2="-4.15" y2="2.65" width="0.2032" layer="51"/>
-<wire x1="-4.3" y1="2.65" x2="-4.3" y2="-2.65" width="0.2032" layer="21"/>
-<circle x="-5.049" y="-3.201" radius="0.4422" width="0" layer="21"/>
-<smd name="1" x="-3.675" y="-2.925" dx="0.6" dy="1.35" layer="1"/>
-<smd name="2" x="-2.925" y="-2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="3" x="-2.275" y="-2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="4" x="-1.625" y="-2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="5" x="-0.975" y="-2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="6" x="-0.325" y="-2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="7" x="0.325" y="-2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="8" x="0.975" y="-2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="9" x="1.625" y="-2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="10" x="2.275" y="-2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="15" x="2.275" y="2.925" dx="0.4" dy="1.35" layer="1" rot="R180"/>
-<smd name="16" x="1.625" y="2.925" dx="0.4" dy="1.35" layer="1" rot="R180"/>
-<smd name="19" x="-0.325" y="2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="20" x="-0.975" y="2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="21" x="-1.625" y="2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="22" x="-2.275" y="2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="23" x="-2.925" y="2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="24" x="-3.675" y="2.925" dx="0.6" dy="1.35" layer="1"/>
-<smd name="18" x="0.325" y="2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="17" x="0.975" y="2.925" dx="0.4" dy="1.35" layer="1"/>
-<text x="-5.476" y="-2.6299" size="1.27" layer="25" rot="R90">&gt;NAME</text>
-<text x="-3.8999" y="-0.68" size="1.27" layer="27">&gt;VALUE</text>
-<rectangle x1="-3.9529" y1="2.6916" x2="-3.3973" y2="3.4" layer="51"/>
-<rectangle x1="-3.9529" y1="-3.4" x2="-3.3973" y2="-2.6916" layer="51"/>
-<rectangle x1="-3.1029" y1="-3.4" x2="-2.7473" y2="-2.6916" layer="51"/>
-<rectangle x1="-2.4529" y1="-3.4" x2="-2.0973" y2="-2.6916" layer="51"/>
-<rectangle x1="-1.8029" y1="-3.4" x2="-1.4473" y2="-2.6916" layer="51"/>
-<rectangle x1="-1.1529" y1="-3.4" x2="-0.7973" y2="-2.6916" layer="51"/>
-<rectangle x1="-0.5029" y1="-3.4" x2="-0.1473" y2="-2.6916" layer="51"/>
-<rectangle x1="0.1471" y1="-3.4" x2="0.5027" y2="-2.6916" layer="51"/>
-<rectangle x1="0.7971" y1="-3.4" x2="1.1527" y2="-2.6916" layer="51"/>
-<rectangle x1="1.4471" y1="-3.4" x2="1.8027" y2="-2.6916" layer="51"/>
-<rectangle x1="2.0971" y1="-3.4" x2="2.4527" y2="-2.6916" layer="51"/>
-<rectangle x1="-3.1029" y1="2.6916" x2="-2.7473" y2="3.4" layer="51"/>
-<rectangle x1="-2.4529" y1="2.6916" x2="-2.0973" y2="3.4" layer="51"/>
-<rectangle x1="-1.8029" y1="2.6916" x2="-1.4473" y2="3.4" layer="51"/>
-<rectangle x1="-1.1529" y1="2.6916" x2="-0.7973" y2="3.4" layer="51"/>
-<rectangle x1="-0.5029" y1="2.6916" x2="-0.1473" y2="3.4" layer="51"/>
-<rectangle x1="0.1471" y1="2.6916" x2="0.5027" y2="3.4" layer="51"/>
-<rectangle x1="0.7971" y1="2.6916" x2="1.1527" y2="3.4" layer="51"/>
-<rectangle x1="1.4471" y1="2.6916" x2="1.8027" y2="3.4" layer="51"/>
-<rectangle x1="2.0971" y1="2.6916" x2="2.4527" y2="3.4" layer="51"/>
-<dimension x1="2.4527" y1="-3.6" x2="2.4527" y2="3.6" x3="6.5" y3="0" textsize="0.5" textratio="10" layer="47" width="0.05"/>
-<dimension x1="4.3" y1="2.2" x2="-4.3" y2="2.2" x3="0" y3="4.55" textsize="0.5" textratio="10" layer="47" width="0.05"/>
-<dimension x1="2.6" y1="-2.2" x2="2.6" y2="2.2" x3="5.2" y3="0" textsize="0.5" textratio="10" layer="47" width="0.05"/>
-<smd name="11" x="2.925" y="-2.925" dx="0.4" dy="1.35" layer="1"/>
-<smd name="12" x="3.675" y="-2.925" dx="0.6" dy="1.35" layer="1"/>
-<smd name="13" x="3.675" y="2.925" dx="0.6" dy="1.35" layer="1" rot="R180"/>
-<smd name="14" x="2.925" y="2.925" dx="0.4" dy="1.35" layer="1" rot="R180"/>
-<rectangle x1="2.7471" y1="-3.4" x2="3.1027" y2="-2.6916" layer="51"/>
-<rectangle x1="3.3971" y1="-3.4" x2="3.9527" y2="-2.6916" layer="51"/>
-<rectangle x1="3.3971" y1="2.6916" x2="3.9527" y2="3.4" layer="51"/>
-<rectangle x1="2.7471" y1="2.6916" x2="3.1027" y2="3.4" layer="51"/>
-<dimension x1="-3.9" y1="2.65" x2="-3.9" y2="-2.65" x3="-4.55" y3="0" textsize="0.5" textratio="10" layer="47" width="0.05"/>
-<wire x1="4.3" y1="-2.65" x2="4.15" y2="-2.65" width="0.2032" layer="21"/>
-<wire x1="4.3" y1="2.65" x2="4.15" y2="2.65" width="0.2032" layer="21"/>
-<wire x1="-4.15" y1="-2.65" x2="-4.3" y2="-2.65" width="0.2032" layer="21"/>
-<wire x1="-4.15" y1="2.65" x2="-4.3" y2="2.65" width="0.2032" layer="21"/>
-</package>
 <package name="DIL16">
 <description>&lt;b&gt;Dual In Line Package&lt;/b&gt;</description>
 <wire x1="10.16" y1="2.921" x2="-10.16" y2="2.921" width="0.1524" layer="21"/>
@@ -15984,41 +15913,6 @@ Subminiature Tact Switch for SMT</description>
 </package>
 </packages>
 <symbols>
-<symbol name="PCAL6416A">
-<description>&lt;h3&gt;NXP PCAL6416AHF&lt;/h3&gt;
-&lt;h4&gt;Low-voltage translating 16-bit I²C-bus/SMBus I/O expander&lt;br/&gt;
-with interrupt output, reset, and configuration registers&lt;/h4&gt;</description>
-<wire x1="-17.78" y1="43.18" x2="17.78" y2="43.18" width="0.254" layer="94"/>
-<wire x1="17.78" y1="43.18" x2="17.78" y2="-43.18" width="0.254" layer="94"/>
-<wire x1="17.78" y1="-43.18" x2="-17.78" y2="-43.18" width="0.254" layer="94"/>
-<wire x1="-17.78" y1="-43.18" x2="-17.78" y2="43.18" width="0.254" layer="94"/>
-<text x="-5.08" y="44.45" size="1.778" layer="95">&gt;NAME</text>
-<text x="-7.62" y="-45.72" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="SCL" x="-22.86" y="-20.32" length="middle" direction="in"/>
-<pin name="SDA" x="-22.86" y="-25.4" length="middle"/>
-<pin name="ADDR" x="-22.86" y="-5.08" length="middle" direction="in"/>
-<pin name="!INT" x="-22.86" y="-40.64" length="middle" direction="out"/>
-<pin name="P1_0" x="22.86" y="-5.08" length="middle" rot="R180"/>
-<pin name="VDD_P" x="-22.86" y="40.64" length="middle" direction="pwr"/>
-<pin name="VSS" x="-22.86" y="5.08" length="middle" direction="pas"/>
-<pin name="P1_1" x="22.86" y="-10.16" length="middle" rot="R180"/>
-<pin name="P1_2" x="22.86" y="-15.24" length="middle" rot="R180"/>
-<pin name="P1_3" x="22.86" y="-20.32" length="middle" rot="R180"/>
-<pin name="P1_4" x="22.86" y="-25.4" length="middle" rot="R180"/>
-<pin name="P1_5" x="22.86" y="-30.48" length="middle" rot="R180"/>
-<pin name="P1_6" x="22.86" y="-35.56" length="middle" rot="R180"/>
-<pin name="P1_7" x="22.86" y="-40.64" length="middle" rot="R180"/>
-<pin name="P0_0" x="22.86" y="40.64" length="middle" rot="R180"/>
-<pin name="P0_1" x="22.86" y="35.56" length="middle" rot="R180"/>
-<pin name="P0_2" x="22.86" y="30.48" length="middle" rot="R180"/>
-<pin name="P0_3" x="22.86" y="25.4" length="middle" rot="R180"/>
-<pin name="P0_4" x="22.86" y="20.32" length="middle" rot="R180"/>
-<pin name="P0_5" x="22.86" y="15.24" length="middle" rot="R180"/>
-<pin name="P0_6" x="22.86" y="10.16" length="middle" rot="R180"/>
-<pin name="P0_7" x="22.86" y="5.08" length="middle" rot="R180"/>
-<pin name="VDD_I2C" x="-22.86" y="35.56" length="middle" direction="pwr"/>
-<pin name="!RESET" x="-22.86" y="-10.16" length="middle" direction="in"/>
-</symbol>
 <symbol name="MAX232">
 <wire x1="-10.16" y1="15.24" x2="10.16" y2="15.24" width="0.4064" layer="94"/>
 <wire x1="10.16" y1="-17.78" x2="10.16" y2="15.24" width="0.4064" layer="94"/>
@@ -16086,47 +15980,6 @@ with interrupt output, reset, and configuration registers&lt;/h4&gt;</descriptio
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="PCAL6416A" prefix="U">
-<description>&lt;h3&gt;NXP PCAL6416A&lt;/h3&gt;
-&lt;h4&gt;Low-voltage translating 16-bit I²C-bus/SMBus I/O expander&lt;br/&gt;
-with interrupt output, reset, and configuration registers&lt;/h4&gt;</description>
-<gates>
-<gate name="G$1" symbol="PCAL6416A" x="0" y="0"/>
-</gates>
-<devices>
-<device name="PW" package="TSSOP24_SOT355-1">
-<connects>
-<connect gate="G$1" pin="!INT" pad="1"/>
-<connect gate="G$1" pin="!RESET" pad="3"/>
-<connect gate="G$1" pin="ADDR" pad="21"/>
-<connect gate="G$1" pin="P0_0" pad="4"/>
-<connect gate="G$1" pin="P0_1" pad="5"/>
-<connect gate="G$1" pin="P0_2" pad="6"/>
-<connect gate="G$1" pin="P0_3" pad="7"/>
-<connect gate="G$1" pin="P0_4" pad="8"/>
-<connect gate="G$1" pin="P0_5" pad="9"/>
-<connect gate="G$1" pin="P0_6" pad="10"/>
-<connect gate="G$1" pin="P0_7" pad="11"/>
-<connect gate="G$1" pin="P1_0" pad="13"/>
-<connect gate="G$1" pin="P1_1" pad="14"/>
-<connect gate="G$1" pin="P1_2" pad="15"/>
-<connect gate="G$1" pin="P1_3" pad="16"/>
-<connect gate="G$1" pin="P1_4" pad="17"/>
-<connect gate="G$1" pin="P1_5" pad="18"/>
-<connect gate="G$1" pin="P1_6" pad="19"/>
-<connect gate="G$1" pin="P1_7" pad="20"/>
-<connect gate="G$1" pin="SCL" pad="22"/>
-<connect gate="G$1" pin="SDA" pad="23"/>
-<connect gate="G$1" pin="VDD_I2C" pad="2"/>
-<connect gate="G$1" pin="VDD_P" pad="24"/>
-<connect gate="G$1" pin="VSS" pad="12"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
 <deviceset name="MAX232" prefix="IC">
 <description>&lt;b&gt;RS232 TRANSCEIVER&lt;/b&gt;</description>
 <gates>
@@ -16796,11 +16649,6 @@ with interrupt output, reset, and configuration registers&lt;/h4&gt;</descriptio
 <part name="GND3611" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="GND3661" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="L0411" library="df4iah_rcl" deviceset="L-EU" device="L0603" value="10uH"/>
-<part name="GND0521" library="df4iah_supply" deviceset="GND" device=""/>
-<part name="C0521" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="100nF"/>
-<part name="FRAME_05" library="df4iah_frame" deviceset="A4L-LOC" device="" value="Holes"/>
-<part name="U0521" library="df4iah_dataconvertion" deviceset="PCAL6416A" device="PW"/>
-<part name="R0521" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="100kR"/>
 <part name="FRAME_24" library="df4iah_frame" deviceset="A4L-LOC" device="" value="Holes"/>
 <part name="L2411" library="df4iah_rcl" deviceset="L-EU" device="6.00X6.00MM" value="2.2uH"/>
 <part name="U2401" library="df4iah_powersupply" deviceset="LM53603-Q1" device=""/>
@@ -17765,8 +17613,7 @@ Crystal 32.768 kHz</text>
 <plain>
 <text x="134.62" y="137.16" size="2.54" layer="97" ratio="15">Addr        Device
 
-0x20/0x21   I2C Port Expander A/B
-0x3D        LCD access
+
 </text>
 <text x="22.86" y="162.56" size="2.54" layer="97" ratio="15">I2C1 Termination</text>
 <text x="165.1" y="15.24" size="2.54" layer="97" ratio="15">I2C1 Termination</text>
@@ -17806,214 +17653,6 @@ Crystal 32.768 kHz</text>
 <wire x1="33.02" y1="147.32" x2="33.02" y2="139.7" width="0.1524" layer="91"/>
 <junction x="33.02" y="147.32"/>
 <label x="45.72" y="147.32" size="1.778" layer="95" xref="yes"/>
-</segment>
-</net>
-</nets>
-</sheet>
-<sheet>
-<description>I2C1 Port Expander</description>
-<plain>
-<text x="22.86" y="162.56" size="2.54" layer="97" ratio="15">I2C1 Port Expander
-I2C1 addr: 0x20</text>
-<text x="165.1" y="15.24" size="2.54" layer="97" ratio="15">I2C1 Port Expander</text>
-<text x="106.68" y="132.08" size="1.778" layer="97">Iq=6.5uA</text>
-<text x="135.636" y="126.238" size="1.778" layer="97">out</text>
-<text x="135.636" y="121.158" size="1.778" layer="97">out</text>
-<text x="135.636" y="116.078" size="1.778" layer="97">out</text>
-<text x="135.636" y="110.998" size="1.778" layer="97">out</text>
-<text x="135.636" y="105.918" size="1.778" layer="97">out</text>
-<text x="135.636" y="100.838" size="1.778" layer="97">out</text>
-<text x="135.636" y="95.758" size="1.778" layer="97">out</text>
-<text x="135.636" y="90.678" size="1.778" layer="97">out</text>
-<text x="135.636" y="44.958" size="1.778" layer="97">out</text>
-<text x="135.636" y="50.038" size="1.778" layer="97">out</text>
-<text x="135.636" y="55.118" size="1.778" layer="97">out</text>
-<text x="135.636" y="60.198" size="1.778" layer="97">out</text>
-<text x="135.636" y="65.278" size="1.778" layer="97">out</text>
-<text x="135.636" y="70.358" size="1.778" layer="97">out</text>
-<text x="135.636" y="75.438" size="1.778" layer="97">out</text>
-<text x="135.636" y="80.518" size="1.778" layer="97">out</text>
-</plain>
-<instances>
-<instance part="FRAME_05" gate="G$1" x="0" y="0"/>
-<instance part="GND0521" gate="1" x="104.14" y="71.12"/>
-<instance part="C0521" gate="G$1" x="104.14" y="101.6"/>
-<instance part="U0521" gate="G$1" x="132.08" y="86.36"/>
-<instance part="R0521" gate="G$1" x="93.98" y="93.98" smashed="yes" rot="R90">
-<attribute name="NAME" x="92.4814" y="90.17" size="1.778" layer="95" rot="R90"/>
-<attribute name="VALUE" x="97.282" y="90.17" size="1.778" layer="96" rot="R90"/>
-</instance>
-</instances>
-<busses>
-</busses>
-<nets>
-<net name="MCU_I2C1_SCL" class="0">
-<segment>
-<wire x1="109.22" y1="66.04" x2="88.9" y2="66.04" width="0.1524" layer="91"/>
-<label x="88.9" y="66.04" size="1.778" layer="95" rot="R180" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="SCL"/>
-</segment>
-</net>
-<net name="MCU_I2C1_SDA" class="0">
-<segment>
-<wire x1="109.22" y1="60.96" x2="88.9" y2="60.96" width="0.1524" layer="91"/>
-<label x="88.9" y="60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="SDA"/>
-</segment>
-</net>
-<net name="+3V3" class="0">
-<segment>
-<wire x1="104.14" y1="104.14" x2="104.14" y2="106.68" width="0.1524" layer="91"/>
-<label x="104.14" y="134.62" size="1.778" layer="95" rot="R90" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="VDD_I2C"/>
-<wire x1="104.14" y1="106.68" x2="104.14" y2="121.92" width="0.1524" layer="91"/>
-<wire x1="104.14" y1="121.92" x2="104.14" y2="127" width="0.1524" layer="91"/>
-<wire x1="104.14" y1="127" x2="104.14" y2="134.62" width="0.1524" layer="91"/>
-<wire x1="104.14" y1="121.92" x2="109.22" y2="121.92" width="0.1524" layer="91"/>
-<junction x="104.14" y="121.92"/>
-<pinref part="U0521" gate="G$1" pin="VDD_P"/>
-<wire x1="104.14" y1="127" x2="109.22" y2="127" width="0.1524" layer="91"/>
-<junction x="104.14" y="127"/>
-<pinref part="R0521" gate="G$1" pin="2"/>
-<wire x1="93.98" y1="106.68" x2="93.98" y2="99.06" width="0.1524" layer="91"/>
-<wire x1="104.14" y1="106.68" x2="93.98" y2="106.68" width="0.1524" layer="91"/>
-<junction x="104.14" y="106.68"/>
-<pinref part="C0521" gate="G$1" pin="1"/>
-</segment>
-</net>
-<net name="PEXPA_P1_7_R" class="0">
-<segment>
-<wire x1="154.94" y1="45.72" x2="177.8" y2="45.72" width="0.1524" layer="91"/>
-<label x="177.8" y="45.72" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P1_7"/>
-</segment>
-</net>
-<net name="PEXPA_P0_1_R" class="0">
-<segment>
-<wire x1="154.94" y1="121.92" x2="177.8" y2="121.92" width="0.1524" layer="91"/>
-<label x="177.8" y="121.92" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P0_1"/>
-</segment>
-</net>
-<net name="PEXPA_P0_2_R" class="0">
-<segment>
-<wire x1="154.94" y1="116.84" x2="177.8" y2="116.84" width="0.1524" layer="91"/>
-<label x="177.8" y="116.84" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P0_2"/>
-</segment>
-</net>
-<net name="PEXPA_P0_3_R" class="0">
-<segment>
-<wire x1="154.94" y1="111.76" x2="177.8" y2="111.76" width="0.1524" layer="91"/>
-<label x="177.8" y="111.76" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P0_3"/>
-</segment>
-</net>
-<net name="PEXPA_P0_4_R" class="0">
-<segment>
-<wire x1="154.94" y1="106.68" x2="177.8" y2="106.68" width="0.1524" layer="91"/>
-<label x="177.8" y="106.68" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P0_4"/>
-</segment>
-</net>
-<net name="PEXPA_P0_5_R" class="0">
-<segment>
-<wire x1="154.94" y1="101.6" x2="177.8" y2="101.6" width="0.1524" layer="91"/>
-<label x="177.8" y="101.6" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P0_5"/>
-</segment>
-</net>
-<net name="PEXPA_P0_6_R" class="0">
-<segment>
-<wire x1="154.94" y1="96.52" x2="177.8" y2="96.52" width="0.1524" layer="91"/>
-<label x="177.8" y="96.52" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P0_6"/>
-</segment>
-</net>
-<net name="PEXPA_P0_7_R" class="0">
-<segment>
-<wire x1="154.94" y1="91.44" x2="177.8" y2="91.44" width="0.1524" layer="91"/>
-<label x="177.8" y="91.44" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P0_7"/>
-</segment>
-</net>
-<net name="PEXPA_P1_0_R" class="0">
-<segment>
-<wire x1="154.94" y1="81.28" x2="177.8" y2="81.28" width="0.1524" layer="91"/>
-<label x="177.8" y="81.28" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P1_0"/>
-</segment>
-</net>
-<net name="PEXPA_P1_1_R" class="0">
-<segment>
-<wire x1="154.94" y1="76.2" x2="177.8" y2="76.2" width="0.1524" layer="91"/>
-<label x="177.8" y="76.2" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P1_1"/>
-</segment>
-</net>
-<net name="PEXPA_P1_2_R" class="0">
-<segment>
-<wire x1="154.94" y1="71.12" x2="177.8" y2="71.12" width="0.1524" layer="91"/>
-<label x="177.8" y="71.12" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P1_2"/>
-</segment>
-</net>
-<net name="PEXPA_P1_3_R" class="0">
-<segment>
-<wire x1="154.94" y1="66.04" x2="177.8" y2="66.04" width="0.1524" layer="91"/>
-<label x="177.8" y="66.04" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P1_3"/>
-</segment>
-</net>
-<net name="PEXPA_P1_4_R" class="0">
-<segment>
-<wire x1="154.94" y1="60.96" x2="177.8" y2="60.96" width="0.1524" layer="91"/>
-<label x="177.8" y="60.96" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P1_4"/>
-</segment>
-</net>
-<net name="PEXPA_P1_5_R" class="0">
-<segment>
-<wire x1="154.94" y1="55.88" x2="177.8" y2="55.88" width="0.1524" layer="91"/>
-<label x="177.8" y="55.88" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P1_5"/>
-</segment>
-</net>
-<net name="PEXPA_P1_6_R" class="0">
-<segment>
-<wire x1="154.94" y1="50.8" x2="177.8" y2="50.8" width="0.1524" layer="91"/>
-<label x="177.8" y="50.8" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P1_6"/>
-</segment>
-</net>
-<net name="GND" class="0">
-<segment>
-<wire x1="109.22" y1="81.28" x2="104.14" y2="81.28" width="0.1524" layer="91"/>
-<wire x1="104.14" y1="81.28" x2="104.14" y2="91.44" width="0.1524" layer="91"/>
-<wire x1="104.14" y1="91.44" x2="109.22" y2="91.44" width="0.1524" layer="91"/>
-<pinref part="GND0521" gate="1" pin="GND"/>
-<wire x1="104.14" y1="73.66" x2="104.14" y2="81.28" width="0.1524" layer="91"/>
-<junction x="104.14" y="81.28"/>
-<pinref part="C0521" gate="G$1" pin="2"/>
-<wire x1="104.14" y1="91.44" x2="104.14" y2="96.52" width="0.1524" layer="91"/>
-<junction x="104.14" y="91.44"/>
-<pinref part="U0521" gate="G$1" pin="ADDR"/>
-<pinref part="U0521" gate="G$1" pin="VSS"/>
-</segment>
-</net>
-<net name="PEXPA_P0_0_R" class="0">
-<segment>
-<wire x1="154.94" y1="127" x2="177.8" y2="127" width="0.1524" layer="91"/>
-<label x="177.8" y="127" size="1.778" layer="95" xref="yes"/>
-<pinref part="U0521" gate="G$1" pin="P0_0"/>
-</segment>
-</net>
-<net name="PEXPA_RESET" class="0">
-<segment>
-<pinref part="R0521" gate="G$1" pin="1"/>
-<wire x1="93.98" y1="88.9" x2="93.98" y2="76.2" width="0.1524" layer="91"/>
-<wire x1="93.98" y1="76.2" x2="109.22" y2="76.2" width="0.1524" layer="91"/>
-<pinref part="U0521" gate="G$1" pin="!RESET"/>
 </segment>
 </net>
 </nets>
@@ -20386,19 +20025,17 @@ USB host (OTG) interface</text>
 </sheet>
 </sheets>
 <errors>
-<approved hash="104,14,180.34,99.06,X3201,J_VUSB,PA9,,,"/>
-<approved hash="104,6,152.4,129.54,U0521,VDD_P,+3V3,,,"/>
-<approved hash="104,6,152.4,124.46,U0521,VDD_I2C,+3V3,,,"/>
+<approved hash="104,13,180.34,99.06,X3201,J_VUSB,PA9,,,"/>
 <approved hash="104,5,152.4,129.54,U0621,VDD_P,+3V3,,,"/>
 <approved hash="104,5,152.4,124.46,U0621,VDD_I2C,+3V3,,,"/>
-<approved hash="104,12,101.6,124.46,U2401,VIN,DC_12V_IN,,,"/>
-<approved hash="104,12,157.48,101.6,U2401,BIAS,LM53603_BIAS,,,"/>
-<approved hash="104,12,101.6,121.92,U2401,VIN,DC_12V_IN,,,"/>
-<approved hash="104,15,48.26,27.94,U3391,8,PEXPA_P1_7_R,,,"/>
+<approved hash="104,11,101.6,124.46,U2401,VIN,DC_12V_IN,,,"/>
+<approved hash="104,11,157.48,101.6,U2401,BIAS,LM53603_BIAS,,,"/>
+<approved hash="104,11,101.6,121.92,U2401,VIN,DC_12V_IN,,,"/>
+<approved hash="104,14,48.26,27.94,U3391,8,PEXPA_P1_7_R,,,"/>
 <approved hash="106,4,35.56,127,+1V5_UNUSED,,,,,"/>
 <approved hash="106,4,45.72,127,+1V8_UNUSED,,,,,"/>
 <approved hash="106,4,55.88,127,+2V5_UNUSED,,,,,"/>
-<approved hash="106,12,101.6,91.44,LM53603_!RESET,,,,,"/>
+<approved hash="106,11,101.6,91.44,LM53603_!RESET,,,,,"/>
 <approved hash="106,1,149.86,38.1,PA4,,,,,"/>
 <approved hash="106,1,144.78,160.02,PA15,,,,,"/>
 <approved hash="106,1,175.26,38.1,PB2,,,,,"/>
