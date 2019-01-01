@@ -1308,22 +1308,6 @@ MELF 0.25 W</description>
 <rectangle x1="1.1176" y1="-0.9144" x2="1.7018" y2="0.9144" layer="51"/>
 <rectangle x1="-0.3" y1="-0.8001" x2="0.3" y2="0.8001" layer="35"/>
 </package>
-<package name="C0805">
-<description>&lt;b&gt;CAPACITOR&lt;/b&gt;&lt;p&gt;</description>
-<wire x1="-1.973" y1="0.983" x2="1.973" y2="0.983" width="0.0508" layer="39"/>
-<wire x1="1.973" y1="-0.983" x2="-1.973" y2="-0.983" width="0.0508" layer="39"/>
-<wire x1="-1.973" y1="-0.983" x2="-1.973" y2="0.983" width="0.0508" layer="39"/>
-<wire x1="-0.381" y1="0.66" x2="0.381" y2="0.66" width="0.1016" layer="51"/>
-<wire x1="-0.356" y1="-0.66" x2="0.381" y2="-0.66" width="0.1016" layer="51"/>
-<wire x1="1.973" y1="0.983" x2="1.973" y2="-0.983" width="0.0508" layer="39"/>
-<smd name="1" x="-0.95" y="0" dx="1.3" dy="1.5" layer="1"/>
-<smd name="2" x="0.95" y="0" dx="1.3" dy="1.5" layer="1"/>
-<text x="-1.27" y="1.27" size="1.27" layer="25">&gt;NAME</text>
-<text x="-1.27" y="-2.54" size="1.27" layer="27">&gt;VALUE</text>
-<rectangle x1="-1.0922" y1="-0.7239" x2="-0.3421" y2="0.7262" layer="51"/>
-<rectangle x1="0.3556" y1="-0.7239" x2="1.1057" y2="0.7262" layer="51"/>
-<rectangle x1="-0.1001" y1="-0.4001" x2="0.1001" y2="0.4001" layer="35"/>
-</package>
 </packages>
 </library>
 <library name="df4iah_jumper">
@@ -2878,31 +2862,29 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <rectangle x1="0.3556" y1="-0.7239" x2="1.1057" y2="0.7262" layer="51"/>
 <rectangle x1="-0.1001" y1="-0.4001" x2="0.1001" y2="0.4001" layer="35"/>
 </package>
-<package name="L_8.00MM_X_8.00MM">
+<package name="L_4.90MM_X_4.90MM">
 <description>&lt;h4&gt;INDUCTOR&lt;/h4&gt;
-8.00 mm x 8.00 mm&lt;br/&gt;
-Pads enlarged by 0.2 mm</description>
-<wire x1="-4" y1="4" x2="4" y2="4" width="0.1016" layer="51"/>
-<wire x1="-4" y1="-4" x2="4" y2="-4" width="0.1016" layer="51"/>
-<smd name="1" x="-3.4" y="0" dx="2" dy="2.2" layer="1" roundness="15"/>
-<smd name="2" x="3.4" y="0" dx="2" dy="2.2" layer="1" roundness="15"/>
-<text x="-1.27" y="4.445" size="0.6096" layer="25" font="vector" ratio="10">&gt;NAME</text>
-<text x="-1.27" y="-5.08" size="0.6096" layer="27" font="vector" ratio="10">&gt;VALUE</text>
-<rectangle x1="-4" y1="-1.1" x2="-2.4" y2="1.1" layer="51"/>
-<wire x1="-4" y1="-4" x2="-4" y2="4" width="0.1016" layer="51"/>
-<wire x1="4" y1="-4" x2="4" y2="4" width="0.1016" layer="51"/>
-<rectangle x1="2.4" y1="-1.1" x2="4" y2="1.1" layer="51"/>
-<wire x1="-4" y1="4" x2="4" y2="4" width="0.127" layer="21"/>
-<wire x1="-4" y1="-4" x2="4" y2="-4" width="0.127" layer="21"/>
-<dimension x1="4" y1="-1.1" x2="4" y2="1.1" x3="5.715" y3="0" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
-<dimension x1="-4" y1="-1.1" x2="-2.4" y2="-1.1" x3="-3.2" y3="-6.35" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
-<dimension x1="3.9" y1="-4" x2="3.9" y2="4" x3="6.985" y3="0" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
-<dimension x1="-2.4" y1="1.1" x2="2.4" y2="1.1" x3="0" y3="5.715" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
-<dimension x1="-4" y1="-4" x2="4" y2="-4" x3="0" y3="-7.62" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
-<wire x1="-4" y1="-4" x2="-4" y2="-1.5" width="0.127" layer="21"/>
-<wire x1="4" y1="-4" x2="4" y2="-1.5" width="0.127" layer="21"/>
-<wire x1="-4" y1="1.5" x2="-4" y2="4" width="0.127" layer="21"/>
-<wire x1="4" y1="1.5" x2="4" y2="4" width="0.127" layer="21"/>
+4.90 mm x 4.90 mm</description>
+<wire x1="-2.45" y1="2.45" x2="2.45" y2="2.45" width="0.1016" layer="51"/>
+<wire x1="-2.45" y1="-2.45" x2="2.45" y2="-2.45" width="0.1016" layer="51"/>
+<smd name="1" x="-1.7" y="0" dx="2" dy="4.4" layer="1"/>
+<smd name="2" x="1.7" y="0" dx="2" dy="4.4" layer="1"/>
+<text x="-1.27" y="3.175" size="0.6096" layer="25" font="vector" ratio="10">&gt;NAME</text>
+<text x="-1.27" y="-3.81" size="0.6096" layer="27" font="vector" ratio="10">&gt;VALUE</text>
+<rectangle x1="-2.45" y1="-2" x2="-0.95" y2="2" layer="51"/>
+<wire x1="-2.45" y1="-2.45" x2="-2.45" y2="2.45" width="0.1016" layer="51"/>
+<wire x1="2.45" y1="-2.45" x2="2.45" y2="2.45" width="0.1016" layer="51"/>
+<rectangle x1="0.95" y1="-2" x2="2.45" y2="2" layer="51"/>
+<wire x1="-2.45" y1="2.45" x2="2.45" y2="2.45" width="0.127" layer="21"/>
+<wire x1="-2.45" y1="-2.45" x2="2.45" y2="-2.45" width="0.127" layer="21"/>
+<wire x1="-2.45" y1="-2.45" x2="-2.45" y2="-2.2" width="0.127" layer="21"/>
+<wire x1="-2.45" y1="2.45" x2="-2.45" y2="2.2" width="0.127" layer="21"/>
+<wire x1="2.45" y1="2.45" x2="2.45" y2="2.2" width="0.127" layer="21"/>
+<wire x1="2.45" y1="-2.45" x2="2.45" y2="-2.2" width="0.127" layer="21"/>
+<dimension x1="3.0226" y1="-2.2" x2="3.0226" y2="2.2" x3="3.81" y3="0" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<dimension x1="-2.45" y1="-2.45" x2="2.45" y2="-2.45" x3="0" y3="-3.81" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<dimension x1="2.45" y1="-2.45" x2="2.45" y2="2.45" x3="5.08" y3="0" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<dimension x1="-0.95" y1="2" x2="0.95" y2="2" x3="0" y3="3.175" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
 </package>
 <package name="L0603">
 <description>&lt;b&gt;RESISTOR&lt;/b&gt;</description>
@@ -2960,38 +2942,6 @@ Pads enlarged by 0.2 mm</description>
 <rectangle x1="0.2588" y1="-0.3048" x2="0.5588" y2="0.2951" layer="51"/>
 <rectangle x1="-0.1999" y1="-0.4001" x2="0.1999" y2="0.4001" layer="35"/>
 </package>
-<package name="C0402">
-<description>&lt;b&gt;CAPACITOR&lt;/b&gt;</description>
-<wire x1="-0.245" y1="0.224" x2="0.245" y2="0.224" width="0.1524" layer="51"/>
-<wire x1="0.245" y1="-0.224" x2="-0.245" y2="-0.224" width="0.1524" layer="51"/>
-<wire x1="-1.473" y1="0.483" x2="1.473" y2="0.483" width="0.0508" layer="39"/>
-<wire x1="1.473" y1="0.483" x2="1.473" y2="-0.483" width="0.0508" layer="39"/>
-<wire x1="1.473" y1="-0.483" x2="-1.473" y2="-0.483" width="0.0508" layer="39"/>
-<wire x1="-1.473" y1="-0.483" x2="-1.473" y2="0.483" width="0.0508" layer="39"/>
-<smd name="1" x="-0.65" y="0" dx="0.7" dy="0.9" layer="1"/>
-<smd name="2" x="0.65" y="0" dx="0.7" dy="0.9" layer="1"/>
-<text x="-0.635" y="0.635" size="1.27" layer="25">&gt;NAME</text>
-<text x="-0.635" y="-1.905" size="1.27" layer="27">&gt;VALUE</text>
-<rectangle x1="-0.554" y1="-0.3048" x2="-0.254" y2="0.2951" layer="51"/>
-<rectangle x1="0.2588" y1="-0.3048" x2="0.5588" y2="0.2951" layer="51"/>
-<rectangle x1="-0.1999" y1="-0.3" x2="0.1999" y2="0.3" layer="35"/>
-</package>
-<package name="R0603">
-<description>&lt;b&gt;RESISTOR&lt;/b&gt;</description>
-<wire x1="-0.432" y1="-0.356" x2="0.432" y2="-0.356" width="0.1524" layer="51"/>
-<wire x1="0.432" y1="0.356" x2="-0.432" y2="0.356" width="0.1524" layer="51"/>
-<wire x1="-1.473" y1="0.983" x2="1.473" y2="0.983" width="0.0508" layer="39"/>
-<wire x1="1.473" y1="0.983" x2="1.473" y2="-0.983" width="0.0508" layer="39"/>
-<wire x1="1.473" y1="-0.983" x2="-1.473" y2="-0.983" width="0.0508" layer="39"/>
-<wire x1="-1.473" y1="-0.983" x2="-1.473" y2="0.983" width="0.0508" layer="39"/>
-<smd name="1" x="-0.85" y="0" dx="1" dy="1.1" layer="1"/>
-<smd name="2" x="0.85" y="0" dx="1" dy="1.1" layer="1"/>
-<text x="-1.27" y="0.635" size="0.6096" layer="25" font="vector" ratio="10">&gt;NAME</text>
-<text x="-1.27" y="-1.27" size="0.6096" layer="27" font="vector" ratio="10">&gt;VALUE</text>
-<rectangle x1="0.4318" y1="-0.4318" x2="0.8382" y2="0.4318" layer="51"/>
-<rectangle x1="-0.8382" y1="-0.4318" x2="-0.4318" y2="0.4318" layer="51"/>
-<rectangle x1="-0.1999" y1="-0.4001" x2="0.1999" y2="0.4001" layer="35"/>
-</package>
 <package name="C0603">
 <description>&lt;b&gt;CAPACITOR&lt;/b&gt;</description>
 <wire x1="-1.473" y1="0.983" x2="1.473" y2="0.983" width="0.0508" layer="39"/>
@@ -3006,6 +2956,22 @@ Pads enlarged by 0.2 mm</description>
 <text x="-1.27" y="-1.27" size="0.6096" layer="27" font="vector" ratio="10">&gt;VALUE</text>
 <rectangle x1="-0.8382" y1="-0.4699" x2="-0.3381" y2="0.4801" layer="51"/>
 <rectangle x1="0.3302" y1="-0.4699" x2="0.8303" y2="0.4801" layer="51"/>
+<rectangle x1="-0.1999" y1="-0.3" x2="0.1999" y2="0.3" layer="35"/>
+</package>
+<package name="C0402">
+<description>&lt;b&gt;CAPACITOR&lt;/b&gt;</description>
+<wire x1="-0.245" y1="0.224" x2="0.245" y2="0.224" width="0.1524" layer="51"/>
+<wire x1="0.245" y1="-0.224" x2="-0.245" y2="-0.224" width="0.1524" layer="51"/>
+<wire x1="-1.473" y1="0.483" x2="1.473" y2="0.483" width="0.0508" layer="39"/>
+<wire x1="1.473" y1="0.483" x2="1.473" y2="-0.483" width="0.0508" layer="39"/>
+<wire x1="1.473" y1="-0.483" x2="-1.473" y2="-0.483" width="0.0508" layer="39"/>
+<wire x1="-1.473" y1="-0.483" x2="-1.473" y2="0.483" width="0.0508" layer="39"/>
+<smd name="1" x="-0.65" y="0" dx="0.7" dy="0.9" layer="1"/>
+<smd name="2" x="0.65" y="0" dx="0.7" dy="0.9" layer="1"/>
+<text x="-0.635" y="0.635" size="1.27" layer="25">&gt;NAME</text>
+<text x="-0.635" y="-1.905" size="1.27" layer="27">&gt;VALUE</text>
+<rectangle x1="-0.554" y1="-0.3048" x2="-0.254" y2="0.2951" layer="51"/>
+<rectangle x1="0.2588" y1="-0.3048" x2="0.5588" y2="0.2951" layer="51"/>
 <rectangle x1="-0.1999" y1="-0.3" x2="0.1999" y2="0.3" layer="35"/>
 </package>
 </packages>
@@ -3709,7 +3675,7 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="NAME" x="4.445" y="43.307" size="0.8128" layer="25" font="vector" ratio="15" rot="SR0"/>
 <attribute name="VALUE" x="-0.6604" y="52.9717" size="0.6096" layer="27" font="vector" ratio="10" rot="SR270"/>
 </element>
-<element name="C0410" library="df4iah_rcl" package="C0402" value="4.7uF" x="70.564375" y="21.2725" smashed="yes" rot="MR180">
+<element name="C0410" library="df4iah_rcl" package="C0603" value="4.7uF" x="70.564375" y="21.2725" smashed="yes" rot="MR180">
 <attribute name="NAME" x="71.993125" y="22.06625" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
 <attribute name="VALUE" x="69.294375" y="23.8125" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
@@ -3729,11 +3695,11 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="NAME" x="62.38875" y="23.495" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="62.865" y="23.8125" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
 </element>
-<element name="R0611" library="df4iah_rcl" package="R0402" value="1.0kR" x="71.4375" y="27.94" smashed="yes" rot="R90">
+<element name="R0611" library="df4iah_rcl" package="R0402" value="1kR" x="71.4375" y="27.94" smashed="yes" rot="R90">
 <attribute name="NAME" x="71.91375" y="30.00375" size="0.6096" layer="25" font="vector" rot="R90"/>
 <attribute name="VALUE" x="71.6915" y="26.0985" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
 </element>
-<element name="R0612" library="df4iah_rcl" package="R0402" value="1.0kR" x="72.7075" y="27.94" smashed="yes" rot="R90">
+<element name="R0612" library="df4iah_rcl" package="R0402" value="1kR" x="72.7075" y="27.94" smashed="yes" rot="R90">
 <attribute name="NAME" x="73.025" y="29.845" size="0.6096" layer="25" font="vector" rot="R90"/>
 <attribute name="VALUE" x="74.6125" y="27.305" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
 </element>
@@ -3752,15 +3718,15 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="NAME" x="12.9351" y="58.61225" size="0.6096" layer="25" font="vector" ratio="10"/>
 <attribute name="VALUE" x="16.2674" y="58.7825" size="0.6096" layer="27" font="vector" ratio="10" rot="R180"/>
 </element>
-<element name="C2402" library="df4iah_rcl" package="C0402" value="10uF" x="7.62" y="54.61" smashed="yes" rot="MR270">
+<element name="C2402" library="df4iah_rcl" package="C0603" value="10uF" x="7.62" y="54.61" smashed="yes" rot="MR270">
 <attribute name="NAME" x="7.62" y="49.53" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="9.525" y="55.88" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
-<element name="C2403" library="df4iah_rcl" package="C0402" value="10uF" x="8.89" y="54.61" smashed="yes" rot="MR270">
+<element name="C2403" library="df4iah_rcl" package="C0603" value="10uF" x="8.89" y="54.61" smashed="yes" rot="MR270">
 <attribute name="NAME" x="8.89" y="49.53" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="10.795" y="55.88" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
-<element name="C2401" library="df4iah_rcl" package="C0402" value="10uF" x="6.35" y="54.61" smashed="yes" rot="MR270">
+<element name="C2401" library="df4iah_rcl" package="C0603" value="10uF" x="6.35" y="54.61" smashed="yes" rot="MR270">
 <attribute name="NAME" x="6.35" y="49.53" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="8.255" y="55.88" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
@@ -3768,7 +3734,7 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="NAME" x="10.16" y="49.53" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="12.065" y="55.88" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
-<element name="C2405" library="df4iah_rcl" package="C0402" value="3.3uF" x="20.32" y="55.88" smashed="yes" rot="R270">
+<element name="C2405" library="df4iah_rcl" package="C0603" value="3.3uF" x="20.32" y="55.88" smashed="yes" rot="R270">
 <attribute name="NAME" x="21.74875" y="54.9275" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="18.415" y="57.15" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
 </element>
@@ -3784,15 +3750,15 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="NAME" x="20.0025" y="52.705" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="20.32" y="55.88" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
-<element name="C2421" library="df4iah_rcl" package="C0402" value="22uF" x="13.97" y="49.53" smashed="yes" rot="MR180">
+<element name="C2421" library="df4iah_rcl" package="C0603" value="22uF" x="13.97" y="49.53" smashed="yes" rot="MR180">
 <attribute name="NAME" x="8.89" y="49.53" size="0.6096" layer="26" font="vector" ratio="10" rot="MR180"/>
 <attribute name="VALUE" x="12.7" y="51.435" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
-<element name="C2422" library="df4iah_rcl" package="C0402" value="22uF" x="13.97" y="48.26" smashed="yes" rot="MR180">
+<element name="C2422" library="df4iah_rcl" package="C0603" value="22uF" x="13.97" y="48.26" smashed="yes" rot="MR180">
 <attribute name="NAME" x="8.89" y="48.26" size="0.6096" layer="26" font="vector" ratio="10" rot="MR180"/>
 <attribute name="VALUE" x="12.7" y="50.165" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
-<element name="C2423" library="df4iah_rcl" package="C0402" value="22uF" x="13.97" y="46.99" smashed="yes" rot="MR180">
+<element name="C2423" library="df4iah_rcl" package="C0603" value="22uF" x="13.97" y="46.99" smashed="yes" rot="MR180">
 <attribute name="NAME" x="8.89" y="46.99" size="0.6096" layer="26" font="vector" ratio="10" rot="MR180"/>
 <attribute name="VALUE" x="12.7" y="48.895" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
@@ -3825,30 +3791,30 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="NAME" x="44.577" y="15.875" size="0.6096" layer="25" rot="R270"/>
 <attribute name="VALUE" x="43.815" y="14.605" size="1.27" layer="27" rot="R180"/>
 </element>
-<element name="C9902" library="rcl" package="C0805" value="1uF" x="46.355" y="15.875" smashed="yes" rot="R270">
+<element name="C9902" library="df4iah_rcl" package="C0402" value="1uF" x="46.355" y="15.875" smashed="yes" rot="R270">
 <attribute name="NAME" x="47.625" y="17.145" size="0.6096" layer="25" rot="R270"/>
 <attribute name="VALUE" x="43.815" y="17.145" size="1.27" layer="27" rot="R270"/>
 </element>
-<element name="C9903" library="rcl" package="C0805" value="1uF" x="40.64" y="20.32" smashed="yes" rot="R180">
+<element name="C9903" library="df4iah_rcl" package="C0402" value="1uF" x="40.64" y="20.32" smashed="yes" rot="R180">
 <attribute name="NAME" x="41.91" y="19.05" size="0.6096" layer="25" rot="R180"/>
 <attribute name="VALUE" x="41.91" y="22.86" size="1.27" layer="27" rot="R180"/>
 </element>
-<element name="C9904" library="rcl" package="C0805" value="1uF" x="45.72" y="20.32" smashed="yes">
+<element name="C9904" library="df4iah_rcl" package="C0402" value="1uF" x="45.72" y="20.32" smashed="yes">
 <attribute name="NAME" x="44.45" y="21.59" size="0.6096" layer="25"/>
 <attribute name="VALUE" x="44.45" y="17.78" size="1.27" layer="27"/>
 </element>
-<element name="C9905" library="rcl" package="C0805" value="1uF" x="35.56" y="20.32" smashed="yes" rot="R180">
+<element name="C9905" library="df4iah_rcl" package="C0402" value="1uF" x="35.56" y="20.32" smashed="yes" rot="R180">
 <attribute name="NAME" x="36.83" y="19.05" size="0.6096" layer="25" rot="R180"/>
 <attribute name="VALUE" x="36.83" y="22.86" size="1.27" layer="27" rot="R180"/>
 </element>
-<element name="C9901" library="rcl" package="C0805" value="1uF" x="46.99" y="11.43" smashed="yes">
+<element name="C9901" library="df4iah_rcl" package="C0402" value="1uF" x="46.99" y="11.43" smashed="yes">
 <attribute name="NAME" x="45.72" y="12.7" size="0.6096" layer="25"/>
 <attribute name="VALUE" x="45.72" y="8.89" size="1.27" layer="27"/>
 </element>
-<element name="R9901" library="df4iah_rcl" package="R0603" value="47R" x="59.055" y="10.16" rot="R180"/>
-<element name="R9902" library="df4iah_rcl" package="R0603" value="47R" x="38.735" y="7.9375" rot="R90"/>
-<element name="R9903" library="df4iah_rcl" package="R0603" value="47R" x="71.12" y="25.7175" rot="MR0"/>
-<element name="R9904" library="df4iah_rcl" package="R0603" value="47R" x="34.925" y="7.9375" rot="R90"/>
+<element name="R9901" library="df4iah_rcl" package="R0402" value="47R" x="59.055" y="10.16" rot="R180"/>
+<element name="R9902" library="df4iah_rcl" package="R0402" value="47R" x="38.735" y="7.9375" rot="R90"/>
+<element name="R9903" library="df4iah_rcl" package="R0402" value="47R" x="71.12" y="25.7175" rot="MR0"/>
+<element name="R9904" library="df4iah_rcl" package="R0402" value="47R" x="34.925" y="7.9375" rot="R90"/>
 <element name="X9851" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="92.71" y="58.42" smashed="yes">
 <attribute name="NAME" x="90.96375" y="52.3875" size="0.8128" layer="25" ratio="15"/>
 <attribute name="VALUE" x="90.17" y="51.435" size="1.27" layer="27"/>
@@ -3869,30 +3835,30 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="NAME" x="81.43875" y="49.81575" size="0.6096" layer="25" font="vector"/>
 <attribute name="VALUE" x="81.915" y="48.895" size="1.27" layer="27" rot="R270"/>
 </element>
-<element name="C9802" library="rcl" package="C0805" value="1uF" x="76.835" y="48.5775" smashed="yes" rot="R270">
+<element name="C9802" library="df4iah_rcl" package="C0402" value="1uF" x="76.835" y="48.5775" smashed="yes" rot="R270">
 <attribute name="NAME" x="75.72375" y="47.3075" size="0.6096" layer="25" font="vector" rot="R90"/>
 <attribute name="VALUE" x="74.295" y="49.8475" size="1.27" layer="27" rot="R270"/>
 </element>
-<element name="C9803" library="rcl" package="C0805" value="1uF" x="76.835" y="44.45" smashed="yes" rot="R270">
+<element name="C9803" library="df4iah_rcl" package="C0402" value="1uF" x="76.835" y="44.45" smashed="yes" rot="R270">
 <attribute name="NAME" x="75.8825" y="43.02125" size="0.6096" layer="25" font="vector" rot="R90"/>
 <attribute name="VALUE" x="74.295" y="45.72" size="1.27" layer="27" rot="R270"/>
 </element>
-<element name="C9804" library="rcl" package="C0805" value="1uF" x="80.645" y="51.1175" smashed="yes">
+<element name="C9804" library="df4iah_rcl" package="C0402" value="1uF" x="80.645" y="51.1175" smashed="yes">
 <attribute name="NAME" x="83.185" y="49.8475" size="0.6096" layer="25" font="vector" rot="R180"/>
 <attribute name="VALUE" x="79.375" y="48.5775" size="1.27" layer="27"/>
 </element>
-<element name="C9805" library="rcl" package="C0805" value="1uF" x="75.8825" y="40.9575" smashed="yes" rot="R180">
+<element name="C9805" library="df4iah_rcl" package="C0402" value="1uF" x="75.8825" y="40.9575" smashed="yes" rot="R180">
 <attribute name="NAME" x="74.45375" y="41.91" size="0.6096" layer="25" font="vector"/>
 <attribute name="VALUE" x="77.1525" y="43.4975" size="1.27" layer="27" rot="R180"/>
 </element>
-<element name="C9801" library="rcl" package="C0805" value="1uF" x="85.4075" y="51.1175" smashed="yes" rot="R180">
+<element name="C9801" library="df4iah_rcl" package="C0402" value="1uF" x="85.4075" y="51.1175" smashed="yes" rot="R180">
 <attribute name="NAME" x="86.6775" y="49.8475" size="0.6096" layer="25" font="vector" rot="R180"/>
 <attribute name="VALUE" x="86.6775" y="53.6575" size="1.27" layer="27" rot="R180"/>
 </element>
-<element name="R9801" library="df4iah_rcl" package="R0603" value="47R" x="60.96" y="19.05" rot="MR0"/>
-<element name="R9802" library="df4iah_rcl" package="R0603" value="47R" x="88.265" y="43.4975" rot="R180"/>
-<element name="R9803" library="df4iah_rcl" package="R0603" value="47R" x="76.835" y="14.9225"/>
-<element name="R9804" library="df4iah_rcl" package="R0603" value="47R" x="88.265" y="39.6875" rot="R180"/>
+<element name="R9801" library="df4iah_rcl" package="R0402" value="47R" x="60.96" y="19.05" rot="MR0"/>
+<element name="R9802" library="df4iah_rcl" package="R0402" value="47R" x="88.265" y="43.4975" rot="R180"/>
+<element name="R9803" library="df4iah_rcl" package="R0402" value="47R" x="76.835" y="14.9225"/>
+<element name="R9804" library="df4iah_rcl" package="R0402" value="47R" x="88.265" y="39.6875" rot="R180"/>
 <element name="X9701" library="df4iah_connector" package="2X10" value="" x="27.94" y="66.04" locked="yes" smashed="yes">
 <attribute name="NAME" x="14.605" y="64.29375" size="0.8128" layer="25" font="vector" ratio="15" rot="R90"/>
 <attribute name="VALUE" x="15.24" y="61.595" size="1.27" layer="27"/>
@@ -3903,46 +3869,46 @@ Subminiature Tact Switch for SMT</description>
 </element>
 <element name="H3631" library="df4iah_holes" package="3,0-PAD" value="MOUNT-PAD-ROUND3.0" x="92.71" y="3.81" locked="yes"/>
 <element name="U9601" library="df4iah_dataconvertion" package="SOICW32" value="MC33996" x="31.75" y="52.07"/>
-<element name="C9601" library="df4iah_rcl" package="C0603" value="100nF" x="27.94" y="44.45" rot="R90"/>
+<element name="C9601" library="df4iah_rcl" package="C0402" value="100nF" x="27.94" y="44.45" rot="R90"/>
 <element name="C9603" library="df4iah_rcl" package="C0603" value="22uF" x="32.385" y="44.45" rot="R270"/>
-<element name="C9602" library="df4iah_rcl" package="C0603" value="100nF" x="30.48" y="44.45" rot="R270"/>
-<element name="R9611" library="df4iah_rcl" package="R0603" value="47R" x="33.02" y="59.3725" rot="R270"/>
+<element name="C9602" library="df4iah_rcl" package="C0402" value="100nF" x="30.48" y="44.45" rot="R270"/>
+<element name="R9611" library="df4iah_rcl" package="R0402" value="47R" x="33.02" y="59.3725" rot="R270"/>
 <element name="U9501" library="df4iah_dataconvertion" package="SOICW32" value="MC33996" x="48.26" y="52.07"/>
-<element name="C9501" library="df4iah_rcl" package="C0603" value="100nF" x="44.45" y="44.45" rot="R90"/>
+<element name="C9501" library="df4iah_rcl" package="C0402" value="100nF" x="44.45" y="44.45" rot="R90"/>
 <element name="C9503" library="df4iah_rcl" package="C0603" value="22uF" x="48.895" y="44.45" rot="R270"/>
-<element name="C9502" library="df4iah_rcl" package="C0603" value="100nF" x="46.99" y="44.45" rot="R270"/>
-<element name="R9511" library="df4iah_rcl" package="R0603" value="47R" x="49.53" y="59.3725" rot="R270"/>
+<element name="C9502" library="df4iah_rcl" package="C0402" value="100nF" x="46.99" y="44.45" rot="R270"/>
+<element name="R9511" library="df4iah_rcl" package="R0402" value="47R" x="49.53" y="59.3725" rot="R270"/>
 <element name="U9401" library="df4iah_dataconvertion" package="SOICW32" value="MC33996" x="64.77" y="52.07"/>
-<element name="C9401" library="df4iah_rcl" package="C0603" value="100nF" x="60.96" y="44.45" rot="R90"/>
+<element name="C9401" library="df4iah_rcl" package="C0402" value="100nF" x="60.96" y="44.45" rot="R90"/>
 <element name="C9403" library="df4iah_rcl" package="C0603" value="22uF" x="65.405" y="44.45" rot="R270"/>
-<element name="C9402" library="df4iah_rcl" package="C0603" value="100nF" x="63.5" y="44.45" rot="R270"/>
-<element name="R9411" library="df4iah_rcl" package="R0603" value="47R" x="66.04" y="59.3725" rot="R270"/>
-<element name="R9621" library="df4iah_rcl" package="R0603" value="47R" x="66.3575" y="11.1125" rot="R270"/>
-<element name="R9622" library="df4iah_rcl" package="R0603" value="0R" x="67.31" y="11.1125" rot="MR270"/>
-<element name="R9623" library="df4iah_rcl" package="R0603" value="47R" x="67.945" y="11.1125" rot="R270"/>
-<element name="R9624" library="df4iah_rcl" package="R0603" value="47R" x="69.5325" y="11.1125" rot="R270"/>
-<element name="R9625" library="df4iah_rcl" package="R0603" value="47R" x="68.8975" y="11.1125" rot="MR270"/>
-<element name="R9626" library="df4iah_rcl" package="R0603" value="47R" x="76.835" y="13.335"/>
-<element name="R9524" library="df4iah_rcl" package="R0603" value="47R" x="70.485" y="11.1125" rot="MR270"/>
-<element name="R9424" library="df4iah_rcl" package="R0603" value="47R" x="71.12" y="11.1125" rot="R270"/>
+<element name="C9402" library="df4iah_rcl" package="C0402" value="100nF" x="63.5" y="44.45" rot="R270"/>
+<element name="R9411" library="df4iah_rcl" package="R0402" value="47R" x="66.04" y="59.3725" rot="R270"/>
+<element name="R9621" library="df4iah_rcl" package="R0402" value="47R" x="66.3575" y="11.1125" rot="R270"/>
+<element name="R9622" library="df4iah_rcl" package="R0402" value="0R" x="67.31" y="11.1125" rot="MR270"/>
+<element name="R9623" library="df4iah_rcl" package="R0402" value="47R" x="67.945" y="11.1125" rot="R270"/>
+<element name="R9624" library="df4iah_rcl" package="R0402" value="47R" x="69.5325" y="11.1125" rot="R270"/>
+<element name="R9625" library="df4iah_rcl" package="R0402" value="47R" x="68.8975" y="11.1125" rot="MR270"/>
+<element name="R9626" library="df4iah_rcl" package="R0402" value="47R" x="76.835" y="13.335"/>
+<element name="R9524" library="df4iah_rcl" package="R0402" value="47R" x="70.485" y="11.1125" rot="MR270"/>
+<element name="R9424" library="df4iah_rcl" package="R0402" value="47R" x="71.12" y="11.1125" rot="R270"/>
 <element name="U9001" library="df4iah_powersupply" package="S-PDSO-G10" value="TPS62051" x="15.24" y="39.37" rot="R180"/>
-<element name="L9011" library="df4iah_rcl" package="L_8.00MM_X_8.00MM" value="10uH" x="22.86" y="38.1" rot="R180"/>
-<element name="R9021" library="df4iah_rcl" package="R0603" value="1MR" x="25.4" y="38.735" rot="MR180"/>
-<element name="R9022" library="df4iah_rcl" package="R0603" value="1MR" x="25.4" y="40.64" rot="MR180"/>
-<element name="C9011" library="df4iah_rcl" package="C0805" value="22uF" x="28.575" y="36.83" rot="R270"/>
-<element name="C9001" library="df4iah_rcl" package="C0805" value="22uF" x="15.24" y="43.18" rot="MR0"/>
-<element name="R9001" library="df4iah_rcl" package="R0603" value="100kR" x="12.065" y="36.83" rot="MR180"/>
-<element name="R9002" library="df4iah_rcl" package="R0603" value="220kR" x="13.97" y="34.925" rot="MR180"/>
+<element name="L9011" library="df4iah_rcl" package="L_4.90MM_X_4.90MM" value="10uH" x="22.86" y="38.1" rot="R180"/>
+<element name="R9021" library="df4iah_rcl" package="R0402" value="1MR" x="25.4" y="38.735" rot="MR180"/>
+<element name="R9022" library="df4iah_rcl" package="R0402" value="1MR" x="25.4" y="40.64" rot="MR180"/>
+<element name="C9011" library="df4iah_rcl" package="C0603" value="22uF" x="28.575" y="36.83" rot="R270"/>
+<element name="C9001" library="df4iah_rcl" package="C0603" value="22uF" x="15.24" y="43.18" rot="MR0"/>
+<element name="R9001" library="df4iah_rcl" package="R0402" value="100kR" x="12.065" y="36.83" rot="MR180"/>
+<element name="R9002" library="df4iah_rcl" package="R0402" value="220kR" x="13.97" y="34.925" rot="MR180"/>
 <element name="L8901" library="df4iah_rcl" package="L0603" value="10uH" x="6.35" y="20.32" rot="MR270"/>
 <element name="L8911" library="df4iah_rcl" package="L0603" value="10uH" x="6.35" y="36.83" rot="MR90"/>
-<element name="C8901" library="df4iah_rcl" package="C0603" value="10nF" x="5.08" y="22.86" rot="MR0"/>
-<element name="C8911" library="df4iah_rcl" package="C0603" value="10nF" x="5.08" y="34.29" rot="MR0"/>
-<element name="R8912" library="df4iah_rcl" package="R0603" value="15kR" x="7.62" y="33.02" rot="MR270"/>
-<element name="R8902" library="df4iah_rcl" package="R0603" value="15kR" x="7.62" y="24.13" rot="MR90"/>
+<element name="C8901" library="df4iah_rcl" package="C0402" value="10nF" x="5.08" y="22.86" rot="MR0"/>
+<element name="C8911" library="df4iah_rcl" package="C0402" value="10nF" x="5.08" y="34.29" rot="MR0"/>
+<element name="R8912" library="df4iah_rcl" package="R0402" value="15kR" x="7.62" y="33.02" rot="MR270"/>
+<element name="R8902" library="df4iah_rcl" package="R0402" value="15kR" x="7.62" y="24.13" rot="MR90"/>
 <element name="U8921" library="df4iah_sc-switches" package="R-PDSO-G8" value="TS5A23166" x="6.35" y="29.21" rot="MR90"/>
-<element name="C8921" library="df4iah_rcl" package="C0603" value="100nF" x="10.16" y="26.67" rot="MR270"/>
-<element name="R8922" library="df4iah_rcl" package="R0603" value="47R" x="60.96" y="12.065" rot="R180"/>
-<element name="R8921" library="df4iah_rcl" package="R0603" value="47R" x="57.15" y="19.05" rot="R180"/>
+<element name="C8921" library="df4iah_rcl" package="C0402" value="100nF" x="10.16" y="26.67" rot="MR270"/>
+<element name="R8922" library="df4iah_rcl" package="R0402" value="47R" x="60.96" y="12.065" rot="R180"/>
+<element name="R8921" library="df4iah_rcl" package="R0402" value="47R" x="57.15" y="19.05" rot="R180"/>
 <element name="U8951" library="df4iah_opamp" package="SOT-23-5" value="OPA354" x="12.7" y="26.035" smashed="yes" rot="MR90">
 <attribute name="PACKAGE" value="SOT-23-5" x="12.7" y="26.035" size="1.778" layer="28" rot="MR90" display="off"/>
 <attribute name="OC_NEWARK" value="-" x="12.7" y="26.035" size="1.778" layer="28" rot="MR90" display="off"/>
@@ -3952,22 +3918,22 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="NAME" x="14.605" y="25.1206" size="0.6096" layer="26" font="vector" rot="SMR90"/>
 <attribute name="VALUE" x="8.255" y="22.5806" size="2.0828" layer="28" ratio="10" rot="SMR90"/>
 </element>
-<element name="C8951" library="df4iah_rcl" package="C0603" value="100nF" x="15.24" y="29.21" rot="MR0"/>
+<element name="C8951" library="df4iah_rcl" package="C0402" value="100nF" x="15.24" y="29.21" rot="MR0"/>
 <element name="D8951" library="df4iah_diode" package="SOD923" value="CMAD6001" x="12.7" y="26.67" rot="R90"/>
-<element name="R8952" library="df4iah_rcl" package="R0603" value="47R" x="15.24" y="22.86" rot="MR180"/>
+<element name="R8952" library="df4iah_rcl" package="R0402" value="47R" x="15.24" y="22.86" rot="MR180"/>
 <element name="D8961" library="df4iah_diode" package="SOD923" value="CMAD6001" x="13.97" y="26.67" rot="R270"/>
-<element name="R8961" library="df4iah_rcl" package="R0603" value="10kR" x="15.24" y="26.67" rot="R270"/>
+<element name="R8961" library="df4iah_rcl" package="R0402" value="10kR" x="15.24" y="26.67" rot="R270"/>
 <element name="X0601" library="df4iah_connector" package="2X02" value="" x="78.74" y="29.21" smashed="yes">
 <attribute name="NAME" x="82.55" y="27.305" size="0.8128" layer="25" font="vector" ratio="15" rot="R90"/>
 <attribute name="VALUE" x="74.93" y="24.765" size="1.27" layer="27"/>
 </element>
 <element name="D8901" library="df4iah_diode" package="SOD80C" value="CRS08" x="6.35" y="24.13" rot="R180"/>
 <element name="D8911" library="df4iah_diode" package="SOD80C" value="CRS08" x="6.35" y="33.02"/>
-<element name="R8951" library="df4iah_rcl" package="R0603" value="1MR" x="12.065" y="30.48" rot="MR270"/>
-<element name="R8903" library="df4iah_rcl" package="R0603" value="100kR" x="7.62" y="26.67"/>
-<element name="R8913" library="df4iah_rcl" package="R0603" value="100kR" x="7.62" y="30.48" rot="R180"/>
-<element name="R8901" library="df4iah_rcl" package="R0603" value="1kR" x="5.08" y="24.765" rot="MR180"/>
-<element name="R8911" library="df4iah_rcl" package="R0603" value="1kR" x="5.08" y="32.385" rot="MR180"/>
+<element name="R8951" library="df4iah_rcl" package="R0402" value="1MR" x="12.065" y="30.48" rot="MR270"/>
+<element name="R8903" library="df4iah_rcl" package="R0402" value="100kR" x="7.62" y="26.67"/>
+<element name="R8913" library="df4iah_rcl" package="R0402" value="100kR" x="7.62" y="30.48" rot="R180"/>
+<element name="R8901" library="df4iah_rcl" package="R0402" value="1kR" x="5.08" y="24.765" rot="MR180"/>
+<element name="R8911" library="df4iah_rcl" package="R0402" value="1kR" x="5.08" y="32.385" rot="MR180"/>
 </elements>
 <signals>
 <signal name="GND">
@@ -4142,32 +4108,32 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="17.78" y1="56.22" x2="18.12" y2="56.22" width="0.3048" layer="1"/>
 <wire x1="18.12" y1="56.22" x2="18.415" y2="56.515" width="0.3048" layer="1"/>
 <wire x1="18.415" y1="56.515" x2="20.305" y2="56.515" width="0.3048" layer="1"/>
-<wire x1="20.305" y1="56.515" x2="20.32" y2="56.53" width="0.3048" layer="1"/>
+<wire x1="20.305" y1="56.515" x2="20.32" y2="56.73" width="0.3048" layer="1"/>
 <wire x1="17.1875" y1="56.87" x2="18.06" y2="56.87" width="0.3048" layer="1"/>
 <wire x1="18.06" y1="56.87" x2="18.415" y2="56.515" width="0.3048" layer="1"/>
 <wire x1="18.415" y1="56.515" x2="17.78" y2="56.22" width="0.3048" layer="1"/>
 <via x="20.32" y="57.785" extent="1-16" drill="0.3048"/>
 <wire x1="19.05" y1="57.8" x2="20.305" y2="57.8" width="0.3048" layer="16"/>
 <wire x1="20.305" y1="57.8" x2="20.32" y2="57.785" width="0.3048" layer="16"/>
-<wire x1="20.32" y1="56.53" x2="20.32" y2="57.785" width="0.3048" layer="1"/>
+<wire x1="20.32" y1="56.73" x2="20.32" y2="57.785" width="0.3048" layer="1"/>
 <via x="10.16" y="53.34" extent="1-16" drill="0.3048"/>
 <wire x1="10.16" y1="53.96" x2="10.16" y2="53.34" width="0.3048" layer="16"/>
 <wire x1="11.3875" y1="53.62" x2="10.44" y2="53.62" width="0.3048" layer="1"/>
 <wire x1="10.44" y1="53.62" x2="10.16" y2="53.34" width="0.3048" layer="1"/>
 <wire x1="11.3875" y1="52.97" x2="10.53" y2="52.97" width="0.3048" layer="1"/>
 <wire x1="10.53" y1="52.97" x2="10.16" y2="53.34" width="0.3048" layer="1"/>
-<wire x1="6.35" y1="53.96" x2="7.62" y2="53.96" width="0.3048" layer="16"/>
-<wire x1="7.62" y1="53.96" x2="8.89" y2="53.96" width="0.3048" layer="16"/>
-<wire x1="8.89" y1="53.96" x2="10.16" y2="53.96" width="0.3048" layer="16"/>
+<wire x1="6.35" y1="53.76" x2="7.62" y2="53.76" width="0.3048" layer="16"/>
+<wire x1="7.62" y1="53.76" x2="8.89" y2="53.76" width="0.3048" layer="16"/>
+<wire x1="8.89" y1="53.76" x2="10.16" y2="53.96" width="0.3048" layer="16"/>
 <via x="13.335" y="43.18" extent="1-16" drill="0.3048"/>
-<wire x1="13.335" y1="43.18" x2="14.29" y2="43.18" width="0.3048" layer="16"/>
+<wire x1="13.335" y1="43.18" x2="14.39" y2="43.18" width="0.3048" layer="16"/>
 <wire x1="15.24" y1="41.57" x2="15.24" y2="42.545" width="0.3048" layer="1"/>
 <wire x1="15.24" y1="42.545" x2="14.605" y2="43.18" width="0.3048" layer="1"/>
 <wire x1="14.605" y1="43.18" x2="13.335" y2="43.18" width="0.3048" layer="1"/>
 <wire x1="14.74" y1="37.17" x2="14.74" y2="40.14" width="0.3048" layer="1"/>
 <wire x1="14.74" y1="40.14" x2="15.24" y2="40.64" width="0.3048" layer="1"/>
 <wire x1="15.24" y1="41.57" x2="15.24" y2="40.64" width="0.3048" layer="1"/>
-<wire x1="11.215" y1="36.83" x2="8.89" y2="36.83" width="0.1524" layer="16"/>
+<wire x1="11.415" y1="36.83" x2="8.89" y2="36.83" width="0.1524" layer="16"/>
 <wire x1="16.24" y1="37.17" x2="16.24" y2="35.925" width="0.3048" layer="1"/>
 <wire x1="16.24" y1="35.925" x2="15.875" y2="35.56" width="0.3048" layer="1"/>
 <wire x1="15.875" y1="35.56" x2="15.24" y2="35.56" width="0.3048" layer="1"/>
@@ -4179,23 +4145,23 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="16.51" y1="36.9" x2="16.24" y2="37.17" width="0.3048" layer="1"/>
 <via x="29.21" y="43.18" extent="1-16" drill="0.3048"/>
 <via x="28.575" y="34.925" extent="1-16" drill="0.3048"/>
-<wire x1="27.94" y1="43.6" x2="28.79" y2="43.6" width="0.3048" layer="1"/>
+<wire x1="27.94" y1="43.8" x2="28.79" y2="43.6" width="0.3048" layer="1"/>
 <wire x1="28.79" y1="43.6" x2="29.21" y2="43.18" width="0.3048" layer="1"/>
-<wire x1="32.385" y1="43.6" x2="30.48" y2="43.6" width="0.3048" layer="1"/>
-<wire x1="30.48" y1="43.6" x2="29.63" y2="43.6" width="0.3048" layer="1"/>
+<wire x1="32.385" y1="43.6" x2="30.48" y2="43.8" width="0.3048" layer="1"/>
+<wire x1="30.48" y1="43.8" x2="29.63" y2="43.6" width="0.3048" layer="1"/>
 <wire x1="29.63" y1="43.6" x2="29.21" y2="43.18" width="0.3048" layer="1"/>
-<wire x1="28.575" y1="35.88" x2="28.575" y2="34.925" width="0.3048" layer="1"/>
+<wire x1="28.575" y1="35.98" x2="28.575" y2="34.925" width="0.3048" layer="1"/>
 <via x="45.72" y="43.18" extent="1-16" drill="0.3048"/>
-<wire x1="44.45" y1="43.6" x2="45.3" y2="43.6" width="0.3048" layer="1"/>
+<wire x1="44.45" y1="43.8" x2="45.3" y2="43.6" width="0.3048" layer="1"/>
 <wire x1="45.3" y1="43.6" x2="45.72" y2="43.18" width="0.3048" layer="1"/>
-<wire x1="46.99" y1="43.6" x2="46.14" y2="43.6" width="0.3048" layer="1"/>
+<wire x1="46.99" y1="43.8" x2="46.14" y2="43.6" width="0.3048" layer="1"/>
 <wire x1="46.14" y1="43.6" x2="45.72" y2="43.18" width="0.3048" layer="1"/>
-<wire x1="48.895" y1="43.6" x2="46.99" y2="43.6" width="0.3048" layer="1"/>
-<wire x1="65.405" y1="43.6" x2="63.5" y2="43.6" width="0.3048" layer="1"/>
+<wire x1="48.895" y1="43.6" x2="46.99" y2="43.8" width="0.3048" layer="1"/>
+<wire x1="65.405" y1="43.6" x2="63.5" y2="43.8" width="0.3048" layer="1"/>
 <via x="62.23" y="43.18" extent="1-16" drill="0.3048"/>
-<wire x1="60.96" y1="43.6" x2="61.81" y2="43.6" width="0.3048" layer="1"/>
+<wire x1="60.96" y1="43.8" x2="61.81" y2="43.6" width="0.3048" layer="1"/>
 <wire x1="61.81" y1="43.6" x2="62.23" y2="43.18" width="0.3048" layer="1"/>
-<wire x1="63.5" y1="43.6" x2="62.65" y2="43.6" width="0.3048" layer="1"/>
+<wire x1="63.5" y1="43.8" x2="62.65" y2="43.6" width="0.3048" layer="1"/>
 <wire x1="62.65" y1="43.6" x2="62.23" y2="43.18" width="0.3048" layer="1"/>
 <wire x1="3.81" y1="60.96" x2="9.7155" y2="60.96" width="0.3048" layer="16"/>
 <wire x1="9.7155" y1="60.96" x2="9.7155" y2="56.769" width="0.3048" layer="16"/>
@@ -4204,36 +4170,36 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="8.89" y1="15.24" x2="3.81" y2="15.24" width="0.3048" layer="16"/>
 <wire x1="8.89" y1="20.32" x2="8.89" y2="15.24" width="0.3048" layer="16"/>
 <wire x1="3.81" y1="20.32" x2="3.81" y2="15.24" width="0.3048" layer="16"/>
-<wire x1="4.23" y1="22.86" x2="4.23" y2="22.3275" width="0.3048" layer="16"/>
+<wire x1="4.43" y1="22.86" x2="4.23" y2="22.3275" width="0.3048" layer="16"/>
 <wire x1="4.23" y1="22.3275" x2="3.81" y2="21.9075" width="0.3048" layer="16"/>
 <wire x1="3.81" y1="21.9075" x2="3.81" y2="20.32" width="0.3048" layer="16"/>
-<wire x1="4.23" y1="22.86" x2="4.23" y2="24.765" width="0.3048" layer="16"/>
+<wire x1="4.43" y1="22.86" x2="4.43" y2="24.765" width="0.3048" layer="16"/>
 <wire x1="11.7602" y1="24.7396" x2="11.7602" y2="23.8125" width="0.3048" layer="16"/>
 <wire x1="11.7602" y1="23.8125" x2="11.7602" y2="23.1902" width="0.3048" layer="16"/>
 <wire x1="11.7602" y1="23.1902" x2="8.89" y2="20.32" width="0.3048" layer="16"/>
 <wire x1="12.7" y1="24.7396" x2="12.7" y2="24.13" width="0.3048" layer="16"/>
 <wire x1="12.7" y1="24.13" x2="12.3825" y2="23.8125" width="0.3048" layer="16"/>
 <wire x1="12.3825" y1="23.8125" x2="11.7602" y2="23.8125" width="0.3048" layer="16"/>
-<wire x1="10.16" y1="25.82" x2="10.16" y2="24.765" width="0.3048" layer="16"/>
+<wire x1="10.16" y1="26.02" x2="10.16" y2="24.765" width="0.3048" layer="16"/>
 <wire x1="10.16" y1="24.765" x2="11.1125" y2="23.8125" width="0.3048" layer="16"/>
 <wire x1="11.1125" y1="23.8125" x2="11.7602" y2="23.8125" width="0.3048" layer="16"/>
 <wire x1="3.81" y1="36.83" x2="3.81" y2="34.71" width="0.3048" layer="16"/>
-<wire x1="3.81" y1="34.71" x2="4.23" y2="34.29" width="0.3048" layer="16"/>
-<wire x1="4.23" y1="34.29" x2="4.23" y2="32.385" width="0.3048" layer="16"/>
+<wire x1="3.81" y1="34.71" x2="4.43" y2="34.29" width="0.3048" layer="16"/>
+<wire x1="4.43" y1="34.29" x2="4.43" y2="32.385" width="0.3048" layer="16"/>
 <wire x1="4.8" y1="29.96" x2="4.6475" y2="29.96" width="0.3048" layer="16"/>
 <wire x1="4.6475" y1="29.96" x2="4.1275" y2="30.48" width="0.3048" layer="16"/>
 <wire x1="4.1275" y1="30.48" x2="4.1275" y2="32.2825" width="0.3048" layer="16"/>
-<wire x1="4.1275" y1="32.2825" x2="4.23" y2="32.385" width="0.3048" layer="16"/>
+<wire x1="4.1275" y1="32.2825" x2="4.43" y2="32.385" width="0.3048" layer="16"/>
 <wire x1="3.81" y1="41.91" x2="8.89" y2="41.91" width="0.3048" layer="16"/>
 <wire x1="3.81" y1="36.83" x2="3.81" y2="41.91" width="0.3048" layer="16"/>
 <wire x1="8.89" y1="41.91" x2="8.89" y2="36.83" width="0.3048" layer="16"/>
 <wire x1="13.335" y1="43.18" x2="12.3825" y2="41.91" width="0.3048" layer="16"/>
 <wire x1="12.3825" y1="41.91" x2="8.89" y2="41.91" width="0.3048" layer="16"/>
-<wire x1="14.62" y1="46.99" x2="14.62" y2="48.26" width="0.1524" layer="16"/>
-<wire x1="14.62" y1="48.26" x2="14.62" y2="49.53" width="0.3048" layer="16"/>
+<wire x1="14.82" y1="46.99" x2="14.82" y2="48.26" width="0.1524" layer="16"/>
+<wire x1="14.82" y1="48.26" x2="14.82" y2="49.53" width="0.3048" layer="16"/>
 <via x="14.605" y="48.895" extent="1-16" drill="0.3048"/>
 <wire x1="14.605" y1="43.18" x2="14.605" y2="48.895" width="0.3048" layer="1"/>
-<wire x1="14.62" y1="49.53" x2="14.62" y2="48.91" width="0.3048" layer="16"/>
+<wire x1="14.82" y1="49.53" x2="14.62" y2="48.91" width="0.3048" layer="16"/>
 <wire x1="14.62" y1="48.91" x2="14.605" y2="48.895" width="0.3048" layer="16"/>
 <wire x1="14.2875" y1="53.295" x2="14.2875" y2="52.07" width="0.3048" layer="1"/>
 <wire x1="14.2875" y1="52.07" x2="14.2875" y2="51.1175" width="0.3048" layer="1"/>
@@ -4375,7 +4341,7 @@ Subminiature Tact Switch for SMT</description>
 <via x="72.0725" y="21.9075" extent="1-16" drill="0.3048"/>
 <wire x1="73.53" y1="22.25" x2="72.415" y2="22.25" width="0.1524" layer="1"/>
 <wire x1="72.415" y1="22.25" x2="72.0725" y2="21.9075" width="0.1524" layer="1"/>
-<wire x1="71.214375" y1="21.2725" x2="71.4375" y2="21.2725" width="0.1524" layer="16"/>
+<wire x1="71.414375" y1="21.2725" x2="71.4375" y2="21.2725" width="0.1524" layer="16"/>
 <wire x1="71.4375" y1="21.2725" x2="72.0725" y2="21.9075" width="0.1524" layer="16"/>
 <via x="70.485" y="16.51" extent="1-16" drill="0.3048"/>
 <wire x1="70.47" y1="16.51" x2="70.47" y2="16.2075" width="0.1524" layer="16"/>
@@ -4448,17 +4414,17 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="50.8" y1="6.0325" x2="53.0225" y2="3.81" width="0.1524" layer="16"/>
 <wire x1="53.0225" y1="3.81" x2="53.086" y2="3.81" width="0.1524" layer="1"/>
 <via x="55.07125" y="9.35125" extent="1-16" drill="0.3048"/>
-<wire x1="34.61" y1="20.32" x2="34.6075" y2="20.3225" width="0.1524" layer="1"/>
+<wire x1="34.91" y1="20.32" x2="34.6075" y2="20.3225" width="0.1524" layer="1"/>
 <wire x1="34.6075" y1="20.3225" x2="34.6075" y2="21.2725" width="0.1524" layer="1"/>
 <wire x1="34.6075" y1="21.2725" x2="35.2425" y2="21.9075" width="0.1524" layer="1"/>
 <wire x1="35.2425" y1="21.9075" x2="46.0375" y2="21.9075" width="0.1524" layer="1"/>
 <wire x1="46.0375" y1="21.9075" x2="46.6725" y2="21.2725" width="0.1524" layer="1"/>
 <wire x1="46.6725" y1="21.2725" x2="46.67" y2="21.27" width="0.1524" layer="1"/>
-<wire x1="46.67" y1="21.27" x2="46.67" y2="20.32" width="0.1524" layer="1"/>
+<wire x1="46.67" y1="21.27" x2="46.37" y2="20.32" width="0.1524" layer="1"/>
 <via x="48.26" y="11.43" extent="1-16" drill="0.3048"/>
 <via x="46.99" y="20.32" extent="1-16" drill="0.3048"/>
-<wire x1="46.99" y1="20.32" x2="46.67" y2="20.32" width="0.1524" layer="1"/>
-<wire x1="47.94" y1="11.43" x2="48.26" y2="11.43" width="0.1524" layer="1"/>
+<wire x1="46.99" y1="20.32" x2="46.37" y2="20.32" width="0.1524" layer="1"/>
+<wire x1="47.64" y1="11.43" x2="48.26" y2="11.43" width="0.1524" layer="1"/>
 <wire x1="48.26" y1="11.43" x2="48.26" y2="19.05" width="0.1524" layer="16"/>
 <wire x1="48.26" y1="19.05" x2="46.99" y2="20.32" width="0.1524" layer="16"/>
 <via x="44.7675" y="6.0325" extent="1-16" drill="0.3048"/>
@@ -4469,12 +4435,12 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="83.5025" y1="47.9425" x2="83.5025" y2="49.8475" width="0.3048" layer="1"/>
 <wire x1="83.5025" y1="49.8475" x2="84.1375" y2="50.4825" width="0.3048" layer="1"/>
 <wire x1="84.1375" y1="50.4825" x2="84.455" y2="51.115" width="0.3048" layer="1"/>
-<wire x1="84.455" y1="51.115" x2="84.4575" y2="51.1175" width="0.1524" layer="1"/>
-<wire x1="74.9325" y1="40.9575" x2="74.9325" y2="52.39" width="0.3048" layer="1"/>
+<wire x1="84.455" y1="51.115" x2="84.7575" y2="51.1175" width="0.1524" layer="1"/>
+<wire x1="75.2325" y1="40.9575" x2="74.9325" y2="52.39" width="0.3048" layer="1"/>
 <wire x1="62.23" y1="40.9575" x2="62.5475" y2="40.64" width="0.3048" layer="1"/>
 <wire x1="62.5475" y1="40.64" x2="74.93" y2="40.64" width="0.3048" layer="1"/>
 <wire x1="74.93" y1="40.64" x2="74.93" y2="40.955" width="0.3048" layer="1"/>
-<wire x1="74.93" y1="40.955" x2="74.9325" y2="40.9575" width="0.3048" layer="1"/>
+<wire x1="74.93" y1="40.955" x2="75.2325" y2="40.9575" width="0.3048" layer="1"/>
 <wire x1="3.81" y1="69.215" x2="6.35" y2="71.12" width="0.3048" layer="16"/>
 <wire x1="6.35" y1="71.12" x2="90.805" y2="71.12" width="0.3048" layer="16"/>
 <wire x1="90.805" y1="71.12" x2="92.71" y2="69.215" width="0.3048" layer="16"/>
@@ -4487,13 +4453,13 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="3.81" y1="20.32" x2="2.54" y2="21.59" width="0.3048" layer="16"/>
 <wire x1="2.54" y1="21.59" x2="2.54" y2="35.56" width="0.3048" layer="16"/>
 <wire x1="2.54" y1="35.56" x2="3.81" y2="36.83" width="0.3048" layer="16"/>
-<wire x1="84.4575" y1="51.1175" x2="82.8675" y2="51.1175" width="0.3048" layer="1"/>
-<wire x1="82.8675" y1="51.1175" x2="81.595" y2="51.1175" width="0.3048" layer="1"/>
+<wire x1="84.7575" y1="51.1175" x2="82.8675" y2="51.1175" width="0.3048" layer="1"/>
+<wire x1="82.8675" y1="51.1175" x2="81.295" y2="51.1175" width="0.3048" layer="1"/>
 <wire x1="82.8675" y1="51.1175" x2="82.8675" y2="52.3875" width="0.3048" layer="1"/>
 <wire x1="82.8675" y1="52.3875" x2="82.55" y2="52.705" width="0.3048" layer="1"/>
 <wire x1="82.55" y1="52.705" x2="75.2475" y2="52.705" width="0.3048" layer="1"/>
 <wire x1="75.2475" y1="52.705" x2="74.9325" y2="52.39" width="0.3048" layer="1"/>
-<wire x1="28.575" y1="35.88" x2="29.8425" y2="35.88" width="0.3048" layer="1"/>
+<wire x1="28.575" y1="35.98" x2="29.8425" y2="35.88" width="0.3048" layer="1"/>
 <wire x1="29.8425" y1="35.88" x2="29.845" y2="35.8775" width="0.3048" layer="1"/>
 <wire x1="29.845" y1="35.8775" x2="30.1625" y2="36.195" width="0.3048" layer="1"/>
 <wire x1="30.1625" y1="36.195" x2="30.1625" y2="40.64" width="0.3048" layer="1"/>
@@ -4535,8 +4501,8 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="14.2875" y1="53.295" x2="15.3875" y2="53.295" width="0" layer="19" extent="1-1"/>
 <wire x1="13.1875" y1="53.295" x2="14.2875" y2="53.295" width="0" layer="19" extent="1-1"/>
 <wire x1="13.97" y1="27.12" x2="12.7" y2="24.7396" width="0" layer="19" extent="1-16"/>
-<wire x1="14.39" y1="29.21" x2="13.97" y2="27.12" width="0" layer="19" extent="1-16"/>
-<wire x1="12.065" y1="31.33" x2="14.39" y2="29.21" width="0" layer="19" extent="16-16"/>
+<wire x1="14.59" y1="29.21" x2="13.97" y2="27.12" width="0" layer="19" extent="1-16"/>
+<wire x1="12.065" y1="31.13" x2="14.59" y2="29.21" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="VDDUSB">
 <contactref element="PF3211" pad="2"/>
@@ -4700,7 +4666,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="69.421375" y1="19.05" x2="69.421375" y2="19.891375" width="0.1524" layer="16"/>
 <wire x1="69.421375" y1="19.891375" x2="69.85" y2="20.32" width="0.1524" layer="16"/>
 <wire x1="69.85" y1="20.32" x2="69.85" y2="21.208125" width="0.1524" layer="16"/>
-<wire x1="69.85" y1="21.208125" x2="69.914375" y2="21.2725" width="0.1524" layer="16"/>
+<wire x1="69.85" y1="21.208125" x2="69.714375" y2="21.2725" width="0.1524" layer="16"/>
 <wire x1="69.421375" y1="19.05" x2="71.4375" y2="19.05" width="0.1524" layer="16"/>
 <wire x1="71.4375" y1="19.05" x2="71.755" y2="18.7325" width="0.1524" layer="16"/>
 <wire x1="71.755" y1="18.7325" x2="71.755" y2="16.51" width="0.1524" layer="16"/>
@@ -4766,12 +4732,12 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="R8913" pad="2"/>
 <contactref element="R8903" pad="2"/>
 <via x="27.94" y="38.735" extent="1-16" drill="0.3048"/>
-<wire x1="28.575" y1="37.78" x2="28.575" y2="38.1" width="0.3048" layer="1"/>
+<wire x1="28.575" y1="37.68" x2="28.575" y2="38.1" width="0.3048" layer="1"/>
 <wire x1="28.575" y1="38.1" x2="27.94" y2="38.735" width="0.3048" layer="1"/>
-<wire x1="26.26" y1="38.1" x2="27.94" y2="38.1" width="0.3048" layer="1"/>
+<wire x1="24.56" y1="38.1" x2="27.94" y2="38.1" width="0.3048" layer="1"/>
 <wire x1="27.94" y1="38.1" x2="27.94" y2="38.735" width="0.3048" layer="1"/>
-<wire x1="26.25" y1="38.735" x2="27.94" y2="38.735" width="0.3048" layer="16"/>
-<wire x1="26.25" y1="40.64" x2="26.25" y2="38.735" width="0.3048" layer="16"/>
+<wire x1="26.05" y1="38.735" x2="27.94" y2="38.735" width="0.3048" layer="16"/>
+<wire x1="26.05" y1="40.64" x2="26.05" y2="38.735" width="0.3048" layer="16"/>
 <wire x1="14.24" y1="41.57" x2="14.24" y2="40.91" width="0.3048" layer="1"/>
 <wire x1="14.24" y1="40.91" x2="13.97" y2="41.275" width="0.3048" layer="1"/>
 <wire x1="13.97" y1="41.275" x2="13.335" y2="41.275" width="0.3048" layer="1"/>
@@ -4779,20 +4745,20 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="13.335" y1="41.275" x2="17.78" y2="41.275" width="0.3048" layer="16"/>
 <wire x1="17.78" y1="41.275" x2="19.05" y2="42.545" width="0.3048" layer="16"/>
 <wire x1="19.05" y1="42.545" x2="26.035" y2="42.545" width="0.3048" layer="16"/>
-<wire x1="26.25" y1="40.64" x2="26.25" y2="41.91" width="0.3048" layer="16"/>
+<wire x1="26.05" y1="40.64" x2="26.25" y2="41.91" width="0.3048" layer="16"/>
 <wire x1="26.25" y1="41.91" x2="26.25" y2="42.33" width="0.3048" layer="16"/>
 <wire x1="26.25" y1="42.33" x2="26.035" y2="42.545" width="0.3048" layer="16"/>
 <wire x1="28.175" y1="47.42" x2="28.175" y2="45.955" width="0.254" layer="1"/>
 <wire x1="28.175" y1="45.955" x2="27.94" y2="45.72" width="0.254" layer="1"/>
-<wire x1="27.94" y1="45.72" x2="27.94" y2="45.3" width="0.1524" layer="1"/>
+<wire x1="27.94" y1="45.72" x2="27.94" y2="45.1" width="0.1524" layer="1"/>
 <wire x1="44.685" y1="47.42" x2="44.685" y2="45.955" width="0.254" layer="1"/>
 <wire x1="44.685" y1="45.955" x2="44.45" y2="45.72" width="0.254" layer="1"/>
-<wire x1="44.45" y1="45.72" x2="44.45" y2="45.3" width="0.1524" layer="1"/>
+<wire x1="44.45" y1="45.72" x2="44.45" y2="45.1" width="0.1524" layer="1"/>
 <wire x1="61.195" y1="47.42" x2="61.195" y2="45.955" width="0.254" layer="1"/>
 <wire x1="61.195" y1="45.955" x2="60.96" y2="45.72" width="0.254" layer="1"/>
-<wire x1="60.96" y1="45.72" x2="60.96" y2="45.3" width="0.1524" layer="1"/>
+<wire x1="60.96" y1="45.72" x2="60.96" y2="45.1" width="0.1524" layer="1"/>
 <via x="26.035" y="42.545" extent="1-16" drill="0.3048"/>
-<wire x1="27.94" y1="45.3" x2="27.2025" y2="45.3" width="0.254" layer="1"/>
+<wire x1="27.94" y1="45.1" x2="27.2025" y2="45.3" width="0.254" layer="1"/>
 <wire x1="27.2025" y1="45.3" x2="26.035" y2="44.1325" width="0.254" layer="1"/>
 <wire x1="26.035" y1="44.1325" x2="26.035" y2="42.545" width="0.254" layer="1"/>
 <via x="42.545" y="42.545" extent="1-16" drill="0.3048"/>
@@ -4804,10 +4770,10 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="58.42" y1="41.5925" x2="58.7375" y2="41.5925" width="0.3048" layer="16"/>
 <wire x1="26.3525" y1="41.5925" x2="26.3525" y2="41.8075" width="0.3048" layer="16"/>
 <wire x1="26.3525" y1="41.8075" x2="26.25" y2="41.91" width="0.3048" layer="16"/>
-<wire x1="44.45" y1="45.3" x2="44.03" y2="45.3" width="0.254" layer="1"/>
+<wire x1="44.45" y1="45.1" x2="44.03" y2="45.3" width="0.254" layer="1"/>
 <wire x1="44.03" y1="45.3" x2="42.545" y2="43.815" width="0.254" layer="1"/>
 <wire x1="42.545" y1="43.815" x2="42.545" y2="42.545" width="0.254" layer="1"/>
-<wire x1="60.96" y1="45.3" x2="60.54" y2="45.3" width="0.254" layer="1"/>
+<wire x1="60.96" y1="45.1" x2="60.54" y2="45.3" width="0.254" layer="1"/>
 <wire x1="60.54" y1="45.3" x2="59.055" y2="43.815" width="0.254" layer="1"/>
 <wire x1="59.055" y1="43.815" x2="59.055" y2="42.545" width="0.254" layer="1"/>
 <wire x1="66.675" y1="30.48" x2="71.12" y2="30.48" width="0.1524" layer="1"/>
@@ -4838,15 +4804,15 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="73.66" y1="30.1625" x2="73.3425" y2="30.48" width="0.3048" layer="16"/>
 <wire x1="73.3425" y1="30.48" x2="66.675" y2="30.48" width="0.3048" layer="16"/>
 <wire x1="28.575" y1="38.1" x2="42.545" y2="41.5925" width="0" layer="19" extent="1-16"/>
-<wire x1="16.09" y1="29.21" x2="14.24" y2="40.91" width="0" layer="19" extent="1-16"/>
-<wire x1="15.24" y1="27.52" x2="16.09" y2="29.21" width="0" layer="19" extent="1-16"/>
-<wire x1="13.6398" y1="27.3304" x2="15.24" y2="27.52" width="0" layer="19" extent="1-16"/>
-<wire x1="10.16" y1="27.52" x2="13.6398" y2="27.3304" width="0" layer="19" extent="16-16"/>
-<wire x1="8.47" y1="26.67" x2="10.16" y2="27.52" width="0" layer="19" extent="1-16"/>
-<wire x1="7.9" y1="28.46" x2="8.47" y2="26.67" width="0" layer="19" extent="1-16"/>
-<wire x1="6.77" y1="30.48" x2="7.9" y2="28.46" width="0" layer="19" extent="1-16"/>
-<wire x1="8.05" y1="24.13" x2="8.47" y2="26.67" width="0" layer="19" extent="1-1"/>
-<wire x1="4.65" y1="33.02" x2="6.77" y2="30.48" width="0" layer="19" extent="1-1"/>
+<wire x1="15.89" y1="29.21" x2="14.24" y2="40.91" width="0" layer="19" extent="1-16"/>
+<wire x1="15.24" y1="27.32" x2="15.89" y2="29.21" width="0" layer="19" extent="1-16"/>
+<wire x1="13.6398" y1="27.3304" x2="15.24" y2="27.32" width="0" layer="19" extent="1-16"/>
+<wire x1="10.16" y1="27.32" x2="13.6398" y2="27.3304" width="0" layer="19" extent="16-16"/>
+<wire x1="8.27" y1="26.67" x2="10.16" y2="27.32" width="0" layer="19" extent="1-16"/>
+<wire x1="7.9" y1="28.46" x2="8.27" y2="26.67" width="0" layer="19" extent="1-16"/>
+<wire x1="6.97" y1="30.48" x2="7.9" y2="28.46" width="0" layer="19" extent="1-16"/>
+<wire x1="8.05" y1="24.13" x2="8.27" y2="26.67" width="0" layer="19" extent="1-1"/>
+<wire x1="4.65" y1="33.02" x2="6.97" y2="30.48" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="P$8">
 </signal>
@@ -4886,7 +4852,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="17.1875" y1="54.92" x2="19.36" y2="54.92" width="0.1524" layer="1"/>
 <wire x1="19.36" y1="54.92" x2="19.685" y2="55.245" width="0.1524" layer="1"/>
 <wire x1="19.685" y1="55.245" x2="20.305" y2="55.245" width="0.1524" layer="1"/>
-<wire x1="20.305" y1="55.245" x2="20.32" y2="55.23" width="0.3048" layer="1"/>
+<wire x1="20.305" y1="55.245" x2="20.32" y2="55.03" width="0.3048" layer="1"/>
 </signal>
 <signal name="LM53603_!RESET">
 <contactref element="U2401" pad="8"/>
@@ -4959,7 +4925,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="62.23" y1="14.2875" x2="60.96" y2="13.0175" width="0.1524" layer="1"/>
 <wire x1="60.96" y1="13.0175" x2="60.96" y2="11.1125" width="0.1524" layer="1"/>
 <wire x1="60.96" y1="11.1125" x2="60.0075" y2="10.16" width="0.1524" layer="1"/>
-<wire x1="60.0075" y1="10.16" x2="59.905" y2="10.16" width="0.1524" layer="1"/>
+<wire x1="60.0075" y1="10.16" x2="59.705" y2="10.16" width="0.1524" layer="1"/>
 </signal>
 <signal name="PA1">
 <contactref element="U0101" pad="15"/>
@@ -4968,7 +4934,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="64.28" y1="15.75" x2="63.375" y2="15.75" width="0.1524" layer="1"/>
 <wire x1="63.375" y1="15.75" x2="62.865" y2="15.24" width="0.1524" layer="1"/>
 <via x="38.735" y="6.35" extent="1-16" drill="0.3048"/>
-<wire x1="38.735" y1="7.0875" x2="38.735" y2="6.35" width="0.1524" layer="1"/>
+<wire x1="38.735" y1="7.2875" x2="38.735" y2="6.35" width="0.1524" layer="1"/>
 <wire x1="62.865" y1="15.24" x2="62.865" y2="14.605" width="0.1524" layer="16"/>
 <wire x1="62.865" y1="14.605" x2="56.515" y2="8.255" width="0.1524" layer="16"/>
 <wire x1="56.515" y1="8.255" x2="45.085" y2="8.255" width="0.1524" layer="16"/>
@@ -4984,7 +4950,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="65.155" y1="14.375" x2="63.27" y2="14.375" width="0.1524" layer="1"/>
 <wire x1="63.27" y1="14.375" x2="62.23" y2="13.335" width="0.1524" layer="1"/>
 <wire x1="62.23" y1="13.335" x2="62.23" y2="12.1675" width="0.1524" layer="1"/>
-<wire x1="62.23" y1="12.1675" x2="61.81" y2="12.065" width="0.1524" layer="1"/>
+<wire x1="62.23" y1="12.1675" x2="61.61" y2="12.065" width="0.1524" layer="1"/>
 </signal>
 <signal name="PA4">
 <contactref element="U0101" pad="20"/>
@@ -4994,7 +4960,7 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="R9621" pad="1"/>
 <wire x1="67.155" y1="14.375" x2="67.155" y2="13.4975" width="0.1524" layer="1"/>
 <wire x1="67.155" y1="13.4975" x2="66.3575" y2="12.7" width="0.1524" layer="1"/>
-<wire x1="66.3575" y1="12.7" x2="66.3575" y2="11.9625" width="0.1524" layer="1"/>
+<wire x1="66.3575" y1="12.7" x2="66.3575" y2="11.7625" width="0.1524" layer="1"/>
 </signal>
 <signal name="PA6">
 <contactref element="U0101" pad="22"/>
@@ -5002,13 +4968,13 @@ Subminiature Tact Switch for SMT</description>
 <via x="67.4624" y="13.0175" extent="1-16" drill="0.3048"/>
 <wire x1="67.655" y1="14.375" x2="67.655" y2="13.3625" width="0.1524" layer="1"/>
 <wire x1="67.655" y1="13.3625" x2="67.4624" y2="13.0175" width="0.1524" layer="1"/>
-<wire x1="67.31" y1="11.9625" x2="67.4624" y2="13.0175" width="0.1524" layer="16"/>
+<wire x1="67.31" y1="11.7625" x2="67.4624" y2="13.0175" width="0.1524" layer="16"/>
 </signal>
 <signal name="PA7">
 <contactref element="U0101" pad="23"/>
 <contactref element="R9623" pad="1"/>
 <wire x1="68.155" y1="14.375" x2="68.155" y2="12.1725" width="0.1524" layer="1"/>
-<wire x1="68.155" y1="12.1725" x2="67.945" y2="11.9625" width="0.1524" layer="1"/>
+<wire x1="68.155" y1="12.1725" x2="67.945" y2="11.7625" width="0.1524" layer="1"/>
 </signal>
 <signal name="PA8">
 <contactref element="U0101" pad="41"/>
@@ -5031,7 +4997,7 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="U0101" pad="50"/>
 <contactref element="R9903" pad="1"/>
 <via x="72.0725" y="24.765" extent="1-16" drill="0.3048"/>
-<wire x1="71.97" y1="25.7175" x2="72.0725" y2="25.615" width="0.1524" layer="16"/>
+<wire x1="71.77" y1="25.7175" x2="72.0725" y2="25.615" width="0.1524" layer="16"/>
 <wire x1="72.0725" y1="25.615" x2="72.0725" y2="24.765" width="0.1524" layer="16"/>
 <wire x1="72.155" y1="23.625" x2="72.0725" y2="23.7075" width="0.1524" layer="1"/>
 <wire x1="72.0725" y1="23.7075" x2="72.0725" y2="24.765" width="0.1524" layer="1"/>
@@ -5042,7 +5008,7 @@ Subminiature Tact Switch for SMT</description>
 <signal name="PC0">
 <contactref element="U0101" pad="8"/>
 <contactref element="R8952" pad="2"/>
-<wire x1="16.09" y1="22.86" x2="64.28" y2="19.25" width="0" layer="19" extent="1-16"/>
+<wire x1="15.89" y1="22.86" x2="64.28" y2="19.25" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="PC1">
 <contactref element="U0101" pad="9"/>
@@ -5052,19 +5018,19 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="64.2625" y1="18.7325" x2="63.5" y2="18.7325" width="0.1524" layer="1"/>
 <wire x1="63.5" y1="18.7325" x2="63.1825" y2="19.05" width="0.1524" layer="1"/>
 <wire x1="63.1825" y1="19.05" x2="62.865" y2="19.05" width="0.1524" layer="1"/>
-<wire x1="61.81" y1="19.05" x2="62.865" y2="19.05" width="0.1524" layer="16"/>
+<wire x1="61.61" y1="19.05" x2="62.865" y2="19.05" width="0.1524" layer="16"/>
 </signal>
 <signal name="PC2">
 <contactref element="U0101" pad="10"/>
 <contactref element="R8961" pad="2"/>
 <contactref element="D8961" pad="A"/>
-<wire x1="15.24" y1="25.82" x2="64.28" y2="18.25" width="0" layer="19" extent="1-1"/>
-<wire x1="13.97" y1="26.22" x2="15.24" y2="25.82" width="0" layer="19" extent="1-1"/>
+<wire x1="15.24" y1="26.02" x2="64.28" y2="18.25" width="0" layer="19" extent="1-1"/>
+<wire x1="13.97" y1="26.22" x2="15.24" y2="26.02" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="PC3">
 <contactref element="U0101" pad="11"/>
 <contactref element="R8921" pad="1"/>
-<wire x1="58" y1="19.05" x2="64.28" y2="17.75" width="0" layer="19" extent="1-1"/>
+<wire x1="57.8" y1="19.05" x2="64.28" y2="17.75" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="PC4">
 <contactref element="U0101" pad="24"/>
@@ -5072,7 +5038,7 @@ Subminiature Tact Switch for SMT</description>
 <via x="68.8975" y="13.0175" extent="1-16" drill="0.3048"/>
 <wire x1="68.655" y1="14.375" x2="68.655" y2="13.26" width="0.1524" layer="1"/>
 <wire x1="68.655" y1="13.26" x2="68.8975" y2="13.0175" width="0.1524" layer="1"/>
-<wire x1="68.8975" y1="11.9625" x2="68.8975" y2="13.0175" width="0.1524" layer="16"/>
+<wire x1="68.8975" y1="11.7625" x2="68.8975" y2="13.0175" width="0.1524" layer="16"/>
 </signal>
 <signal name="PC5">
 <contactref element="U0101" pad="25"/>
@@ -5106,7 +5072,7 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="R9624" pad="1"/>
 <wire x1="69.655" y1="14.375" x2="69.655" y2="13.4575" width="0.1524" layer="1"/>
 <wire x1="69.655" y1="13.4575" x2="69.5325" y2="12.7" width="0.1524" layer="1"/>
-<wire x1="69.5325" y1="12.7" x2="69.5325" y2="11.9625" width="0.1524" layer="1"/>
+<wire x1="69.5325" y1="12.7" x2="69.5325" y2="11.7625" width="0.1524" layer="1"/>
 </signal>
 <signal name="PB1">
 <contactref element="U0101" pad="27"/>
@@ -5114,7 +5080,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="70.155" y1="14.375" x2="70.155" y2="13.165" width="0.1524" layer="1"/>
 <wire x1="70.155" y1="13.165" x2="70.1675" y2="13.0175" width="0.1524" layer="1"/>
 <wire x1="70.1675" y1="13.0175" x2="70.1675" y2="12.915" width="0.1524" layer="1"/>
-<wire x1="70.1675" y1="12.915" x2="70.485" y2="11.9625" width="0.1524" layer="16"/>
+<wire x1="70.1675" y1="12.915" x2="70.485" y2="11.7625" width="0.1524" layer="16"/>
 <via x="70.1675" y="12.915" extent="1-16" drill="0.3048"/>
 </signal>
 <signal name="PB2">
@@ -5122,7 +5088,7 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="R9424" pad="1"/>
 <wire x1="70.655" y1="14.375" x2="70.655" y2="13.4825" width="0.1524" layer="1"/>
 <wire x1="70.655" y1="13.4825" x2="71.12" y2="12.3825" width="0.1524" layer="1"/>
-<wire x1="71.12" y1="12.3825" x2="71.12" y2="11.9625" width="0.1524" layer="1"/>
+<wire x1="71.12" y1="12.3825" x2="71.12" y2="11.7625" width="0.1524" layer="1"/>
 </signal>
 <signal name="PB3">
 <contactref element="U0101" pad="55"/>
@@ -5160,7 +5126,7 @@ Subminiature Tact Switch for SMT</description>
 <via x="34.925" y="6.35" extent="1-16" drill="0.3048"/>
 <wire x1="34.925" y1="6.35" x2="34.925" y2="13.97" width="0.1524" layer="16"/>
 <wire x1="34.925" y1="13.97" x2="46.0375" y2="25.0825" width="0.1524" layer="16"/>
-<wire x1="34.925" y1="6.35" x2="34.925" y2="7.0875" width="0" layer="19" extent="1-1"/>
+<wire x1="34.925" y1="6.35" x2="34.925" y2="7.2875" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="PB8">
 <contactref element="U0101" pad="61"/>
@@ -5203,20 +5169,20 @@ Subminiature Tact Switch for SMT</description>
 <via x="88.9" y="42.545" extent="1-16" drill="0.3048"/>
 <wire x1="88.9" y1="42.545" x2="89.2175" y2="42.8625" width="0.1524" layer="1"/>
 <wire x1="89.2175" y1="42.8625" x2="89.2175" y2="43.395" width="0.1524" layer="1"/>
-<wire x1="89.2175" y1="43.395" x2="89.115" y2="43.4975" width="0.1524" layer="1"/>
+<wire x1="89.2175" y1="43.395" x2="88.915" y2="43.4975" width="0.1524" layer="1"/>
 </signal>
 <signal name="PB11">
 <contactref element="U0101" pad="30"/>
 <contactref element="R9626" pad="1"/>
 <wire x1="71.655" y1="14.375" x2="71.655" y2="13.7525" width="0.1524" layer="1"/>
 <wire x1="71.655" y1="13.7525" x2="72.0725" y2="13.335" width="0.1524" layer="1"/>
-<wire x1="75.985" y1="13.335" x2="72.0725" y2="13.335" width="0.1524" layer="1"/>
+<wire x1="76.185" y1="13.335" x2="72.0725" y2="13.335" width="0.1524" layer="1"/>
 </signal>
 <signal name="PB12">
 <contactref element="U0101" pad="33"/>
 <contactref element="R9803" pad="1"/>
 <wire x1="73.53" y1="15.25" x2="75.6575" y2="15.25" width="0.1524" layer="1"/>
-<wire x1="75.6575" y1="15.25" x2="75.985" y2="14.9225" width="0.1524" layer="1"/>
+<wire x1="75.6575" y1="15.25" x2="76.185" y2="14.9225" width="0.1524" layer="1"/>
 </signal>
 <signal name="PB13">
 <contactref element="U0101" pad="34"/>
@@ -5239,7 +5205,7 @@ Subminiature Tact Switch for SMT</description>
 <via x="88.9" y="40.64" extent="1-16" drill="0.3048"/>
 <wire x1="88.9" y1="40.64" x2="89.2175" y2="40.3225" width="0.1524" layer="1"/>
 <wire x1="89.2175" y1="40.3225" x2="89.2175" y2="39.79" width="0.1524" layer="1"/>
-<wire x1="89.2175" y1="39.79" x2="89.115" y2="39.6875" width="0.1524" layer="1"/>
+<wire x1="89.2175" y1="39.79" x2="88.915" y2="39.6875" width="0.1524" layer="1"/>
 </signal>
 <signal name="PB14">
 <contactref element="U0101" pad="35"/>
@@ -5252,12 +5218,12 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="U9901" pad="5"/>
 <wire x1="38.735" y1="16.57" x2="38.735" y2="18.415" width="0.1524" layer="1"/>
 <wire x1="38.735" y1="18.415" x2="39.69" y2="19.37" width="0.1524" layer="1"/>
-<wire x1="39.69" y1="19.37" x2="39.69" y2="20.32" width="0.1524" layer="1"/>
+<wire x1="39.69" y1="19.37" x2="39.99" y2="20.32" width="0.1524" layer="1"/>
 </signal>
 <signal name="CAT_MX_C1N">
 <contactref element="C9902" pad="2"/>
 <contactref element="U9901" pad="3"/>
-<wire x1="46.355" y1="14.925" x2="46.04" y2="14.605" width="0.1524" layer="1"/>
+<wire x1="46.355" y1="15.225" x2="46.04" y2="14.605" width="0.1524" layer="1"/>
 <wire x1="46.04" y1="14.605" x2="41.5925" y2="14.605" width="0.1524" layer="1"/>
 <wire x1="41.5925" y1="14.605" x2="41.275" y2="14.9225" width="0.1524" layer="1"/>
 <wire x1="41.275" y1="14.9225" x2="41.275" y2="16.57" width="0.1524" layer="1"/>
@@ -5266,28 +5232,28 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="U9901" pad="1"/>
 <contactref element="C9902" pad="1"/>
 <wire x1="43.815" y1="16.57" x2="44.195" y2="16.825" width="0.1524" layer="1"/>
-<wire x1="44.195" y1="16.825" x2="46.355" y2="16.825" width="0.1524" layer="1"/>
+<wire x1="44.195" y1="16.825" x2="46.355" y2="16.525" width="0.1524" layer="1"/>
 </signal>
 <signal name="CAT_MX_C2P">
 <contactref element="U9901" pad="4"/>
 <contactref element="C9903" pad="1"/>
 <wire x1="40.005" y1="16.57" x2="40.005" y2="18.0975" width="0.1524" layer="1"/>
 <wire x1="40.005" y1="18.0975" x2="41.59" y2="19.6825" width="0.1524" layer="1"/>
-<wire x1="41.59" y1="19.6825" x2="41.59" y2="20.32" width="0.1524" layer="1"/>
+<wire x1="41.59" y1="19.6825" x2="41.29" y2="20.32" width="0.1524" layer="1"/>
 </signal>
 <signal name="CAT_MX_VM">
 <contactref element="U9901" pad="6"/>
 <contactref element="C9905" pad="1"/>
 <wire x1="37.465" y1="16.57" x2="37.465" y2="18.7325" width="0.1524" layer="1"/>
 <wire x1="37.465" y1="18.7325" x2="36.51" y2="19.6875" width="0.1524" layer="1"/>
-<wire x1="36.51" y1="19.6875" x2="36.51" y2="20.32" width="0.1524" layer="1"/>
+<wire x1="36.51" y1="19.6875" x2="36.21" y2="20.32" width="0.1524" layer="1"/>
 </signal>
 <signal name="CAT_MX_VP">
 <contactref element="U9901" pad="2"/>
 <contactref element="C9904" pad="1"/>
 <wire x1="42.545" y1="16.57" x2="42.545" y2="18.415" width="0.1524" layer="1"/>
 <wire x1="42.545" y1="18.415" x2="44.45" y2="20.32" width="0.1524" layer="1"/>
-<wire x1="44.45" y1="20.32" x2="44.77" y2="20.32" width="0.1524" layer="1"/>
+<wire x1="44.45" y1="20.32" x2="45.07" y2="20.32" width="0.1524" layer="1"/>
 </signal>
 <signal name="+5V" class="2">
 <contactref element="C9901" pad="1"/>
@@ -5295,7 +5261,7 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="C9801" pad="1"/>
 <contactref element="U9801" pad="16"/>
 <wire x1="43.815" y1="11.37" x2="43.875" y2="11.43" width="0.1524" layer="1"/>
-<wire x1="43.875" y1="11.43" x2="46.04" y2="11.43" width="0.1524" layer="1"/>
+<wire x1="43.875" y1="11.43" x2="46.34" y2="11.43" width="0.1524" layer="1"/>
 <contactref element="U9001" pad="1"/>
 <contactref element="U9001" pad="8"/>
 <contactref element="C9001" pad="1"/>
@@ -5311,15 +5277,15 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="8.89" y1="52.07" x2="8.89" y2="57.15" width="0.3048" layer="1"/>
 <wire x1="11.3875" y1="57.52" x2="9.26" y2="57.52" width="0.3048" layer="1"/>
 <wire x1="9.26" y1="57.52" x2="8.89" y2="57.15" width="0.3048" layer="1"/>
-<wire x1="13.32" y1="46.99" x2="13.32" y2="48.26" width="0.3048" layer="16"/>
-<wire x1="13.32" y1="48.26" x2="13.32" y2="49.53" width="0.3048" layer="16"/>
+<wire x1="13.12" y1="46.99" x2="13.12" y2="48.26" width="0.3048" layer="16"/>
+<wire x1="13.12" y1="48.26" x2="13.12" y2="49.53" width="0.3048" layer="16"/>
 <via x="13.335" y="47.625" extent="1-16" drill="0.3048"/>
 <wire x1="12.0375" y1="47.625" x2="13.335" y2="47.625" width="0.3048" layer="1"/>
-<wire x1="13.32" y1="48.26" x2="13.32" y2="47.64" width="0.3048" layer="16"/>
+<wire x1="13.12" y1="48.26" x2="13.32" y2="47.64" width="0.3048" layer="16"/>
 <wire x1="13.32" y1="47.64" x2="13.335" y2="47.625" width="0.3048" layer="16"/>
-<wire x1="13.32" y1="46.99" x2="13.32" y2="46.37" width="0.3048" layer="16"/>
+<wire x1="13.12" y1="46.99" x2="13.32" y2="46.37" width="0.3048" layer="16"/>
 <wire x1="13.32" y1="46.37" x2="14.605" y2="45.085" width="0.3048" layer="16"/>
-<wire x1="16.19" y1="43.18" x2="16.19" y2="44.135" width="0.3048" layer="16"/>
+<wire x1="16.09" y1="43.18" x2="16.19" y2="44.135" width="0.3048" layer="16"/>
 <wire x1="16.19" y1="44.135" x2="15.24" y2="45.085" width="0.3048" layer="16"/>
 <wire x1="15.24" y1="45.085" x2="14.605" y2="45.085" width="0.3048" layer="16"/>
 <wire x1="19.05" y1="53.96" x2="19.035" y2="53.96" width="0.3048" layer="16"/>
@@ -5327,18 +5293,18 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="16.51" y1="51.435" x2="14.605" y2="51.435" width="0.3048" layer="16"/>
 <wire x1="14.605" y1="51.435" x2="13.335" y2="50.165" width="0.3048" layer="16"/>
 <wire x1="13.335" y1="50.165" x2="13.335" y2="49.545" width="0.3048" layer="16"/>
-<wire x1="13.335" y1="49.545" x2="13.32" y2="49.53" width="0.3048" layer="16"/>
+<wire x1="13.335" y1="49.545" x2="13.12" y2="49.53" width="0.3048" layer="16"/>
 <via x="17.145" y="42.545" extent="1-16" drill="0.3048"/>
 <wire x1="16.24" y1="41.57" x2="16.24" y2="41.64" width="0.3048" layer="1"/>
 <wire x1="16.24" y1="41.64" x2="17.145" y2="42.545" width="0.3048" layer="1"/>
-<wire x1="16.19" y1="43.18" x2="16.51" y2="43.18" width="0.3048" layer="16"/>
+<wire x1="16.09" y1="43.18" x2="16.51" y2="43.18" width="0.3048" layer="16"/>
 <wire x1="16.51" y1="43.18" x2="17.145" y2="42.545" width="0.3048" layer="16"/>
 <wire x1="16.24" y1="41.57" x2="16.24" y2="40.37" width="0.3048" layer="1"/>
 <wire x1="16.24" y1="40.37" x2="15.875" y2="40.005" width="0.3048" layer="1"/>
 <wire x1="15.875" y1="40.005" x2="15.24" y2="39.37" width="0.3048" layer="1"/>
 <wire x1="15.24" y1="39.37" x2="15.24" y2="37.17" width="0.3048" layer="1"/>
 <via x="15.875" y="40.005" extent="1-16" drill="0.3048"/>
-<wire x1="14.82" y1="34.925" x2="14.82" y2="35.14" width="0.3048" layer="16"/>
+<wire x1="14.62" y1="34.925" x2="14.82" y2="35.14" width="0.3048" layer="16"/>
 <wire x1="14.82" y1="35.14" x2="15.24" y2="35.56" width="0.1524" layer="16"/>
 <wire x1="15.24" y1="35.56" x2="15.24" y2="39.37" width="0.1524" layer="16"/>
 <wire x1="15.24" y1="39.37" x2="15.875" y2="40.005" width="0.1524" layer="16"/>
@@ -5348,7 +5314,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="1.27" y1="14.2875" x2="8.255" y2="7.3025" width="0.3048" layer="1"/>
 <wire x1="8.255" y1="7.3025" x2="14.2875" y2="1.27" width="0.3048" layer="1"/>
 <wire x1="14.2875" y1="1.27" x2="47.625" y2="1.27" width="0.3048" layer="1"/>
-<wire x1="46.04" y1="11.43" x2="46.355" y2="11.115" width="0.3048" layer="1"/>
+<wire x1="46.34" y1="11.43" x2="46.355" y2="11.115" width="0.3048" layer="1"/>
 <wire x1="46.355" y1="11.115" x2="46.355" y2="9.525" width="0.3048" layer="1"/>
 <wire x1="46.355" y1="9.525" x2="47.9425" y2="7.9375" width="0.3048" layer="1"/>
 <wire x1="47.9425" y1="7.9375" x2="47.9425" y2="1.5875" width="0.3048" layer="1"/>
@@ -5358,7 +5324,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="85.15" y1="48.895" x2="85.4075" y2="48.895" width="0.3048" layer="1"/>
 <wire x1="85.4075" y1="48.895" x2="86.36" y2="49.8475" width="0.3048" layer="1"/>
 <wire x1="86.36" y1="49.8475" x2="86.36" y2="51.115" width="0.3048" layer="1"/>
-<wire x1="86.36" y1="51.115" x2="86.3575" y2="51.1175" width="0.3048" layer="1"/>
+<wire x1="86.36" y1="51.115" x2="86.0575" y2="51.1175" width="0.3048" layer="1"/>
 <wire x1="48.26" y1="29.21" x2="85.15" y2="48.895" width="0" layer="19" extent="1-1"/>
 <wire x1="12.0375" y1="47.625" x2="11.7475" y2="47.625" width="0" layer="19" extent="1-1"/>
 </signal>
@@ -5369,12 +5335,12 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="37.465" y1="12.7" x2="37.7825" y2="13.0175" width="0.1524" layer="1"/>
 <wire x1="37.7825" y1="13.0175" x2="51.435" y2="13.0175" width="0.1524" layer="1"/>
 <wire x1="51.435" y1="13.0175" x2="54.2925" y2="10.16" width="0.1524" layer="1"/>
-<wire x1="54.2925" y1="10.16" x2="58.205" y2="10.16" width="0.1524" layer="1"/>
+<wire x1="54.2925" y1="10.16" x2="58.405" y2="10.16" width="0.1524" layer="1"/>
 </signal>
 <signal name="MP_CAT_TXD_R">
 <contactref element="U9901" pad="12"/>
 <contactref element="R9902" pad="2"/>
-<wire x1="38.735" y1="11.37" x2="38.735" y2="8.7875" width="0.1524" layer="1"/>
+<wire x1="38.735" y1="11.37" x2="38.735" y2="8.5875" width="0.1524" layer="1"/>
 </signal>
 <signal name="CAT_DTE_RXD">
 <contactref element="U9901" pad="14"/>
@@ -5399,7 +5365,7 @@ Subminiature Tact Switch for SMT</description>
 <via x="54.61" y="26.035" extent="1-16" drill="0.3048"/>
 <wire x1="54.2925" y1="25.7175" x2="54.61" y2="26.035" width="0.1524" layer="1"/>
 <wire x1="54.61" y1="26.035" x2="54.9275" y2="25.7175" width="0.1524" layer="16"/>
-<wire x1="54.9275" y1="25.7175" x2="70.27" y2="25.7175" width="0.1524" layer="16"/>
+<wire x1="54.9275" y1="25.7175" x2="70.47" y2="25.7175" width="0.1524" layer="16"/>
 </signal>
 <signal name="CAT_DTE_RTR">
 <contactref element="U9901" pad="8"/>
@@ -5418,7 +5384,7 @@ Subminiature Tact Switch for SMT</description>
 <signal name="MP_CAT_RTR_R">
 <contactref element="U9901" pad="9"/>
 <contactref element="R9904" pad="2"/>
-<wire x1="34.925" y1="11.37" x2="34.925" y2="8.7875" width="0.1524" layer="1"/>
+<wire x1="34.925" y1="11.37" x2="34.925" y2="8.5875" width="0.1524" layer="1"/>
 </signal>
 <signal name="RS_MX_C2M1">
 <contactref element="C9803" pad="2"/>
@@ -5426,7 +5392,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="79.95" y1="43.815" x2="78.105" y2="43.815" width="0.1524" layer="1"/>
 <wire x1="78.105" y1="43.815" x2="77.7875" y2="43.4975" width="0.1524" layer="1"/>
 <wire x1="77.7875" y1="43.4975" x2="76.8375" y2="43.4975" width="0.1524" layer="1"/>
-<wire x1="76.8375" y1="43.4975" x2="76.835" y2="43.5" width="0.1524" layer="1"/>
+<wire x1="76.8375" y1="43.4975" x2="76.835" y2="43.8" width="0.1524" layer="1"/>
 </signal>
 <signal name="RS_MX_C1N1">
 <contactref element="C9802" pad="2"/>
@@ -5434,7 +5400,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="79.95" y1="46.355" x2="78.74" y2="46.355" width="0.1524" layer="1"/>
 <wire x1="78.74" y1="46.355" x2="77.47" y2="47.625" width="0.1524" layer="1"/>
 <wire x1="77.47" y1="47.625" x2="76.8375" y2="47.625" width="0.1524" layer="1"/>
-<wire x1="76.8375" y1="47.625" x2="76.835" y2="47.6275" width="0.1524" layer="1"/>
+<wire x1="76.8375" y1="47.625" x2="76.835" y2="47.9275" width="0.1524" layer="1"/>
 </signal>
 <signal name="MP_RS_RXD_R">
 <contactref element="U9801" pad="11"/>
@@ -5454,19 +5420,19 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="55.88" y1="32.7025" x2="55.88" y2="22.86" width="0.1524" layer="1"/>
 <via x="55.88" y="22.86" extent="1-16" drill="0.3048"/>
 <wire x1="55.88" y1="22.86" x2="59.69" y2="19.05" width="0.1524" layer="16"/>
-<wire x1="59.69" y1="19.05" x2="60.11" y2="19.05" width="0.1524" layer="16"/>
+<wire x1="59.69" y1="19.05" x2="60.31" y2="19.05" width="0.1524" layer="16"/>
 </signal>
 <signal name="MP_RS_TXD_R">
 <contactref element="U9801" pad="12"/>
 <contactref element="R9802" pad="2"/>
 <wire x1="85.15" y1="43.815" x2="86.6775" y2="43.815" width="0.1524" layer="1"/>
 <wire x1="86.6775" y1="43.815" x2="86.995" y2="43.4975" width="0.1524" layer="1"/>
-<wire x1="86.995" y1="43.4975" x2="87.415" y2="43.4975" width="0.1524" layer="1"/>
+<wire x1="86.995" y1="43.4975" x2="87.615" y2="43.4975" width="0.1524" layer="1"/>
 </signal>
 <signal name="MP_RS_CTS_R">
 <contactref element="U9801" pad="10"/>
 <contactref element="R9803" pad="2"/>
-<wire x1="77.685" y1="14.9225" x2="82.55" y2="14.9225" width="0.1524" layer="1"/>
+<wire x1="77.485" y1="14.9225" x2="82.55" y2="14.9225" width="0.1524" layer="1"/>
 <via x="82.55" y="14.9225" extent="1-16" drill="0.3048"/>
 <wire x1="82.55" y1="14.9225" x2="82.55" y2="28.8925" width="0.1524" layer="16"/>
 <wire x1="82.55" y1="28.8925" x2="82.2325" y2="29.21" width="0.1524" layer="16"/>
@@ -5484,7 +5450,7 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="R9804" pad="2"/>
 <wire x1="85.15" y1="40.005" x2="86.6775" y2="40.005" width="0.1524" layer="1"/>
 <wire x1="86.6775" y1="40.005" x2="86.995" y2="39.6875" width="0.1524" layer="1"/>
-<wire x1="86.995" y1="39.6875" x2="87.415" y2="39.6875" width="0.1524" layer="1"/>
+<wire x1="86.995" y1="39.6875" x2="87.615" y2="39.6875" width="0.1524" layer="1"/>
 </signal>
 <signal name="RS_MX_C2P">
 <contactref element="U9801" pad="4"/>
@@ -5492,7 +5458,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="79.95" y1="45.085" x2="78.105" y2="45.085" width="0.1524" layer="1"/>
 <wire x1="78.105" y1="45.085" x2="77.7875" y2="45.4025" width="0.1524" layer="1"/>
 <wire x1="77.7875" y1="45.4025" x2="76.8375" y2="45.4025" width="0.1524" layer="1"/>
-<wire x1="76.8375" y1="45.4025" x2="76.835" y2="45.4" width="0.1524" layer="1"/>
+<wire x1="76.8375" y1="45.4025" x2="76.835" y2="45.1" width="0.1524" layer="1"/>
 </signal>
 <signal name="RS_MX_C1P">
 <contactref element="U9801" pad="1"/>
@@ -5500,7 +5466,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="79.95" y1="48.895" x2="78.4225" y2="48.895" width="0.1524" layer="1"/>
 <wire x1="78.4225" y1="48.895" x2="77.7875" y2="49.53" width="0.1524" layer="1"/>
 <wire x1="77.7875" y1="49.53" x2="76.8375" y2="49.53" width="0.1524" layer="1"/>
-<wire x1="76.8375" y1="49.53" x2="76.835" y2="49.5275" width="0.1524" layer="1"/>
+<wire x1="76.8375" y1="49.53" x2="76.835" y2="49.2275" width="0.1524" layer="1"/>
 </signal>
 <signal name="RS_MX_VP">
 <contactref element="U9801" pad="2"/>
@@ -5512,7 +5478,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="81.28" y1="49.8475" x2="80.01" y2="49.8475" width="0.1524" layer="1"/>
 <wire x1="80.01" y1="49.8475" x2="79.6925" y2="50.165" width="0.1524" layer="1"/>
 <wire x1="79.6925" y1="50.165" x2="79.6925" y2="51.115" width="0.1524" layer="1"/>
-<wire x1="79.6925" y1="51.115" x2="79.695" y2="51.1175" width="0.1524" layer="1"/>
+<wire x1="79.6925" y1="51.115" x2="79.995" y2="51.1175" width="0.1524" layer="1"/>
 </signal>
 <signal name="RS_MX_VM">
 <contactref element="U9801" pad="6"/>
@@ -5520,7 +5486,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="79.95" y1="42.545" x2="78.74" y2="42.545" width="0.1524" layer="1"/>
 <wire x1="78.74" y1="42.545" x2="77.47" y2="41.275" width="0.1524" layer="1"/>
 <wire x1="77.47" y1="41.275" x2="77.15" y2="41.275" width="0.1524" layer="1"/>
-<wire x1="77.15" y1="41.275" x2="76.8325" y2="40.9575" width="0.1524" layer="1"/>
+<wire x1="77.15" y1="41.275" x2="76.5325" y2="40.9575" width="0.1524" layer="1"/>
 </signal>
 <signal name="RS_DTE_RXD">
 <contactref element="U9801" pad="14"/>
@@ -5975,16 +5941,16 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="C9402" pad="1"/>
 <wire x1="30.125" y1="47.42" x2="30.125" y2="46.075" width="0.254" layer="1"/>
 <wire x1="30.125" y1="46.075" x2="30.48" y2="45.72" width="0.254" layer="1"/>
-<wire x1="30.48" y1="45.72" x2="30.48" y2="45.3" width="0.1524" layer="1"/>
-<wire x1="32.385" y1="45.3" x2="30.48" y2="45.3" width="0.254" layer="1"/>
+<wire x1="30.48" y1="45.72" x2="30.48" y2="45.1" width="0.1524" layer="1"/>
+<wire x1="32.385" y1="45.3" x2="30.48" y2="45.1" width="0.254" layer="1"/>
 <wire x1="46.635" y1="47.42" x2="46.635" y2="46.075" width="0.254" layer="1"/>
 <wire x1="46.635" y1="46.075" x2="46.99" y2="45.72" width="0.254" layer="1"/>
-<wire x1="46.99" y1="45.72" x2="46.99" y2="45.3" width="0.1524" layer="1"/>
-<wire x1="48.895" y1="45.3" x2="46.99" y2="45.3" width="0.254" layer="1"/>
+<wire x1="46.99" y1="45.72" x2="46.99" y2="45.1" width="0.1524" layer="1"/>
+<wire x1="48.895" y1="45.3" x2="46.99" y2="45.1" width="0.254" layer="1"/>
 <wire x1="63.145" y1="47.42" x2="63.145" y2="46.075" width="0.254" layer="1"/>
 <wire x1="63.145" y1="46.075" x2="63.5" y2="45.72" width="0.254" layer="1"/>
-<wire x1="63.5" y1="45.72" x2="63.5" y2="45.3" width="0.1524" layer="1"/>
-<wire x1="65.405" y1="45.3" x2="63.5" y2="45.3" width="0.254" layer="1"/>
+<wire x1="63.5" y1="45.72" x2="63.5" y2="45.1" width="0.1524" layer="1"/>
+<wire x1="65.405" y1="45.3" x2="63.5" y2="45.1" width="0.254" layer="1"/>
 <contactref element="U2401" pad="13"/>
 <contactref element="U2401" pad="12"/>
 <contactref element="U2401" pad="11"/>
@@ -5993,12 +5959,12 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="C2402" pad="1"/>
 <contactref element="C2403" pad="1"/>
 <contactref element="X2411" pad="1"/>
-<wire x1="10.16" y1="55.26" x2="8.89" y2="55.26" width="0.4064" layer="16"/>
-<wire x1="7.62" y1="55.245" x2="7.62" y2="55.26" width="0.3048" layer="16"/>
-<wire x1="7.62" y1="55.26" x2="6.35" y2="55.26" width="0.4064" layer="16"/>
-<wire x1="8.89" y1="55.26" x2="7.62" y2="55.26" width="0.4064" layer="16"/>
+<wire x1="10.16" y1="55.26" x2="8.89" y2="55.46" width="0.4064" layer="16"/>
+<wire x1="7.62" y1="55.245" x2="7.62" y2="55.46" width="0.3048" layer="16"/>
+<wire x1="7.62" y1="55.46" x2="6.35" y2="55.46" width="0.4064" layer="16"/>
+<wire x1="8.89" y1="55.46" x2="7.62" y2="55.46" width="0.4064" layer="16"/>
 <wire x1="3.81" y1="55.88" x2="5.73" y2="55.88" width="0.4064" layer="16"/>
-<wire x1="5.73" y1="55.88" x2="6.35" y2="55.26" width="0.4064" layer="16"/>
+<wire x1="5.73" y1="55.88" x2="6.35" y2="55.46" width="0.4064" layer="16"/>
 <via x="10.16" y="55.88" extent="1-16" drill="0.3048"/>
 <wire x1="11.3875" y1="56.22" x2="10.5" y2="56.22" width="0.3048" layer="1"/>
 <wire x1="10.5" y1="56.22" x2="10.16" y2="55.88" width="0.3048" layer="1"/>
@@ -6037,7 +6003,7 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="U9601" pad="22"/>
 <contactref element="R9611" pad="2"/>
 <wire x1="33.375" y1="56.72" x2="33.375" y2="58.485" width="0.1524" layer="1"/>
-<wire x1="33.375" y1="58.485" x2="33.02" y2="58.5225" width="0.1524" layer="1"/>
+<wire x1="33.375" y1="58.485" x2="33.02" y2="58.7225" width="0.1524" layer="1"/>
 </signal>
 <signal name="SPI_DRV_SCLK">
 <contactref element="U9601" pad="11"/>
@@ -6065,33 +6031,33 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="60.96" y1="43.18" x2="61.9125" y2="44.1325" width="0.1524" layer="16"/>
 <wire x1="61.9125" y1="44.1325" x2="67.31" y2="44.1325" width="0.1524" layer="16"/>
 <wire x1="67.31" y1="44.1325" x2="69.5325" y2="41.91" width="0.1524" layer="16"/>
-<wire x1="69.5325" y1="39.37" x2="66.3575" y2="10.2625" width="0" layer="19" extent="1-16"/>
+<wire x1="69.5325" y1="39.37" x2="66.3575" y2="10.4625" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="SPI_DRV_SO">
 <contactref element="R9611" pad="1"/>
 <contactref element="R9511" pad="1"/>
 <contactref element="R9411" pad="1"/>
 <contactref element="R9622" pad="2"/>
-<wire x1="49.53" y1="60.2225" x2="54.19" y2="60.2225" width="0.1524" layer="1"/>
+<wire x1="49.53" y1="60.0225" x2="54.19" y2="60.2225" width="0.1524" layer="1"/>
 <wire x1="54.19" y1="60.2225" x2="54.2925" y2="60.325" width="0.1524" layer="1"/>
-<wire x1="49.53" y1="60.2225" x2="48.1575" y2="60.2225" width="0.1524" layer="1"/>
+<wire x1="49.53" y1="60.0225" x2="48.1575" y2="60.2225" width="0.1524" layer="1"/>
 <wire x1="48.1575" y1="60.2225" x2="47.9425" y2="60.325" width="0.1524" layer="1"/>
-<wire x1="66.04" y1="60.2225" x2="64.6675" y2="60.2225" width="0.1524" layer="1"/>
+<wire x1="66.04" y1="60.0225" x2="64.6675" y2="60.2225" width="0.1524" layer="1"/>
 <wire x1="64.6675" y1="60.2225" x2="64.4525" y2="60.325" width="0.1524" layer="1"/>
 <via x="54.2925" y="60.325" extent="1-16" drill="0.3048"/>
 <wire x1="54.2925" y1="60.325" x2="64.4525" y2="60.325" width="0.1524" layer="16"/>
 <via x="64.4525" y="60.325" extent="1-16" drill="0.3048"/>
-<wire x1="33.02" y1="60.2225" x2="35.4575" y2="60.2225" width="0.1524" layer="1"/>
+<wire x1="33.02" y1="60.0225" x2="35.4575" y2="60.2225" width="0.1524" layer="1"/>
 <wire x1="35.4575" y1="60.2225" x2="35.56" y2="60.325" width="0.1524" layer="1"/>
 <via x="35.56" y="60.325" extent="1-16" drill="0.3048"/>
 <wire x1="35.56" y1="60.325" x2="47.9425" y2="60.325" width="0.1524" layer="16"/>
 <via x="47.9425" y="60.325" extent="1-16" drill="0.3048"/>
-<wire x1="66.04" y1="60.2225" x2="70.5875" y2="60.2225" width="0.1524" layer="1"/>
+<wire x1="66.04" y1="60.0225" x2="70.5875" y2="60.2225" width="0.1524" layer="1"/>
 <wire x1="70.5875" y1="60.2225" x2="70.8025" y2="60.0075" width="0.1524" layer="1"/>
 <wire x1="70.8025" y1="60.0075" x2="70.8025" y2="41.91" width="0.1524" layer="1"/>
 <via x="70.8025" y="41.91" extent="1-16" drill="0.3048"/>
 <wire x1="70.8025" y1="41.91" x2="70.8025" y2="39.37" width="0.1524" layer="16"/>
-<wire x1="67.31" y1="10.2625" x2="70.8025" y2="39.37" width="0" layer="19" extent="16-16"/>
+<wire x1="67.31" y1="10.4625" x2="70.8025" y2="39.37" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="SPI_DRV_SI">
 <contactref element="U9601" pad="19"/>
@@ -6109,7 +6075,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="35.325" y1="56.72" x2="35.325" y2="55.48" width="0.1524" layer="1"/>
 <wire x1="35.325" y1="55.48" x2="35.8775" y2="54.9275" width="0.1524" layer="1"/>
 <via x="35.8775" y="54.9275" extent="1-16" drill="0.3048"/>
-<wire x1="67.945" y1="10.2625" x2="68.8975" y2="54.9275" width="0" layer="19" extent="1-1"/>
+<wire x1="67.945" y1="10.4625" x2="68.8975" y2="54.9275" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="SPI_DRV_L_!CS">
 <contactref element="U9601" pad="14"/>
@@ -6137,7 +6103,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="60.6425" y1="43.815" x2="61.595" y2="44.7675" width="0.1524" layer="16"/>
 <wire x1="61.595" y1="44.7675" x2="68.2625" y2="44.7675" width="0.1524" layer="16"/>
 <wire x1="68.2625" y1="44.7675" x2="70.1675" y2="42.8625" width="0.1524" layer="16"/>
-<wire x1="70.1675" y1="39.37" x2="69.5325" y2="10.2625" width="0" layer="19" extent="1-16"/>
+<wire x1="70.1675" y1="39.37" x2="69.5325" y2="10.4625" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="SPI_DRV_!RST">
 <contactref element="U9601" pad="27"/>
@@ -6162,19 +6128,19 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="72.0725" y1="61.595" x2="72.0725" y2="41.91" width="0.1524" layer="1"/>
 <via x="72.0725" y="41.91" extent="1-16" drill="0.3048"/>
 <wire x1="72.0725" y1="41.91" x2="72.0725" y2="39.37" width="0.1524" layer="16"/>
-<wire x1="68.8975" y1="10.2625" x2="72.0725" y2="39.37" width="0" layer="19" extent="16-16"/>
+<wire x1="68.8975" y1="10.4625" x2="72.0725" y2="39.37" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$13">
 <contactref element="U9501" pad="22"/>
 <contactref element="R9511" pad="2"/>
 <wire x1="49.885" y1="56.72" x2="49.885" y2="58.485" width="0.1524" layer="1"/>
-<wire x1="49.885" y1="58.485" x2="49.53" y2="58.5225" width="0.1524" layer="1"/>
+<wire x1="49.885" y1="58.485" x2="49.53" y2="58.7225" width="0.1524" layer="1"/>
 </signal>
 <signal name="N$15">
 <contactref element="U9401" pad="22"/>
 <contactref element="R9411" pad="2"/>
 <wire x1="66.395" y1="56.72" x2="66.395" y2="58.485" width="0.1524" layer="1"/>
-<wire x1="66.395" y1="58.485" x2="66.04" y2="58.5225" width="0.1524" layer="1"/>
+<wire x1="66.395" y1="58.485" x2="66.04" y2="58.7225" width="0.1524" layer="1"/>
 </signal>
 <signal name="DRV_OUT_3_4">
 <contactref element="U9401" pad="12"/>
@@ -6217,7 +6183,7 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="U9601" pad="30"/>
 <contactref element="U9501" pad="30"/>
 <contactref element="U9401" pad="30"/>
-<wire x1="77.685" y1="13.335" x2="81.28" y2="13.335" width="0.1524" layer="1"/>
+<wire x1="77.485" y1="13.335" x2="81.28" y2="13.335" width="0.1524" layer="1"/>
 <wire x1="81.28" y1="13.335" x2="81.915" y2="12.7" width="0.1524" layer="1"/>
 <wire x1="81.915" y1="12.7" x2="81.915" y2="11.43" width="0.1524" layer="1"/>
 <wire x1="81.915" y1="11.43" x2="81.5975" y2="11.1125" width="0.1524" layer="1"/>
@@ -6252,7 +6218,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="71.4375" y1="60.96" x2="71.4375" y2="42.8625" width="0.1524" layer="1"/>
 <via x="71.4375" y="42.8625" extent="1-16" drill="0.3048"/>
 <wire x1="71.4375" y1="42.8625" x2="71.4375" y2="39.37" width="0.1524" layer="16"/>
-<wire x1="71.4375" y1="39.37" x2="77.685" y2="13.335" width="0" layer="19" extent="1-16"/>
+<wire x1="71.4375" y1="39.37" x2="77.485" y2="13.335" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="SPI_DRV_EXT_!CS">
 <contactref element="R9424" pad="2"/>
@@ -6266,7 +6232,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="15.74" y1="37.17" x2="15.74" y2="38.6" width="0.3048" layer="1"/>
 <wire x1="15.74" y1="38.6" x2="15.875" y2="38.735" width="0.3048" layer="1"/>
 <wire x1="15.875" y1="38.735" x2="18.825" y2="38.735" width="0.3048" layer="1"/>
-<wire x1="18.825" y1="38.735" x2="19.46" y2="38.1" width="0.3048" layer="1"/>
+<wire x1="18.825" y1="38.735" x2="21.16" y2="38.1" width="0.3048" layer="1"/>
 </signal>
 <signal name="TPS_PG">
 <contactref element="U9001" pad="4"/>
@@ -6274,7 +6240,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="14.74" y1="41.57" x2="14.74" y2="40.775" width="0.1524" layer="1"/>
 <wire x1="14.74" y1="40.775" x2="13.335" y2="39.37" width="0.1524" layer="1"/>
 <via x="24.13" y="38.1" extent="1-16" drill="0.3048"/>
-<wire x1="24.55" y1="38.735" x2="24.55" y2="38.315" width="0.1524" layer="16"/>
+<wire x1="24.75" y1="38.735" x2="24.55" y2="38.315" width="0.1524" layer="16"/>
 <wire x1="24.55" y1="38.315" x2="24.13" y2="38.1" width="0.1524" layer="16"/>
 <via x="13.335" y="39.37" extent="1-16" drill="0.3048"/>
 <wire x1="13.335" y1="39.37" x2="14.605" y2="40.64" width="0.1524" layer="16"/>
@@ -6291,15 +6257,15 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="23.495" y1="43.815" x2="24.765" y2="42.545" width="0.1524" layer="1"/>
 <via x="24.765" y="41.275" extent="1-16" drill="0.3048"/>
 <wire x1="24.765" y1="42.545" x2="24.765" y2="41.275" width="0.1524" layer="1"/>
-<wire x1="24.55" y1="40.64" x2="24.55" y2="41.06" width="0.3048" layer="16"/>
+<wire x1="24.75" y1="40.64" x2="24.55" y2="41.06" width="0.3048" layer="16"/>
 <wire x1="24.55" y1="41.06" x2="24.765" y2="41.275" width="0.3048" layer="16"/>
 </signal>
 <signal name="TPS_LBI">
 <contactref element="U9001" pad="6"/>
 <contactref element="R9002" pad="1"/>
 <contactref element="R9001" pad="2"/>
-<wire x1="13.12" y1="34.925" x2="13.12" y2="36.41" width="0.1524" layer="16"/>
-<wire x1="13.12" y1="36.625" x2="12.915" y2="36.83" width="0.3048" layer="16"/>
+<wire x1="13.32" y1="34.925" x2="13.12" y2="36.41" width="0.1524" layer="16"/>
+<wire x1="13.12" y1="36.625" x2="12.715" y2="36.83" width="0.3048" layer="16"/>
 <via x="13.335" y="36.195" extent="1-16" drill="0.3048"/>
 <wire x1="13.12" y1="36.625" x2="13.12" y2="36.41" width="0.1524" layer="16"/>
 <wire x1="13.12" y1="36.41" x2="13.335" y2="36.195" width="0.3048" layer="16"/>
@@ -6312,49 +6278,49 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="C8901" pad="1"/>
 <contactref element="R8902" pad="1"/>
 <contactref element="R8901" pad="2"/>
-<wire x1="5.93" y1="22.86" x2="5.93" y2="22.645" width="0.3048" layer="16"/>
+<wire x1="5.73" y1="22.86" x2="5.93" y2="22.645" width="0.3048" layer="16"/>
 <wire x1="5.93" y1="22.645" x2="6.35" y2="22.225" width="0.3048" layer="16"/>
 <wire x1="6.35" y1="22.225" x2="6.35" y2="21.17" width="0.3048" layer="16"/>
-<wire x1="5.93" y1="22.86" x2="5.93" y2="24.765" width="0.3048" layer="16"/>
-<wire x1="5.93" y1="22.86" x2="7.2" y2="22.86" width="0.3048" layer="16"/>
-<wire x1="7.2" y1="22.86" x2="7.62" y2="23.28" width="0.3048" layer="16"/>
+<wire x1="5.73" y1="22.86" x2="5.73" y2="24.765" width="0.3048" layer="16"/>
+<wire x1="5.73" y1="22.86" x2="7.2" y2="22.86" width="0.3048" layer="16"/>
+<wire x1="7.2" y1="22.86" x2="7.62" y2="23.48" width="0.3048" layer="16"/>
 </signal>
 <signal name="SWR_IN_REV_HI">
 <contactref element="L8911" pad="1"/>
 <contactref element="C8911" pad="1"/>
 <contactref element="R8912" pad="1"/>
 <contactref element="R8911" pad="2"/>
-<wire x1="5.93" y1="34.29" x2="6.35" y2="35.98" width="0" layer="19" extent="16-16"/>
-<wire x1="7.62" y1="33.87" x2="5.93" y2="34.29" width="0" layer="19" extent="16-16"/>
-<wire x1="5.93" y1="32.385" x2="5.93" y2="34.29" width="0" layer="19" extent="16-16"/>
+<wire x1="5.73" y1="34.29" x2="6.35" y2="35.98" width="0" layer="19" extent="16-16"/>
+<wire x1="7.62" y1="33.67" x2="5.73" y2="34.29" width="0" layer="19" extent="16-16"/>
+<wire x1="5.73" y1="32.385" x2="5.73" y2="34.29" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="SWR_IN_REV">
 <contactref element="U8921" pad="5"/>
 <contactref element="R8912" pad="2"/>
 <contactref element="D8911" pad="A"/>
 <contactref element="R8913" pad="1"/>
-<wire x1="7.62" y1="32.17" x2="8.05" y2="33.02" width="0" layer="19" extent="1-16"/>
-<wire x1="8.47" y1="30.48" x2="7.62" y2="32.17" width="0" layer="19" extent="1-16"/>
-<wire x1="7.9" y1="29.96" x2="8.47" y2="30.48" width="0" layer="19" extent="1-16"/>
+<wire x1="7.62" y1="32.37" x2="8.05" y2="33.02" width="0" layer="19" extent="1-16"/>
+<wire x1="8.27" y1="30.48" x2="7.62" y2="32.37" width="0" layer="19" extent="1-16"/>
+<wire x1="7.9" y1="29.96" x2="8.27" y2="30.48" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="SWR_IN_FWD">
 <contactref element="U8921" pad="1"/>
 <contactref element="R8902" pad="2"/>
 <contactref element="D8901" pad="A"/>
 <contactref element="R8903" pad="1"/>
-<wire x1="6.77" y1="26.67" x2="4.8" y2="28.46" width="0" layer="19" extent="1-16"/>
-<wire x1="7.62" y1="24.98" x2="6.77" y2="26.67" width="0" layer="19" extent="1-16"/>
-<wire x1="4.65" y1="24.13" x2="7.62" y2="24.98" width="0" layer="19" extent="1-16"/>
+<wire x1="6.97" y1="26.67" x2="4.8" y2="28.46" width="0" layer="19" extent="1-16"/>
+<wire x1="7.62" y1="24.78" x2="6.97" y2="26.67" width="0" layer="19" extent="1-16"/>
+<wire x1="4.65" y1="24.13" x2="7.62" y2="24.78" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="SWR_SEL_REV">
 <contactref element="U8921" pad="3"/>
 <contactref element="R8922" pad="2"/>
-<wire x1="4.8" y1="29.46" x2="60.11" y2="12.065" width="0" layer="19" extent="1-16"/>
+<wire x1="4.8" y1="29.46" x2="60.31" y2="12.065" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="SWR_SEL_FWD">
 <contactref element="R8921" pad="2"/>
 <contactref element="U8921" pad="7"/>
-<wire x1="7.9" y1="28.96" x2="56.3" y2="19.05" width="0" layer="19" extent="1-16"/>
+<wire x1="7.9" y1="28.96" x2="56.5" y2="19.05" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="SWR_SEL_PWR">
 <contactref element="U8921" pad="2"/>
@@ -6363,8 +6329,8 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="D8951" pad="A"/>
 <contactref element="R8951" pad="2"/>
 <wire x1="11.7602" y1="27.3304" x2="12.7" y2="27.12" width="0" layer="19" extent="1-16"/>
-<wire x1="12.065" y1="29.63" x2="11.7602" y2="27.3304" width="0" layer="19" extent="16-16"/>
-<wire x1="7.9" y1="29.46" x2="12.065" y2="29.63" width="0" layer="19" extent="16-16"/>
+<wire x1="12.065" y1="29.83" x2="11.7602" y2="27.3304" width="0" layer="19" extent="16-16"/>
+<wire x1="7.9" y1="29.46" x2="12.065" y2="29.83" width="0" layer="19" extent="16-16"/>
 <wire x1="4.8" y1="28.96" x2="7.9" y2="29.46" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="SWR_OP_OUT">
@@ -6374,7 +6340,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="13.6398" y1="24.7396" x2="13.6398" y2="23.5077" width="0.3048" layer="16"/>
 <wire x1="13.6398" y1="23.5077" x2="13.97" y2="23.1775" width="0.3048" layer="16"/>
 <wire x1="13.97" y1="23.1775" x2="14.0725" y2="23.1775" width="0.3048" layer="16"/>
-<wire x1="14.0725" y1="23.1775" x2="14.39" y2="22.86" width="0.3048" layer="16"/>
+<wire x1="14.0725" y1="23.1775" x2="14.59" y2="22.86" width="0.3048" layer="16"/>
 <wire x1="13.6398" y1="24.7396" x2="12.7" y2="26.22" width="0" layer="19" extent="1-16"/>
 </signal>
 </signals>
