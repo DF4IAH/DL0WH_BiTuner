@@ -1,0 +1,26 @@
+#PCC Sequence - do not modify
+#Mon Dec 31 23:04:17 CET 2018
+PCC.Checker=true
+PCC.Datasheet=025976_Rev4
+PCC.Line=STM32L4x6
+PCC.MCU=STM32L476R(C-E-G)Tx
+PCC.PartNumber=STM32L476RGTx
+PCC.Seq0=1
+PCC.Seq0.Step0.Average_Current=2.62 mA
+PCC.Seq0.Step0.CPU_Frequency=16 MHz
+PCC.Seq0.Step0.Category=In DS Table
+PCC.Seq0.Step0.DMIPS=0.0
+PCC.Seq0.Step0.Duration=1 ms
+PCC.Seq0.Step0.Frequency=16 MHz
+PCC.Seq0.Step0.Memory=FLASH/ART/Cache
+PCC.Seq0.Step0.Mode=RUN
+PCC.Seq0.Step0.Oscillator=HSE
+PCC.Seq0.Step0.Peripherals=ADC1\:fs_10_ksps ADC2\:fs_10_ksps ADC3\:fs_10_ksps AHB_APB1_Bridge AHB_APB2_Bridge CRC DAC1\:OUT1-Buffer_OFF-Middle_code GPIOA GPIOB GPIOC GPIOD GPIOH I2C1 LPTIM1 PVD/BOR RNG RTC SPI1 TIM5 UART4 USB_OTG_FS
+PCC.Seq0.Step0.TaMax=104.58
+PCC.Seq0.Step0.User's_Consumption=0 mA
+PCC.Seq0.Step0.Vcore=Range2-Medium
+PCC.Seq0.Step0.Vdd=3.6
+PCC.Seq0.Step0.Voltage_Source=Battery
+PCC.Series=STM32L4
+PCC.Temperature=25
+PCC.Vdd=3.6
