@@ -7102,18 +7102,18 @@ Power Supply devices but 78*, 79* regulators.</description>
 <smd name="PAD2" x="0" y="0" dx="5" dy="3.4" layer="16" roundness="5" rot="R180" stop="no" thermals="no"/>
 <rectangle x1="-1.7" y1="-1.24" x2="1.7" y2="1.24" layer="29"/>
 <rectangle x1="-1.7" y1="-1.24" x2="1.7" y2="1.24" layer="30"/>
-<pad name="PAD" x="0.65" y="0" drill="0.2" diameter="0.3" stop="no" thermals="no"/>
-<pad name="PAD3" x="-0.65" y="0" drill="0.2" diameter="0.3" stop="no" thermals="no"/>
-<pad name="PAD4" x="-1.95" y="0" drill="0.2" diameter="0.3" stop="no" thermals="no"/>
-<pad name="PAD5" x="1.95" y="0" drill="0.2" diameter="0.3" stop="no" thermals="no"/>
-<pad name="PAD6" x="1.95" y="1.1" drill="0.2" diameter="0.3" stop="no" thermals="no"/>
-<pad name="PAD7" x="1.95" y="-1.1" drill="0.2" diameter="0.3" stop="no" thermals="no"/>
-<pad name="PAD8" x="0.65" y="1.1" drill="0.2" diameter="0.3" stop="no" thermals="no"/>
-<pad name="PAD9" x="0.65" y="-1.1" drill="0.2" diameter="0.3" stop="no" thermals="no"/>
-<pad name="PAD10" x="-0.65" y="1.1" drill="0.2" diameter="0.3" stop="no" thermals="no"/>
-<pad name="PAD11" x="-0.65" y="-1.1" drill="0.2" diameter="0.3" stop="no" thermals="no"/>
-<pad name="PAD12" x="-1.95" y="1.1" drill="0.2" diameter="0.3" stop="no" thermals="no"/>
-<pad name="PAD13" x="-1.95" y="-1.1" drill="0.2" diameter="0.3" stop="no" thermals="no"/>
+<pad name="PAD" x="0.65" y="0" drill="0.3048" stop="no" thermals="no"/>
+<pad name="PAD3" x="-0.65" y="0" drill="0.3048" stop="no" thermals="no"/>
+<pad name="PAD4" x="-1.95" y="0" drill="0.3048" stop="no" thermals="no"/>
+<pad name="PAD5" x="1.95" y="0" drill="0.3048" stop="no" thermals="no"/>
+<pad name="PAD6" x="1.95" y="1.1" drill="0.3048" stop="no" thermals="no"/>
+<pad name="PAD7" x="1.95" y="-1.1" drill="0.3048" stop="no" thermals="no"/>
+<pad name="PAD8" x="0.65" y="1.1" drill="0.3048" stop="no" thermals="no"/>
+<pad name="PAD9" x="0.65" y="-1.1" drill="0.3048" stop="no" thermals="no"/>
+<pad name="PAD10" x="-0.65" y="1.1" drill="0.3048" stop="no" thermals="no"/>
+<pad name="PAD11" x="-0.65" y="-1.1" drill="0.3048" stop="no" thermals="no"/>
+<pad name="PAD12" x="-1.95" y="1.1" drill="0.3048" stop="no" thermals="no"/>
+<pad name="PAD13" x="-1.95" y="-1.1" drill="0.3048" stop="no" thermals="no"/>
 </package>
 <package name="S-PDSO-G10">
 <description>&lt;h3&gt;DGS (S-PDSO-G10)&lt;/h3&gt;
@@ -12833,6 +12833,32 @@ Pads enlarged by 0.2 mm</description>
 <wire x1="3.035" y1="3.235" x2="3.235" y2="3.035" width="0.1016" layer="51" curve="-90"/>
 <wire x1="3.235" y1="-3.035" x2="3.035" y2="-3.235" width="0.1016" layer="51" curve="-90"/>
 </package>
+<package name="L_8.00MM_X_8.00MM">
+<description>&lt;h4&gt;INDUCTOR&lt;/h4&gt;
+8.00 mm x 8.00 mm&lt;br/&gt;
+Pads enlarged by 0.2 mm</description>
+<wire x1="-4" y1="4" x2="4" y2="4" width="0.1016" layer="51"/>
+<wire x1="-4" y1="-4" x2="4" y2="-4" width="0.1016" layer="51"/>
+<smd name="1" x="-3.4" y="0" dx="2" dy="2.2" layer="1" roundness="15"/>
+<smd name="2" x="3.4" y="0" dx="2" dy="2.2" layer="1" roundness="15"/>
+<text x="-1.27" y="4.445" size="0.6096" layer="25" font="vector" ratio="10">&gt;NAME</text>
+<text x="-1.27" y="-5.08" size="0.6096" layer="27" font="vector" ratio="10">&gt;VALUE</text>
+<rectangle x1="-4" y1="-1.1" x2="-2.4" y2="1.1" layer="51"/>
+<wire x1="-4" y1="-4" x2="-4" y2="4" width="0.1016" layer="51"/>
+<wire x1="4" y1="-4" x2="4" y2="4" width="0.1016" layer="51"/>
+<rectangle x1="2.4" y1="-1.1" x2="4" y2="1.1" layer="51"/>
+<wire x1="-4" y1="4" x2="4" y2="4" width="0.127" layer="21"/>
+<wire x1="-4" y1="-4" x2="4" y2="-4" width="0.127" layer="21"/>
+<dimension x1="4" y1="-1.1" x2="4" y2="1.1" x3="5.715" y3="0" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<dimension x1="-4" y1="-1.1" x2="-2.4" y2="-1.1" x3="-3.2" y3="-6.35" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<dimension x1="3.9" y1="-4" x2="3.9" y2="4" x3="6.985" y3="0" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<dimension x1="-2.4" y1="1.1" x2="2.4" y2="1.1" x3="0" y3="5.715" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<dimension x1="-4" y1="-4" x2="4" y2="-4" x3="0" y3="-7.62" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<wire x1="-4" y1="-4" x2="-4" y2="-1.5" width="0.127" layer="21"/>
+<wire x1="4" y1="-4" x2="4" y2="-1.5" width="0.127" layer="21"/>
+<wire x1="-4" y1="1.5" x2="-4" y2="4" width="0.127" layer="21"/>
+<wire x1="4" y1="1.5" x2="4" y2="4" width="0.127" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="L-EU">
@@ -13519,6 +13545,15 @@ Pads enlarged by 0.2 mm</description>
 </technologies>
 </device>
 <device name="3.00X3.00MM" package="L_3.00MM_X_3.00MM">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="8.00X8.00MM" package="L_8.00MM_X_8.00MM">
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="2" pad="2"/>
@@ -17202,7 +17237,7 @@ Anode left, Kathode right</description>
 <part name="R9524" library="df4iah_rcl" deviceset="R-EU_" device="R0603" value="47R"/>
 <part name="R9424" library="df4iah_rcl" deviceset="R-EU_" device="R0603" value="47R"/>
 <part name="U9001" library="df4iah_powersupply" deviceset="TPS62051" device=""/>
-<part name="L9011" library="df4iah_rcl" deviceset="L-EU" device="L0603" value="10uH"/>
+<part name="L9011" library="df4iah_rcl" deviceset="L-EU" device="8.00X8.00MM" value="10uH"/>
 <part name="R9021" library="df4iah_rcl" deviceset="R-EU_" device="R0603" value="1MR"/>
 <part name="R9022" library="df4iah_rcl" deviceset="R-EU_" device="R0603" value="1MR"/>
 <part name="GND9002" library="df4iah_supply" deviceset="GND" device=""/>
@@ -19964,7 +19999,7 @@ extra</text>
 <busses>
 </busses>
 <nets>
-<net name="+5V0" class="0">
+<net name="+5V" class="2">
 <segment>
 <wire x1="182.88" y1="124.46" x2="195.58" y2="124.46" width="0.1524" layer="91"/>
 <label x="226.06" y="124.46" size="1.778" layer="95" xref="yes"/>
@@ -19992,7 +20027,7 @@ extra</text>
 <junction x="208.28" y="124.46"/>
 </segment>
 </net>
-<net name="DC_12V_IN" class="0">
+<net name="+12V" class="0">
 <segment>
 <label x="22.86" y="124.46" size="1.778" layer="95" rot="R180" xref="yes"/>
 <pinref part="U2401" gate="G$1" pin="VIN@13"/>
@@ -20267,7 +20302,7 @@ extra</text>
 <junction x="81.28" y="99.06"/>
 </segment>
 </net>
-<net name="+5V0" class="0">
+<net name="+5V" class="2">
 <segment>
 <pinref part="U9001" gate="G$1" pin="VIN"/>
 <wire x1="109.22" y1="116.84" x2="101.6" y2="116.84" width="0.1524" layer="91"/>
