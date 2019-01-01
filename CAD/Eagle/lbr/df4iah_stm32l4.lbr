@@ -746,6 +746,8 @@
 <pin name="VSS10" x="-17.78" y="-96.52" length="middle" rot="R90"/>
 <pin name="VSS11" x="-20.32" y="-96.52" length="middle" rot="R90"/>
 <pin name="VREF-" x="7.62" y="93.98" length="middle" rot="R270"/>
+<text x="-2.54" y="7.62" size="1.778" layer="95">&gt;NAME</text>
+<text x="-2.54" y="-10.16" size="1.778" layer="96">&gt;VALUE</text>
 </symbol>
 <symbol name="STM32F4_100PINS_FUNCTIONAL">
 <wire x1="-36.83" y1="-44.45" x2="-36.83" y2="49.53" width="0.005" layer="94"/>
@@ -1309,6 +1311,8 @@ Ping</text>
 <pin name="VDDIO2_2" x="-12.7" y="119.38" length="middle" rot="R270"/>
 <pin name="VDDUSB" x="-7.62" y="119.38" length="middle" rot="R270"/>
 <pin name="VDD9" x="-20.32" y="119.38" length="middle" rot="R270"/>
+<text x="-2.54" y="7.62" size="1.778" layer="95">&gt;NAME</text>
+<text x="-2.54" y="-10.16" size="1.778" layer="96">&gt;VALUE</text>
 </symbol>
 <symbol name="STM32L4_144PINS_SMPS">
 <description>STM32L4 - external SMPS device</description>
@@ -1460,6 +1464,8 @@ Ping</text>
 <pin name="VDD12_1" x="-2.54" y="119.38" length="middle" rot="R270"/>
 <pin name="VDD12_2" x="0" y="119.38" length="middle" rot="R270"/>
 <pin name="VDD9" x="-20.32" y="119.38" length="middle" rot="R270"/>
+<text x="-2.54" y="7.62" size="1.778" layer="95">&gt;NAME</text>
+<text x="-2.54" y="-10.16" size="1.778" layer="96">&gt;VALUE</text>
 </symbol>
 <symbol name="STM32L476RXT_64PIN_LDO">
 <description>&lt;h4&gt;STM32L476RxT 64LQFP&lt;/h4&gt;</description>
@@ -1547,6 +1553,8 @@ Ping</text>
 <pin name="VSS@47" x="-111.76" y="-35.56" direction="pas"/>
 <pin name="VDDUSB" x="-111.76" y="0" direction="pwr"/>
 <pin name="VSS@63" x="-111.76" y="-38.1" direction="pas"/>
+<text x="-5.08" y="43.18" size="1.778" layer="95">&gt;NAME</text>
+<text x="-5.08" y="-45.72" size="1.778" layer="96">&gt;VALUE</text>
 </symbol>
 </symbols>
 <devicesets>

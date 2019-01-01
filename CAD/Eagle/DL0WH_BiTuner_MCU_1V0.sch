@@ -14131,6 +14131,8 @@ Subminiature Tact Switch for SMT</description>
 <pin name="VSS@47" x="-111.76" y="-35.56" direction="pas"/>
 <pin name="VDDUSB" x="-111.76" y="0" direction="pwr"/>
 <pin name="VSS@63" x="-111.76" y="-38.1" direction="pas"/>
+<text x="-5.08" y="43.18" size="1.778" layer="95">&gt;NAME</text>
+<text x="-5.08" y="-45.72" size="1.778" layer="96">&gt;VALUE</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -14992,7 +14994,10 @@ Anode left, Kathode right</description>
 <instances>
 <instance part="FRAME_01" gate="G$1" x="0" y="0"/>
 <instance part="GND0121" gate="1" x="33.02" y="58.42"/>
-<instance part="U0101" gate="G$1" x="149.86" y="101.6"/>
+<instance part="U0101" gate="G$1" x="149.86" y="101.6" smashed="yes">
+<attribute name="NAME" x="144.78" y="144.78" size="1.778" layer="95"/>
+<attribute name="VALUE" x="134.62" y="55.88" size="1.778" layer="96"/>
+</instance>
 </instances>
 <busses>
 <bus name="PB[0..15]">
