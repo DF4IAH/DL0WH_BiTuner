@@ -2862,29 +2862,34 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <rectangle x1="0.3556" y1="-0.7239" x2="1.1057" y2="0.7262" layer="51"/>
 <rectangle x1="-0.1001" y1="-0.4001" x2="0.1001" y2="0.4001" layer="35"/>
 </package>
-<package name="L_4.90MM_X_4.90MM">
+<package name="L_4.50MM_X_3.20MM">
 <description>&lt;h4&gt;INDUCTOR&lt;/h4&gt;
-4.90 mm x 4.90 mm</description>
-<wire x1="-2.45" y1="2.45" x2="2.45" y2="2.45" width="0.1016" layer="51"/>
-<wire x1="-2.45" y1="-2.45" x2="2.45" y2="-2.45" width="0.1016" layer="51"/>
-<smd name="1" x="-1.7" y="0" dx="2" dy="4.4" layer="1"/>
-<smd name="2" x="1.7" y="0" dx="2" dy="4.4" layer="1"/>
-<text x="-1.27" y="3.175" size="0.6096" layer="25" font="vector" ratio="10">&gt;NAME</text>
-<text x="-1.27" y="-3.81" size="0.6096" layer="27" font="vector" ratio="10">&gt;VALUE</text>
-<rectangle x1="-2.45" y1="-2" x2="-0.95" y2="2" layer="51"/>
-<wire x1="-2.45" y1="-2.45" x2="-2.45" y2="2.45" width="0.1016" layer="51"/>
-<wire x1="2.45" y1="-2.45" x2="2.45" y2="2.45" width="0.1016" layer="51"/>
-<rectangle x1="0.95" y1="-2" x2="2.45" y2="2" layer="51"/>
-<wire x1="-2.45" y1="2.45" x2="2.45" y2="2.45" width="0.127" layer="21"/>
-<wire x1="-2.45" y1="-2.45" x2="2.45" y2="-2.45" width="0.127" layer="21"/>
-<wire x1="-2.45" y1="-2.45" x2="-2.45" y2="-2.2" width="0.127" layer="21"/>
-<wire x1="-2.45" y1="2.45" x2="-2.45" y2="2.2" width="0.127" layer="21"/>
-<wire x1="2.45" y1="2.45" x2="2.45" y2="2.2" width="0.127" layer="21"/>
-<wire x1="2.45" y1="-2.45" x2="2.45" y2="-2.2" width="0.127" layer="21"/>
-<dimension x1="3.0226" y1="-2.2" x2="3.0226" y2="2.2" x3="3.81" y3="0" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
-<dimension x1="-2.45" y1="-2.45" x2="2.45" y2="-2.45" x3="0" y3="-3.81" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
-<dimension x1="2.45" y1="-2.45" x2="2.45" y2="2.45" x3="5.08" y3="0" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
-<dimension x1="-0.95" y1="2" x2="0.95" y2="2" x3="0" y3="3.175" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+4.5 mm x 3.2 mm
+
+Overlapp: 1&amp;3 / 2&amp;4</description>
+<wire x1="-2.05" y1="1.6" x2="2.05" y2="1.6" width="0.1016" layer="51"/>
+<wire x1="-2.05" y1="-1.6" x2="2.05" y2="-1.6" width="0.1016" layer="51"/>
+<smd name="1" x="-1.6" y="0" dx="1.5" dy="3" layer="1" roundness="5" thermals="no"/>
+<smd name="2" x="1.6" y="0" dx="1.5" dy="3" layer="1" roundness="5"/>
+<text x="-1.27" y="1.905" size="0.6096" layer="25" font="vector" ratio="10">&gt;NAME</text>
+<text x="-1.27" y="-2.54" size="0.6096" layer="27" font="vector" ratio="10">&gt;VALUE</text>
+<rectangle x1="-2.25" y1="-1.5" x2="-0.85" y2="1.5" layer="51"/>
+<rectangle x1="0.85" y1="-1.5" x2="2.25" y2="1.5" layer="51"/>
+<wire x1="-2.25" y1="1.6" x2="2.25" y2="1.6" width="0.127" layer="21"/>
+<wire x1="-2.25" y1="-1.6" x2="2.25" y2="-1.6" width="0.127" layer="21"/>
+<dimension x1="-0.75" y1="-1.6" x2="0.75" y2="-1.6" x3="0" y3="-2.54" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<dimension x1="-2.25" y1="-1.6" x2="2.25" y2="-1.6" x3="0" y3="-4.389321875" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<dimension x1="2.25" y1="-1.5" x2="2.25" y2="1.5" x3="5.08" y3="0" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<wire x1="-2.25" y1="-1.4" x2="-2.25" y2="1.4" width="0.1016" layer="51"/>
+<wire x1="2.25" y1="-1.4" x2="2.25" y2="1.4" width="0.1016" layer="51"/>
+<wire x1="-2.25" y1="1.4" x2="-2.05" y2="1.6" width="0.1016" layer="51" curve="-90"/>
+<wire x1="-2.05" y1="-1.6" x2="-2.25" y2="-1.4" width="0.1016" layer="51" curve="-90"/>
+<wire x1="2.05" y1="1.6" x2="2.25" y2="1.4" width="0.1016" layer="51" curve="-90"/>
+<wire x1="2.25" y1="-1.4" x2="2.05" y2="-1.6" width="0.1016" layer="51" curve="-90"/>
+<dimension x1="2.25" y1="-1.6" x2="2.25" y2="1.6" x3="6.35" y3="0" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<smd name="4" x="2.75" y="0" dx="2" dy="1.5" layer="1" roundness="5"/>
+<smd name="3" x="-2.75" y="0" dx="2" dy="1.5" layer="1" roundness="5" thermals="no"/>
+<dimension x1="-3.75" y1="0.75" x2="3.75" y2="0.75" x3="0" y3="3.81" textsize="0.5" textratio="10" layer="47" width="0.05"/>
 </package>
 <package name="L0603">
 <description>&lt;b&gt;RESISTOR&lt;/b&gt;</description>
@@ -3892,7 +3897,10 @@ Subminiature Tact Switch for SMT</description>
 <element name="R0724" library="df4iah_rcl" package="R0402" value="47R" x="70.485" y="11.1125" rot="MR270"/>
 <element name="R0824" library="df4iah_rcl" package="R0402" value="47R" x="71.12" y="11.1125" rot="R270"/>
 <element name="U1301" library="df4iah_powersupply" package="S-PDSO-G10" value="TPS62051" x="15.24" y="39.37" rot="R180"/>
-<element name="L1311" library="df4iah_rcl" package="L_4.90MM_X_4.90MM" value="10uH" x="22.86" y="38.1" rot="R180"/>
+<element name="L1311" library="df4iah_rcl" package="L_4.50MM_X_3.20MM" value="10uH" x="21.9075" y="38.4175" smashed="yes" rot="R180">
+<attribute name="NAME" x="20.6375" y="40.3225" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="VALUE" x="23.1775" y="40.9575" size="0.6096" layer="27" font="vector" ratio="10" rot="R180"/>
+</element>
 <element name="R1321" library="df4iah_rcl" package="R0402" value="1MR" x="25.4" y="38.735" rot="MR180"/>
 <element name="R1322" library="df4iah_rcl" package="R0402" value="1MR" x="25.4" y="40.64" rot="MR180"/>
 <element name="C1311" library="df4iah_rcl" package="C0603" value="22uF" x="28.575" y="36.83" rot="R270"/>
@@ -4734,8 +4742,8 @@ Subminiature Tact Switch for SMT</description>
 <via x="27.94" y="38.735" extent="1-16" drill="0.3048"/>
 <wire x1="28.575" y1="37.68" x2="28.575" y2="38.1" width="0.3048" layer="1"/>
 <wire x1="28.575" y1="38.1" x2="27.94" y2="38.735" width="0.3048" layer="1"/>
-<wire x1="24.56" y1="38.1" x2="27.94" y2="38.1" width="0.3048" layer="1"/>
-<wire x1="27.94" y1="38.1" x2="27.94" y2="38.735" width="0.3048" layer="1"/>
+<wire x1="23.5075" y1="38.4175" x2="27.6225" y2="38.4175" width="0.3048" layer="1"/>
+<wire x1="27.6225" y1="38.4175" x2="27.94" y2="38.735" width="0.3048" layer="1"/>
 <wire x1="26.05" y1="38.735" x2="27.94" y2="38.735" width="0.3048" layer="16"/>
 <wire x1="26.05" y1="40.64" x2="26.05" y2="38.735" width="0.3048" layer="16"/>
 <wire x1="14.24" y1="41.57" x2="14.24" y2="40.91" width="0.3048" layer="1"/>
@@ -4813,6 +4821,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="6.97" y1="30.48" x2="7.9" y2="28.46" width="0" layer="19" extent="1-16"/>
 <wire x1="8.05" y1="24.13" x2="8.27" y2="26.67" width="0" layer="19" extent="1-1"/>
 <wire x1="4.65" y1="33.02" x2="6.97" y2="30.48" width="0" layer="19" extent="1-1"/>
+<contactref element="L1311" pad="3"/>
 </signal>
 <signal name="P$8">
 </signal>
@@ -6232,21 +6241,22 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="15.74" y1="37.17" x2="15.74" y2="38.6" width="0.3048" layer="1"/>
 <wire x1="15.74" y1="38.6" x2="15.875" y2="38.735" width="0.3048" layer="1"/>
 <wire x1="15.875" y1="38.735" x2="18.825" y2="38.735" width="0.3048" layer="1"/>
-<wire x1="18.825" y1="38.735" x2="21.16" y2="38.1" width="0.3048" layer="1"/>
+<wire x1="18.825" y1="38.735" x2="20.3075" y2="38.4175" width="0.3048" layer="1"/>
+<contactref element="L1311" pad="4"/>
 </signal>
 <signal name="TPS_PG">
 <contactref element="U1301" pad="4"/>
 <contactref element="R1321" pad="1"/>
 <wire x1="14.74" y1="41.57" x2="14.74" y2="40.775" width="0.1524" layer="1"/>
 <wire x1="14.74" y1="40.775" x2="13.335" y2="39.37" width="0.1524" layer="1"/>
-<via x="24.13" y="38.1" extent="1-16" drill="0.3048"/>
+<via x="24.765" y="38.1" extent="1-16" drill="0.3048"/>
 <wire x1="24.75" y1="38.735" x2="24.55" y2="38.315" width="0.1524" layer="16"/>
-<wire x1="24.55" y1="38.315" x2="24.13" y2="38.1" width="0.1524" layer="16"/>
+<wire x1="24.55" y1="38.315" x2="24.765" y2="38.1" width="0.1524" layer="16"/>
 <via x="13.335" y="39.37" extent="1-16" drill="0.3048"/>
 <wire x1="13.335" y1="39.37" x2="14.605" y2="40.64" width="0.1524" layer="16"/>
 <wire x1="14.605" y1="40.64" x2="17.78" y2="40.64" width="0.1524" layer="16"/>
 <wire x1="17.78" y1="40.64" x2="20.32" y2="38.1" width="0.1524" layer="16"/>
-<wire x1="20.32" y1="38.1" x2="24.13" y2="38.1" width="0.1524" layer="16"/>
+<wire x1="20.32" y1="38.1" x2="24.765" y2="38.1" width="0.1524" layer="16"/>
 </signal>
 <signal name="TPS_LBO">
 <contactref element="U1301" pad="2"/>

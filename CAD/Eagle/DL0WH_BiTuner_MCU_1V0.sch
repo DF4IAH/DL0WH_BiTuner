@@ -10559,6 +10559,35 @@ Pads enlarged by 0.2 mm</description>
 <wire x1="-4" y1="1.5" x2="-4" y2="4" width="0.127" layer="21"/>
 <wire x1="4" y1="1.5" x2="4" y2="4" width="0.127" layer="21"/>
 </package>
+<package name="L_4.50MM_X_3.20MM">
+<description>&lt;h4&gt;INDUCTOR&lt;/h4&gt;
+4.5 mm x 3.2 mm
+
+Overlapp: 1&amp;3 / 2&amp;4</description>
+<wire x1="-2.05" y1="1.6" x2="2.05" y2="1.6" width="0.1016" layer="51"/>
+<wire x1="-2.05" y1="-1.6" x2="2.05" y2="-1.6" width="0.1016" layer="51"/>
+<smd name="1" x="-1.6" y="0" dx="1.5" dy="3" layer="1" roundness="5" thermals="no"/>
+<smd name="2" x="1.6" y="0" dx="1.5" dy="3" layer="1" roundness="5"/>
+<text x="-1.27" y="1.905" size="0.6096" layer="25" font="vector" ratio="10">&gt;NAME</text>
+<text x="-1.27" y="-2.54" size="0.6096" layer="27" font="vector" ratio="10">&gt;VALUE</text>
+<rectangle x1="-2.25" y1="-1.5" x2="-0.85" y2="1.5" layer="51"/>
+<rectangle x1="0.85" y1="-1.5" x2="2.25" y2="1.5" layer="51"/>
+<wire x1="-2.25" y1="1.6" x2="2.25" y2="1.6" width="0.127" layer="21"/>
+<wire x1="-2.25" y1="-1.6" x2="2.25" y2="-1.6" width="0.127" layer="21"/>
+<dimension x1="-0.75" y1="-1.6" x2="0.75" y2="-1.6" x3="0" y3="-2.54" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<dimension x1="-2.25" y1="-1.6" x2="2.25" y2="-1.6" x3="0" y3="-4.389321875" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<dimension x1="2.25" y1="-1.5" x2="2.25" y2="1.5" x3="5.08" y3="0" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<wire x1="-2.25" y1="-1.4" x2="-2.25" y2="1.4" width="0.1016" layer="51"/>
+<wire x1="2.25" y1="-1.4" x2="2.25" y2="1.4" width="0.1016" layer="51"/>
+<wire x1="-2.25" y1="1.4" x2="-2.05" y2="1.6" width="0.1016" layer="51" curve="-90"/>
+<wire x1="-2.05" y1="-1.6" x2="-2.25" y2="-1.4" width="0.1016" layer="51" curve="-90"/>
+<wire x1="2.05" y1="1.6" x2="2.25" y2="1.4" width="0.1016" layer="51" curve="-90"/>
+<wire x1="2.25" y1="-1.4" x2="2.05" y2="-1.6" width="0.1016" layer="51" curve="-90"/>
+<dimension x1="2.25" y1="-1.6" x2="2.25" y2="1.6" x3="6.35" y3="0" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
+<smd name="4" x="2.75" y="0" dx="2" dy="1.5" layer="1" roundness="5"/>
+<smd name="3" x="-2.75" y="0" dx="2" dy="1.5" layer="1" roundness="5" thermals="no"/>
+<dimension x1="-3.75" y1="0.75" x2="3.75" y2="0.75" x3="0" y3="3.81" textsize="0.5" textratio="10" layer="47" width="0.05"/>
+</package>
 </packages>
 <symbols>
 <symbol name="L-EU">
@@ -11257,6 +11286,15 @@ Pads enlarged by 0.2 mm</description>
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="4.50X3.20MM" package="L_4.50MM_X_3.20MM">
+<connects>
+<connect gate="G$1" pin="1" pad="1 3"/>
+<connect gate="G$1" pin="2" pad="2 4"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -14939,7 +14977,7 @@ Anode left, Kathode right</description>
 <part name="R0724" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="47R"/>
 <part name="R0824" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="47R"/>
 <part name="U1301" library="df4iah_powersupply" deviceset="TPS62051" device=""/>
-<part name="L1311" library="df4iah_rcl" deviceset="L-EU" device="4.90X4.90MM" value="10uH"/>
+<part name="L1311" library="df4iah_rcl" deviceset="L-EU" device="4.50X3.20MM" value="10uH"/>
 <part name="R1321" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1MR"/>
 <part name="R1322" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1MR"/>
 <part name="GND1302" library="df4iah_supply" deviceset="GND" device=""/>
@@ -17895,8 +17933,7 @@ extra</text>
 <text x="165.1" y="15.24" size="2.54" layer="97" ratio="15">PMIC 5V --&gt; 3V3</text>
 <text x="157.48" y="96.52" size="1.778" layer="97">TPS_PG</text>
 <text x="157.48" y="91.44" size="1.778" layer="97">TPS_LBO</text>
-<text x="152.4" y="121.92" size="1.778" layer="97">MURATA  LQH43PN100M26L   4.5mm x 3.2mm</text>
-<text x="152.4" y="127" size="1.778" layer="97">TODO !!!</text>
+<text x="152.4" y="121.92" size="1.778" layer="97">MURATA  LQH43PN100M26L   4.5mm x 3.2mm (1812)</text>
 </plain>
 <instances>
 <instance part="FRAME_12" gate="G$1" x="0" y="0"/>
