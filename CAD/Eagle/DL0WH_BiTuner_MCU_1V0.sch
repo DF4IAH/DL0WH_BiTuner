@@ -17309,7 +17309,7 @@ extra</text>
 <wire x1="88.9" y1="114.3" x2="93.98" y2="114.3" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="+5V" class="2">
+<net name="+5V" class="0">
 <segment>
 <pinref part="+5V_1" gate="G$1" pin="+5V"/>
 <wire x1="86.36" y1="73.66" x2="99.06" y2="73.66" width="0.1524" layer="91"/>
@@ -17591,7 +17591,7 @@ extra</text>
 <label x="127" y="116.84" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="+5V" class="2">
+<net name="+5V" class="0">
 <segment>
 <pinref part="+5V_511" gate="G$1" pin="+5V"/>
 <wire x1="86.36" y1="73.66" x2="99.06" y2="73.66" width="0.1524" layer="91"/>
@@ -17741,7 +17741,7 @@ extra</text>
 <busses>
 </busses>
 <nets>
-<net name="+5V" class="2">
+<net name="+5V" class="0">
 <segment>
 <wire x1="182.88" y1="124.46" x2="195.58" y2="124.46" width="0.1524" layer="91"/>
 <label x="226.06" y="124.46" size="1.778" layer="95" xref="yes"/>
@@ -18044,7 +18044,7 @@ extra</text>
 <junction x="81.28" y="99.06"/>
 </segment>
 </net>
-<net name="+5V" class="2">
+<net name="+5V" class="0">
 <segment>
 <pinref part="U1301" gate="G$1" pin="VIN"/>
 <wire x1="109.22" y1="116.84" x2="101.6" y2="116.84" width="0.1524" layer="91"/>
