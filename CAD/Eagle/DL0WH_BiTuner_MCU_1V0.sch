@@ -16450,13 +16450,6 @@ C</text>
 <wire x1="78.74" y1="119.38" x2="81.28" y2="121.92" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="SPI_DRV_L_!CS" class="0">
-<segment>
-<pinref part="U0701" gate="G$1" pin="!CS"/>
-<wire x1="116.84" y1="116.84" x2="81.28" y2="116.84" width="0.1524" layer="91"/>
-<wire x1="78.74" y1="114.3" x2="81.28" y2="116.84" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="SPI_DRV_!RST" class="0">
 <segment>
 <pinref part="U0701" gate="G$1" pin="!RST"/>
@@ -16598,6 +16591,11 @@ C</text>
 <pinref part="R0724" gate="G$1" pin="2"/>
 <label x="50.8" y="116.84" size="1.778" layer="95"/>
 <wire x1="78.74" y1="114.3" x2="76.2" y2="116.84" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U0701" gate="G$1" pin="!CS"/>
+<wire x1="116.84" y1="116.84" x2="81.28" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="78.74" y1="114.3" x2="81.28" y2="116.84" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="PB1" class="0">
@@ -16741,13 +16739,6 @@ extra</text>
 <wire x1="78.74" y1="119.38" x2="81.28" y2="121.92" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="SPI_DRV_L_!CS" class="0">
-<segment>
-<pinref part="U0801" gate="G$1" pin="!CS"/>
-<wire x1="116.84" y1="116.84" x2="81.28" y2="116.84" width="0.1524" layer="91"/>
-<wire x1="78.74" y1="114.3" x2="81.28" y2="116.84" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="SPI_DRV_!RST" class="0">
 <segment>
 <pinref part="U0801" gate="G$1" pin="!RST"/>
@@ -16889,6 +16880,11 @@ extra</text>
 <pinref part="R0824" gate="G$1" pin="2"/>
 <label x="50.8" y="116.84" size="1.778" layer="95"/>
 <wire x1="78.74" y1="114.3" x2="76.2" y2="116.84" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U0801" gate="G$1" pin="!CS"/>
+<wire x1="116.84" y1="116.84" x2="81.28" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="78.74" y1="114.3" x2="81.28" y2="116.84" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="PB2" class="0">
