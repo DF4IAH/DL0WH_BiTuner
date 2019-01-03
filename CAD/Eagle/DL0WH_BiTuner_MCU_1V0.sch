@@ -15022,6 +15022,18 @@ Anode left, Kathode right</description>
 <part name="R0913" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="100kR"/>
 <part name="R0901" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1kR"/>
 <part name="R0911" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1kR"/>
+<part name="C1052" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
+<part name="C1051" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
+<part name="C1053" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
+<part name="C0054" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
+<part name="GND0001" library="df4iah_supply" deviceset="GND" device=""/>
+<part name="GND0002" library="df4iah_supply" deviceset="GND" device=""/>
+<part name="C1152" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
+<part name="C1151" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
+<part name="C1153" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
+<part name="C1154" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
+<part name="GND0005" library="df4iah_supply" deviceset="GND" device=""/>
+<part name="GND0006" library="df4iah_supply" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -15752,8 +15764,8 @@ Crystal 32.768 kHz</text>
 <nets>
 <net name="MCU_VBAT" class="0">
 <segment>
-<label x="27.94" y="53.34" size="1.778" layer="95" rot="R180" xref="yes"/>
-<wire x1="27.94" y1="53.34" x2="66.04" y2="53.34" width="0.1524" layer="91"/>
+<label x="40.64" y="53.34" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="40.64" y1="53.34" x2="66.04" y2="53.34" width="0.1524" layer="91"/>
 <pinref part="C0451" gate="G$1" pin="1"/>
 <wire x1="66.04" y1="53.34" x2="66.04" y2="45.72" width="0.1524" layer="91"/>
 <junction x="66.04" y="53.34"/>
@@ -15863,8 +15875,8 @@ Crystal 32.768 kHz</text>
 <net name="+3V3" class="0">
 <segment>
 <pinref part="SJ0401" gate="1" pin="1"/>
-<label x="38.1" y="147.32" size="1.778" layer="95" rot="R180" xref="yes"/>
-<wire x1="114.3" y1="147.32" x2="38.1" y2="147.32" width="0.1524" layer="91"/>
+<label x="40.64" y="147.32" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="114.3" y1="147.32" x2="40.64" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
@@ -17230,6 +17242,18 @@ extra</text>
 <text x="231.14" y="104.14" size="2.54" layer="97" ratio="15">RS232 GND</text>
 <text x="231.14" y="121.92" size="2.54" layer="97" ratio="15">RS232 RXD</text>
 <text x="231.14" y="86.36" size="2.54" layer="97" ratio="15">RS232 RTR</text>
+<text x="149.86" y="139.7" size="1.778" layer="97">Use LF filters at BiTuner box connector !</text>
+<text x="149.86" y="66.04" size="1.778" layer="97">Use LF filters at BiTuner box connector !</text>
+<text x="149.86" y="50.8" size="1.778" layer="97">---- 100 uH ----
+  |            |
+ 10nF        100nF
+  |            |
+ GND         GND</text>
+<text x="149.86" y="124.46" size="1.778" layer="97">---- 100 uH ----
+  |            |
+ 10nF        100nF
+  |            |
+ GND         GND</text>
 </plain>
 <instances>
 <instance part="FRAME_10" gate="G$1" x="0" y="0"/>
@@ -17263,6 +17287,12 @@ extra</text>
 <attribute name="NAME" x="49.53" y="82.7786" size="1.778" layer="95"/>
 <attribute name="VALUE" x="59.69" y="80.518" size="1.778" layer="96"/>
 </instance>
+<instance part="C1052" gate="G$1" x="193.04" y="114.3"/>
+<instance part="C1051" gate="G$1" x="180.34" y="114.3"/>
+<instance part="C1053" gate="G$1" x="180.34" y="81.28"/>
+<instance part="C0054" gate="G$1" x="193.04" y="81.28"/>
+<instance part="GND0001" gate="1" x="180.34" y="106.68"/>
+<instance part="GND0002" gate="1" x="180.34" y="73.66"/>
 </instances>
 <busses>
 </busses>
@@ -17293,6 +17323,20 @@ extra</text>
 <pinref part="C1001" gate="G$1" pin="2"/>
 <wire x1="99.06" y1="53.34" x2="99.06" y2="58.42" width="0.1524" layer="91"/>
 <junction x="119.38" y="53.34"/>
+</segment>
+<segment>
+<pinref part="GND0001" gate="1" pin="GND"/>
+<pinref part="C1051" gate="G$1" pin="2"/>
+<wire x1="180.34" y1="109.22" x2="193.04" y2="109.22" width="0.1524" layer="91"/>
+<junction x="180.34" y="109.22"/>
+<pinref part="C1052" gate="G$1" pin="2"/>
+</segment>
+<segment>
+<pinref part="GND0002" gate="1" pin="GND"/>
+<pinref part="C1053" gate="G$1" pin="2"/>
+<wire x1="180.34" y1="76.2" x2="193.04" y2="76.2" width="0.1524" layer="91"/>
+<junction x="180.34" y="76.2"/>
+<pinref part="C0054" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="RS_MX_C2M1" class="0">
@@ -17429,7 +17473,11 @@ extra</text>
 <label x="144.78" y="99.06" size="1.778" layer="95"/>
 <wire x1="165.1" y1="99.06" x2="165.1" y2="121.92" width="0.1524" layer="91"/>
 <pinref part="X1051" gate="G$1" pin="1"/>
-<wire x1="165.1" y1="121.92" x2="215.9" y2="121.92" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="121.92" x2="180.34" y2="121.92" width="0.1524" layer="91"/>
+<pinref part="C1051" gate="G$1" pin="1"/>
+<wire x1="180.34" y1="121.92" x2="215.9" y2="121.92" width="0.1524" layer="91"/>
+<wire x1="180.34" y1="121.92" x2="180.34" y2="116.84" width="0.1524" layer="91"/>
+<junction x="180.34" y="121.92"/>
 </segment>
 </net>
 <net name="RS_DTE_CTS" class="0">
@@ -17437,9 +17485,12 @@ extra</text>
 <pinref part="U1001" gate="G$1" pin="T2OUT"/>
 <wire x1="124.46" y1="96.52" x2="180.34" y2="96.52" width="0.1524" layer="91"/>
 <wire x1="180.34" y1="96.52" x2="180.34" y2="91.44" width="0.1524" layer="91"/>
+<label x="144.78" y="96.52" size="1.778" layer="95"/>
 <pinref part="X1053" gate="G$1" pin="1"/>
 <wire x1="180.34" y1="91.44" x2="215.9" y2="91.44" width="0.1524" layer="91"/>
-<label x="144.78" y="96.52" size="1.778" layer="95"/>
+<pinref part="C1053" gate="G$1" pin="1"/>
+<wire x1="180.34" y1="91.44" x2="180.34" y2="83.82" width="0.1524" layer="91"/>
+<junction x="180.34" y="91.44"/>
 </segment>
 </net>
 <net name="RS_DTE_TXD" class="0">
@@ -17449,17 +17500,25 @@ extra</text>
 <label x="144.78" y="93.98" size="1.778" layer="95"/>
 <wire x1="167.64" y1="93.98" x2="167.64" y2="119.38" width="0.1524" layer="91"/>
 <pinref part="X1051" gate="G$1" pin="2"/>
-<wire x1="167.64" y1="119.38" x2="215.9" y2="119.38" width="0.1524" layer="91"/>
+<wire x1="167.64" y1="119.38" x2="193.04" y2="119.38" width="0.1524" layer="91"/>
+<pinref part="C1052" gate="G$1" pin="1"/>
+<wire x1="193.04" y1="119.38" x2="215.9" y2="119.38" width="0.1524" layer="91"/>
+<wire x1="193.04" y1="119.38" x2="193.04" y2="116.84" width="0.1524" layer="91"/>
+<junction x="193.04" y="119.38"/>
 </segment>
 </net>
 <net name="RS_DTE_RTR" class="0">
 <segment>
 <pinref part="U1001" gate="G$1" pin="R2IN"/>
-<wire x1="124.46" y1="91.44" x2="177.8" y2="91.44" width="0.1524" layer="91"/>
-<wire x1="177.8" y1="91.44" x2="177.8" y2="88.9" width="0.1524" layer="91"/>
-<pinref part="X1053" gate="G$1" pin="2"/>
-<wire x1="177.8" y1="88.9" x2="215.9" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="91.44" x2="165.1" y2="91.44" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="91.44" x2="165.1" y2="88.9" width="0.1524" layer="91"/>
 <label x="144.78" y="91.44" size="1.778" layer="95"/>
+<pinref part="X1053" gate="G$1" pin="2"/>
+<wire x1="165.1" y1="88.9" x2="193.04" y2="88.9" width="0.1524" layer="91"/>
+<pinref part="C0054" gate="G$1" pin="1"/>
+<wire x1="193.04" y1="88.9" x2="215.9" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="193.04" y1="88.9" x2="193.04" y2="83.82" width="0.1524" layer="91"/>
+<junction x="193.04" y="88.9"/>
 </segment>
 </net>
 </nets>
@@ -17475,6 +17534,18 @@ extra</text>
 <text x="231.14" y="104.14" size="2.54" layer="97" ratio="15">CAT GND</text>
 <text x="231.14" y="121.92" size="2.54" layer="97" ratio="15">CAT RXD</text>
 <text x="231.14" y="86.36" size="2.54" layer="97" ratio="15">CAT RTR</text>
+<text x="149.86" y="139.7" size="1.778" layer="97">Use LF filters at BiTuner box connector !</text>
+<text x="149.86" y="66.04" size="1.778" layer="97">Use LF filters at BiTuner box connector !</text>
+<text x="149.86" y="50.8" size="1.778" layer="97">---- 100 uH ----
+  |            |
+ 10nF        100nF
+  |            |
+ GND         GND</text>
+<text x="149.86" y="124.46" size="1.778" layer="97">---- 100 uH ----
+  |            |
+ 10nF        100nF
+  |            |
+ GND         GND</text>
 </plain>
 <instances>
 <instance part="FRAME_11" gate="G$1" x="0" y="0"/>
@@ -17508,6 +17579,12 @@ extra</text>
 <attribute name="NAME" x="49.53" y="82.7786" size="1.778" layer="95"/>
 <attribute name="VALUE" x="59.69" y="80.518" size="1.778" layer="96"/>
 </instance>
+<instance part="C1152" gate="G$1" x="193.04" y="114.3"/>
+<instance part="C1151" gate="G$1" x="180.34" y="114.3"/>
+<instance part="C1153" gate="G$1" x="180.34" y="81.28"/>
+<instance part="C1154" gate="G$1" x="193.04" y="81.28"/>
+<instance part="GND0005" gate="1" x="180.34" y="106.68"/>
+<instance part="GND0006" gate="1" x="180.34" y="73.66"/>
 </instances>
 <busses>
 </busses>
@@ -17538,6 +17615,20 @@ extra</text>
 <pinref part="C1101" gate="G$1" pin="2"/>
 <wire x1="99.06" y1="53.34" x2="99.06" y2="58.42" width="0.1524" layer="91"/>
 <junction x="119.38" y="53.34"/>
+</segment>
+<segment>
+<pinref part="GND0005" gate="1" pin="GND"/>
+<pinref part="C1151" gate="G$1" pin="2"/>
+<wire x1="180.34" y1="109.22" x2="193.04" y2="109.22" width="0.1524" layer="91"/>
+<junction x="180.34" y="109.22"/>
+<pinref part="C1152" gate="G$1" pin="2"/>
+</segment>
+<segment>
+<pinref part="GND0006" gate="1" pin="GND"/>
+<pinref part="C1153" gate="G$1" pin="2"/>
+<wire x1="180.34" y1="76.2" x2="193.04" y2="76.2" width="0.1524" layer="91"/>
+<junction x="180.34" y="76.2"/>
+<pinref part="C1154" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="CAT_MX_C2M" class="0">
@@ -17626,7 +17717,11 @@ extra</text>
 <label x="144.78" y="99.06" size="1.778" layer="95"/>
 <wire x1="165.1" y1="99.06" x2="165.1" y2="121.92" width="0.1524" layer="91"/>
 <pinref part="X1151" gate="G$1" pin="1"/>
-<wire x1="165.1" y1="121.92" x2="215.9" y2="121.92" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="121.92" x2="180.34" y2="121.92" width="0.1524" layer="91"/>
+<pinref part="C1151" gate="G$1" pin="1"/>
+<wire x1="180.34" y1="121.92" x2="215.9" y2="121.92" width="0.1524" layer="91"/>
+<wire x1="180.34" y1="121.92" x2="180.34" y2="116.84" width="0.1524" layer="91"/>
+<junction x="180.34" y="121.92"/>
 </segment>
 </net>
 <net name="CAT_DTE_TXD" class="0">
@@ -17636,7 +17731,11 @@ extra</text>
 <label x="144.78" y="93.98" size="1.778" layer="95"/>
 <wire x1="167.64" y1="93.98" x2="167.64" y2="119.38" width="0.1524" layer="91"/>
 <pinref part="X1151" gate="G$1" pin="2"/>
-<wire x1="167.64" y1="119.38" x2="215.9" y2="119.38" width="0.1524" layer="91"/>
+<wire x1="167.64" y1="119.38" x2="193.04" y2="119.38" width="0.1524" layer="91"/>
+<pinref part="C1152" gate="G$1" pin="1"/>
+<wire x1="193.04" y1="119.38" x2="215.9" y2="119.38" width="0.1524" layer="91"/>
+<wire x1="193.04" y1="119.38" x2="193.04" y2="116.84" width="0.1524" layer="91"/>
+<junction x="193.04" y="119.38"/>
 </segment>
 </net>
 <net name="MP_CAT_CTS_R" class="0">
@@ -17655,8 +17754,12 @@ extra</text>
 <wire x1="124.46" y1="91.44" x2="177.8" y2="91.44" width="0.1524" layer="91"/>
 <wire x1="177.8" y1="91.44" x2="177.8" y2="88.9" width="0.1524" layer="91"/>
 <pinref part="X1153" gate="G$1" pin="2"/>
-<wire x1="177.8" y1="88.9" x2="215.9" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="177.8" y1="88.9" x2="193.04" y2="88.9" width="0.1524" layer="91"/>
 <label x="144.78" y="91.44" size="1.778" layer="95"/>
+<pinref part="C1154" gate="G$1" pin="1"/>
+<wire x1="193.04" y1="88.9" x2="215.9" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="193.04" y1="88.9" x2="193.04" y2="83.82" width="0.1524" layer="91"/>
+<junction x="193.04" y="88.9"/>
 </segment>
 </net>
 <net name="CAT_DTE_CTS" class="0">
@@ -17667,6 +17770,9 @@ extra</text>
 <pinref part="X1153" gate="G$1" pin="1"/>
 <wire x1="180.34" y1="91.44" x2="215.9" y2="91.44" width="0.1524" layer="91"/>
 <label x="144.78" y="96.52" size="1.778" layer="95"/>
+<pinref part="C1153" gate="G$1" pin="1"/>
+<wire x1="180.34" y1="91.44" x2="180.34" y2="83.82" width="0.1524" layer="91"/>
+<junction x="180.34" y="91.44"/>
 </segment>
 </net>
 <net name="MP_CAT_RTR_R" class="0">
