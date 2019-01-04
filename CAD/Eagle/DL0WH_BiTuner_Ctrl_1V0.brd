@@ -54,7 +54,7 @@
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="yes"/>
 <layer number="45" name="Holes" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="46" name="Milling" color="3" fill="1" visible="yes" active="yes"/>
-<layer number="47" name="Measures" color="13" fill="1" visible="no" active="yes"/>
+<layer number="47" name="Measures" color="13" fill="1" visible="yes" active="yes"/>
 <layer number="48" name="Document" color="7" fill="1" visible="no" active="yes"/>
 <layer number="49" name="Reference" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
@@ -187,8 +187,8 @@
 <dimension x1="0" y1="73.025" x2="96.52" y2="73.025" x3="48.26" y3="76.2" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
 <text x="63.1825" y="1.74625" size="0.8128" layer="21" font="vector" ratio="15">RESET</text>
 <wire x1="96.52" y1="73.025" x2="96.52" y2="0" width="0" layer="20"/>
-<text x="4.445" y="11.43" size="1.778" layer="21" font="vector">REV</text>
-<text x="4.445" y="44.45" size="1.778" layer="21" font="vector">FWD</text>
+<text x="4.445" y="10.4775" size="1.778" layer="21" font="vector">REV</text>
+<text x="4.445" y="45.4025" size="1.778" layer="21" font="vector">FWD</text>
 <text x="1.42875" y="51.27625" size="1.778" layer="21" font="vector">+</text>
 <text x="1.42875" y="63.65875" size="1.778" layer="21" font="vector">-</text>
 <text x="3.81" y="51.816" size="0.8128" layer="21" font="vector" ratio="15">12V</text>
@@ -237,6 +237,8 @@
 <text x="79.21625" y="62.07125" size="0.8128" layer="21" font="vector" ratio="15">12V</text>
 <text x="76.67625" y="62.07125" size="0.8128" layer="21" font="vector" ratio="15">12V</text>
 <text x="22.38375" y="60.48375" size="1.778" layer="21" font="vector">RELAY A</text>
+<text x="78.4225" y="9.2075" size="1.778" layer="21" font="vector">SWD</text>
+<text x="8.255" y="60.96" size="1.778" layer="21" font="vector">BAT</text>
 </plain>
 <libraries>
 <library name="rcl">
