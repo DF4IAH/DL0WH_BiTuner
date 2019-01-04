@@ -48,18 +48,18 @@
 <layer number="38" name="bTest" color="7" fill="1" visible="no" active="yes"/>
 <layer number="39" name="tKeepout" color="4" fill="11" visible="yes" active="yes"/>
 <layer number="40" name="bKeepout" color="1" fill="11" visible="yes" active="yes"/>
-<layer number="41" name="tRestrict" color="4" fill="10" visible="yes" active="yes"/>
-<layer number="42" name="bRestrict" color="1" fill="10" visible="yes" active="yes"/>
-<layer number="43" name="vRestrict" color="2" fill="10" visible="yes" active="yes"/>
+<layer number="41" name="tRestrict" color="4" fill="10" visible="no" active="yes"/>
+<layer number="42" name="bRestrict" color="1" fill="10" visible="no" active="yes"/>
+<layer number="43" name="vRestrict" color="2" fill="10" visible="no" active="yes"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="yes"/>
-<layer number="45" name="Holes" color="7" fill="1" visible="no" active="yes"/>
+<layer number="45" name="Holes" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="46" name="Milling" color="3" fill="1" visible="yes" active="yes"/>
 <layer number="47" name="Measures" color="13" fill="1" visible="no" active="yes"/>
 <layer number="48" name="Document" color="7" fill="1" visible="no" active="yes"/>
-<layer number="49" name="Reference" color="7" fill="1" visible="no" active="yes"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
-<layer number="51" name="tDocu" color="14" fill="1" visible="no" active="yes"/>
-<layer number="52" name="bDocu" color="6" fill="1" visible="no" active="yes"/>
+<layer number="51" name="tDocu" color="14" fill="1" visible="yes" active="yes"/>
+<layer number="52" name="bDocu" color="6" fill="1" visible="yes" active="yes"/>
 <layer number="53" name="tGND_GNDA" color="7" fill="9" visible="no" active="no"/>
 <layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
 <layer number="56" name="wert" color="7" fill="1" visible="no" active="no"/>
@@ -162,7 +162,7 @@
 <wire x1="96.52" y1="73.025" x2="0" y2="73.025" width="0" layer="20"/>
 <wire x1="0" y1="73.025" x2="0" y2="0" width="0" layer="20"/>
 <dimension x1="0" y1="0" x2="0" y2="73.025" x3="-5.23875" y3="36.5125" textsize="0.6096" textratio="10" layer="47" width="0.0508"/>
-<text x="41.91" y="67.31" size="1.4224" layer="21" font="vector" ratio="20">DL0WH BiTuner V1.0
+<text x="41.91" y="67.31" size="1.4224" layer="21" font="vector" ratio="20">DL0WH BiTuner Ctrl V1.0
 (C) 2019</text>
 <polygon width="0.1" layer="21">
 <vertex x="43.36781875" y="63.5209625"/>
@@ -188,7 +188,7 @@
 <text x="63.1825" y="1.74625" size="0.8128" layer="21" font="vector" ratio="15">RESET</text>
 <wire x1="96.52" y1="73.025" x2="96.52" y2="0" width="0" layer="20"/>
 <text x="4.445" y="11.43" size="1.778" layer="21" font="vector">REV</text>
-<text x="4.445" y="33.02" size="1.778" layer="21" font="vector">FWD</text>
+<text x="4.445" y="44.45" size="1.778" layer="21" font="vector">FWD</text>
 <text x="1.42875" y="51.27625" size="1.778" layer="21" font="vector">+</text>
 <text x="1.42875" y="63.65875" size="1.778" layer="21" font="vector">-</text>
 <text x="3.81" y="51.816" size="0.8128" layer="21" font="vector" ratio="15">12V</text>
@@ -204,27 +204,39 @@
 <wire x1="0" y1="70.025" x2="3" y2="73.025" width="0.1524" layer="46" curve="-90"/>
 <dimension x1="93.52" y1="3" x2="95.64" y2="0.88" x3="94.58" y3="1.94" textsize="0.5" textratio="10" layer="47" dtype="radius" width="0.05"/>
 <text x="93.6625" y="3.4925" size="0.6096" layer="47" ratio="10">4x</text>
-<text x="16.03375" y="10.16" size="1.778" layer="21" font="vector">CAT Ifc.</text>
-<text x="85.88375" y="54.61" size="1.778" layer="21" font="vector" rot="R90">RS232</text>
-<text x="44.1325" y="8.09625" size="0.8128" layer="21" font="vector" ratio="15">RXD</text>
-<text x="39.0525" y="8.09625" size="0.8128" layer="21" font="vector" ratio="15">TXD</text>
-<text x="32.7025" y="8.09625" size="0.8128" layer="21" font="vector" ratio="15">GND</text>
-<text x="27.6225" y="8.09625" size="0.8128" layer="21" font="vector" ratio="15">GND</text>
-<text x="21.2725" y="8.09625" size="0.8128" layer="21" font="vector" ratio="15">CTS</text>
-<text x="16.1925" y="8.09625" size="0.8128" layer="21" font="vector" ratio="15">RTR</text>
-<text x="88.42375" y="31.4325" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">RTR</text>
-<text x="88.42375" y="36.5125" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">CTS</text>
-<text x="88.42375" y="42.8625" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">GND</text>
-<text x="88.42375" y="47.9425" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">GND</text>
-<text x="88.42375" y="54.2925" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">TXD</text>
-<text x="88.42375" y="59.3725" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">RXD</text>
-<text x="18.57375" y="60.80125" size="0.8128" layer="21" font="vector" ratio="15">REL1..20</text>
-<text x="69.37375" y="60.80125" size="0.8128" layer="21" font="vector" ratio="15">REL21..36, 12V</text>
+<text x="16.03375" y="8.89" size="1.778" layer="21" font="vector">CAT Ifc.</text>
+<text x="87.47125" y="54.61" size="1.778" layer="21" font="vector" rot="R90">RS232</text>
+<text x="44.1325" y="7.14375" size="0.8128" layer="21" font="vector" ratio="15">RXD</text>
+<text x="39.37" y="7.14375" size="0.8128" layer="21" font="vector" ratio="15">TXD</text>
+<text x="32.0675" y="7.14375" size="0.8128" layer="21" font="vector" ratio="15">GND</text>
+<text x="27.6225" y="7.14375" size="0.8128" layer="21" font="vector" ratio="15">GND</text>
+<text x="21.2725" y="7.14375" size="0.8128" layer="21" font="vector" ratio="15">CTS</text>
+<text x="16.1925" y="7.14375" size="0.8128" layer="21" font="vector" ratio="15">RTR</text>
+<text x="89.37625" y="31.4325" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">RTR</text>
+<text x="89.37625" y="36.5125" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">CTS</text>
+<text x="89.37625" y="44.45" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">GND</text>
+<text x="89.37625" y="47.9425" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">GND</text>
+<text x="89.37625" y="54.2925" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">TXD</text>
+<text x="89.37625" y="59.3725" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">RXD</text>
+<text x="60.48375" y="60.48375" size="1.778" layer="21" font="vector">RELAY B</text>
 <text x="90.805" y="13.0175" size="1.778" layer="21" font="vector">USB</text>
 <text x="65.0875" y="32.22625" size="0.8128" layer="21" font="vector" ratio="15">BOOT0</text>
 <text x="77.7875" y="32.22625" size="0.8128" layer="21" font="vector" ratio="15">I2C</text>
-<text x="77.62875" y="24.4475" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">SCL</text>
-<text x="80.16875" y="24.4475" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">SDA</text>
+<text x="77.94625" y="24.13" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">SCL</text>
+<text x="80.48625" y="24.13" size="0.8128" layer="21" font="vector" ratio="15" rot="R90">SDA</text>
+<text x="16.35125" y="62.07125" size="0.8128" layer="21" font="vector" ratio="15">1</text>
+<text x="16.35125" y="69.37375" size="0.8128" layer="21" font="vector" ratio="15">2</text>
+<text x="38.89375" y="62.07125" size="0.8128" layer="21" font="vector" ratio="15">21</text>
+<text x="38.89375" y="69.37375" size="0.8128" layer="21" font="vector" ratio="15">22</text>
+<text x="54.13375" y="67.15125" size="0.8128" layer="21" font="vector" ratio="15">23</text>
+<text x="56.67375" y="62.07125" size="0.8128" layer="21" font="vector" ratio="15">22</text>
+<text x="74.45375" y="62.07125" size="0.8128" layer="21" font="vector" ratio="15">35</text>
+<text x="74.45375" y="69.37375" size="0.8128" layer="21" font="vector" ratio="15">36</text>
+<text x="79.21625" y="69.37375" size="0.8128" layer="21" font="vector" ratio="15">12V</text>
+<text x="76.67625" y="69.37375" size="0.8128" layer="21" font="vector" ratio="15">12V</text>
+<text x="79.21625" y="62.07125" size="0.8128" layer="21" font="vector" ratio="15">12V</text>
+<text x="76.67625" y="62.07125" size="0.8128" layer="21" font="vector" ratio="15">12V</text>
+<text x="22.38375" y="60.48375" size="1.778" layer="21" font="vector">RELAY A</text>
 </plain>
 <libraries>
 <library name="rcl">
@@ -1733,18 +1745,18 @@ Power Supply devices but 78*, 79* regulators.</description>
 <smd name="PAD2" x="0" y="0" dx="5" dy="3.4" layer="16" roundness="5" rot="R180" stop="no" thermals="no"/>
 <rectangle x1="-1.7" y1="-1.24" x2="1.7" y2="1.24" layer="29"/>
 <rectangle x1="-1.7" y1="-1.24" x2="1.7" y2="1.24" layer="30"/>
-<pad name="PAD" x="0.65" y="0" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD3" x="-0.65" y="0" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD4" x="-1.95" y="0" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD5" x="1.95" y="0" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD6" x="1.95" y="1.1" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD7" x="1.95" y="-1.1" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD8" x="0.65" y="1.1" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD9" x="0.65" y="-1.1" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD10" x="-0.65" y="1.1" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD11" x="-0.65" y="-1.1" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD12" x="-1.95" y="1.1" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD13" x="-1.95" y="-1.1" drill="0.3048" stop="no" thermals="no"/>
+<pad name="PAD" x="0.65" y="0" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD3" x="-0.65" y="0" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD4" x="-1.95" y="0" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD5" x="1.95" y="0" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD6" x="1.95" y="1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD7" x="1.95" y="-1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD8" x="0.65" y="1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD9" x="0.65" y="-1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD10" x="-0.65" y="1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD11" x="-0.65" y="-1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD12" x="-1.95" y="1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD13" x="-1.95" y="-1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
 </package>
 <package name="S-PDSO-G10">
 <description>&lt;h3&gt;DGS (S-PDSO-G10)&lt;/h3&gt;
@@ -3568,11 +3580,11 @@ Subminiature Tact Switch for SMT</description>
 </autorouter>
 <elements>
 <element name="C0401" library="df4iah_rcl" package="C0402" value="100nF" x="66.04" y="16.51" smashed="yes" rot="MR90">
-<attribute name="NAME" x="66.83375" y="15.39875" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="NAME" x="65.56375" y="12.22375" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="64.135" y="15.875" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
 </element>
 <element name="C0402" library="df4iah_rcl" package="C0402" value="100nF" x="71.12" y="16.51" smashed="yes" rot="MR0">
-<attribute name="NAME" x="72.39" y="15.08125" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="NAME" x="75.565" y="16.03375" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
 <attribute name="VALUE" x="71.755" y="14.605" size="0.6096" layer="28" font="vector" ratio="10" rot="MR0"/>
 </element>
 <element name="C0403" library="df4iah_rcl" package="C0402" value="100nF" x="66.595625" y="21.2725" smashed="yes" rot="MR180">
@@ -3580,11 +3592,11 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="VALUE" x="65.960625" y="23.1775" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
 <element name="C0412" library="df4iah_rcl" package="C0402" value="10nF" x="60.245625" y="15.5575" smashed="yes" rot="MR0">
-<attribute name="NAME" x="58.975625" y="14.605" size="0.6096" layer="26" font="vector" ratio="10" rot="MR180"/>
+<attribute name="NAME" x="61.356875" y="16.51" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
 <attribute name="VALUE" x="60.880625" y="13.6525" size="0.6096" layer="28" font="vector" ratio="10" rot="MR0"/>
 </element>
 <element name="SJ0401" library="df4iah_jumper" package="SJ" value="" x="68.659375" y="19.05" smashed="yes" rot="MR180">
-<attribute name="NAME" x="70.786625" y="17.018" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="NAME" x="73.961625" y="18.288" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
 <attribute name="VALUE" x="69.059475" y="19.05" size="0.02" layer="28" rot="MR180"/>
 </element>
 <element name="X0201" library="df4iah_connector" package="2X05_SHROUDED_1MM27" value="" x="80.899" y="5.08" locked="yes" smashed="yes">
@@ -3596,15 +3608,15 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="VALUE" x="69.215" y="33.655" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="R0221" library="df4iah_rcl" package="R0402" value="33kR" x="64.77" y="29.21" smashed="yes" rot="MR270">
-<attribute name="NAME" x="65.7225" y="27.94" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="NAME" x="63.1825" y="27.94" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="66.675" y="29.845" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
 <element name="C0213" library="df4iah_rcl" package="C0402" value="100nF" x="64.77" y="8.5725" smashed="yes">
-<attribute name="NAME" x="63.65875" y="9.2075" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="NAME" x="60.16625" y="8.255" size="0.6096" layer="25" font="vector" ratio="10"/>
 <attribute name="VALUE" x="64.135" y="6.6675" size="0.6096" layer="27" font="vector" ratio="10"/>
 </element>
 <element name="R0441" library="df4iah_rcl" package="R0402" value="0R" x="60.6425" y="16.8275" smashed="yes">
-<attribute name="NAME" x="55.88" y="16.51" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="NAME" x="55.5625" y="16.1925" size="0.6096" layer="25" font="vector" ratio="10"/>
 <attribute name="VALUE" x="60.0075" y="14.9225" size="0.6096" layer="27" font="vector" ratio="10"/>
 </element>
 <element name="C0451" library="df4iah_rcl" package="C0805" value="47uF" x="63.5" y="29.845" smashed="yes" rot="R90">
@@ -3617,9 +3629,9 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="NAME" x="54.33125" y="20.63375" size="0.6096" layer="25" font="vector" ratio="10"/>
 <attribute name="VALUE" x="61.3975" y="24.24" size="0.6096" layer="27" font="vector" ratio="10" rot="R180"/>
 </element>
-<element name="C0311" library="df4iah_rcl" package="C0402" value="18pF" x="58.7375" y="19.05" smashed="yes" rot="R270">
-<attribute name="NAME" x="60.16625" y="17.93875" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
-<attribute name="VALUE" x="56.8325" y="19.685" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+<element name="C0311" library="df4iah_rcl" package="C0402" value="18pF" x="58.42" y="18.7325" smashed="yes" rot="R270">
+<attribute name="NAME" x="57.30875" y="17.30375" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="56.515" y="19.3675" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
 </element>
 <element name="X1401" library="df4iah_connector" package="USB-B-MICRO-SMD_MOLEX-105017-0001" value="MOLEX 105017-0001" x="95.8088" y="21.59" locked="yes" smashed="yes" rot="R90">
 <attribute name="NAME" x="91.44" y="15.875" size="0.8128" layer="25" font="vector" ratio="15"/>
@@ -3630,23 +3642,23 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="VALUE" x="54.61" y="29.21" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
 </element>
 <element name="S0212" library="df4iah_switch" package="KSR223G_SMD_1POL" value="KSR223GLFG" x="64.77" y="5.08" locked="yes" smashed="yes" rot="R180">
-<attribute name="NAME" x="63.5" y="7.3025" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="NAME" x="58.7375" y="6.35" size="0.6096" layer="25" font="vector" ratio="10"/>
 <attribute name="VALUE" x="67.31" y="8.89" size="0.6096" layer="27" font="vector" ratio="10" rot="R180"/>
 </element>
 <element name="R1402" library="df4iah_rcl" package="R0402" value="330kR" x="87.78875" y="24.765" smashed="yes" rot="MR270">
-<attribute name="NAME" x="87.47125" y="26.19375" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="NAME" x="87.47125" y="20.16125" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="85.88375" y="26.9875" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
 <element name="C1403" library="df4iah_rcl" package="C0402" value="1nF" x="89.2175" y="24.765" smashed="yes" rot="MR270">
-<attribute name="NAME" x="88.74125" y="26.19375" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="NAME" x="89.05875" y="20.16125" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="88.5825" y="23.1775" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
 <element name="PF1411" library="rcl" package="M1206" value="1.1A/2.2A" x="86.6775" y="18.7325" smashed="yes" rot="R180">
-<attribute name="NAME" x="85.4075" y="20.0025" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="NAME" x="85.4075" y="20.6375" size="0.6096" layer="25" font="vector" ratio="10"/>
 <attribute name="VALUE" x="84.455" y="20.0025" size="0.6096" layer="27" font="vector" ratio="10"/>
 </element>
-<element name="TP_VBAT" library="testpad" package="B1,27" value="PTR1B1,27" x="63.5" y="27.305" smashed="yes">
-<attribute name="TP_SIGNAL_NAME" value="" x="62.865" y="25.4" size="1" layer="37"/>
+<element name="TP_VBAT" library="testpad" package="B1,27" value="PTR1B1,27" x="63.5" y="26.67" smashed="yes">
+<attribute name="TP_SIGNAL_NAME" value="" x="62.865" y="24.765" size="1" layer="37"/>
 </element>
 <element name="X1501" library="df4iah_connector" package="SMA_SMT_AMPHENOL_901-143" value="SMA_SMT_AMPHENOL-901-143" x="6.35" y="17.78" locked="yes" smashed="yes" rot="R90">
 <attribute name="SUPPLIER" value="Amphenol" x="6.35" y="17.78" size="1.778" layer="27" rot="R90" display="off"/>
@@ -3667,11 +3679,11 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="VALUE" x="-0.6604" y="52.9717" size="0.6096" layer="27" font="vector" ratio="10" rot="SR270"/>
 </element>
 <element name="C0410" library="df4iah_rcl" package="C0603" value="4.7uF" x="70.564375" y="21.2725" smashed="yes" rot="MR180">
-<attribute name="NAME" x="71.993125" y="22.06625" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="NAME" x="75.168125" y="20.79625" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
 <attribute name="VALUE" x="69.294375" y="23.8125" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
 <element name="C0413" library="df4iah_rcl" package="C0402" value="1uF" x="60.16625" y="13.97" smashed="yes" rot="MR0">
-<attribute name="NAME" x="59.055" y="13.17625" size="0.6096" layer="26" font="vector" ratio="10" rot="MR180"/>
+<attribute name="NAME" x="61.2775" y="12.54125" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
 <attribute name="VALUE" x="61.43625" y="11.43" size="0.6096" layer="28" font="vector" ratio="10" rot="MR0"/>
 </element>
 <element name="R0231" library="df4iah_rcl" package="R0402" value="220kR" x="75.565" y="6.6675" smashed="yes" rot="MR0">
@@ -3683,11 +3695,11 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="VALUE" x="74.93" y="7.14375" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
 <element name="C0332" library="df4iah_rcl" package="C0402" value="8.2pF" x="60.96" y="24.4475" smashed="yes" rot="R90">
-<attribute name="NAME" x="62.38875" y="23.495" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="NAME" x="60.16625" y="23.1775" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="62.865" y="23.8125" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
 </element>
 <element name="R0511" library="df4iah_rcl" package="R0402" value="1kR" x="71.4375" y="27.94" smashed="yes" rot="R90">
-<attribute name="NAME" x="71.91375" y="30.00375" size="0.6096" layer="25" font="vector" rot="R90"/>
+<attribute name="NAME" x="71.755" y="29.845" size="0.6096" layer="25" font="vector" rot="R90"/>
 <attribute name="VALUE" x="71.6915" y="26.0985" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
 </element>
 <element name="R0512" library="df4iah_rcl" package="R0402" value="1kR" x="72.7075" y="27.94" smashed="yes" rot="R90">
@@ -3698,7 +3710,7 @@ Subminiature Tact Switch for SMT</description>
 <element name="H1761" library="df4iah_holes" package="3,0-PAD" value="MOUNT-PAD-ROUND3.0" x="92.71" y="69.215" smashed="yes"/>
 <element name="H1711" library="df4iah_holes" package="3,0-PAD" value="MOUNT-PAD-ROUND3.0" x="3.81" y="3.81" locked="yes" smashed="yes"/>
 <element name="L0411" library="df4iah_rcl" package="L0603" value="10uH" x="60.325" y="15.24" smashed="yes">
-<attribute name="NAME" x="55.88" y="14.9225" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="NAME" x="55.5625" y="14.9225" size="0.6096" layer="25" font="vector" ratio="10"/>
 <attribute name="VALUE" x="59.055" y="13.97" size="0.6096" layer="27" font="vector" ratio="10"/>
 </element>
 <element name="L1211" library="df4iah_rcl" package="L_6.00MM_X_6.00MM" value="2.2uH" x="14.2875" y="47.625" smashed="yes">
@@ -3710,50 +3722,50 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="VALUE" x="16.2674" y="58.7825" size="0.6096" layer="27" font="vector" ratio="10" rot="R180"/>
 </element>
 <element name="C1202" library="df4iah_rcl" package="C0603" value="10uF" x="7.3025" y="54.61" smashed="yes" rot="MR270">
-<attribute name="NAME" x="7.3025" y="49.53" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="NAME" x="6.985" y="50.165" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="9.2075" y="55.88" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
 <element name="C1203" library="df4iah_rcl" package="C0603" value="10uF" x="8.89" y="54.61" smashed="yes" rot="MR270">
-<attribute name="NAME" x="8.89" y="49.53" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="NAME" x="8.5725" y="50.165" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="10.795" y="55.88" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
 <element name="C1201" library="df4iah_rcl" package="C0603" value="10uF" x="5.715" y="54.61" smashed="yes" rot="MR270">
-<attribute name="NAME" x="5.715" y="49.53" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="NAME" x="5.3975" y="50.165" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="7.62" y="55.88" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
-<element name="C1204" library="df4iah_rcl" package="C0402" value="10nF" x="10.16" y="54.61" smashed="yes" rot="MR270">
-<attribute name="NAME" x="10.16" y="49.53" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
-<attribute name="VALUE" x="12.065" y="55.88" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
+<element name="C1204" library="df4iah_rcl" package="C0402" value="10nF" x="10.4775" y="54.61" smashed="yes" rot="MR270">
+<attribute name="NAME" x="10.16" y="50.165" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="12.3825" y="55.88" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
 <element name="C1205" library="df4iah_rcl" package="C0603" value="3.3uF" x="20.32" y="55.88" smashed="yes" rot="R270">
-<attribute name="NAME" x="21.74875" y="54.9275" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="NAME" x="22.06625" y="54.61" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="18.415" y="57.15" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
 </element>
 <element name="C1211" library="df4iah_rcl" package="C0402" value="0.47uF" x="20.32" y="52.705" smashed="yes" rot="R90">
-<attribute name="NAME" x="21.74875" y="51.1175" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="NAME" x="22.06625" y="51.435" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="22.225" y="51.435" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
 </element>
 <element name="C1212" library="df4iah_rcl" package="C0402" value="100nF" x="19.05" y="57.785" smashed="yes" rot="MR90">
-<attribute name="NAME" x="20.0025" y="57.15" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="NAME" x="20.0025" y="56.515" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="17.145" y="56.515" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
 </element>
 <element name="R1211" library="df4iah_rcl" package="R0402" value="3R" x="19.05" y="53.975" smashed="yes" rot="MR270">
-<attribute name="NAME" x="20.0025" y="52.07" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="NAME" x="20.0025" y="52.705" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="20.32" y="55.245" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
 <element name="C1221" library="df4iah_rcl" package="C0603" value="22uF" x="13.97" y="50.4825" smashed="yes" rot="MR180">
-<attribute name="NAME" x="8.89" y="50.4825" size="0.6096" layer="26" font="vector" ratio="10" rot="MR180"/>
+<attribute name="NAME" x="18.7325" y="50.165" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
 <attribute name="VALUE" x="12.7" y="52.3875" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
 <element name="C1222" library="df4iah_rcl" package="C0603" value="22uF" x="13.97" y="48.26" smashed="yes" rot="MR180">
-<attribute name="NAME" x="8.89" y="48.26" size="0.6096" layer="26" font="vector" ratio="10" rot="MR180"/>
+<attribute name="NAME" x="18.7325" y="47.9425" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
 <attribute name="VALUE" x="12.7" y="50.165" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
 <element name="C1223" library="df4iah_rcl" package="C0603" value="22uF" x="13.97" y="46.0375" smashed="yes" rot="MR180">
-<attribute name="NAME" x="8.89" y="46.0375" size="0.6096" layer="26" font="vector" ratio="10" rot="MR180"/>
+<attribute name="NAME" x="18.7325" y="45.72" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
 <attribute name="VALUE" x="12.7" y="47.9425" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
-<element name="X1211" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="3.81" y="58.42" smashed="yes" rot="R180">
+<element name="X1211" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="3.81" y="58.42" locked="yes" smashed="yes" rot="R180">
 <attribute name="NAME" x="7.46125" y="56.8325" size="0.8128" layer="25" font="vector" ratio="15" rot="R90"/>
 <attribute name="VALUE" x="-0.3175" y="52.705" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
 </element>
@@ -3762,15 +3774,15 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="VALUE" x="66.13" y="22.075" size="0.8128" layer="27" rot="R270"/>
 </element>
 <element name="H1721" library="df4iah_holes" package="3,0-PAD" value="MOUNT-PAD-ROUND3.0" x="53.086" y="3.81" locked="yes"/>
-<element name="X1151" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="43.18" y="3.81" smashed="yes" rot="R270">
+<element name="X1151" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="43.18" y="3.81" locked="yes" smashed="yes" rot="R270">
 <attribute name="NAME" x="49.37125" y="1.905" size="0.8128" layer="25" ratio="15" rot="R90"/>
 <attribute name="VALUE" x="36.195" y="6.35" size="1.27" layer="27" rot="R270"/>
 </element>
-<element name="X1153" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="20.32" y="3.81" smashed="yes" rot="R270">
+<element name="X1153" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="20.32" y="3.81" locked="yes" smashed="yes" rot="R270">
 <attribute name="NAME" x="26.3525" y="1.905" size="0.8128" layer="25" ratio="15" rot="R90"/>
 <attribute name="VALUE" x="13.335" y="6.35" size="1.27" layer="27" rot="R270"/>
 </element>
-<element name="X1152" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="31.75" y="3.81" smashed="yes" rot="R270">
+<element name="X1152" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="31.75" y="3.81" locked="yes" smashed="yes" rot="R270">
 <attribute name="NAME" x="37.7825" y="1.905" size="0.8128" layer="25" ratio="15" rot="R90"/>
 <attribute name="VALUE" x="24.765" y="6.35" size="1.27" layer="27" rot="R270"/>
 </element>
@@ -3779,42 +3791,54 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="OC_NEWARK" value="unknown" x="39.37" y="15.24" size="0.6096" layer="27" ratio="10" rot="R180" display="off"/>
 <attribute name="MPN" value="MAX232ECDR" x="39.37" y="15.24" size="0.6096" layer="27" ratio="10" rot="R180" display="off"/>
 <attribute name="OC_FARNELL" value="2463694" x="39.37" y="15.24" size="0.6096" layer="27" ratio="10" rot="R180" display="off"/>
-<attribute name="NAME" x="44.577" y="15.875" size="0.6096" layer="25" rot="R270"/>
+<attribute name="NAME" x="45.2755" y="13.0175" size="0.6096" layer="25" rot="R90"/>
 <attribute name="VALUE" x="43.815" y="14.605" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="C1102" library="df4iah_rcl" package="C0402" value="1uF" x="46.355" y="15.875" smashed="yes" rot="R270">
-<attribute name="NAME" x="47.625" y="17.145" size="0.6096" layer="25" rot="R270"/>
+<attribute name="NAME" x="47.9425" y="14.605" size="0.6096" layer="25" rot="R90"/>
 <attribute name="VALUE" x="43.815" y="17.145" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="C1103" library="df4iah_rcl" package="C0402" value="1uF" x="40.64" y="20.32" smashed="yes" rot="R180">
-<attribute name="NAME" x="41.91" y="19.05" size="0.6096" layer="25" rot="R180"/>
+<attribute name="NAME" x="39.37" y="21.2725" size="0.6096" layer="25"/>
 <attribute name="VALUE" x="41.91" y="22.86" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="C1104" library="df4iah_rcl" package="C0402" value="1uF" x="45.72" y="20.32" smashed="yes">
-<attribute name="NAME" x="44.45" y="21.59" size="0.6096" layer="25"/>
+<attribute name="NAME" x="44.45" y="21.2725" size="0.6096" layer="25"/>
 <attribute name="VALUE" x="44.45" y="17.78" size="1.27" layer="27"/>
 </element>
 <element name="C1105" library="df4iah_rcl" package="C0402" value="1uF" x="35.56" y="20.32" smashed="yes" rot="R180">
-<attribute name="NAME" x="36.83" y="19.05" size="0.6096" layer="25" rot="R180"/>
+<attribute name="NAME" x="34.29" y="21.2725" size="0.6096" layer="25"/>
 <attribute name="VALUE" x="36.83" y="22.86" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="C1101" library="df4iah_rcl" package="C0402" value="1uF" x="46.99" y="11.43" smashed="yes">
-<attribute name="NAME" x="45.72" y="12.7" size="0.6096" layer="25"/>
+<attribute name="NAME" x="45.72" y="12.3825" size="0.6096" layer="25"/>
 <attribute name="VALUE" x="45.72" y="8.89" size="1.27" layer="27"/>
 </element>
-<element name="R1101" library="df4iah_rcl" package="R0402" value="47R" x="59.69" y="10.795" rot="R180"/>
-<element name="R1102" library="df4iah_rcl" package="R0402" value="47R" x="38.735" y="7.9375" rot="R90"/>
-<element name="R1103" library="df4iah_rcl" package="R0402" value="47R" x="71.12" y="25.7175" rot="MR0"/>
-<element name="R1104" library="df4iah_rcl" package="R0402" value="47R" x="34.925" y="7.9375" rot="R90"/>
-<element name="X1051" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="92.71" y="58.42" smashed="yes">
+<element name="R1101" library="df4iah_rcl" package="R0402" value="47R" x="59.69" y="10.795" smashed="yes" rot="R180">
+<attribute name="NAME" x="55.245" y="10.4775" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="VALUE" x="61.2775" y="12.3825" size="0.6096" layer="27" font="vector" ratio="10" rot="R180"/>
+</element>
+<element name="R1102" library="df4iah_rcl" package="R0402" value="47R" x="38.735" y="8.255" smashed="yes" rot="R90">
+<attribute name="NAME" x="37.7825" y="6.985" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="40.3225" y="6.6675" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
+</element>
+<element name="R1103" library="df4iah_rcl" package="R0402" value="47R" x="71.12" y="25.7175" smashed="yes" rot="MR0">
+<attribute name="NAME" x="72.7075" y="26.67" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="72.7075" y="24.13" size="0.6096" layer="28" font="vector" ratio="10" rot="MR0"/>
+</element>
+<element name="R1104" library="df4iah_rcl" package="R0402" value="47R" x="34.925" y="8.255" smashed="yes" rot="R90">
+<attribute name="NAME" x="33.9725" y="8.5725" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="36.5125" y="6.6675" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
+</element>
+<element name="X1051" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="92.71" y="58.42" locked="yes" smashed="yes">
 <attribute name="NAME" x="90.96375" y="52.3875" size="0.8128" layer="25" ratio="15"/>
 <attribute name="VALUE" x="90.17" y="51.435" size="1.27" layer="27"/>
 </element>
-<element name="X1053" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="92.71" y="35.56" smashed="yes">
-<attribute name="NAME" x="90.96375" y="29.5275" size="0.8128" layer="25" ratio="15"/>
+<element name="X1053" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="92.71" y="35.56" locked="yes" smashed="yes">
+<attribute name="NAME" x="90.96375" y="29.21" size="0.8128" layer="25" ratio="15"/>
 <attribute name="VALUE" x="90.17" y="28.575" size="1.27" layer="27"/>
 </element>
-<element name="X1052" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="92.71" y="46.99" smashed="yes">
+<element name="X1052" library="df4iah_connector" package="WIRE-TO-BOARD_5MM08_1X02" value="WIRE-TO-BOARD_5MM08_1X02" x="92.71" y="46.99" locked="yes" smashed="yes">
 <attribute name="NAME" x="90.96375" y="40.9575" size="0.8128" layer="25" ratio="15"/>
 <attribute name="VALUE" x="90.17" y="40.005" size="1.27" layer="27"/>
 </element>
@@ -3827,15 +3851,15 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="VALUE" x="81.915" y="48.895" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="C1002" library="df4iah_rcl" package="C0402" value="1uF" x="76.835" y="48.5775" smashed="yes" rot="R270">
-<attribute name="NAME" x="75.72375" y="47.3075" size="0.6096" layer="25" font="vector" rot="R90"/>
+<attribute name="NAME" x="75.8825" y="47.3075" size="0.6096" layer="25" font="vector" rot="R90"/>
 <attribute name="VALUE" x="74.295" y="49.8475" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="C1003" library="df4iah_rcl" package="C0402" value="1uF" x="76.835" y="44.45" smashed="yes" rot="R270">
-<attribute name="NAME" x="75.8825" y="43.02125" size="0.6096" layer="25" font="vector" rot="R90"/>
+<attribute name="NAME" x="75.8825" y="43.18" size="0.6096" layer="25" font="vector" rot="R90"/>
 <attribute name="VALUE" x="74.295" y="45.72" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="C1004" library="df4iah_rcl" package="C0402" value="1uF" x="80.645" y="51.1175" smashed="yes">
-<attribute name="NAME" x="83.185" y="49.8475" size="0.6096" layer="25" font="vector" rot="R180"/>
+<attribute name="NAME" x="79.375" y="52.07" size="0.6096" layer="25" font="vector"/>
 <attribute name="VALUE" x="79.375" y="48.5775" size="1.27" layer="27"/>
 </element>
 <element name="C1005" library="df4iah_rcl" package="C0402" value="1uF" x="75.565" y="40.9575" smashed="yes" rot="R180">
@@ -3843,13 +3867,25 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="VALUE" x="76.835" y="43.4975" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="C1001" library="df4iah_rcl" package="C0402" value="1uF" x="85.4075" y="51.1175" smashed="yes" rot="R180">
-<attribute name="NAME" x="86.6775" y="49.8475" size="0.6096" layer="25" font="vector" rot="R180"/>
+<attribute name="NAME" x="84.1375" y="52.07" size="0.6096" layer="25" font="vector"/>
 <attribute name="VALUE" x="86.6775" y="53.6575" size="1.27" layer="27" rot="R180"/>
 </element>
-<element name="R1001" library="df4iah_rcl" package="R0402" value="47R" x="60.96" y="19.685" rot="MR0"/>
-<element name="R1002" library="df4iah_rcl" package="R0402" value="47R" x="88.265" y="43.4975" rot="R180"/>
-<element name="R1003" library="df4iah_rcl" package="R0402" value="47R" x="76.835" y="14.9225"/>
-<element name="R1004" library="df4iah_rcl" package="R0402" value="47R" x="88.265" y="39.6875" rot="R180"/>
+<element name="R1001" library="df4iah_rcl" package="R0402" value="47R" x="60.96" y="19.685" smashed="yes" rot="MR0">
+<attribute name="NAME" x="62.23" y="20.6375" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="62.5475" y="18.0975" size="0.6096" layer="28" font="vector" ratio="10" rot="MR0"/>
+</element>
+<element name="R1002" library="df4iah_rcl" package="R0402" value="47R" x="88.265" y="43.4975" smashed="yes" rot="R180">
+<attribute name="NAME" x="86.995" y="41.91" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="VALUE" x="89.8525" y="45.085" size="0.6096" layer="27" font="vector" ratio="10" rot="R180"/>
+</element>
+<element name="R1003" library="df4iah_rcl" package="R0402" value="47R" x="76.835" y="14.9225" smashed="yes">
+<attribute name="NAME" x="75.565" y="15.875" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="VALUE" x="75.2475" y="13.335" size="0.6096" layer="27" font="vector" ratio="10"/>
+</element>
+<element name="R1004" library="df4iah_rcl" package="R0402" value="47R" x="88.265" y="39.6875" smashed="yes" rot="R180">
+<attribute name="NAME" x="86.995" y="40.64" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="VALUE" x="89.8525" y="41.275" size="0.6096" layer="27" font="vector" ratio="10" rot="R180"/>
+</element>
 <element name="X1601" library="df4iah_connector" package="2X10" value="" x="27.94" y="66.04" locked="yes" smashed="yes">
 <attribute name="NAME" x="14.605" y="64.29375" size="0.8128" layer="25" font="vector" ratio="15" rot="R90"/>
 <attribute name="VALUE" x="15.24" y="61.595" size="1.27" layer="27"/>
@@ -3860,82 +3896,247 @@ Subminiature Tact Switch for SMT</description>
 </element>
 <element name="H1731" library="df4iah_holes" package="3,0-PAD" value="MOUNT-PAD-ROUND3.0" x="92.71" y="3.81" locked="yes"/>
 <element name="U0601" library="df4iah_dataconvertion" package="SOICW32" value="MC33996" x="31.75" y="52.07"/>
-<element name="C0601" library="df4iah_rcl" package="C0402" value="100nF" x="27.94" y="44.45" rot="R90"/>
-<element name="C0603" library="df4iah_rcl" package="C0603" value="22uF" x="32.385" y="44.45" rot="R270"/>
-<element name="C0602" library="df4iah_rcl" package="C0402" value="100nF" x="30.48" y="44.45" rot="R270"/>
-<element name="R0611" library="df4iah_rcl" package="R0402" value="47R" x="33.02" y="59.3725" rot="R270"/>
+<element name="C0601" library="df4iah_rcl" package="C0402" value="100nF" x="27.94" y="44.45" smashed="yes" rot="R90">
+<attribute name="NAME" x="28.2575" y="40.005" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="29.5275" y="43.18" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
+</element>
+<element name="C0603" library="df4iah_rcl" package="C0603" value="22uF" x="32.385" y="44.45" smashed="yes" rot="R270">
+<attribute name="NAME" x="32.7025" y="40.005" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="30.7975" y="45.72" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
+<element name="C0602" library="df4iah_rcl" package="C0402" value="100nF" x="30.48" y="44.45" smashed="yes" rot="R270">
+<attribute name="NAME" x="30.7975" y="40.005" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="28.8925" y="45.72" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
+<element name="R0611" library="df4iah_rcl" package="R0402" value="47R" x="33.02" y="59.3725" smashed="yes" rot="R270">
+<attribute name="NAME" x="32.0675" y="58.42" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="31.4325" y="60.96" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
 <element name="U0701" library="df4iah_dataconvertion" package="SOICW32" value="MC33996" x="48.26" y="52.07"/>
-<element name="C0701" library="df4iah_rcl" package="C0402" value="100nF" x="44.45" y="44.45" rot="R90"/>
-<element name="C0703" library="df4iah_rcl" package="C0603" value="22uF" x="48.895" y="44.45" rot="R270"/>
-<element name="C0702" library="df4iah_rcl" package="C0402" value="100nF" x="46.99" y="44.45" rot="R270"/>
-<element name="R0711" library="df4iah_rcl" package="R0402" value="47R" x="49.53" y="59.3725" rot="R270"/>
+<element name="C0701" library="df4iah_rcl" package="C0402" value="100nF" x="44.45" y="44.45" smashed="yes" rot="R90">
+<attribute name="NAME" x="44.7675" y="40.005" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="46.0375" y="43.18" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
+</element>
+<element name="C0703" library="df4iah_rcl" package="C0603" value="22uF" x="48.895" y="44.45" smashed="yes" rot="R270">
+<attribute name="NAME" x="49.2125" y="40.005" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="47.3075" y="45.72" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
+<element name="C0702" library="df4iah_rcl" package="C0402" value="100nF" x="46.99" y="44.45" smashed="yes" rot="R270">
+<attribute name="NAME" x="47.3075" y="40.005" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="45.4025" y="45.72" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
+<element name="R0711" library="df4iah_rcl" package="R0402" value="47R" x="49.53" y="59.3725" smashed="yes" rot="R270">
+<attribute name="NAME" x="48.5775" y="58.42" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="47.9425" y="60.96" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
 <element name="U0801" library="df4iah_dataconvertion" package="SOICW32" value="MC33996" x="64.77" y="52.07"/>
-<element name="C0801" library="df4iah_rcl" package="C0402" value="100nF" x="60.96" y="44.45" rot="R90"/>
-<element name="C0803" library="df4iah_rcl" package="C0603" value="22uF" x="65.405" y="44.45" rot="R270"/>
-<element name="C0802" library="df4iah_rcl" package="C0402" value="100nF" x="63.5" y="44.45" rot="R270"/>
-<element name="R0811" library="df4iah_rcl" package="R0402" value="47R" x="66.04" y="59.3725" rot="R270"/>
-<element name="R0621" library="df4iah_rcl" package="R0402" value="47R" x="66.3575" y="11.1125" rot="R270"/>
-<element name="R0622" library="df4iah_rcl" package="R0402" value="0R" x="67.31" y="11.1125" rot="MR270"/>
-<element name="R0623" library="df4iah_rcl" package="R0402" value="47R" x="67.945" y="11.1125" rot="R270"/>
-<element name="R0624" library="df4iah_rcl" package="R0402" value="47R" x="69.5325" y="11.1125" rot="R270"/>
-<element name="R0625" library="df4iah_rcl" package="R0402" value="47R" x="68.8975" y="11.1125" rot="MR270"/>
-<element name="R0626" library="df4iah_rcl" package="R0402" value="47R" x="76.835" y="13.335"/>
-<element name="R0724" library="df4iah_rcl" package="R0402" value="47R" x="70.485" y="11.1125" rot="MR270"/>
-<element name="R0824" library="df4iah_rcl" package="R0402" value="47R" x="71.12" y="11.1125" rot="R270"/>
+<element name="C0801" library="df4iah_rcl" package="C0402" value="100nF" x="60.96" y="44.45" smashed="yes" rot="R90">
+<attribute name="NAME" x="61.2775" y="40.005" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="62.5475" y="43.18" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
+</element>
+<element name="C0803" library="df4iah_rcl" package="C0603" value="22uF" x="65.405" y="44.45" smashed="yes" rot="R270">
+<attribute name="NAME" x="65.7225" y="40.005" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="63.8175" y="45.72" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
+<element name="C0802" library="df4iah_rcl" package="C0402" value="100nF" x="63.5" y="44.45" smashed="yes" rot="R270">
+<attribute name="NAME" x="63.8175" y="40.005" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="61.9125" y="45.72" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
+<element name="R0811" library="df4iah_rcl" package="R0402" value="47R" x="66.04" y="59.3725" smashed="yes" rot="R270">
+<attribute name="NAME" x="65.0875" y="58.42" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="64.4525" y="60.96" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
+<element name="R0621" library="df4iah_rcl" package="R0402" value="47R" x="66.3575" y="11.1125" smashed="yes" rot="R270">
+<attribute name="NAME" x="65.405" y="10.16" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="64.77" y="12.7" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
+<element name="R0622" library="df4iah_rcl" package="R0402" value="0R" x="67.31" y="11.1125" smashed="yes" rot="MR270">
+<attribute name="NAME" x="66.9925" y="6.35" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="68.8975" y="12.7" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
+</element>
+<element name="R0623" library="df4iah_rcl" package="R0402" value="47R" x="67.945" y="11.1125" smashed="yes" rot="R270">
+<attribute name="NAME" x="68.58" y="6.35" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="66.3575" y="12.7" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
+<element name="R0624" library="df4iah_rcl" package="R0402" value="47R" x="69.5325" y="11.1125" smashed="yes" rot="R270">
+<attribute name="NAME" x="69.85" y="6.35" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="67.945" y="12.7" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
+<element name="R0625" library="df4iah_rcl" package="R0402" value="47R" x="68.8975" y="11.1125" smashed="yes" rot="MR270">
+<attribute name="NAME" x="68.58" y="6.35" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="70.485" y="12.7" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
+</element>
+<element name="R0626" library="df4iah_rcl" package="R0402" value="47R" x="76.835" y="13.335" smashed="yes">
+<attribute name="NAME" x="75.565" y="11.7475" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="VALUE" x="75.2475" y="11.7475" size="0.6096" layer="27" font="vector" ratio="10"/>
+</element>
+<element name="R0724" library="df4iah_rcl" package="R0402" value="47R" x="70.485" y="11.1125" smashed="yes" rot="MR270">
+<attribute name="NAME" x="70.1675" y="6.35" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="72.0725" y="12.7" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
+</element>
+<element name="R0824" library="df4iah_rcl" package="R0402" value="47R" x="71.12" y="11.1125" smashed="yes" rot="R270">
+<attribute name="NAME" x="71.4375" y="6.35" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="69.5325" y="12.7" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
 <element name="U1301" library="df4iah_powersupply" package="S-PDSO-G10" value="TPS62051" x="15.24" y="39.37" rot="R180"/>
 <element name="L1311" library="df4iah_rcl" package="L_4.50MM_X_3.20MM" value="10uH" x="21.9075" y="36.83" smashed="yes" rot="R180">
 <attribute name="NAME" x="20.6375" y="38.735" size="0.6096" layer="25" font="vector" ratio="10"/>
 <attribute name="VALUE" x="23.1775" y="39.37" size="0.6096" layer="27" font="vector" ratio="10" rot="R180"/>
 </element>
-<element name="R1321" library="df4iah_rcl" package="R0402" value="1MR" x="25.4" y="39.0525" rot="MR180"/>
-<element name="R1322" library="df4iah_rcl" package="R0402" value="1MR" x="25.4" y="40.64" rot="MR180"/>
-<element name="C1311" library="df4iah_rcl" package="C0603" value="22uF" x="28.575" y="36.83" rot="R270"/>
-<element name="C1301" library="df4iah_rcl" package="C0603" value="22uF" x="15.24" y="43.18" rot="MR0"/>
-<element name="R1301" library="df4iah_rcl" package="R0402" value="100kR" x="12.065" y="36.83" rot="MR180"/>
-<element name="R1302" library="df4iah_rcl" package="R0402" value="220kR" x="13.97" y="34.925" rot="MR180"/>
-<element name="L0901" library="df4iah_rcl" package="L0603" value="10uH" x="6.35" y="20.32" rot="MR270"/>
-<element name="L0911" library="df4iah_rcl" package="L0603" value="10uH" x="6.35" y="36.83" rot="MR90"/>
-<element name="C0901" library="df4iah_rcl" package="C0402" value="10nF" x="5.08" y="22.86" rot="MR0"/>
-<element name="C0911" library="df4iah_rcl" package="C0402" value="10nF" x="5.08" y="34.29" rot="MR0"/>
-<element name="R0912" library="df4iah_rcl" package="R0402" value="15kR" x="7.62" y="33.02" rot="MR270"/>
-<element name="R0902" library="df4iah_rcl" package="R0402" value="15kR" x="7.62" y="24.13" rot="MR90"/>
+<element name="R1321" library="df4iah_rcl" package="R0402" value="1MR" x="25.4" y="39.0525" smashed="yes" rot="MR180">
+<attribute name="NAME" x="26.67" y="37.465" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="23.8125" y="40.64" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
+</element>
+<element name="R1322" library="df4iah_rcl" package="R0402" value="1MR" x="25.4" y="40.64" smashed="yes" rot="MR180">
+<attribute name="NAME" x="26.67" y="41.5925" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="23.8125" y="42.2275" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
+</element>
+<element name="C1311" library="df4iah_rcl" package="C0603" value="22uF" x="28.575" y="36.83" smashed="yes" rot="R270">
+<attribute name="NAME" x="27.305" y="35.56" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="26.9875" y="38.1" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
+<element name="C1301" library="df4iah_rcl" package="C0603" value="22uF" x="15.24" y="43.18" smashed="yes" rot="MR0">
+<attribute name="NAME" x="20.0025" y="42.8625" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="16.51" y="41.5925" size="0.6096" layer="28" font="vector" ratio="10" rot="MR0"/>
+</element>
+<element name="R1301" library="df4iah_rcl" package="R0402" value="100kR" x="12.065" y="36.83" smashed="yes" rot="MR180">
+<attribute name="NAME" x="13.335" y="37.7825" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="10.4775" y="38.4175" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
+</element>
+<element name="R1302" library="df4iah_rcl" package="R0402" value="220kR" x="13.97" y="34.925" smashed="yes" rot="MR180">
+<attribute name="NAME" x="15.5575" y="33.3375" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="12.3825" y="36.5125" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
+</element>
+<element name="L0901" library="df4iah_rcl" package="L0603" value="10uH" x="6.35" y="20.32" smashed="yes" rot="MR270">
+<attribute name="NAME" x="10.16" y="18.0975" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="7.9375" y="21.59" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
+</element>
+<element name="L0911" library="df4iah_rcl" package="L0603" value="10uH" x="6.35" y="36.83" smashed="yes" rot="MR90">
+<attribute name="NAME" x="10.16" y="38.4175" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="4.7625" y="35.56" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
+</element>
+<element name="C0901" library="df4iah_rcl" package="C0402" value="10nF" x="5.08" y="22.86" smashed="yes" rot="MR0">
+<attribute name="NAME" x="3.175" y="22.5425" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="6.35" y="21.2725" size="0.6096" layer="28" font="vector" ratio="10" rot="MR0"/>
+</element>
+<element name="C0911" library="df4iah_rcl" package="C0402" value="10nF" x="5.08" y="34.29" smashed="yes" rot="MR0">
+<attribute name="NAME" x="3.175" y="33.9725" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="6.35" y="32.7025" size="0.6096" layer="28" font="vector" ratio="10" rot="MR0"/>
+</element>
+<element name="R0912" library="df4iah_rcl" package="R0402" value="15kR" x="7.62" y="33.02" smashed="yes" rot="MR270">
+<attribute name="NAME" x="8.5725" y="31.75" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="9.2075" y="34.6075" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
+</element>
+<element name="R0902" library="df4iah_rcl" package="R0402" value="15kR" x="7.62" y="24.13" smashed="yes" rot="MR90">
+<attribute name="NAME" x="8.5725" y="22.86" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="6.0325" y="22.5425" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
+</element>
 <element name="U0921" library="df4iah_sc-switches" package="R-PDSO-G8" value="TS5A23166" x="6.35" y="29.21" rot="MR90"/>
-<element name="C0921" library="df4iah_rcl" package="C0402" value="100nF" x="10.16" y="26.67" rot="MR270"/>
-<element name="R0922" library="df4iah_rcl" package="R0402" value="47R" x="60.96" y="12.065" rot="R180"/>
-<element name="R0921" library="df4iah_rcl" package="R0402" value="47R" x="60.96" y="18.0975" rot="R180"/>
+<element name="C0921" library="df4iah_rcl" package="C0402" value="100nF" x="10.16" y="26.67" smashed="yes" rot="MR270">
+<attribute name="NAME" x="9.8425" y="22.225" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="11.7475" y="27.94" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
+</element>
+<element name="R0922" library="df4iah_rcl" package="R0402" value="47R" x="60.96" y="12.065" smashed="yes" rot="R180">
+<attribute name="NAME" x="56.1975" y="11.7475" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="VALUE" x="62.5475" y="13.6525" size="0.6096" layer="27" font="vector" ratio="10" rot="R180"/>
+</element>
+<element name="R0921" library="df4iah_rcl" package="R0402" value="47R" x="60.96" y="18.0975" smashed="yes" rot="R180">
+<attribute name="NAME" x="59.69" y="19.05" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="VALUE" x="62.5475" y="19.685" size="0.6096" layer="27" font="vector" ratio="10" rot="R180"/>
+</element>
 <element name="U0951" library="df4iah_opamp" package="SOT-23-5" value="OPA354" x="12.7" y="26.035" smashed="yes" rot="MR90">
 <attribute name="PACKAGE" value="SOT-23-5" x="12.7" y="26.035" size="1.778" layer="28" rot="MR90" display="off"/>
 <attribute name="OC_NEWARK" value="-" x="12.7" y="26.035" size="1.778" layer="28" rot="MR90" display="off"/>
 <attribute name="SUPPLIER" value="Texas Instruments" x="12.7" y="26.035" size="1.778" layer="28" rot="MR90" display="off"/>
 <attribute name="OC_FARNELL" value="1207050" x="12.7" y="26.035" size="1.778" layer="28" rot="MR90" display="off"/>
 <attribute name="MPN" value="OPA354AIDBVT" x="12.7" y="26.035" size="1.778" layer="28" rot="MR90" display="off"/>
-<attribute name="NAME" x="14.605" y="25.1206" size="0.6096" layer="26" font="vector" rot="SMR90"/>
+<attribute name="NAME" x="14.605" y="24.8031" size="0.6096" layer="26" font="vector" rot="SMR90"/>
 <attribute name="VALUE" x="8.255" y="22.5806" size="2.0828" layer="28" ratio="10" rot="SMR90"/>
 </element>
-<element name="C0951" library="df4iah_rcl" package="C0402" value="100nF" x="15.24" y="29.21" rot="MR0"/>
-<element name="D0951" library="df4iah_diode" package="SOD923" value="CMAD6001" x="12.7" y="26.67" rot="R90"/>
-<element name="R0952" library="df4iah_rcl" package="R0402" value="47R" x="15.24" y="22.86" rot="MR180"/>
-<element name="D0961" library="df4iah_diode" package="SOD923" value="CMAD6001" x="13.97" y="26.67" rot="R270"/>
-<element name="R0961" library="df4iah_rcl" package="R0402" value="10kR" x="15.24" y="26.67" rot="R270"/>
+<element name="C0951" library="df4iah_rcl" package="C0402" value="100nF" x="15.24" y="29.21" smashed="yes" rot="MR0">
+<attribute name="NAME" x="16.51" y="30.1625" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="16.51" y="27.6225" size="0.6096" layer="28" font="vector" ratio="10" rot="MR0"/>
+</element>
+<element name="D0951" library="df4iah_diode" package="SOD923" value="CMAD6001" x="12.7" y="26.67" smashed="yes" rot="R90">
+<attribute name="NAME" x="13.0175" y="22.225" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="13.97" y="25.4" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
+</element>
+<element name="R0952" library="df4iah_rcl" package="R0402" value="47R" x="15.24" y="22.86" smashed="yes" rot="MR180">
+<attribute name="NAME" x="20.0025" y="22.5425" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="13.6525" y="24.4475" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
+</element>
+<element name="D0961" library="df4iah_diode" package="SOD923" value="CMAD6001" x="13.97" y="26.67" smashed="yes" rot="R270">
+<attribute name="NAME" x="14.2875" y="22.225" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="12.7" y="27.94" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
+<element name="R0961" library="df4iah_rcl" package="R0402" value="10kR" x="15.24" y="26.67" smashed="yes" rot="R270">
+<attribute name="NAME" x="15.5575" y="22.225" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="13.6525" y="28.2575" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
+</element>
 <element name="X0601" library="df4iah_connector" package="2X02" value="" x="78.74" y="29.21" smashed="yes">
 <attribute name="NAME" x="82.55" y="27.305" size="0.8128" layer="25" font="vector" ratio="15" rot="R90"/>
 <attribute name="VALUE" x="74.93" y="24.765" size="1.27" layer="27"/>
 </element>
-<element name="D0901" library="df4iah_diode" package="SOD80C" value="CRS08" x="6.35" y="24.13" rot="R180"/>
-<element name="D0911" library="df4iah_diode" package="SOD80C" value="CRS08" x="6.35" y="33.02"/>
-<element name="R0951" library="df4iah_rcl" package="R0402" value="1MR" x="12.065" y="29.21" rot="MR0"/>
-<element name="R0903" library="df4iah_rcl" package="R0402" value="100kR" x="7.62" y="26.67"/>
-<element name="R0913" library="df4iah_rcl" package="R0402" value="100kR" x="8.89" y="30.48"/>
-<element name="R0901" library="df4iah_rcl" package="R0402" value="1kR" x="5.08" y="24.765" rot="MR180"/>
-<element name="R0911" library="df4iah_rcl" package="R0402" value="1kR" x="5.08" y="32.385" rot="MR180"/>
-<element name="C1052" library="df4iah_rcl" package="C0603" value="10nF" x="92.71" y="58.42" rot="MR180"/>
-<element name="C1051" library="df4iah_rcl" package="C0603" value="10nF" x="92.71" y="63.5" rot="MR180"/>
-<element name="C1053" library="df4iah_rcl" package="C0603" value="10nF" x="92.71" y="40.64" rot="MR180"/>
-<element name="C0054" library="df4iah_rcl" package="C0603" value="10nF" x="92.71" y="35.56" rot="MR180"/>
-<element name="C1152" library="df4iah_rcl" package="C0603" value="10nF" x="38.1" y="3.81" rot="MR270"/>
-<element name="C1151" library="df4iah_rcl" package="C0603" value="10nF" x="43.18" y="3.4925" rot="MR270"/>
-<element name="C1153" library="df4iah_rcl" package="C0603" value="10nF" x="20.32" y="3.81" rot="MR270"/>
-<element name="C1154" library="df4iah_rcl" package="C0603" value="10nF" x="15.24" y="3.81" rot="MR270"/>
+<element name="D0901" library="df4iah_diode" package="SOD80C" value="CRS08" x="6.35" y="24.13" smashed="yes" rot="R180">
+<attribute name="NAME" x="3.2385" y="25.273" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="VALUE" x="7.874" y="25.908" size="0.6096" layer="27" font="vector" ratio="10" rot="R180"/>
+</element>
+<element name="D0911" library="df4iah_diode" package="SOD80C" value="CRS08" x="6.35" y="33.02" smashed="yes">
+<attribute name="NAME" x="3.2385" y="31.3055" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="VALUE" x="4.826" y="31.242" size="0.6096" layer="27" font="vector" ratio="10"/>
+</element>
+<element name="R0951" library="df4iah_rcl" package="R0402" value="1MR" x="12.065" y="29.21" smashed="yes" rot="MR0">
+<attribute name="NAME" x="13.335" y="30.1625" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="13.6525" y="27.6225" size="0.6096" layer="28" font="vector" ratio="10" rot="MR0"/>
+</element>
+<element name="R0903" library="df4iah_rcl" package="R0402" value="100kR" x="7.62" y="26.67" smashed="yes">
+<attribute name="NAME" x="3.175" y="26.67" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="VALUE" x="6.0325" y="25.0825" size="0.6096" layer="27" font="vector" ratio="10"/>
+</element>
+<element name="R0913" library="df4iah_rcl" package="R0402" value="100kR" x="8.89" y="30.48" smashed="yes">
+<attribute name="NAME" x="3.175" y="30.1625" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="VALUE" x="7.3025" y="28.8925" size="0.6096" layer="27" font="vector" ratio="10"/>
+</element>
+<element name="R0901" library="df4iah_rcl" package="R0402" value="1kR" x="5.08" y="24.765" smashed="yes" rot="MR180">
+<attribute name="NAME" x="3.175" y="24.4475" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="3.4925" y="26.3525" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
+</element>
+<element name="R0911" library="df4iah_rcl" package="R0402" value="1kR" x="5.08" y="32.385" smashed="yes" rot="MR180">
+<attribute name="NAME" x="3.175" y="32.0675" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="3.4925" y="33.9725" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
+</element>
+<element name="C1052" library="df4iah_rcl" package="C0603" value="10nF" x="92.71" y="58.42" smashed="yes" rot="MR180">
+<attribute name="NAME" x="90.805" y="58.1025" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="91.44" y="60.0075" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
+</element>
+<element name="C1051" library="df4iah_rcl" package="C0603" value="10nF" x="92.71" y="63.5" smashed="yes" rot="MR180">
+<attribute name="NAME" x="90.805" y="63.1825" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="91.44" y="65.0875" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
+</element>
+<element name="C1053" library="df4iah_rcl" package="C0603" value="10nF" x="92.71" y="40.64" smashed="yes" rot="MR180">
+<attribute name="NAME" x="90.805" y="40.3225" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="91.44" y="42.2275" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
+</element>
+<element name="C0054" library="df4iah_rcl" package="C0603" value="10nF" x="92.71" y="35.56" smashed="yes" rot="MR180">
+<attribute name="NAME" x="90.805" y="35.2425" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="91.44" y="37.1475" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
+</element>
+<element name="C1152" library="df4iah_rcl" package="C0603" value="10nF" x="38.1" y="3.81" smashed="yes" rot="MR270">
+<attribute name="NAME" x="37.7825" y="5.715" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="39.6875" y="5.08" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
+</element>
+<element name="C1151" library="df4iah_rcl" package="C0603" value="10nF" x="43.18" y="3.81" smashed="yes" rot="MR270">
+<attribute name="NAME" x="42.8625" y="5.715" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="44.7675" y="5.08" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
+</element>
+<element name="C1153" library="df4iah_rcl" package="C0603" value="10nF" x="20.32" y="3.81" smashed="yes" rot="MR270">
+<attribute name="NAME" x="20.0025" y="5.715" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="21.9075" y="5.08" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
+</element>
+<element name="C1154" library="df4iah_rcl" package="C0603" value="10nF" x="15.24" y="3.81" smashed="yes" rot="MR270">
+<attribute name="NAME" x="14.9225" y="5.715" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="16.8275" y="5.08" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
+</element>
 </elements>
 <signals>
 <signal name="GND">
@@ -4109,14 +4310,14 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="20.305" y1="57.8" x2="20.32" y2="57.785" width="0.3048" layer="16"/>
 <wire x1="20.32" y1="56.73" x2="20.32" y2="57.785" width="0.3048" layer="1"/>
 <via x="10.16" y="53.34" extent="1-16" drill="0.3048"/>
-<wire x1="10.16" y1="53.96" x2="10.16" y2="53.34" width="0.3048" layer="16"/>
+<wire x1="10.4775" y1="53.96" x2="10.16" y2="53.34" width="0.3048" layer="16"/>
 <wire x1="11.3875" y1="53.62" x2="10.44" y2="53.62" width="0.3048" layer="1"/>
 <wire x1="10.44" y1="53.62" x2="10.16" y2="53.34" width="0.3048" layer="1"/>
 <wire x1="11.3875" y1="52.97" x2="10.53" y2="52.97" width="0.3048" layer="1"/>
 <wire x1="10.53" y1="52.97" x2="10.16" y2="53.34" width="0.3048" layer="1"/>
 <wire x1="5.715" y1="53.76" x2="7.3025" y2="53.76" width="0.3048" layer="16"/>
 <wire x1="7.3025" y1="53.76" x2="8.89" y2="53.76" width="0.3048" layer="16"/>
-<wire x1="8.89" y1="53.76" x2="10.16" y2="53.96" width="0.3048" layer="16"/>
+<wire x1="8.89" y1="53.76" x2="10.4775" y2="53.96" width="0.3048" layer="16"/>
 <via x="13.335" y="43.18" extent="1-16" drill="0.3048"/>
 <wire x1="13.335" y1="43.18" x2="14.39" y2="43.18" width="0.3048" layer="16"/>
 <wire x1="15.24" y1="41.57" x2="15.24" y2="42.545" width="0.254" layer="1"/>
@@ -4329,9 +4530,9 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="65.405" y1="13.335" x2="65.405" y2="9.125" width="0.3048" layer="1"/>
 <wire x1="65.405" y1="9.125" x2="65.42" y2="8.5725" width="0.3048" layer="1"/>
 <wire x1="59.9925" y1="16.8275" x2="59.3575" y2="17.765" width="0.3048" layer="1"/>
-<wire x1="59.3575" y1="17.765" x2="59.055" y2="18.415" width="0.3048" layer="1"/>
-<wire x1="59.055" y1="18.415" x2="59.04" y2="18.415" width="0.1524" layer="1"/>
-<wire x1="59.04" y1="18.415" x2="58.7375" y2="18.4" width="0.1524" layer="1"/>
+<wire x1="59.3575" y1="17.765" x2="58.7375" y2="18.0975" width="0.3048" layer="1"/>
+<wire x1="58.7375" y1="18.0975" x2="58.7225" y2="18.0975" width="0.1524" layer="1"/>
+<wire x1="58.7225" y1="18.0975" x2="58.42" y2="18.0825" width="0.1524" layer="1"/>
 <wire x1="59.51625" y1="13.97" x2="59.51625" y2="15.478125" width="0.3048" layer="16"/>
 <wire x1="59.51625" y1="15.478125" x2="59.595625" y2="15.5575" width="0.1524" layer="16"/>
 <via x="72.0725" y="21.9075" extent="1-16" drill="0.3048"/>
@@ -4519,7 +4720,7 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="C1153" pad="2"/>
 <contactref element="C1154" pad="2"/>
 <wire x1="38.1" y1="2.96" x2="38.1" y2="1.27" width="0.1524" layer="16"/>
-<wire x1="43.18" y1="2.6425" x2="43.18" y2="1.27" width="0.1524" layer="16"/>
+<wire x1="43.18" y1="2.96" x2="43.18" y2="1.27" width="0.1524" layer="16"/>
 <wire x1="15.24" y1="2.96" x2="15.24" y2="1.27" width="0.1524" layer="16"/>
 <wire x1="20.32" y1="2.96" x2="20.32" y2="1.27" width="0.1524" layer="16"/>
 <wire x1="93.56" y1="63.5" x2="93.8775" y2="63.1825" width="0.1524" layer="16"/>
@@ -4606,8 +4807,10 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="61.595" y1="21.5675" x2="60.9625" y2="21.5675" width="0.1524" layer="1"/>
 <wire x1="60.9625" y1="21.5675" x2="60.6225" y2="21.59" width="0.1524" layer="1"/>
 <wire x1="60.6225" y1="21.59" x2="60.6425" y2="20.0025" width="0.1524" layer="1"/>
-<wire x1="60.6425" y1="20.0025" x2="60.305" y2="19.72" width="0.1524" layer="1"/>
-<wire x1="60.305" y1="19.72" x2="58.7375" y2="19.7" width="0.1524" layer="1"/>
+<wire x1="60.6425" y1="20.0025" x2="60.305" y2="19.685" width="0.1524" layer="1"/>
+<wire x1="60.305" y1="19.685" x2="58.7375" y2="19.685" width="0.1524" layer="1"/>
+<wire x1="58.7375" y1="19.685" x2="58.435" y2="19.3825" width="0.1524" layer="1"/>
+<wire x1="58.435" y1="19.3825" x2="58.42" y2="19.3825" width="0.1524" layer="1"/>
 </signal>
 <signal name="PC14_OSC32_IN">
 <contactref element="Q0321" pad="2"/>
@@ -4630,8 +4833,8 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="64.28" y1="22.75" x2="63.9275" y2="22.75" width="0.1524" layer="1"/>
 <wire x1="63.9275" y1="22.75" x2="63.1825" y2="23.495" width="0.1524" layer="1"/>
 <wire x1="63.1825" y1="23.495" x2="63.1825" y2="26.9875" width="0.1524" layer="1"/>
-<wire x1="63.1825" y1="26.9875" x2="63.5" y2="27.305" width="0.1524" layer="1"/>
-<wire x1="63.5" y1="27.305" x2="63.5" y2="28.895" width="0.1524" layer="1"/>
+<wire x1="63.1825" y1="26.9875" x2="63.5" y2="26.67" width="0.1524" layer="1"/>
+<wire x1="63.5" y1="26.67" x2="63.5" y2="28.895" width="0.1524" layer="1"/>
 </signal>
 <signal name="PA14">
 <contactref element="X0201" pad="4"/>
@@ -5010,7 +5213,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="64.28" y1="15.75" x2="63.375" y2="15.75" width="0.1524" layer="1"/>
 <wire x1="63.375" y1="15.75" x2="62.865" y2="15.24" width="0.1524" layer="1"/>
 <via x="38.735" y="6.35" extent="1-16" drill="0.3048"/>
-<wire x1="38.735" y1="7.2875" x2="38.735" y2="6.35" width="0.1524" layer="1"/>
+<wire x1="38.735" y1="7.605" x2="38.735" y2="6.35" width="0.1524" layer="1"/>
 <wire x1="62.865" y1="15.24" x2="62.865" y2="14.605" width="0.1524" layer="16"/>
 <wire x1="62.865" y1="14.605" x2="61.9125" y2="13.6525" width="0.1524" layer="16"/>
 <wire x1="61.9125" y1="13.6525" x2="47.625" y2="13.6525" width="0.1524" layer="1"/>
@@ -5256,7 +5459,7 @@ Subminiature Tact Switch for SMT</description>
 <via x="39.6875" y="22.5425" extent="1-16" drill="0.3048"/>
 <wire x1="34.925" y1="17.78" x2="39.6875" y2="22.5425" width="0.1524" layer="16"/>
 <wire x1="42.2275" y1="25.0825" x2="39.6875" y2="22.5425" width="0.1524" layer="1"/>
-<wire x1="34.925" y1="7.2875" x2="34.925" y2="6.35" width="0.1524" layer="1"/>
+<wire x1="34.925" y1="7.605" x2="34.925" y2="6.35" width="0.1524" layer="1"/>
 </signal>
 <signal name="PB8">
 <contactref element="U0101" pad="61"/>
@@ -5480,7 +5683,7 @@ Subminiature Tact Switch for SMT</description>
 <signal name="MP_CAT_TXD_R">
 <contactref element="U1101" pad="12"/>
 <contactref element="R1102" pad="2"/>
-<wire x1="38.735" y1="11.37" x2="38.735" y2="8.5875" width="0.1524" layer="1"/>
+<wire x1="38.735" y1="11.37" x2="38.735" y2="8.905" width="0.1524" layer="1"/>
 </signal>
 <signal name="CAT_DTE_RXD">
 <contactref element="U1101" pad="14"/>
@@ -5488,8 +5691,8 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="41.275" y1="11.37" x2="41.275" y2="8.255" width="0.1524" layer="1"/>
 <wire x1="41.275" y1="8.255" x2="45.72" y2="3.81" width="0.1524" layer="1"/>
 <contactref element="C1151" pad="1"/>
-<wire x1="43.18" y1="4.3425" x2="45.1875" y2="4.3425" width="0.1524" layer="16"/>
-<wire x1="45.1875" y1="4.3425" x2="45.72" y2="3.81" width="0.1524" layer="16"/>
+<wire x1="43.18" y1="4.66" x2="44.87" y2="4.66" width="0.1524" layer="16"/>
+<wire x1="44.87" y1="4.66" x2="45.72" y2="3.81" width="0.1524" layer="16"/>
 </signal>
 <signal name="CAT_DTE_TXD">
 <contactref element="U1101" pad="13"/>
@@ -5536,7 +5739,7 @@ Subminiature Tact Switch for SMT</description>
 <signal name="MP_CAT_RTR_R">
 <contactref element="U1101" pad="9"/>
 <contactref element="R1104" pad="2"/>
-<wire x1="34.925" y1="11.37" x2="34.925" y2="8.5875" width="0.1524" layer="1"/>
+<wire x1="34.925" y1="11.37" x2="34.925" y2="8.905" width="0.1524" layer="1"/>
 </signal>
 <signal name="RS_MX_C2M1">
 <contactref element="C1003" pad="2"/>
@@ -6125,7 +6328,7 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="C1202" pad="1"/>
 <contactref element="C1203" pad="1"/>
 <contactref element="X1211" pad="1"/>
-<wire x1="10.16" y1="55.26" x2="8.89" y2="55.46" width="0.4064" layer="16"/>
+<wire x1="10.4775" y1="55.26" x2="8.89" y2="55.46" width="0.4064" layer="16"/>
 <wire x1="7.62" y1="55.245" x2="7.3025" y2="55.46" width="0.3048" layer="16"/>
 <wire x1="7.3025" y1="55.46" x2="5.715" y2="55.46" width="0.4064" layer="16"/>
 <wire x1="8.89" y1="55.46" x2="7.3025" y2="55.46" width="0.4064" layer="16"/>
@@ -6136,7 +6339,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="10.5" y1="56.22" x2="10.16" y2="55.88" width="0.3048" layer="1"/>
 <wire x1="11.3875" y1="55.57" x2="10.47" y2="55.57" width="0.3048" layer="1"/>
 <wire x1="10.47" y1="55.57" x2="10.16" y2="55.88" width="0.3048" layer="1"/>
-<wire x1="10.16" y1="55.26" x2="10.16" y2="55.88" width="0.3048" layer="16"/>
+<wire x1="10.4775" y1="55.26" x2="10.16" y2="55.88" width="0.3048" layer="16"/>
 <wire x1="11.3875" y1="54.92" x2="10.5" y2="54.92" width="0.3048" layer="1"/>
 <wire x1="10.5" y1="54.92" x2="10.16" y2="55.26" width="0.3048" layer="1"/>
 <wire x1="10.16" y1="55.26" x2="10.16" y2="55.88" width="0.3048" layer="1"/>
@@ -6637,9 +6840,8 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="U0921" pad="7"/>
 <wire x1="60.31" y1="18.0975" x2="60.325" y2="18.1125" width="0.1524" layer="1"/>
 <wire x1="60.325" y1="18.1125" x2="60.325" y2="18.7325" width="0.1524" layer="1"/>
-<wire x1="60.325" y1="18.7325" x2="60.0075" y2="19.05" width="0.1524" layer="1"/>
-<wire x1="60.0075" y1="19.05" x2="49.8475" y2="19.05" width="0.1524" layer="1"/>
-<wire x1="49.8475" y1="19.05" x2="48.5775" y2="20.32" width="0.1524" layer="1"/>
+<wire x1="60.325" y1="18.7325" x2="50.165" y2="18.7325" width="0.1524" layer="1"/>
+<wire x1="50.165" y1="18.7325" x2="48.5775" y2="20.32" width="0.1524" layer="1"/>
 <via x="48.5775" y="20.32" extent="1-16" drill="0.3048"/>
 <wire x1="48.5775" y1="20.32" x2="47.625" y2="21.2725" width="0.1524" layer="16"/>
 <wire x1="47.625" y1="21.2725" x2="43.18" y2="21.2725" width="0.1524" layer="16"/>
@@ -6693,24 +6895,147 @@ Subminiature Tact Switch for SMT</description>
 </signal>
 </signals>
 <errors>
+<approved hash="7,40,89d01a281ad3892b"/>
+<approved hash="7,40,092965eb07ee1654"/>
+<approved hash="7,40,899c1a641a4689be"/>
+<approved hash="7,40,6041e6aef9e30274"/>
+<approved hash="7,40,4a41aeb1eefc3174"/>
+<approved hash="7,40,41294ff434f10154"/>
+<approved hash="18,29,5c0b82890a2b6c8d"/>
 <approved hash="7,40,35293f9ad6bffab4"/>
 <approved hash="7,40,fe10062806d3feeb"/>
 <approved hash="7,40,fe5c06640646fe7e"/>
 <approved hash="7,40,3a01da9f1532d314"/>
 <approved hash="7,40,48c1aea16e2caeb4"/>
-<approved hash="7,40,f89c06640646f8be"/>
 <approved hash="7,40,3a415ea7d26a93f4"/>
+<approved hash="7,40,f89c06640646f8be"/>
 <approved hash="7,40,41294d64ab218194"/>
 <approved hash="7,40,f8d0062806d3f82b"/>
 <approved hash="7,40,b1293fe296673dd4"/>
 <approved hash="7,40,4129cdac6b09c034"/>
-<approved hash="7,40,89d01a281ad3892b"/>
-<approved hash="7,40,092965eb07ee1654"/>
 <approved hash="7,40,c801aea92f846e94"/>
-<approved hash="7,40,899c1a641a4689be"/>
-<approved hash="7,40,6041e6aef9e30274"/>
-<approved hash="7,40,4a41aeb1eefc3174"/>
-<approved hash="7,40,41294ff434f10154"/>
+<approved hash="18,29,121f16e71e831a7b"/>
+<approved hash="18,29,0a830cad048402aa"/>
+<approved hash="18,29,eb485d47dd456b4a"/>
+<approved hash="18,29,d27a7471f4735278"/>
+<approved hash="18,29,a821bf2a3f2b2820"/>
+<approved hash="18,29,9113961c161d1112"/>
+<approved hash="18,29,d3f4cba64ba753f5"/>
+<approved hash="18,29,44724223c222c473"/>
+<approved hash="18,29,96b3751d4ef5f8df"/>
+<approved hash="18,29,5bb6d16e2b2e71d0"/>
+<approved hash="18,29,c90dc1ff41fe490c"/>
+<approved hash="18,29,fa4a4d6e788a942a"/>
+<approved hash="18,29,73916be64d08d023"/>
+<approved hash="18,29,50805771d770d081"/>
+<approved hash="18,29,4ed94c8acc8bced8"/>
+<approved hash="18,29,d453d20d520c5452"/>
+<approved hash="18,29,6f363edf03c4af53"/>
+<approved hash="18,29,0784aee116711710"/>
+<approved hash="18,29,89d5ffd018dc89be"/>
+<approved hash="18,29,a13ffeb24f4c76f0"/>
+<approved hash="18,29,92a92722273c92b7"/>
+<approved hash="18,29,e6ce5b4b5b55e6d0"/>
+<approved hash="18,29,17da9fc5277583e5"/>
+<approved hash="18,29,9e859eb2d17e7c90"/>
+<approved hash="18,29,57395767d766d738"/>
+<approved hash="18,29,d3ead21b521a53eb"/>
+<approved hash="18,29,cdb3c9e049e14db2"/>
+<approved hash="18,29,c718c74947484719"/>
+<approved hash="18,29,509e4ecccecdd09f"/>
+<approved hash="18,29,4a674495c494ca66"/>
+<approved hash="18,29,91b26c1002f9badf"/>
+<approved hash="18,29,b6470f6f618a9326"/>
+<approved hash="18,29,629439ae79a22298"/>
+<approved hash="18,29,3aee626522697ae2"/>
+<approved hash="18,29,7fdafc5ffc5a7fdf"/>
+<approved hash="18,29,0bbd803680330bb8"/>
+<approved hash="18,29,3721ce97382357cb"/>
+<approved hash="18,29,cf0c2cdff819628a"/>
+<approved hash="18,29,94381372f8d826f5"/>
+<approved hash="18,29,6a0663ef38fb876b"/>
+<approved hash="18,29,e08e69056907e08c"/>
+<approved hash="18,29,94e9156c156e94eb"/>
+<approved hash="18,29,ecd7545c1440accb"/>
+<approved hash="18,29,b4ad0f974f8bf4b1"/>
+<approved hash="18,29,2df5ae70ae732df6"/>
+<approved hash="18,29,5992d219d21a5991"/>
+<approved hash="18,29,4a01c784c7874a02"/>
+<approved hash="18,29,3e66bbedbbee3e65"/>
+<approved hash="18,29,ebb6523d1221abaa"/>
+<approved hash="18,29,b3cc09f649eaf3d0"/>
+<approved hash="18,29,e30c5889588be30e"/>
+<approved hash="18,29,976b24e024e29769"/>
+<approved hash="18,29,0c7f8df48df10c7a"/>
+<approved hash="18,29,7818f19df198781d"/>
+<approved hash="18,29,dd9f041444189d93"/>
+<approved hash="18,29,85e55fdf1fd3c5e9"/>
+<approved hash="18,29,91270aa20aac9129"/>
+<approved hash="18,29,e54076cb76c5e54e"/>
+<approved hash="18,29,5a54dfdfdfd85a53"/>
+<approved hash="18,29,2e33a3b6a3b12e34"/>
+<approved hash="18,29,473fc4bac4c54740"/>
+<approved hash="18,29,3358b8d3b8ac3327"/>
+<approved hash="18,29,db7e05f545f99b72"/>
+<approved hash="18,29,83045e3e1e32c308"/>
+<approved hash="18,29,d51dac27ec1b9521"/>
+<approved hash="18,29,8d67f7ecb7d0cd5b"/>
+<approved hash="18,29,b5fab102b964bd9c"/>
+<approved hash="18,29,7794ea11ea1c7799"/>
+<approved hash="18,29,03f39678967503fe"/>
+<approved hash="18,29,d3b256da1d3067b8"/>
+<approved hash="18,29,2012559a1e309498"/>
+<approved hash="18,29,f37b841789ad01e1"/>
+<approved hash="18,29,001b87d78a6df241"/>
+<approved hash="18,29,8ea30d260d208ea5"/>
+<approved hash="18,29,fac4714f7149fac2"/>
+<approved hash="18,29,8b26c2d9b8c2dbcf"/>
+<approved hash="18,29,2a309894c9455113"/>
+<approved hash="18,29,c6128bf08bf0c612"/>
+<approved hash="18,29,51c8d843d85c51d7"/>
+<approved hash="18,29,25afa42aa43525b0"/>
+<approved hash="18,29,c8dd43564350c8db"/>
+<approved hash="18,29,bcba3f3f3f39bcbc"/>
+<approved hash="18,29,dbc65643564ddbc8"/>
+<approved hash="18,29,afa12a2a2a24afaf"/>
+<approved hash="18,29,f2f5be17be17f2f5"/>
+<approved hash="18,29,823180f34d230513"/>
+<approved hash="18,29,93266abfeca55fce"/>
+<approved hash="18,29,06b5953e953b06b0"/>
+<approved hash="18,29,72d2e957e95272d7"/>
+<approved hash="18,29,89e10064006689e3"/>
+<approved hash="18,29,fd867c0d7c0ffd84"/>
+<approved hash="18,29,20ed9b689b6b20ee"/>
+<approved hash="18,29,548ae701e7025489"/>
+<approved hash="18,29,cb9f4e144e16cb9d"/>
+<approved hash="18,29,bff8327d327fbffa"/>
+<approved hash="18,29,a26329e829eaa261"/>
+<approved hash="18,29,d60455815583d606"/>
+<approved hash="18,29,f3fa3c982d4210f7"/>
+<approved hash="18,29,9ab947c0e8188e75"/>
+<approved hash="18,29,63d30997447f5d23"/>
+<approved hash="18,29,789ebeb0b69a70b4"/>
+<approved hash="18,29,6002a4faac9d6865"/>
+<approved hash="18,29,327a29f5a98ab205"/>
+<approved hash="18,29,0b4800c380bc8b37"/>
+<approved hash="18,29,6a4b61c3e1bcea34"/>
+<approved hash="18,29,a21ab613366c2265"/>
+<approved hash="18,29,43195911d96ec366"/>
+<approved hash="18,29,bae89161111e3a97"/>
+<approved hash="18,29,65c2af4d2f40e5cf"/>
+<approved hash="18,29,5cf0867b0676dcfd"/>
+<approved hash="18,29,14a1dfa95fa494ac"/>
+<approved hash="18,29,f5a230abb0a675af"/>
+<approved hash="18,29,3df3e77b6776bdfe"/>
+<approved hash="18,29,ed5017d997d46d5d"/>
+<approved hash="18,30,22d3dce2bf3ab1c4"/>
+<approved hash="18,30,21d3da31baefb2dc"/>
+<approved hash="18,30,3fabdf17a049ad44"/>
+<approved hash="18,30,224bc140a21cb144"/>
+<approved hash="18,30,a48821732d3b5b11"/>
+<approved hash="18,30,a7ea2786288c582f"/>
+<approved hash="18,30,baf425913799454d"/>
+<approved hash="18,30,a7323a2435ea58af"/>
 </errors>
 </board>
 </drawing>

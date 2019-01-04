@@ -4802,18 +4802,18 @@ Power Supply devices but 78*, 79* regulators.</description>
 <smd name="PAD2" x="0" y="0" dx="5" dy="3.4" layer="16" roundness="5" rot="R180" stop="no" thermals="no"/>
 <rectangle x1="-1.7" y1="-1.24" x2="1.7" y2="1.24" layer="29"/>
 <rectangle x1="-1.7" y1="-1.24" x2="1.7" y2="1.24" layer="30"/>
-<pad name="PAD" x="0.65" y="0" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD3" x="-0.65" y="0" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD4" x="-1.95" y="0" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD5" x="1.95" y="0" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD6" x="1.95" y="1.1" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD7" x="1.95" y="-1.1" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD8" x="0.65" y="1.1" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD9" x="0.65" y="-1.1" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD10" x="-0.65" y="1.1" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD11" x="-0.65" y="-1.1" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD12" x="-1.95" y="1.1" drill="0.3048" stop="no" thermals="no"/>
-<pad name="PAD13" x="-1.95" y="-1.1" drill="0.3048" stop="no" thermals="no"/>
+<pad name="PAD" x="0.65" y="0" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD3" x="-0.65" y="0" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD4" x="-1.95" y="0" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD5" x="1.95" y="0" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD6" x="1.95" y="1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD7" x="1.95" y="-1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD8" x="0.65" y="1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD9" x="0.65" y="-1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD10" x="-0.65" y="1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD11" x="-0.65" y="-1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD12" x="-1.95" y="1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
+<pad name="PAD13" x="-1.95" y="-1.1" drill="0.3048" diameter="0.6096" stop="no" thermals="no"/>
 </package>
 <package name="S-PDSO-G10">
 <description>&lt;h3&gt;DGS (S-PDSO-G10)&lt;/h3&gt;
