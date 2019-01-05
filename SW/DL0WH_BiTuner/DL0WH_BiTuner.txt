@@ -1,0 +1,119 @@
+Configuration	DL0WH_BiTuner
+STM32CubeMX 	4.27.0
+Date	01/05/2019
+MCU	STM32L476RGTx
+
+
+
+PERIPHERALS	MODES	FUNCTIONS	PINS
+ADC1	IN1 Single-ended	ADC1_IN1	PC0
+ADC2	IN3 Single-ended	ADC2_IN3	PC2
+ADC3	Temperature Sensor Channel	ADC3_TempSens_Input	VP_ADC3_TempSens_Input
+ADC3	Vbat Channel	ADC3_Vbat_Input	VP_ADC3_Vbat_Input
+COMP1	INP	COMP1_INP	PC5
+COMP1	1/2 Internal VRef	COMP1_VS_VREFINT12	VP_COMP1_VS_VREFINT12
+COMP2	INP	COMP2_INP	PB4 (NJTRST)
+COMP2	1/2 Internal VRef	COMP2_VS_VREFINT12	VP_COMP2_VS_VREFINT12
+DAC1	Connected to external pin only	DAC1_OUT1	PA4
+I2C1	I2C	I2C1_SCL	PB6
+I2C1	I2C	I2C1_SDA	PB9
+LPUART1	Asynchronous	LPUART1_RX	PB10
+LPUART1	Asynchronous	LPUART1_TX	PC1
+LPUART1	CTS/RTS	LPUART1_CTS	PB13
+LPUART1	CTS/RTS	LPUART1_RTS	PB12
+RCC	Crystal/Ceramic Resonator	RCC_OSC_IN	PH0-OSC_IN (PH0)
+RCC	Crystal/Ceramic Resonator	RCC_OSC_OUT	PH1-OSC_OUT (PH1)
+RCC	Crystal/Ceramic Resonator	RCC_OSC32_IN	PC14-OSC32_IN (PC14)
+RCC	Crystal/Ceramic Resonator	RCC_OSC32_OUT	PC15-OSC32_OUT (PC15)
+RTC	Activate RTC Clock Source	RTC_VS_RTC_Activate	VP_RTC_VS_RTC_Activate
+RTC	RTC Enabled	RTC_VS_RTC_Calendar	VP_RTC_VS_RTC_Calendar
+RTC	Internal Alarm A	RTC_VS_RTC_Alarm_A_Intern	VP_RTC_VS_RTC_Alarm_A_Intern
+RTC	Internal WakeUp	RTC_VS_RTC_WakeUp_intern	VP_RTC_VS_RTC_WakeUp_intern
+RTC	Timestamp Routed to TS	RTC_TS	PC13
+SPI1	Full-Duplex Master	SPI1_MISO	PA6
+SPI1	Full-Duplex Master	SPI1_MOSI	PA7
+SPI1	Full-Duplex Master	SPI1_SCK	PA5
+SYS	Serial Wire	SYS_JTCK-SWCLK	PA14 (JTCK-SWCLK)
+SYS	Serial Wire	SYS_JTMS-SWDIO	PA13 (JTMS-SWDIO)
+SYS	SYS_WakeUp3	SYS_WKUP4	PA2
+SYS	Power Voltage Detector In (Internal analog voltage)	SYS_V_PVD_IN	VP_SYS_V_PVD_IN
+SYS	TIM1	SYS_VS_tim1	VP_SYS_VS_tim1
+TIM5	Internal Clock	TIM5_VS_ClockSourceINT	VP_TIM5_VS_ClockSourceINT
+UART4	Asynchronous	UART4_RX	PA1
+UART4	Asynchronous	UART4_TX	PA0
+UART4	CTS/RTS	UART4_CTS	PB7
+UART4	CTS/RTS	UART4_RTS	PA15 (JTDI)
+USB_OTG_FS	OTG/Dual_Role_Device	USB_OTG_FS_DM	PA11
+USB_OTG_FS	OTG/Dual_Role_Device	USB_OTG_FS_DP	PA12
+USB_OTG_FS	OTG/Dual_Role_Device	USB_OTG_FS_ID	PA10
+USB_OTG_FS	VBUS sensing	USB_OTG_FS_VBUS	PA9
+USB_OTG_FS	Activate SOF	USB_OTG_FS_SOF	PA8
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+2	PC13	RTC_TS	
+3	PC14-OSC32_IN (PC14)	RCC_OSC32_IN	
+4	PC15-OSC32_OUT (PC15)	RCC_OSC32_OUT	
+5	PH0-OSC_IN (PH0)	RCC_OSC_IN	
+6	PH1-OSC_OUT (PH1)	RCC_OSC_OUT	
+8	PC0	ADC1_IN1	
+9	PC1	LPUART1_TX	
+10	PC2	ADC2_IN3	
+11	PC3	GPIO_Output	GPIO_SWR_SEL_FWD
+14	PA0	UART4_TX	
+15	PA1	UART4_RX	
+16	PA2	SYS_WKUP4	
+17	PA3	GPIO_Output	GPIO_SWR_SEL_REV
+20	PA4	DAC1_OUT1	
+21	PA5	SPI1_SCK	
+22	PA6	SPI1_MISO	
+23	PA7	SPI1_MOSI	
+24	PC4	GPIO_Output	GPIO_SPI_RST
+25	PC5	COMP1_INP	
+26	PB0	GPIO_Output	GPIO_SPI_SEL_L
+27	PB1	GPIO_Output	GPIO_SPI_SEL_C
+28	PB2	GPIO_Output	GPIO_SPI_SEL_EXT
+29	PB10	LPUART1_RX	
+30	PB11	GPIO_Output	GPIO_SPI_PWM
+33	PB12	LPUART1_RTS	
+34	PB13	LPUART1_CTS	
+41	PA8	USB_OTG_FS_SOF	
+42	PA9	USB_OTG_FS_VBUS	
+43	PA10	USB_OTG_FS_ID	
+44	PA11	USB_OTG_FS_DM	
+45	PA12	USB_OTG_FS_DP	
+46	PA13 (JTMS-SWDIO)	SYS_JTMS-SWDIO	
+49	PA14 (JTCK-SWCLK)	SYS_JTCK-SWCLK	
+50	PA15 (JTDI)	UART4_RTS	
+56	PB4 (NJTRST)	COMP2_INP	
+58	PB6	I2C1_SCL	
+59	PB7	UART4_CTS	
+62	PB9	I2C1_SDA	
+
+
+
+SOFTWARE PROJECT
+
+Project Settings : 
+Project Name : DL0WH_BiTuner
+Project Folder : Z:\nfs_ds_nfs\git\DL0WH_BiTuner\SW\DL0WH_BiTuner
+Toolchain / IDE : TrueSTUDIO
+Firmware Package Name and Version : STM32Cube FW_L4 V1.13.0
+
+
+Code Generation Settings : 
+STM32Cube Firmware Library Package : Copy only the necessary library files
+Generate peripheral initialization as a pair of '.c/.h' files per peripheral : Yes
+Backup previously generated files when re-generating : No
+Delete previously generated files when not re-generated : Yes
+Set all free pins as analog (to optimize the power consumption) : Yes
+
+
+Toolchains Settings : 
+Compiler Optimizations : 
+
+
+
+
+
