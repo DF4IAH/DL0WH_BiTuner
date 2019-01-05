@@ -79,6 +79,24 @@
 
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
+osThreadId controllerTaskHandle;
+osThreadId usbToHostTaskHandle;
+osThreadId usbFromHostTaskHandle;
+osThreadId adcTaskHandle;
+osMessageQId usbToHostQueueHandle;
+osMessageQId usbFromHostQueueHandle;
+osMessageQId controllerInQueueHandle;
+osMessageQId controllerOutQueueHandle;
+osTimerId defaultTimerHandle;
+osTimerId controllerTimerHandle;
+osSemaphoreId c2Default_BSemHandle;
+osSemaphoreId i2c1_BSemHandle;
+osSemaphoreId spi1_BSemHandle;
+osSemaphoreId cQin_BSemHandle;
+osSemaphoreId cQout_BSemHandle;
+osSemaphoreId c2usbToHost_BSemHandle;
+osSemaphoreId c2usbFromHost_BSemHandle;
+osSemaphoreId usb_BSemHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -86,6 +104,12 @@ osThreadId defaultTaskHandle;
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void const * argument);
+void StartControllerTask(void const * argument);
+void StartUsbToHostTask(void const * argument);
+void StartUsbFromHostTask(void const * argument);
+void StartAdcTask(void const * argument);
+void rtosDefaultTimerCallback(void const * argument);
+void rtosControllerTimerCallback(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -146,9 +170,51 @@ void MX_FREERTOS_Init(void) {
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
 
+  /* Create the semaphores(s) */
+  /* definition and creation of c2Default_BSem */
+  osSemaphoreDef(c2Default_BSem);
+  c2Default_BSemHandle = osSemaphoreCreate(osSemaphore(c2Default_BSem), 1);
+
+  /* definition and creation of i2c1_BSem */
+  osSemaphoreDef(i2c1_BSem);
+  i2c1_BSemHandle = osSemaphoreCreate(osSemaphore(i2c1_BSem), 1);
+
+  /* definition and creation of spi1_BSem */
+  osSemaphoreDef(spi1_BSem);
+  spi1_BSemHandle = osSemaphoreCreate(osSemaphore(spi1_BSem), 1);
+
+  /* definition and creation of cQin_BSem */
+  osSemaphoreDef(cQin_BSem);
+  cQin_BSemHandle = osSemaphoreCreate(osSemaphore(cQin_BSem), 1);
+
+  /* definition and creation of cQout_BSem */
+  osSemaphoreDef(cQout_BSem);
+  cQout_BSemHandle = osSemaphoreCreate(osSemaphore(cQout_BSem), 1);
+
+  /* definition and creation of c2usbToHost_BSem */
+  osSemaphoreDef(c2usbToHost_BSem);
+  c2usbToHost_BSemHandle = osSemaphoreCreate(osSemaphore(c2usbToHost_BSem), 1);
+
+  /* definition and creation of c2usbFromHost_BSem */
+  osSemaphoreDef(c2usbFromHost_BSem);
+  c2usbFromHost_BSemHandle = osSemaphoreCreate(osSemaphore(c2usbFromHost_BSem), 1);
+
+  /* definition and creation of usb_BSem */
+  osSemaphoreDef(usb_BSem);
+  usb_BSemHandle = osSemaphoreCreate(osSemaphore(usb_BSem), 1);
+
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
+
+  /* Create the timer(s) */
+  /* definition and creation of defaultTimer */
+  osTimerDef(defaultTimer, rtosDefaultTimerCallback);
+  defaultTimerHandle = osTimerCreate(osTimer(defaultTimer), osTimerPeriodic, NULL);
+
+  /* definition and creation of controllerTimer */
+  osTimerDef(controllerTimer, rtosControllerTimerCallback);
+  controllerTimerHandle = osTimerCreate(osTimer(controllerTimer), osTimerPeriodic, NULL);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
@@ -159,9 +225,46 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 256);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
+  /* definition and creation of controllerTask */
+  osThreadDef(controllerTask, StartControllerTask, osPriorityIdle, 0, 256);
+  controllerTaskHandle = osThreadCreate(osThread(controllerTask), NULL);
+
+  /* definition and creation of usbToHostTask */
+  osThreadDef(usbToHostTask, StartUsbToHostTask, osPriorityIdle, 0, 128);
+  usbToHostTaskHandle = osThreadCreate(osThread(usbToHostTask), NULL);
+
+  /* definition and creation of usbFromHostTask */
+  osThreadDef(usbFromHostTask, StartUsbFromHostTask, osPriorityIdle, 0, 128);
+  usbFromHostTaskHandle = osThreadCreate(osThread(usbFromHostTask), NULL);
+
+  /* definition and creation of adcTask */
+  osThreadDef(adcTask, StartAdcTask, osPriorityIdle, 0, 256);
+  adcTaskHandle = osThreadCreate(osThread(adcTask), NULL);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
+
+  /* Create the queue(s) */
+  /* definition and creation of usbToHostQueue */
+/* what about the sizeof here??? cd native code */
+  osMessageQDef(usbToHostQueue, 256, uint8_t);
+  usbToHostQueueHandle = osMessageCreate(osMessageQ(usbToHostQueue), NULL);
+
+  /* definition and creation of usbFromHostQueue */
+/* what about the sizeof here??? cd native code */
+  osMessageQDef(usbFromHostQueue, 32, uint8_t);
+  usbFromHostQueueHandle = osMessageCreate(osMessageQ(usbFromHostQueue), NULL);
+
+  /* definition and creation of controllerInQueue */
+/* what about the sizeof here??? cd native code */
+  osMessageQDef(controllerInQueue, 8, uint32_t);
+  controllerInQueueHandle = osMessageCreate(osMessageQ(controllerInQueue), NULL);
+
+  /* definition and creation of controllerOutQueue */
+/* what about the sizeof here??? cd native code */
+  osMessageQDef(controllerOutQueue, 32, uint32_t);
+  controllerOutQueueHandle = osMessageCreate(osMessageQ(controllerOutQueue), NULL);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -185,6 +288,94 @@ void StartDefaultTask(void const * argument)
     osDelay(1);
   }
   /* USER CODE END StartDefaultTask */
+}
+
+/* USER CODE BEGIN Header_StartControllerTask */
+/**
+* @brief Function implementing the controllerTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartControllerTask */
+void StartControllerTask(void const * argument)
+{
+  /* USER CODE BEGIN StartControllerTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartControllerTask */
+}
+
+/* USER CODE BEGIN Header_StartUsbToHostTask */
+/**
+* @brief Function implementing the usbToHostTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartUsbToHostTask */
+void StartUsbToHostTask(void const * argument)
+{
+  /* USER CODE BEGIN StartUsbToHostTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartUsbToHostTask */
+}
+
+/* USER CODE BEGIN Header_StartUsbFromHostTask */
+/**
+* @brief Function implementing the usbFromHostTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartUsbFromHostTask */
+void StartUsbFromHostTask(void const * argument)
+{
+  /* USER CODE BEGIN StartUsbFromHostTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartUsbFromHostTask */
+}
+
+/* USER CODE BEGIN Header_StartAdcTask */
+/**
+* @brief Function implementing the adcTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartAdcTask */
+void StartAdcTask(void const * argument)
+{
+  /* USER CODE BEGIN StartAdcTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartAdcTask */
+}
+
+/* rtosDefaultTimerCallback function */
+void rtosDefaultTimerCallback(void const * argument)
+{
+  /* USER CODE BEGIN rtosDefaultTimerCallback */
+  
+  /* USER CODE END rtosDefaultTimerCallback */
+}
+
+/* rtosControllerTimerCallback function */
+void rtosControllerTimerCallback(void const * argument)
+{
+  /* USER CODE BEGIN rtosControllerTimerCallback */
+  
+  /* USER CODE END rtosControllerTimerCallback */
 }
 
 /* Private application code --------------------------------------------------*/
