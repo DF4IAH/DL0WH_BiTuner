@@ -44,8 +44,6 @@
 extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
 extern ADC_HandleTypeDef hadc3;
-extern COMP_HandleTypeDef hcomp1;
-extern COMP_HandleTypeDef hcomp2;
 extern UART_HandleTypeDef hlpuart1;
 extern UART_HandleTypeDef huart4;
 extern SPI_HandleTypeDef hspi1;
@@ -259,21 +257,6 @@ void UART4_IRQHandler(void)
   /* USER CODE BEGIN UART4_IRQn 1 */
 
   /* USER CODE END UART4_IRQn 1 */
-}
-
-/**
-* @brief This function handles COMP1 and COMP2 interrupts through EXTI lines 21 and 22.
-*/
-void COMP_IRQHandler(void)
-{
-  /* USER CODE BEGIN COMP_IRQn 0 */
-
-  /* USER CODE END COMP_IRQn 0 */
-  HAL_COMP_IRQHandler(&hcomp1);
-  HAL_COMP_IRQHandler(&hcomp2);
-  /* USER CODE BEGIN COMP_IRQn 1 */
-
-  /* USER CODE END COMP_IRQn 1 */
 }
 
 /**

@@ -60,7 +60,6 @@ void SPI1_IRQHandler(void);
 void ADC3_IRQHandler(void);
 void TIM5_IRQHandler(void);
 void UART4_IRQHandler(void);
-void COMP_IRQHandler(void);
 void LPUART1_IRQHandler(void);
 
 #ifdef __cplusplus

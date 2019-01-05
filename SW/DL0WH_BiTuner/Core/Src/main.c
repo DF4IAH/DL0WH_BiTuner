@@ -51,9 +51,7 @@
 #include "stm32l4xx_hal.h"
 #include "cmsis_os.h"
 #include "adc.h"
-#include "comp.h"
 #include "crc.h"
-#include "dac.h"
 #include "i2c.h"
 #include "iwdg.h"
 #include "usart.h"
@@ -120,10 +118,7 @@ int main(void)
   MX_ADC1_Init();
   MX_ADC2_Init();
   MX_ADC3_Init();
-  MX_COMP1_Init();
-  MX_COMP2_Init();
   MX_CRC_Init();
-  MX_DAC1_Init();
   MX_I2C1_Init();
   MX_IWDG_Init();
   MX_LPUART1_UART_Init();
