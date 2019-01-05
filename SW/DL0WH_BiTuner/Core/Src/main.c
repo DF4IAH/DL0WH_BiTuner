@@ -63,6 +63,20 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
+#include "FreeRTOS.h"
+
+#include <stddef.h>
+#include <stdio.h>
+#include <math.h>
+#include "task_USB.h"
+#include "device_adc.h"
+#include "bus_i2c.h"
+#include "bus_spi.h"
+#include "task_Controller.h"
+#include "task_ADC.h"
+
+
+#define  PERIOD_VALUE       (uint32_t)(16000UL - 1)                                             /* Period Value = 1ms */
 
 /* USER CODE END Includes */
 
@@ -70,6 +84,43 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
+extern EventGroupHandle_t             adcEventGroupHandle;
+extern EventGroupHandle_t             extiEventGroupHandle;
+extern EventGroupHandle_t             globalEventGroupHandle;
+extern EventGroupHandle_t             spiEventGroupHandle;
+extern EventGroupHandle_t             usbToHostEventGroupHandle;
+
+extern TIM_HandleTypeDef              htim2;
+extern uint32_t                       uwTick;
+
+extern uint8_t                        i2c1TxBuffer[I2C_TXBUFSIZE];
+extern uint8_t                        i2c1RxBuffer[I2C_RXBUFSIZE];
+
+SYSCLK_CONFIG_t                       g_main_SYSCLK_CONFIG    = SYSCLK_CONFIG_48MHz_MSI;
+
+/* Typical values for 48 MHz MSI configuration */
+uint32_t                              g_main_HSE_VALUE        =   20000000UL;
+uint32_t                              g_main_HSE_START_MS     =        100UL;
+uint32_t                              g_main_MSI_VALUE        =   48000000UL;
+uint32_t                              g_main_HSI_VALUE        =   16000000UL;
+uint32_t                              g_main_LSI_VALUE        =      32000UL;
+uint32_t                              g_main_LSE_VALUE        =      32768UL;
+uint32_t                              g_main_LSE_START_MS     =       5000UL;
+uint32_t                              g_main_i2c1_timing      = 0x00000000UL;
+uint32_t                              g_main_adc1_clkpresclr  = ADC_CLOCK_ASYNC_DIV1;
+uint32_t                              g_main_adc2_clkpresclr  = ADC_CLOCK_ASYNC_DIV1;
+uint32_t                              g_main_adc3_clkpresclr  = ADC_CLOCK_ASYNC_DIV1;
+uint8_t                               g_main_PCLK1_Prescaler  = 1U;
+
+
+/* Counter Prescaler value */
+uint32_t                              uhPrescalerValue        = 0;
+
+volatile uint32_t                     g_rtc_ssr_last          = 0UL;
+
+static uint64_t                       s_timerLast_us          = 0ULL;
+static uint64_t                       s_timerStart_us         = 0ULL;
+
 
 /* USER CODE END PV */
 
@@ -83,6 +134,81 @@ void MX_FREERTOS_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+uint32_t crcCalc(const uint32_t* ptr, uint32_t len)
+{
+  return HAL_CRC_Calculate(&hcrc, (uint32_t*) ptr, len);
+}
+
+
+uint8_t sel_u8_from_u32(uint32_t in_u32, uint8_t sel)
+{
+  return 0xff & (in_u32 >> (sel << 3));
+}
+
+void mainCalcFloat2IntFrac(float val, uint8_t fracCnt, int32_t* outInt, uint32_t* outFrac)
+{
+  const uint8_t isNeg = val >= 0 ?  0U : 1U;
+
+  if (!outInt || !outFrac) {
+    return;
+  }
+
+  *outInt = (int32_t) val;
+  val -= *outInt;
+
+  if (isNeg) {
+    val = -val;
+  }
+  val *= pow(10, fracCnt);
+  *outFrac = (uint32_t) (val + 0.5f);
+}
+
+
+void SystemResetbyARMcore(void)
+{
+  /* Set SW reset bit */
+  SCB->AIRCR = 0x05FA0000UL | SCB_AIRCR_SYSRESETREQ_Msk;
+}
+
+/* Used by the run-time stats */
+void configureTimerForRunTimeStats(void)
+{
+  getRunTimeCounterValue();
+
+  /* Interrupt disabled block */
+  {
+    __disable_irq();
+
+    s_timerStart_us = s_timerLast_us;
+
+    __enable_irq();
+  }
+}
+
+/* Used by the run-time stats */
+unsigned long getRunTimeCounterValue(void)
+{
+  uint64_t l_timerStart_us = 0ULL;
+  uint64_t l_timer_us = HAL_GetTick() & 0x003fffffUL;                                                   // avoid overflows
+
+  /* Add microseconds */
+  l_timer_us *= 1000ULL;
+  l_timer_us += TIM2->CNT % 1000UL;                                                                     // TIM2 counts microseconds
+
+  /* Interrupt disabled block */
+  {
+    __disable_irq();
+
+    s_timerLast_us  = l_timer_us;
+    l_timerStart_us = s_timerStart_us;
+
+    __enable_irq();
+  }
+
+  uint64_t l_timerDiff64 = (l_timer_us >= l_timerStart_us) ?  (l_timer_us - l_timerStart_us) : l_timer_us;
+  uint32_t l_timerDiff32 = (uint32_t) (l_timerDiff64 & 0xffffffffULL);
+  return l_timerDiff32;
+}
 
 /* USER CODE END 0 */
 
@@ -94,7 +220,19 @@ void MX_FREERTOS_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+  /* Check if ARM core is already in reset state */
+  if (!(RCC->CSR & 0xff000000UL)) {
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOF_CLK_ENABLE();
+    __asm volatile( "NOP" );
 
+    /* Turn off battery charger of Vbat */
+    HAL_PWREx_DisableBatteryCharging();
+
+    /* ARM software reset to be done */
+    SystemResetbyARMcore();
+  }
+  __HAL_RCC_CLEAR_RESET_FLAGS();
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -129,6 +267,11 @@ int main(void)
   MX_TIM5_Init();
   MX_USB_OTG_FS_USB_Init();
   /* USER CODE BEGIN 2 */
+  //#define I2C_BUS4_SCAN
+
+  #ifdef I2C_BUS1_SCAN
+  i2cBusAddrScan(&hi2c1, i2c1MutexHandle);
+  #endif
 
   /* USER CODE END 2 */
 
@@ -243,6 +386,83 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
+void HFT_TIM2_AdjustClock(uint8_t multiply)
+{
+  uint32_t  uwTimclock;
+  uint32_t  uwPrescalerValue;
+
+  g_main_PCLK1_Prescaler = multiply;
+
+  /* Taken from: stm32l4_hal_timebase_TIM.c */
+  {
+    /* Compute TIM2 clock */
+    uwTimclock = multiply * HAL_RCC_GetPCLK1Freq();
+
+    /* Compute the prescaler value to have TIM2 counter clock equal to 1MHz */
+    uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000) - 1);
+  }
+
+  /* Update TIM2 structure */
+  htim2.Init.Prescaler = uwPrescalerValue;
+
+  /* Adjust register */
+  htim2.Instance->PSC = uwPrescalerValue;
+}
+
+#if 1
+void  vApplicationIdleHook(void)
+{
+  /* vApplicationIdleHook() will only be called if configUSE_IDLE_HOOK is set
+  to 1 in FreeRTOSConfig.h. It will be called on each iteration of the idle
+  task. It is essential that code added to this hook function never attempts
+  to block in any way (for example, call xQueueReceive() with a block time
+  specified, or call vTaskDelay()). If the application makes use of the
+  vTaskDelete() API function (as this demo application does) then it is also
+  important that vApplicationIdleHook() is permitted to return to its calling
+  function, because it is the responsibility of the idle task to clean up
+  memory allocated by the kernel to any task that has since been deleted. */
+  /* TODO:
+   * 1) Reduce 80 MHz  to  2 MHz
+   * 2)  go to LPRun  (SMPS 2 High (-->  MR range 1) --> MR range 2 --> LPR
+   * 3)  Go to LPSleep
+   *
+   * WAKEUP
+   * 1)  In LPRun go to 80 MHz (LPR --> MR range 2 (--> MR range 1) --> SMPS 2 High)
+   * 2)  Increase 2 MHz to 80 MHz
+   */
+
+  /* Enter sleep mode */
+  __asm volatile( "WFI" );
+
+  /* Increase clock frequency to 80 MHz */
+  // TODO: TBD
+}
+#endif
+
+#if 0
+void PreSleepProcessing(uint32_t *ulExpectedIdleTime)
+{
+#if 0
+  HAL_SuspendTick();
+#endif
+  g_rtc_ssr_last = RTC->SSR;
+}
+
+void PostSleepProcessing(uint32_t *ulExpectedIdleTime)
+{
+#if 0
+  volatile uint32_t l_rtc_ssr_now = RTC->SSR;
+  volatile uint32_t l_rtc_sub1024 = (l_rtc_ssr_now >= g_rtc_ssr_last) ?  (l_rtc_ssr_now - g_rtc_ssr_last) : (1024UL - (g_rtc_ssr_last - l_rtc_ssr_now));
+  volatile uint32_t l_millis = (l_rtc_sub1024 * 1000UL) / 1024UL;
+
+  if (l_millis <= *ulExpectedIdleTime) {
+    uwTick += l_millis;
+  }
+  HAL_ResumeTick();
+#endif
+}
+#endif
+
 /* USER CODE END 4 */
 
 /**
@@ -276,6 +496,12 @@ void _Error_Handler(char *file, int line)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
+  int  dbgLen;
+  char dbgBuf[128];
+
+  dbgLen = sprintf(dbgBuf, "***ERROR: ERROR-HANDLER  Wrong parameters value: file %s on line %d\r\n", file, line);
+  usbLogLen(dbgBuf, dbgLen);
+
   while(1)
   {
   }

@@ -83,6 +83,45 @@
 
 /* USER CODE BEGIN Private defines */
 
+#ifndef PI
+# define PI                                                   3.14159265358979f
+#endif
+
+#ifndef min
+# define min(a,b)                                             (a) < (b) ?  (a) : (b)
+#endif
+
+#ifndef max
+# define max(a,b)                                             (a) > (b) ?  (a) : (b)
+#endif
+
+
+#define BITUNER_CTRL_VERSION                                 20190105UL
+
+
+typedef enum SYSCLK_CONFIG_ENUM {
+
+  SYSCLK_CONFIG_01MHz_MSI_HSI                                 =  1000,
+  SYSCLK_CONFIG_04MHz_MSI                                     =  4000,
+  SYSCLK_CONFIG_08MHz_MSI                                     =  8000,
+  SYSCLK_CONFIG_16MHz_MSI                                     = 16000,
+  SYSCLK_CONFIG_24MHz_MSI                                     = 24000,
+  SYSCLK_CONFIG_48MHz_MSI                                     = 48000,
+  SYSCLK_CONFIG_80MHz_MSI16_PLL                               = 80000,
+  SYSCLK_CONFIG_80MHz_HSE10_PLL                               = 80001,
+
+} SYSCLK_CONFIG_t;
+
+uint32_t crcCalc(const uint32_t* ptr, uint32_t len);
+
+
+uint8_t sel_u8_from_u32(uint32_t in_u32, uint8_t sel);
+void mainCalcFloat2IntFrac(float val, uint8_t fracCnt, int32_t* outInt, uint32_t* outFrac);
+void SystemResetbyARMcore(void);
+
+void HFT_SystemClock_Config(SYSCLK_CONFIG_t sel);
+void HFT_RCC_MCO_Disable(void);
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
