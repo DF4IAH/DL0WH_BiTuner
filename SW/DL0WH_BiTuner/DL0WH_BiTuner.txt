@@ -1,6 +1,6 @@
 Configuration	DL0WH_BiTuner
 STM32CubeMX 	4.27.0
-Date	01/05/2019
+Date	01/06/2019
 MCU	STM32L476RGTx
 
 
@@ -32,7 +32,7 @@ SYS	Serial Wire	SYS_JTCK-SWCLK	PA14 (JTCK-SWCLK)
 SYS	Serial Wire	SYS_JTMS-SWDIO	PA13 (JTMS-SWDIO)
 SYS	SYS_WakeUp3	SYS_WKUP4	PA2
 SYS	Power Voltage Detector In (Internal analog voltage)	SYS_V_PVD_IN	VP_SYS_V_PVD_IN
-SYS	TIM1	SYS_VS_tim1	VP_SYS_VS_tim1
+SYS	TIM2	SYS_VS_tim2	VP_SYS_VS_tim2
 TIM5	Internal Clock	TIM5_VS_ClockSourceINT	VP_TIM5_VS_ClockSourceINT
 UART4	Asynchronous	UART4_RX	PA1
 UART4	Asynchronous	UART4_TX	PA0
