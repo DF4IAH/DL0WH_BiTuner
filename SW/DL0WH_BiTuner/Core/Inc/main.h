@@ -54,11 +54,16 @@
 /* Includes ------------------------------------------------------------------*/
 
 /* USER CODE BEGIN Includes */
+#include <sys/_stdint.h>
 
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
 
+#define ADC2_IN1_FWDREV_Pin GPIO_PIN_0
+#define ADC2_IN1_FWDREV_GPIO_Port GPIOC
+#define ADC3_IN3_VDIODE_Pin GPIO_PIN_2
+#define ADC3_IN3_VDIODE_GPIO_Port GPIOC
 #define GPIO_SWR_SEL_FWD_Pin GPIO_PIN_3
 #define GPIO_SWR_SEL_FWD_GPIO_Port GPIOC
 #define GPIO_SWR_SEL_REV_Pin GPIO_PIN_3
@@ -82,6 +87,7 @@
 /* #define USE_FULL_ASSERT    1U */
 
 /* USER CODE BEGIN Private defines */
+#define USE_FULL_ASSERT    1U
 
 #ifndef PI
 # define PI                                                   3.14159265358979f
@@ -96,8 +102,17 @@
 #endif
 
 
-#define BITUNER_CTRL_VERSION                                 20190105UL
+#define BITUNER_CTRL_VERSION                                 20190106UL
 
+
+typedef enum POWERSWITCH_ENUM {
+
+  POWERSWITCH__BAT_SW                                         = 1,
+  POWERSWITCH__BAT_HICUR,
+
+  POWERSWITCH__SLOWER_24MHZ,
+
+} POWERSWITCH_ENUM_t;
 
 typedef enum SYSCLK_CONFIG_ENUM {
 
@@ -108,7 +123,6 @@ typedef enum SYSCLK_CONFIG_ENUM {
   SYSCLK_CONFIG_24MHz_MSI                                     = 24000,
   SYSCLK_CONFIG_48MHz_MSI                                     = 48000,
   SYSCLK_CONFIG_80MHz_MSI16_PLL                               = 80000,
-  SYSCLK_CONFIG_80MHz_HSE10_PLL                               = 80001,
 
 } SYSCLK_CONFIG_t;
 
@@ -117,10 +131,11 @@ uint32_t crcCalc(const uint32_t* ptr, uint32_t len);
 
 uint8_t sel_u8_from_u32(uint32_t in_u32, uint8_t sel);
 void mainCalcFloat2IntFrac(float val, uint8_t fracCnt, int32_t* outInt, uint32_t* outFrac);
+void mainPowerSwitchDo(POWERSWITCH_ENUM_t sw, uint8_t enable);
 void SystemResetbyARMcore(void);
 
+void mainPowerSwitchInit(void);
 void HFT_SystemClock_Config(SYSCLK_CONFIG_t sel);
-void HFT_RCC_MCO_Disable(void);
 
 /* USER CODE END Private defines */
 

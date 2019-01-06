@@ -72,7 +72,9 @@
 #define configUSE_MUTEXES                        1
 #define configQUEUE_REGISTRY_SIZE                8
 #define configCHECK_FOR_STACK_OVERFLOW           1
+#define configUSE_MALLOC_FAILED_HOOK             1
 #define configUSE_APPLICATION_TASK_TAG           1
+#define configUSE_COUNTING_SEMAPHORES            1
 #define configENABLE_BACKWARD_COMPATIBILITY      0
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION  1
 #define configRECORD_STACK_HIGH_ADDRESS          1
@@ -156,6 +158,50 @@ standard names. */
 
 /* USER CODE BEGIN Defines */   	      
 /* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
+
+/* Bit-mask for the globalEventGroup */
+typedef enum EG_GLOBAL {
+
+  EG_GLOBAL__Controller_CTRL_IS_RUNNING                       = (1UL <<  0UL ),
+  EG_GLOBAL__Controller_QUEUE_IN                              = (1UL <<  1UL ),
+  EG_GLOBAL__Controller_QUEUE_OUT                             = (1UL <<  2UL ),
+
+} EG_GLOBAL_t;
+
+
+typedef enum EXTI_ENUM {
+
+  EXTI_SX__NONE                                               =  0b00000000000000000000000000000001UL,
+
+} EXTI_t;
+
+
+typedef enum RtosMsgDefaultCmds_ENUM {
+
+  MsgDefault__InitDo                                          = 0x01U,
+  MsgDefault__InitDone,
+
+  MsgDefault__SetVar01_IOs                                    = 0x41U,
+  MsgDefault__SetVar02_Clocking,
+
+//MsgDefault__GetVar01_x                                      = 0x81U,
+
+  MsgDefault__CallFunc01_MCU_ADC                              = 0xc1U,
+
+} RtosMsgDefaultCmds_t;
+
+
+typedef enum DefaultMcuClocking_ENUM {
+
+  DefaultMcuClocking_01MHz_MSI_HSI                            =  1U,
+  DefaultMcuClocking_04MHz_MSI                                =  4U,
+  DefaultMcuClocking_08MHz_MSI                                =  8U,
+  DefaultMcuClocking_16MHz_MSI                                = 16U,
+  DefaultMcuClocking_24MHz_MSI                                = 24U,
+  DefaultMcuClocking_80MHz_MSI16_PLL                          = 80U,
+
+} DefaultMcuClocking_t;
+
 /* USER CODE END Defines */ 
 
 #endif /* FREERTOS_CONFIG_H */

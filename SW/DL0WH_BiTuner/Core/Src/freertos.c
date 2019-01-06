@@ -56,6 +56,14 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */     
+// Core, USB_DEVICE
+#include "main.h"
+#include "usb_device.h"
+
+// App
+#include "device_adc.h"
+#include "task_Controller.h"
+#include "task_USB.h"
 
 /* USER CODE END Includes */
 
@@ -76,13 +84,20 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
+EventGroupHandle_t                    adcEventGroupHandle;
+EventGroupHandle_t                    extiEventGroupHandle;
+EventGroupHandle_t                    globalEventGroupHandle;
+EventGroupHandle_t                    spiEventGroupHandle;
+EventGroupHandle_t                    usbToHostEventGroupHandle;
+
+static uint8_t                        s_rtos_DefaultTask_adc_enable;
+static uint32_t                       s_rtos_DefaultTaskStartTime;
 
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId controllerTaskHandle;
 osThreadId usbToHostTaskHandle;
 osThreadId usbFromHostTaskHandle;
-osThreadId adcTaskHandle;
 osMessageQId usbToHostQueueHandle;
 osMessageQId usbFromHostQueueHandle;
 osMessageQId controllerInQueueHandle;
@@ -107,10 +122,10 @@ void StartDefaultTask(void const * argument);
 void StartControllerTask(void const * argument);
 void StartUsbToHostTask(void const * argument);
 void StartUsbFromHostTask(void const * argument);
-void StartAdcTask(void const * argument);
 void rtosDefaultTimerCallback(void const * argument);
 void rtosControllerTimerCallback(void const * argument);
 
+extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* Hook prototypes */
@@ -118,6 +133,7 @@ void configureTimerForRunTimeStats(void);
 unsigned long getRunTimeCounterValue(void);
 void vApplicationIdleHook(void);
 void vApplicationStackOverflowHook(TaskHandle_t xTask, signed char *pcTaskName);
+void vApplicationMallocFailedHook(void);
 
 /* USER CODE BEGIN 1 */
 /* Functions needed when configGENERATE_RUN_TIME_STATS is on */
@@ -155,6 +171,121 @@ __weak void vApplicationStackOverflowHook(TaskHandle_t xTask, signed char *pcTas
    called if a stack overflow is detected. */
 }
 /* USER CODE END 4 */
+
+/* USER CODE BEGIN 5 */
+__weak void vApplicationMallocFailedHook(void)
+{
+   /* vApplicationMallocFailedHook() will only be called if
+   configUSE_MALLOC_FAILED_HOOK is set to 1 in FreeRTOSConfig.h. It is a hook
+   function that will get called if a call to pvPortMalloc() fails.
+   pvPortMalloc() is called internally by the kernel whenever a task, queue,
+   timer or semaphore is created. It is also called by various parts of the
+   demo application. If heap_1.c or heap_2.c are used, then the size of the
+   heap available to pvPortMalloc() is defined by configTOTAL_HEAP_SIZE in
+   FreeRTOSConfig.h, and the xPortGetFreeHeapSize() API function can be used
+   to query the size of free heap space that remains (although it does not
+   provide information on how the remaining heap might be fragmented). */
+}
+
+
+/* Local functions */
+
+static void rtosDefaultInit(void)
+{
+  /* Power switch settings */
+  mainPowerSwitchInit();
+}
+
+static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
+{
+  uint32_t                    msgIdx  = 0UL;
+  const uint32_t              hdr     = msgAry[msgIdx++];
+  const RtosMsgDefaultCmds_t  cmd     = (RtosMsgDefaultCmds_t) (0xffUL & hdr);
+
+  switch (cmd) {
+  case MsgDefault__InitDo:
+    {
+      /* Start at defined point of time */
+      const uint32_t delayMs = msgAry[msgIdx++];
+      if (delayMs) {
+        uint32_t  previousWakeTime = s_rtos_DefaultTaskStartTime;
+        osDelayUntil(&previousWakeTime, delayMs);
+      }
+
+      /* Init module */
+      rtosDefaultInit();
+
+      /* Return Init confirmation */
+      uint32_t cmdBack[1];
+      cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Main_Default, 0U, MsgDefault__InitDone);
+      controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, osWaitForever);
+    }
+    break;
+
+  /* MCU GPIO/Alternate-Functions set-up */
+  case MsgDefault__SetVar01_IOs:
+    {
+      // TODO: implementation
+    }
+    break;
+
+  /* MCU clocking set-up */
+  case MsgDefault__SetVar02_Clocking:
+    {
+      const DefaultMcuClocking_t mcuClocking = (DefaultMcuClocking_t) (0xffUL & (msgAry[msgIdx++] >> 24U));
+
+      switch (mcuClocking) {
+      case DefaultMcuClocking_16MHz_MSI:
+        {
+          HFT_SystemClock_Config(SYSCLK_CONFIG_16MHz_MSI);
+        }
+        break;
+
+      default: { }
+      }
+    }
+    break;
+
+  /* ADC single conversion */
+  case MsgDefault__CallFunc01_MCU_ADC:
+    {
+      int   dbgLen;
+      char  dbgBuf[128];
+
+      /* Do ADC conversion and logging of ADC data */
+      if (s_rtos_DefaultTask_adc_enable) {
+        /* Start chain of ADC1 conversions */
+        adcStartConv(ADC_ADC1_TEMP_DEG);
+
+        const uint32_t regMask = EG_ADC1__CONV_AVAIL_REFINT | EG_ADC1__CONV_AVAIL_BAT | EG_ADC1__CONV_AVAIL_TEMP;
+        BaseType_t regBits = xEventGroupWaitBits(adcEventGroupHandle, regMask, regMask, pdTRUE, 100 / portTICK_PERIOD_MS);
+        if ((regBits & regMask) == regMask) {
+          /* All channels of ADC1 are complete */
+          float     l_adc_refint_val    = adcGetVal(ADC_ADC1_REFINT_VAL);
+          float     l_adc_vref_mv       = adcGetVal(ADC_ADC1_VREF_MV);
+          float     l_adc_bat_mv        = adcGetVal(ADC_ADC1_BAT_MV);
+          float     l_adc_temp_deg      = adcGetVal(ADC_ADC1_TEMP_DEG);
+          int32_t   l_adc_temp_deg_i    = 0L;
+          uint32_t  l_adc_temp_deg_f100 = 0UL;
+
+          mainCalcFloat2IntFrac(l_adc_temp_deg, 2, &l_adc_temp_deg_i, &l_adc_temp_deg_f100);
+
+          dbgLen = sprintf(dbgBuf, "ADC: refint_val = %4d, Vref = %4d mV, Bat = %4d mV, Temp = %+3ld.%02luC\r\n",
+              (int16_t) (l_adc_refint_val + 0.5f),
+              (int16_t) (l_adc_vref_mv    + 0.5f),
+              (int16_t) (l_adc_bat_mv     + 0.5f),
+              l_adc_temp_deg_i, l_adc_temp_deg_f100);
+          usbLogLen(dbgBuf, dbgLen);
+        }
+      }
+    }
+    break;
+
+  default: { }
+  }  // switch (cmd)
+}
+
+/* USER CODE END 5 */
 
 /**
   * @brief  FreeRTOS initialization
@@ -237,10 +368,6 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(usbFromHostTask, StartUsbFromHostTask, osPriorityIdle, 0, 128);
   usbFromHostTaskHandle = osThreadCreate(osThread(usbFromHostTask), NULL);
 
-  /* definition and creation of adcTask */
-  osThreadDef(adcTask, StartAdcTask, osPriorityIdle, 0, 256);
-  adcTaskHandle = osThreadCreate(osThread(adcTask), NULL);
-
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -268,6 +395,24 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
+
+  /* add event groups */
+  adcEventGroupHandle = xEventGroupCreate();
+  extiEventGroupHandle = xEventGroupCreate();
+  globalEventGroupHandle = xEventGroupCreate();
+  spiEventGroupHandle = xEventGroupCreate();
+  usbToHostEventGroupHandle = xEventGroupCreate();
+
+  /* add to registry */
+  vQueueAddToRegistry(i2c1_BSemHandle,          "Resc I2C1 BSem");
+  vQueueAddToRegistry(spi1_BSemHandle,          "Resc SPI1 BSem");
+  vQueueAddToRegistry(cQin_BSemHandle,          "Resc cQin BSem");
+  vQueueAddToRegistry(cQout_BSemHandle,         "Resc cQout BSem");
+  vQueueAddToRegistry(usb_BSemHandle,           "Resc USB BSem");
+
+  vQueueAddToRegistry(c2Default_BSemHandle,     "Wake c2Default BSem");
+  vQueueAddToRegistry(c2usbFromHost_BSemHandle, "Wake c2usbFromHost BSem");
+  vQueueAddToRegistry(c2usbToHost_BSemHandle,   "Wake c2usbToHost BSem");
   /* USER CODE END RTOS_QUEUES */
 }
 
@@ -280,13 +425,46 @@ void MX_FREERTOS_Init(void) {
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void const * argument)
 {
+  /* init code for USB_DEVICE */
+  MX_USB_DEVICE_Init();
 
   /* USER CODE BEGIN StartDefaultTask */
-  /* Infinite loop */
-  for(;;)
+
+  /* defaultTaskInit() section */
   {
-    osDelay(1);
+    s_rtos_DefaultTask_adc_enable = 0U;
+    s_rtos_DefaultTaskStartTime   = 0UL;
   }
+
+  /* Wait until controller is up */
+  xEventGroupWaitBits(globalEventGroupHandle,
+      EG_GLOBAL__Controller_CTRL_IS_RUNNING,
+      0UL,
+      0, portMAX_DELAY);
+
+  /* Store start time */
+  s_rtos_DefaultTaskStartTime = osKernelSysTick();
+
+  /* Give other tasks time to do the same */
+  osDelay(10UL);
+
+  do {
+    uint32_t msgLen                       = 0UL;
+    uint32_t msgAry[CONTROLLER_MSG_Q_LEN];
+
+    /* Wait for door bell and hand-over controller out queue */
+    {
+      osSemaphoreWait(c2Default_BSemHandle, osWaitForever);
+      msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Main_Default, 1UL);                // Special case of callbacks need to limit blocking time
+    }
+
+    /* Decode and execute the commands when a message exists
+     * (in case of callbacks the loop catches its wakeup semaphore
+     * before ctrlQout is released results to request on an empty queue) */
+    if (msgLen) {
+      rtosDefaultMsgProcess(msgLen, msgAry);
+    }
+  } while (1);
   /* USER CODE END StartDefaultTask */
 }
 
@@ -300,10 +478,12 @@ void StartDefaultTask(void const * argument)
 void StartControllerTask(void const * argument)
 {
   /* USER CODE BEGIN StartControllerTask */
+  controllerTaskInit();
+
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    controllerTaskLoop();
   }
   /* USER CODE END StartControllerTask */
 }
@@ -318,10 +498,11 @@ void StartControllerTask(void const * argument)
 void StartUsbToHostTask(void const * argument)
 {
   /* USER CODE BEGIN StartUsbToHostTask */
+  usbUsbToHostTaskInit();
+
   /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
+  for (;;) {
+    usbUsbToHostTaskLoop();
   }
   /* USER CODE END StartUsbToHostTask */
 }
@@ -336,37 +517,21 @@ void StartUsbToHostTask(void const * argument)
 void StartUsbFromHostTask(void const * argument)
 {
   /* USER CODE BEGIN StartUsbFromHostTask */
+  usbUsbFromHostTaskInit();
+
   /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
+  for (;;) {
+    usbUsbFromHostTaskLoop();
   }
   /* USER CODE END StartUsbFromHostTask */
-}
-
-/* USER CODE BEGIN Header_StartAdcTask */
-/**
-* @brief Function implementing the adcTask thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartAdcTask */
-void StartAdcTask(void const * argument)
-{
-  /* USER CODE BEGIN StartAdcTask */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END StartAdcTask */
 }
 
 /* rtosDefaultTimerCallback function */
 void rtosDefaultTimerCallback(void const * argument)
 {
   /* USER CODE BEGIN rtosDefaultTimerCallback */
-  
+  // TODO: code here
+
   /* USER CODE END rtosDefaultTimerCallback */
 }
 
@@ -374,7 +539,7 @@ void rtosDefaultTimerCallback(void const * argument)
 void rtosControllerTimerCallback(void const * argument)
 {
   /* USER CODE BEGIN rtosControllerTimerCallback */
-  
+  controllerTimerCallback(argument);
   /* USER CODE END rtosControllerTimerCallback */
 }
 

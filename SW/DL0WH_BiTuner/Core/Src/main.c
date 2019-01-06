@@ -59,7 +59,7 @@
 #include "rtc.h"
 #include "spi.h"
 #include "tim.h"
-#include "usb_otg.h"
+#include "usb_device.h"
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
@@ -73,7 +73,6 @@
 #include "bus_i2c.h"
 #include "bus_spi.h"
 #include "task_Controller.h"
-#include "task_ADC.h"
 
 
 #define  PERIOD_VALUE       (uint32_t)(16000UL - 1)                                             /* Period Value = 1ms */
@@ -91,7 +90,7 @@ extern EventGroupHandle_t             spiEventGroupHandle;
 extern EventGroupHandle_t             usbToHostEventGroupHandle;
 
 extern TIM_HandleTypeDef              htim2;
-extern uint32_t                       uwTick;
+extern __IO uint32_t                  uwTick;
 
 extern uint8_t                        i2c1TxBuffer[I2C_TXBUFSIZE];
 extern uint8_t                        i2c1RxBuffer[I2C_RXBUFSIZE];
@@ -164,6 +163,60 @@ void mainCalcFloat2IntFrac(float val, uint8_t fracCnt, int32_t* outInt, uint32_t
 }
 
 
+void mainPowerSwitchDo(POWERSWITCH_ENUM_t sw, uint8_t enable)
+{
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __asm volatile( "NOP" );
+
+  switch (sw) {
+  case POWERSWITCH__SLOWER_24MHZ:
+    /* SMPS handling */
+    if (enable)
+    {
+      /* Scale2: 1.0V up to 24MHz */
+      HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE2);
+
+    } else {
+      /* Scale1: 1.2V up to 80MHz */
+      HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+    }
+    break;
+
+  case POWERSWITCH__BAT_SW:
+    if (enable) {
+      HAL_PWREx_EnableBatteryCharging(PWR_BATTERY_CHARGING_RESISTOR_5);
+
+    } else {
+      HAL_PWREx_DisableBatteryCharging();
+    }
+    break;
+
+  case POWERSWITCH__BAT_HICUR:
+    if (enable) {
+      HAL_PWREx_EnableBatteryCharging(PWR_BATTERY_CHARGING_RESISTOR_1_5);
+
+    } else {
+      HAL_PWREx_EnableBatteryCharging(PWR_BATTERY_CHARGING_RESISTOR_5);
+    }
+    break;
+
+  default:
+    { }
+  }
+
+  __HAL_RCC_GPIOC_CLK_DISABLE();
+}
+
+void mainPowerSwitchInit(void)
+{
+  /* Vbat charger of MCU enabled with 1.5 kOhm */
+  mainPowerSwitchDo(POWERSWITCH__BAT_HICUR, 1U);
+
+  /* MCU core frequency = 16 MHz */
+  mainPowerSwitchDo(POWERSWITCH__SLOWER_24MHZ, 1U);
+}
+
+
 void SystemResetbyARMcore(void)
 {
   /* Set SW reset bit */
@@ -179,6 +232,7 @@ void configureTimerForRunTimeStats(void)
   {
     __disable_irq();
 
+    /* Called only once */
     s_timerStart_us = s_timerLast_us;
 
     __enable_irq();
@@ -255,7 +309,6 @@ int main(void)
   MX_GPIO_Init();
   MX_ADC1_Init();
   MX_ADC2_Init();
-  MX_ADC3_Init();
   MX_CRC_Init();
   MX_I2C1_Init();
   MX_IWDG_Init();
@@ -265,9 +318,9 @@ int main(void)
   MX_RTC_Init();
   MX_SPI1_Init();
   MX_TIM5_Init();
-  MX_USB_OTG_FS_USB_Init();
+  MX_ADC3_Init();
   /* USER CODE BEGIN 2 */
-  //#define I2C_BUS4_SCAN
+  //#define I2C_BUS1_SCAN
 
   #ifdef I2C_BUS1_SCAN
   i2cBusAddrScan(&hi2c1, i2c1MutexHandle);
@@ -386,28 +439,38 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-void HFT_TIM2_AdjustClock(uint8_t multiply)
+void HFT_SystemClock_Config(SYSCLK_CONFIG_t sel)
 {
-  uint32_t  uwTimclock;
-  uint32_t  uwPrescalerValue;
+#if 0
+  RCC_OscInitTypeDef RCC_OscInitStruct;
+  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+  RCC_PeriphCLKInitTypeDef PeriphClkInit;
+  RCC_CRSInitTypeDef RCC_CRSInitStruct;
 
-  g_main_PCLK1_Prescaler = multiply;
+  /* Set global variable */
+  g_main_SYSCLK_CONFIG = sel;
 
-  /* Taken from: stm32l4_hal_timebase_TIM.c */
-  {
-    /* Compute TIM2 clock */
-    uwTimclock = multiply * HAL_RCC_GetPCLK1Freq();
+  /**Configure LSE Drive Capability
+  */
+  HAL_PWR_EnableBkUpAccess();
 
-    /* Compute the prescaler value to have TIM2 counter clock equal to 1MHz */
-    uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000) - 1);
+  __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_LOW);
+
+
+  switch (sel) {
+  case SYSCLK_CONFIG_16MHz_MSI:
+    {
+
+    }
+
+  default: { }
   }
 
-  /* Update TIM2 structure */
-  htim2.Init.Prescaler = uwPrescalerValue;
-
-  /* Adjust register */
-  htim2.Instance->PSC = uwPrescalerValue;
+  /* SysTick_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
+#endif
 }
+
 
 #if 1
 void  vApplicationIdleHook(void)
@@ -463,6 +526,17 @@ void PostSleepProcessing(uint32_t *ulExpectedIdleTime)
 }
 #endif
 
+void vApplicationMallocFailedHook(void)
+{
+  int  dbgLen;
+  char dbgBuf[128];
+
+  dbgLen = sprintf(dbgBuf, "***ERROR: Out of memory  vApplicationMallocFailedHook(): file %s on line %d\r\n", __FILE__, __LINE__);
+  usbLogLen(dbgBuf, dbgLen);
+
+  configASSERT(0);
+}
+
 /* USER CODE END 4 */
 
 /**
@@ -499,12 +573,10 @@ void _Error_Handler(char *file, int line)
   int  dbgLen;
   char dbgBuf[128];
 
-  dbgLen = sprintf(dbgBuf, "***ERROR: ERROR-HANDLER  Wrong parameters value: file %s on line %d\r\n", file, line);
+  dbgLen = sprintf(dbgBuf, "***ERROR: ERROR-HANDLER  Wrong parameters value  _Error_Handler(): file %s on line %d\r\n", file, line);
   usbLogLen(dbgBuf, dbgLen);
 
-  while(1)
-  {
-  }
+  configASSERT(0);
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -521,6 +593,13 @@ void assert_failed(uint8_t* file, uint32_t line)
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  int  dbgLen;
+  char dbgBuf[128];
+
+  dbgLen = sprintf(dbgBuf, "***ERROR: ERROR-HANDLER  Wrong parameters value  assert_failed(): file %s on line %ld\r\n", file, line);
+  usbLogLen(dbgBuf, dbgLen);
+
+  configASSERT(0);
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
