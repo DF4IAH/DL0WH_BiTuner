@@ -84,6 +84,15 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
+extern float                          g_adc_refint_val;
+extern float                          g_adc_vref_mv;
+extern float                          g_adc_bat_mv;
+extern float                          g_adc_temp_deg;
+extern float                          g_adc_fwd_mv;
+extern float                          g_adc_rev_mv;
+extern float                          g_adc_vdiode_mv;
+extern float                          g_swr;
+
 EventGroupHandle_t                    adcEventGroupHandle;
 EventGroupHandle_t                    extiEventGroupHandle;
 EventGroupHandle_t                    globalEventGroupHandle;
@@ -194,6 +203,9 @@ static void rtosDefaultInit(void)
 {
   /* Power switch settings */
   mainPowerSwitchInit();
+
+  /* Enable ADC access */
+  s_rtos_DefaultTask_adc_enable = 1U;
 }
 
 static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
@@ -217,7 +229,7 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
 
       /* Return Init confirmation */
       uint32_t cmdBack[1];
-      cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Main_Default, 0U, MsgDefault__InitDone);
+      cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Rtos_Default, 0U, MsgDefault__InitDone);
       controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, osWaitForever);
     }
     break;
@@ -246,14 +258,14 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
     }
     break;
 
-  /* ADC single conversion */
-  case MsgDefault__CallFunc01_MCU_ADC:
+  /* ADC1 single conversion */
+  case MsgDefault__CallFunc01_MCU_ADC1:
     {
-      int   dbgLen;
-      char  dbgBuf[128];
-
-      /* Do ADC conversion and logging of ADC data */
+      /* Do ADC1 conversion and logging of ADC1 data */
       if (s_rtos_DefaultTask_adc_enable) {
+        int   dbgLen;
+        char  dbgBuf[128];
+
         /* Start chain of ADC1 conversions */
         adcStartConv(ADC_ADC1_TEMP_DEG);
 
@@ -265,16 +277,158 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
           float     l_adc_vref_mv       = adcGetVal(ADC_ADC1_VREF_MV);
           float     l_adc_bat_mv        = adcGetVal(ADC_ADC1_BAT_MV);
           float     l_adc_temp_deg      = adcGetVal(ADC_ADC1_TEMP_DEG);
+
+          /* Push to global vars */
+          {
+            __disable_irq();
+
+            g_adc_refint_val  = l_adc_refint_val;
+            g_adc_vref_mv     = l_adc_vref_mv;
+            g_adc_bat_mv      = l_adc_bat_mv;
+            g_adc_temp_deg    = l_adc_temp_deg;
+
+            __enable_irq();
+          }
+
           int32_t   l_adc_temp_deg_i    = 0L;
           uint32_t  l_adc_temp_deg_f100 = 0UL;
 
           mainCalcFloat2IntFrac(l_adc_temp_deg, 2, &l_adc_temp_deg_i, &l_adc_temp_deg_f100);
 
-          dbgLen = sprintf(dbgBuf, "ADC: refint_val = %4d, Vref = %4d mV, Bat = %4d mV, Temp = %+3ld.%02luC\r\n",
+          dbgLen = sprintf(dbgBuf, "ADC1: refint_val = %4d, Vref = %4d mV, Bat = %4d mV, Temp = %+3ld.%02luC\r\n",
               (int16_t) (l_adc_refint_val + 0.5f),
               (int16_t) (l_adc_vref_mv    + 0.5f),
               (int16_t) (l_adc_bat_mv     + 0.5f),
               l_adc_temp_deg_i, l_adc_temp_deg_f100);
+          usbLogLen(dbgBuf, dbgLen);
+        }
+      }
+    }
+    break;
+
+  /* ADC3 Vdiode single conversion */
+  case MsgDefault__CallFunc02_MCU_ADC3_VDIODE:
+    {
+      /* Do ADC3 Vdiode conversion and logging of ADC3 data */
+      if (s_rtos_DefaultTask_adc_enable) {
+        int   dbgLen;
+        char  dbgBuf[128];
+
+        adcStartConv(ADC_ADC3_IN3_VDIODE_MV);
+
+        const uint32_t regMask = EG_ADC3__CONV_AVAIL_VDIODE;
+        BaseType_t regBits = xEventGroupWaitBits(adcEventGroupHandle, regMask, regMask, pdTRUE, 100 / portTICK_PERIOD_MS);
+        if ((regBits & regMask) == regMask) {
+          /* All channels of ADC3 are complete */
+          float l_adc_vdiode_mv = adcGetVal(ADC_ADC3_IN3_VDIODE_MV);
+
+          /* Push to global var */
+          {
+            __disable_irq();
+            g_adc_vdiode_mv = l_adc_vdiode_mv;
+            __enable_irq();
+          }
+
+          dbgLen = sprintf(dbgBuf, "ADC3: Vdiode = %4d mV\r\n", (int16_t) (l_adc_vdiode_mv + 0.5f));
+          usbLogLen(dbgBuf, dbgLen);
+        }
+      }
+    }
+    break;
+
+  /* ADC2 FWD single conversion */
+  case MsgDefault__CallFunc03_MCU_ADC2_FWD:
+    {
+      /* Do ADC2 FWD conversion and logging of ADC2 data */
+      if (s_rtos_DefaultTask_adc_enable) {
+        int   dbgLen;
+        char  dbgBuf[128];
+
+        /* Switch MUX to FWD input */
+        HAL_GPIO_WritePin(GPIO_SWR_SEL_REV_GPIO_Port, GPIO_SWR_SEL_REV_Pin, GPIO_PIN_RESET);
+        __DMB();
+        HAL_GPIO_WritePin(GPIO_SWR_SEL_FWD_GPIO_Port, GPIO_SWR_SEL_FWD_Pin, GPIO_PIN_SET);
+
+        adcStartConv(ADC_ADC2_IN1_FWDREV_MV);
+
+        const uint32_t regMask = EG_ADC2__CONV_AVAIL_FWDREV;
+        BaseType_t regBits = xEventGroupWaitBits(adcEventGroupHandle, regMask, regMask, pdTRUE, 100 / portTICK_PERIOD_MS);
+        if ((regBits & regMask) == regMask) {
+          float l_adc_vdiode_mv;
+
+          /* Get global var */
+          {
+            __disable_irq();
+            l_adc_vdiode_mv = g_adc_vdiode_mv;
+            __enable_irq();
+          }
+
+          /* Get the linearized voltage */
+          float l_adc_fwd_mv = calc_fwdRev_mv(adcGetVal(ADC_ADC2_IN1_FWDREV_MV), l_adc_vdiode_mv);
+
+          /* Push to global var */
+          {
+            __disable_irq();
+            g_adc_fwd_mv = l_adc_fwd_mv;
+            __enable_irq();
+          }
+
+          dbgLen = sprintf(dbgBuf, "ADC2: FWD = %5d mV\r\n", (int16_t) (l_adc_fwd_mv + 0.5f));
+          usbLogLen(dbgBuf, dbgLen);
+        }
+      }
+    }
+    break;
+
+  /* ADC2 REV single conversion */
+  case MsgDefault__CallFunc04_MCU_ADC2_REV:
+    {
+      /* Do ADC2 REV conversion and logging of ADC2 data */
+      if (s_rtos_DefaultTask_adc_enable) {
+        int   dbgLen;
+        char  dbgBuf[128];
+
+        /* Switch MUX to FWD input */
+        HAL_GPIO_WritePin(GPIO_SWR_SEL_FWD_GPIO_Port, GPIO_SWR_SEL_FWD_Pin, GPIO_PIN_RESET);
+        __DMB();
+        HAL_GPIO_WritePin(GPIO_SWR_SEL_REV_GPIO_Port, GPIO_SWR_SEL_REV_Pin, GPIO_PIN_SET);
+
+        adcStartConv(ADC_ADC2_IN1_FWDREV_MV);
+
+        const uint32_t regMask = EG_ADC2__CONV_AVAIL_FWDREV;
+        BaseType_t regBits = xEventGroupWaitBits(adcEventGroupHandle, regMask, regMask, pdTRUE, 100 / portTICK_PERIOD_MS);
+        if ((regBits & regMask) == regMask) {
+          float l_adc_fwd_mv;
+          float l_adc_vdiode_mv;
+
+          /* Get global vars */
+          {
+            __disable_irq();
+            l_adc_fwd_mv    = g_adc_fwd_mv;
+            l_adc_vdiode_mv = g_adc_vdiode_mv;
+            __enable_irq();
+          }
+
+          /* Get the linearized voltage and (V)SWR */
+          float l_adc_rev_mv = calc_fwdRev_mv(adcGetVal(ADC_ADC2_IN1_FWDREV_MV), l_adc_vdiode_mv);
+          float l_swr        = calc_swr(l_adc_fwd_mv, l_adc_rev_mv);
+
+          /* Push to global vars */
+          {
+            __disable_irq();
+            g_adc_rev_mv  = l_adc_rev_mv;
+            g_swr         = l_swr;
+            __enable_irq();
+          }
+
+          int32_t   l_swr_i    = 0L;
+          uint32_t  l_swr_f100 = 0UL;
+
+          mainCalcFloat2IntFrac(l_swr, 3, &l_swr_i, &l_swr_f100);
+
+          dbgLen = sprintf(dbgBuf, "ADC2: REV = %5d mV, SWR = %+3ld.%03lu\r\n",
+              (int16_t) (l_adc_rev_mv + 0.5f),
+              l_swr_i, l_swr_f100);
           usbLogLen(dbgBuf, dbgLen);
         }
       }
@@ -455,7 +609,7 @@ void StartDefaultTask(void const * argument)
     /* Wait for door bell and hand-over controller out queue */
     {
       osSemaphoreWait(c2Default_BSemHandle, osWaitForever);
-      msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Main_Default, 1UL);                // Special case of callbacks need to limit blocking time
+      msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Rtos_Default, 1UL);                // Special case of callbacks need to limit blocking time
     }
 
     /* Decode and execute the commands when a message exists

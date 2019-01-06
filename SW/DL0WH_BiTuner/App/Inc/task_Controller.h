@@ -19,12 +19,10 @@ typedef enum ControllerMsgDestinations_ENUM {
 
   Destinations__Unspec                                        = 0,
   Destinations__Controller,
-  Destinations__Main_Default,
+  Destinations__Rtos_Default,
 
   Destinations__Network_USBtoHost,
   Destinations__Network_USBfromHost,
-
-  Destinations__ADC,
 
 } ControllerMsgDestinations_t;
 

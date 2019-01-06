@@ -95,9 +95,20 @@ extern __IO uint32_t                  uwTick;
 extern uint8_t                        i2c1TxBuffer[I2C_TXBUFSIZE];
 extern uint8_t                        i2c1RxBuffer[I2C_RXBUFSIZE];
 
+
 SYSCLK_CONFIG_t                       g_main_SYSCLK_CONFIG    = SYSCLK_CONFIG_48MHz_MSI;
 
+float                                 g_adc_refint_val        = 0.0f;
+float                                 g_adc_vref_mv           = 0.0f;
+float                                 g_adc_bat_mv            = 0.0f;
+float                                 g_adc_temp_deg          = 0.0f;
+float                                 g_adc_fwd_mv            = 0.0f;
+float                                 g_adc_rev_mv            = 0.0f;
+float                                 g_adc_vdiode_mv         = 0.0f;
+float                                 g_swr                   = 1e+3f;
+
 /* Typical values for 48 MHz MSI configuration */
+#if 0
 uint32_t                              g_main_HSE_VALUE        =   20000000UL;
 uint32_t                              g_main_HSE_START_MS     =        100UL;
 uint32_t                              g_main_MSI_VALUE        =   48000000UL;
@@ -110,7 +121,7 @@ uint32_t                              g_main_adc1_clkpresclr  = ADC_CLOCK_ASYNC_
 uint32_t                              g_main_adc2_clkpresclr  = ADC_CLOCK_ASYNC_DIV1;
 uint32_t                              g_main_adc3_clkpresclr  = ADC_CLOCK_ASYNC_DIV1;
 uint8_t                               g_main_PCLK1_Prescaler  = 1U;
-
+#endif
 
 /* Counter Prescaler value */
 uint32_t                              uhPrescalerValue        = 0;
@@ -160,6 +171,24 @@ void mainCalcFloat2IntFrac(float val, uint8_t fracCnt, int32_t* outInt, uint32_t
   }
   val *= pow(10, fracCnt);
   *outFrac = (uint32_t) (val + 0.5f);
+}
+
+float calc_fwdRev_mv(float adc_mv, float vdiode_mv)
+{
+  return pow(M_E + (0.0f * (vdiode_mv - 500.0f)), adc_mv);
+}
+
+float calc_swr(float fwd, float rev)
+{
+  if (fwd < 0.0f || rev < 0.0f) {
+    return 1e+9f;
+  }
+
+  if (fwd <= rev) {
+    return 1e+6f;
+  }
+
+  return (fwd + rev) / (fwd - rev);
 }
 
 
@@ -276,9 +305,11 @@ int main(void)
   /* USER CODE BEGIN 1 */
   /* Check if ARM core is already in reset state */
   if (!(RCC->CSR & 0xff000000UL)) {
+    #if 0
     __HAL_RCC_GPIOC_CLK_ENABLE();
     __HAL_RCC_GPIOF_CLK_ENABLE();
     __asm volatile( "NOP" );
+    #endif
 
     /* Turn off battery charger of Vbat */
     HAL_PWREx_DisableBatteryCharging();
@@ -320,11 +351,6 @@ int main(void)
   MX_TIM5_Init();
   MX_ADC3_Init();
   /* USER CODE BEGIN 2 */
-  //#define I2C_BUS1_SCAN
-
-  #ifdef I2C_BUS1_SCAN
-  i2cBusAddrScan(&hi2c1, i2c1MutexHandle);
-  #endif
 
   /* USER CODE END 2 */
 

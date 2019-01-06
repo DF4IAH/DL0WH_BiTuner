@@ -35,9 +35,15 @@ static ControllerMsg2Proc_t s_msg_in                          = { 0 };
 
 static ControllerMods_t     s_mod_start                       = { 0 };
 static ControllerMods_t     s_mod_rdy                         = { 0 };
-static uint8_t              s_controller_doCycle;
-static DefaultMcuClocking_t s_controller_McuClocking          = DefaultMcuClocking_04MHz_MSI;
+static uint8_t              s_controller_doCycle              = 0;
+static uint8_t              s_controller_tuning               = 0;
+static DefaultMcuClocking_t s_controller_McuClocking          = DefaultMcuClocking__4MHz_MSI;
 
+
+static void controllerFSM(void)
+{
+  // TODO
+}
 
 uint32_t controllerCalcMsgHdr(ControllerMsgDestinations_t dst, ControllerMsgDestinations_t src, uint8_t lengthBytes, uint8_t cmd)
 {
@@ -95,7 +101,7 @@ void controllerMsgPushToOutQueue(uint8_t msgLen, uint32_t* msgAry, uint32_t wait
 
   /* Ring bell at the destination */
   switch ((ControllerMsgDestinations_t) (msgAry[0] >> 24)) {
-  case Destinations__Main_Default:
+  case Destinations__Rtos_Default:
     semId = c2Default_BSemHandle;
     break;
 
@@ -253,11 +259,25 @@ void controllerTimerCallback(void const *argument)
   controllerMsgPushToInQueue(msgLen, msgAry, 1UL);
 }
 
+/* Cyclic job to do */
 static void controllerCyclicTimerEvent(void)
 {
-  /* Cyclic job to do */
-  // TODO: coding
-  __asm volatile( "nop" );
+  uint32_t  msgAry[16];
+  uint8_t   msgLen = 0U;
+
+  if (!s_controller_tuning) {
+    /* Get ADC channels */
+    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc01_MCU_ADC1);
+    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc02_MCU_ADC3_VDIODE);
+    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc03_MCU_ADC2_FWD);
+    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc04_MCU_ADC2_REV);
+  }
+
+  /* FSM logic */
+  controllerFSM();
+
+  /* Push to queue */
+  controllerMsgPushToInQueue(msgLen, msgAry, 1UL);
 }
 
 
@@ -286,14 +306,14 @@ static void controllerMsgProcessor(void)
     case MsgController__InitDone:
       {
         switch (s_msg_in.msgSrc) {
-        case Destinations__Main_Default:
+        case Destinations__Rtos_Default:
           s_mod_rdy.rtos_Default = 1U;
 
           /* Send MCU clocking set-up request */
           {
             uint8_t msgLen    = 0U;
 
-            msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Main_Default, Destinations__Controller, 1U, MsgDefault__SetVar02_Clocking);
+            msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__SetVar02_Clocking);
             msgAry[msgLen++]  = (s_controller_McuClocking << 24U);
             controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
           }
@@ -353,7 +373,7 @@ static void controllerInit(void)
 
     s_controller_McuClocking                                  = DefaultMcuClocking_16MHz_MSI;
 
-    s_controller_doCycle                                      = 0U;
+    s_controller_doCycle                                      = 1U;
 
     s_mod_start.rtos_Default                                  = 1U;
     s_mod_start.network_USBtoHost                             = 1U;
@@ -371,7 +391,7 @@ static void controllerInit(void)
     /* main_default */
     if (s_mod_start.rtos_Default) {
       const uint32_t msgLen = controllerCalcMsgInit(msgAry,
-          Destinations__Main_Default,
+          Destinations__Rtos_Default,
           0UL);
       controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
     }
@@ -395,7 +415,9 @@ static void controllerInit(void)
 
   /* Enable service cycle */
   if (s_controller_doCycle) {
-    controllerCyclicStart(1000UL);
+    /* Latching relays do need 30ms to change state */
+    controllerCyclicStart(30UL);
+
   } else {
     controllerCyclicStop();
   }
