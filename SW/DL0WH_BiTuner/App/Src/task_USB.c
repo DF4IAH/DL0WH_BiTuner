@@ -99,7 +99,7 @@ void usbFromHostFromIRQ(const uint8_t* buf, uint32_t len)
 		}
 		memcpy((void*)v_usbUsbFromHostISRBuf, (const void*)buf, lLen);
 		v_usbUsbFromHostISRBuf[lLen] = 0U;
-		__asm volatile( "ISB" );
+		__ISB();
 		v_usbUsbFromHostISRBufLen = lLen;
 	}
 }
@@ -132,12 +132,13 @@ void usbStartUsbToHostTask(void const * argument)
 
   /* To be moved to the controller.c module */
   {
+    const char usb_Greeting_T01[]   = "+===============+\r\n";
+    const char usb_Greeting_Name[]  = "* DL0WH BiTuner *\r\n";
     const char usb_Greeting_CRLF[]  = "\r\n";
-    const char usb_Greeting_T01[]   = "===============\r\n";
 
     CDC_Transmit_FS((uint8_t*) usb_Greeting_T01, strlen(usb_Greeting_T01));
     osDelay(10UL);
-    CDC_Transmit_FS((uint8_t*) "HFT-Core-Module\r\n", strlen("HFT-Core-Module\r\n"));
+    CDC_Transmit_FS((uint8_t*) usb_Greeting_Name, strlen(usb_Greeting_Name));
     osDelay(10UL);
     CDC_Transmit_FS((uint8_t*) usb_Greeting_T01, strlen(usb_Greeting_T01));
     osDelay(10UL);
@@ -308,15 +309,11 @@ void usbUsbToHostTaskLoop(void)
 void usbStartUsbFromHostTask(void const * argument)
 {
   const uint8_t nulBuf[1]   = { 0U };
-  const uint8_t lightOnMax  = 2U;
   const uint8_t maxWaitMs   = 25U;
-  static uint8_t lightOnCtr = 0U;
 
   /* TaskLoop */
   for (;;) {
     if (v_usbUsbFromHostISRBufLen) {
-      lightOnCtr = lightOnMax;
-
       /* USB OUT EP from host put data into the buffer */
       volatile uint8_t* bufPtr = v_usbUsbFromHostISRBuf;
       for (BaseType_t idx = 0; idx < v_usbUsbFromHostISRBufLen; ++idx, ++bufPtr) {
@@ -325,25 +322,12 @@ void usbStartUsbFromHostTask(void const * argument)
       xQueueSendToBack(usbFromHostQueueHandle, nulBuf, maxWaitMs);
 
       memset((char*) v_usbUsbFromHostISRBufLen, 0, sizeof(v_usbUsbFromHostISRBufLen));
-      __asm volatile( "ISB" );
+      __DMB();
       v_usbUsbFromHostISRBufLen = 0UL;
 
     } else {
       /* Delay for the next attempt */
       osDelay(25UL);
-    }
-
-    /* Show state */
-    switch (lightOnCtr) {
-    case 0:
-      break;
-
-    case 1:
-      --lightOnCtr;
-      break;
-
-    default:
-      --lightOnCtr;
     }
   }
 }

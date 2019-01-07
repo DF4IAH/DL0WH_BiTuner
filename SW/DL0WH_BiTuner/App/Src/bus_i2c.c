@@ -163,29 +163,39 @@ void i2cx_Init(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle)
   if (!s_i2cx_UseCtr++) {
     switch (devIdx) {
     case 0:
+      #if 0
       __HAL_RCC_GPIOG_CLK_ENABLE();                                                                   // I2C1: SCL, SDA
+      #endif
       MX_I2C1_Init();
       /* Do not turn off clock of GPIOx SCL */
       break;
 
 #if 0
     case 1:
+      #if 0
       __HAL_RCC_GPIOF_CLK_ENABLE();                                                                   // I2C2: SCL, SDA
+      #endif
       MX_I2C2_Init();
       /* Do not turn off clock of GPIOx SCL */
       break;
 
     case 2:
+      #if 0
       __HAL_RCC_GPIOG_CLK_ENABLE();                                                                   // I2C3: SCL, SDA
+      #endif
       MX_I2C3_Init();
       /* Do not turn off clock of GPIOx SCL */
       break;
 
     case 3:
+      #if 0
       __HAL_RCC_GPIOD_CLK_ENABLE();                                                                   // I2C4: SDA
       __HAL_RCC_GPIOF_CLK_ENABLE();                                                                   // I2C4: SCL
+      #endif
       MX_I2C4_Init();
+      #if 0
       __HAL_RCC_GPIOD_CLK_DISABLE();                                                                  // I2C4: SDA
+      #endif
       /* Do not turn off clock of GPIOx SCL */
       break;
 #endif

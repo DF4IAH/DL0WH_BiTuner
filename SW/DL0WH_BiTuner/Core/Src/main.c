@@ -195,7 +195,7 @@ float calc_swr(float fwd, float rev)
 void mainPowerSwitchDo(POWERSWITCH_ENUM_t sw, uint8_t enable)
 {
   __HAL_RCC_GPIOC_CLK_ENABLE();
-  __asm volatile( "NOP" );
+  __NOP();
 
   switch (sw) {
   case POWERSWITCH__SLOWER_24MHZ:
@@ -308,7 +308,7 @@ int main(void)
     #if 0
     __HAL_RCC_GPIOC_CLK_ENABLE();
     __HAL_RCC_GPIOF_CLK_ENABLE();
-    __asm volatile( "NOP" );
+    __NOP();
     #endif
 
     /* Turn off battery charger of Vbat */
@@ -521,7 +521,7 @@ void  vApplicationIdleHook(void)
    */
 
   /* Enter sleep mode */
-  __asm volatile( "WFI" );
+  __WFI();
 
   /* Increase clock frequency to 80 MHz */
   // TODO: TBD

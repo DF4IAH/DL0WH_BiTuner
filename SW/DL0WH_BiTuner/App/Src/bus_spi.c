@@ -265,10 +265,10 @@ static uint8_t spix_getDevIdx(SPI_HandleTypeDef* dev)
   if (&hspi1 == dev) {
     return 0U;
 
-#if 0
+  #if 0
   } else if (&hspi3 == dev) {
     return 1U;
-#endif
+  #endif
   }
 
   Error_Handler();
@@ -289,14 +289,14 @@ void spix_Init(SPI_HandleTypeDef* dev, osSemaphoreId semaphoreHandle)
       MX_SPI1_Init();
       break;
 
-#if 0
+    #if 0
     case 1:
       __HAL_RCC_GPIOC_CLK_ENABLE();                                                                   // SPI3: MCU_SPI3_SCK, MCU_SPI3_MISO, MCU_SPI3_MOSI, MCU_OUT_AUDIO_DAC_SEL
       __HAL_RCC_GPIOD_CLK_ENABLE();                                                                   // SPI3: MCU_OUT_AUDIO_ADC_SEL
       __HAL_RCC_GPIOE_CLK_ENABLE();                                                                   // SPI3: MCU_OUT_AX_SEL, MCU_OUT_SX_SEL
       MX_SPI3_Init();
       break;
-#endif
+    #endif
 
     default: { }
     }
