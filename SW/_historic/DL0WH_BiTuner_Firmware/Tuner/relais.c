@@ -1,3 +1,4 @@
+#include <atmel_start.h>
 #include <avr/io.h>
 #include <util/delay.h>
 #include "tuner.h"
@@ -30,32 +31,35 @@ RELAIS32/33
 in Array ist das Index 17
 */
 
-char relais[18]		= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-char oldrelais[18]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
-void pulsedirectport(char port, unsigned char portnum)
+extern bool isReady;
+
+volatile uint8_t relais[18]		= { 0U };
+volatile uint8_t oldrelais[18]	= { 0U };
+
+void pulsedirectport(char port, uint8_t portnum)
 {
     if(port == 'B')
     {
-        PORTB = PORTB | (1<<portnum);
+		PORTB_set_pin_level(portnum, true);
         _delay_ms(20);
-        PORTB = PORTB & ~(1<<portnum);
+		PORTB_set_pin_level(portnum, false);
         return;
     }
-    
+
     if(port == 'C')
     {
-        PORTC = PORTC | (1<<portnum);
+		PORTC_set_pin_level(portnum, true);
         _delay_ms(20);
-        PORTC = PORTC & ~(1<<portnum);
+		PORTC_set_pin_level(portnum, false);
         return;
     }
-    
+
     if(port == 'D')
     {
-        PORTD = PORTD | (1<<portnum);
+		PORTD_set_pin_level(portnum, true);
         _delay_ms(20);
-        PORTD = PORTD & ~(1<<portnum);
+		PORTD_set_pin_level(portnum, false);
         return;
     }
 } 
@@ -71,116 +75,110 @@ void setShiftRegs(unsigned long val)
 {
 	int i;
 
-    if(val == 0)
-    {
-        // setze alle Ausgänge auf 0
-		portClr(PORTC, PORTC1);		// ziehe Reset
-		portSet(PORTC, PORTC2);		// auf die Ausgänge
-		portSet(PORTC, PORTC1);		// und zurück in die Grundstellung
-		portClr(PORTC, PORTC2);
-        return;
-    }
-    
-    for(i=(24-1); i>=0; i--)
-    {
-        if(val & (1L << i))
-			portSet(PORTB, PORTB2);
-        else  
-			portClr(PORTB, PORTB2);
-        
-		portSet(PORTC, PORTC0);		// reinschieben
-		portClr(PORTC, PORTC0);
-    }
-    
-	portSet(PORTC, PORTC2);			// auf die Ausgänge
-	portClr(PORTC, PORTC2);
+    if (!val) {
+		/* Reset shift registers */
+		PORTC_set_pin_level(PORTC1, false);
+		PORTC_set_pin_level(PORTC1, true);
+    } else {
+
+		/* Push out data stream */
+		for (i = 24-1; i >= 0; i--)
+		{
+			/* Content */
+			const uint8_t flag = (val & (1UL << i)) ?  1U : 0U;
+			PORTB_set_pin_level(PORTB2, flag);
+
+			/* Clock */
+			PORTC_set_pin_level(PORTC0, true);
+			PORTC_set_pin_level(PORTC0, false);
+		}
+	}
+
+	/* Latch new result */
+	PORTC_set_pin_level(PORTC2, true);
+	PORTC_set_pin_level(PORTC2, false);
 }
 
 // relnum: 0..35 entsprechend Relaisanschluss RELAIS0-35
-void pulserelais(char relnum)
+void pulserelais(uint8_t relnum)
 {
-	unsigned long sr, tmp;
-
-    // direkt angeschlossene Relais
+    /* Relays driven by GPIOs */
     switch (relnum)
     {
-        case 24: pulsedirectport('B',0); return;
-        case 25: pulsedirectport('B',1); return;
-        case 26: pulsedirectport('D',2); return;
-        case 27: pulsedirectport('D',3); return;
-        case 28: pulsedirectport('D',4); return;
-        case 29: pulsedirectport('D',5); return;
-        case 30: pulsedirectport('D',6); return;
-        case 31: pulsedirectport('D',7); return;        
-        case 32: pulsedirectport('C',4); return;
-        case 33: pulsedirectport('C',5); return;
-        case 34: pulsedirectport('B',4); return;
-        case 35: pulsedirectport('B',5); return;
+        case 24U: pulsedirectport('B', 0U);  return;
+        case 25U: pulsedirectport('B', 1U);  return;
+        case 26U: pulsedirectport('D', 2U);  return;
+        case 27U: pulsedirectport('D', 3U);  return;
+        case 28U: pulsedirectport('D', 4U);  return;
+        case 29U: pulsedirectport('D', 5U);  return;
+        case 30U: pulsedirectport('D', 6U);  return;
+        case 31U: pulsedirectport('D', 7U);  return;        
+        case 32U: pulsedirectport('C', 4U);  return;
+        case 33U: pulsedirectport('C', 5U);  return;
+        case 34U: pulsedirectport('B', 4U);  return;
+        case 35U: pulsedirectport('B', 5U);  return;
     }
-    
-    // Relais an Schieberegistern
-    // Vorbelegen des Wertes
-    tmp = relnum;
-    sr = (1L<<tmp);
-    setShiftRegs(sr);
-    _delay_ms(20);
-    setShiftRegs(0);    
+
+	/* Relays driven by the shift registers */
+	if (relnum < 24U) {
+		setShiftRegs(1UL << relnum);
+		_delay_ms(20);
+		setShiftRegs(0UL);
+	}
 }
 
-void pulserelaisindex(unsigned char r)
+void pulserelaisindex(uint8_t r)
 {
-	unsigned char rn;
+	uint8_t rn;
 
     switch (r)
     { 
         // Cs
-        case 0 :  rn = 0; break;
-        case 1 :  rn = 2; break;
-        case 2 :  rn = 4; break;
-        case 3 :  rn = 6; break;
-        case 4 :  rn = 8; break;
-        case 5 :  rn = 34; break;
-        case 6 :  rn = 10; break;
-        case 7 :  rn = 12; break;
-             
+        case  0U:  rn =  0U; break;
+        case  1U:  rn =  2U; break;
+        case  2U:  rn =  4U; break;
+        case  3U:  rn =  6U; break;
+        case  4U:  rn =  8U; break;
+        case  5U:  rn = 34U; break;
+        case  6U:  rn = 10U; break;
+        case  7U:  rn = 12U; break;
+
         // Ls
-        case 8 :  rn = 14; break;
-        case 9 :  rn = 16; break;
-        case 10:  rn = 18; break;
-        case 11:  rn = 20; break;
-        case 12:  rn = 22; break;
-        case 13:  rn = 24; break;
-        case 14:  rn = 26; break;
-        case 15:  rn = 28; break;
-             
+        case  8U:  rn = 14U; break;
+        case  9U:  rn = 16U; break;
+        case 10U:  rn = 18U; break;
+        case 11U:  rn = 20U; break;
+        case 12U:  rn = 22U; break;
+        case 13U:  rn = 24U; break;
+        case 14U:  rn = 26U; break;
+        case 15U:  rn = 28U; break;
+
         // V oder H
-        case 16:  rn = 30; break;
-        case 17:  rn = 32; break;
-		
+        case 16U:  rn = 30U; break;
+        case 17U:  rn = 32U; break;
+
 		default:
-				  rn = 0;
+				   rn =  0U;
     }
-    
-    if(relais[r] == 0)
-        pulserelais(rn+1);			// Relais abfallen lassen
-    else
+
+    if(relais[r])
         pulserelais(rn);			// Relais anziehen lassen
+    else
+        pulserelais(rn + 1U);		// Relais abfallen lassen
 }
 
 void moveRelais()
 {
-	unsigned char i;
+	uint8_t i;
 
-    for(i=0; i<18; i++)
+    for(i = 0U; i < 18U; i++)
     {
-        if(relais[i] != oldrelais[i])
+        if(oldrelais[i] != relais[i])
         {
             pulserelaisindex(i);
+			oldrelais[i] = relais[i];
         }
     }
-
-    for(i=0; i<18; i++) 
-        oldrelais[i] = relais[i];
 }
 
 void switchRelais()
@@ -192,25 +190,25 @@ void switchRelais()
 
 	// Textkommandos
     if(valid != 0)
-	{ 
+	{
 		// Belege die Relaisvariable vor
 		if(command == 'C')
 		{          
 			relais[(int)parameter] = action;                        
 		}
-     
+
 		if(command == 'L')
 		{          
 			relais[(int)parameter + 8] = action;                       
 		}
-    
+
 		if(command == 'V')
 		{          
 			relais[16] = action;
 
 			if(action == 1)
 				relais[17] = 0;
-		} 
+		}
 
 		if(command == 'H')
 		{          
@@ -218,7 +216,7 @@ void switchRelais()
 
 			if(action == 1)
 				relais[16] = 0;
-		} 
+		}
 	}  
 
 	// Kommando in Kurzform
@@ -231,15 +229,20 @@ void switchRelais()
 		 Bit 16 = V
 		 Bit 17 = H
 		*/
-		for(i=0; i<18; i++)
+		for(i = 0UL; i < 18UL; i++)
 		{
-			relais[i] = (shortval & (1UL<<i)) ? 1 : 0;
+			relais[i] = (shortval & (1UL << i)) ? 1U : 0U;
 		}
 	}
-    
+
     // steuere geänderte Relais an
     moveRelais();
-    
+
+	/* Print current state of relays */
+	if (isReady) {
+		printState();
+	}
+
     valid = 0;
 	shortvalid = 0;
 }
@@ -255,44 +258,61 @@ void forceRelais(char cmd, char num, char act)
 
 void Grundstellung()
 {
-	char i;
+	uint8_t i;
 
 	#ifdef INIT_ON_OFF
 
 	/* Last state flags */
-	for(i = 0; i < 18; i++) {
-		oldrelais[(int)i] = 0x00;
+	for(i = 0U; i < 18U; i++) {
+		oldrelais[i] = 0U;
 	}
 
-	for(i = 1; i <= 8; i++)	{
-		forceRelais('C', i - 1, 1);
+	for(i = 1U; i <= 8U; i++)	{
+		forceRelais('C', i-1, 1);
 	}
 
 	forceRelais('V', 0, 1);
 	forceRelais('H', 0, 1);
 
-	for(i = 1; i <= 8; i++) {
+	for(i = 1U; i <= 8U; i++) {
 		forceRelais('L', i-1, 0);
 	}
 
 	#endif
 
-
 	/* Last state flags */
-	for(i = 0; i < 18; i++) {
-		oldrelais[(int)i] = 0xff;
+	for(i = 0U; i < 18U; i++) {
+		oldrelais[i] = 1U;
 	}
 
-	for(i = 1; i <= 8; i++)
+	for(i = 1U; i <= 8U; i++)
 	{
-		forceRelais('C', i - 1, 0);
+		forceRelais('C', i-1, 0);
 	}
 
 	forceRelais('V', 0, 0);
 	forceRelais('H', 0, 0);
 
-	for(i = 1; i <= 8; i++)
+	for(i = 1U; i <= 8U; i++)
 	{
 		forceRelais('L', i-1, 1);
 	}
+
+
+#if 0
+	// TODO: remove me!
+	while (1) {
+		for (i = 0U; i < 18U; i++) {
+			relais[i] = 1U;
+		}
+		moveRelais();
+		_delay_ms(100);
+
+		for (i = 0U; i < 18U; i++) {
+			relais[i] = 0U;
+		}
+		moveRelais();
+		_delay_ms(100);
+	}
+#endif
 }

@@ -72,10 +72,10 @@ int8_t USART_0_init()
 	         | 1 << TXEN0   /* Transmitter Enable: enabled */
 	         | 0 << UCSZ02; /*  */
 
-	// UCSR0C = (0 << UMSEL01) | (0 << UMSEL00) /*  */
-	//		 | (0 << UPM01) | (0 << UPM00) /* Disabled */
-	//		 | 0 << USBS0 /* USART Stop Bit Select: disabled */
-	//		 | (1 << UCSZ01) | (1 << UCSZ00); /* 8-bit */
+	 UCSR0C = (0 << UMSEL01) | (0 << UMSEL00) /*  */
+			 | (0 << UPM01) | (0 << UPM00) /* Disabled */
+			 | 0 << USBS0 /* USART Stop Bit Select: disabled */
+			 | (1 << UCSZ01) | (1 << UCSZ00); /* 8-bit */
 
 	return 0;
 }

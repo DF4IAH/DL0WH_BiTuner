@@ -14,6 +14,7 @@ External RAM size       : 0
 Data Stack size         : 256
 *******************************************************/
 
+#include <atmel_start.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <utils/interrupt_avr8.h>
@@ -43,53 +44,77 @@ volatile unsigned char rx_counter0=0;
 volatile unsigned int rx_counter0=0;
 #endif
 
+
+bool isReady				= false;
+
 // This flag is set on USART Receiver buffer overflow
-bool rx_buffer_overflow0;
+bool rx_buffer_overflow0	= false;
+
 
 // USART Receiver interrupt service routine
 ISR(USART_RX_vect)
 {
-	unsigned char status;
-	char data;
+	const unsigned char	status	= UCSR0A;
+	const char			data	= UDR0;
 
-	status=UCSR0A;
-	data=UDR0;
 	if (!rx_buffer_overflow0 && (status & (FRAMING_ERROR | PARITY_ERROR | DATA_OVERRUN))==0)
 	{
-		rx_buffer0[rx_wr_index0++]=data;
+		rx_buffer0[rx_wr_index0++] = data;
 #if RX_BUFFER_SIZE0 == 256
 		// special case for receiver buffer size=256
 		if (++rx_counter0 == 0)
-			rx_buffer_overflow0=1;
+			rx_buffer_overflow0 = true;
 #else
 		if (rx_wr_index0 == RX_BUFFER_SIZE0)
-			rx_wr_index0=0;
+			rx_wr_index0 = 0;
 
 		if (++rx_counter0 == RX_BUFFER_SIZE0)
 		{
-			rx_counter0=0;
-			rx_buffer_overflow0=1;
+			rx_counter0 = 0;
+			rx_buffer_overflow0 = true;
 		}
 #endif
    }
 }
 
 
+#ifdef OLD_CODE
 // Set a port bit
 void portSet(uint16_t port, char bitPos)
 {
-	uint8_t *const adr = (uint8_t*) port;
+	if (bitPos < 0 || bitPos > 7) {
+		return;
+	}
 
-	*adr |= (1 << bitPos);
+	if (port == PORTB)  {
+		PORTB_set_pin_level(bitPos, true);
+
+	} else if (port == PORTC)  {
+		PORTC_set_pin_level(bitPos, true);
+
+	} else if (port == PORTD)  {
+		PORTD_set_pin_level(bitPos, true);
+	}
 }
 
 // Clear a port bit
 void portClr(uint16_t port, char bitPos)
 {
-	uint8_t *const adr = (uint8_t*) port;
+	if (bitPos < 0 || bitPos > 7) {
+		return;
+	}
 
-	*adr &= ~(1 << bitPos);
+	if (port == PORTB)  {
+		PORTB_set_pin_level(bitPos, false);
+
+	} else if (port == PORTC)  {
+		PORTC_set_pin_level(bitPos, false);
+
+	} else if (port == PORTD)  {
+		PORTD_set_pin_level(bitPos, false);
+	}
 }
+#endif
 
 
 // Get a character from the USART Receiver buffer
@@ -103,18 +128,17 @@ char dataAvailable()
 
 char tuner_getchar(void)
 {
-    char data;
-
-    while (rx_counter0==0)
+    while (!rx_counter0)
 		;
 
-    data=rx_buffer0[rx_rd_index0++];
-	// echo
-	putchar(data);
+    const char data = rx_buffer0[rx_rd_index0++];
+
+	/* echo */
+	USART_0_write(data);
 
     #if RX_BUFFER_SIZE0 != 256
 	if (rx_rd_index0 == RX_BUFFER_SIZE0) 
-		rx_rd_index0=0;
+		rx_rd_index0 = 0;
     #endif
 
 	cpu_irq_disable();
@@ -125,9 +149,11 @@ char tuner_getchar(void)
 }
 //#pragma used-
 
+
+#ifdef OLD_CODE
 // Standard Input/Output functions
-#include <stdio.h>
-#include "tuner.h"
+//#include <stdio.h>
+//#include "tuner.h"
 
 void tuner_main(void)
 {
@@ -277,3 +303,4 @@ void tuner_main(void)
         switchRelais();
     }
 }
+#endif

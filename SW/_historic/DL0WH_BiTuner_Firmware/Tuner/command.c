@@ -1,4 +1,9 @@
+#include <string.h>
+#include <atmel_start.h>
+
 #include "tuner.h"
+
+extern volatile uint8_t oldrelais[18];
 
 char command;
 char parameter;
@@ -34,7 +39,7 @@ void readSerialCommand()
 	{
 		case 0:
 				// erlaubte Bytes: L, C, V oder R, alles andere ignorieren
-				c &= ~0x20; // wandle in Großbuchstaben
+				c &= ~0x20U; // wandle in Großbuchstaben
 				if(c == 'L' || c == 'C' || c == 'V' || c == 'H')
 				{
 					command = c;
@@ -46,6 +51,11 @@ void readSerialCommand()
 				{
 					command = c;
 					status = 10;
+				}
+
+				/* Send help */
+				if (!status) {
+					status = 99;
 				}
 				break;
     
@@ -59,7 +69,7 @@ void readSerialCommand()
 						status = 2;
 					}
 					else
-						status = 0;
+						status = 99;
 				}
 				else if(command == 'V' || command == 'H')
 				{
@@ -70,7 +80,7 @@ void readSerialCommand()
 					}
 				}
 				else
-					status = 0;
+					status = 99;
 				break;
     
 		case 2:
@@ -80,20 +90,24 @@ void readSerialCommand()
 					status = 3;
 				} 
 				else
-					status = 0;
+					status = 99;
 				break;
     
 		case 3:
 				// cr oder lf Abschluss von L oder C Kommando
-				if(c == '\r' || c == '\n')
+				if(c == '\r' || c == '\n') {
 					valid = 1;
-            
-				status = 0;
+					status = 0;
+
+				} else {
+					status = 99;
+				}
+
 				break;   
 	
 		case 10: 
 				shortval = c;
-				status ++;
+				status++;
 				break;
 
 		case 11:
@@ -110,5 +124,61 @@ void readSerialCommand()
 				shortvalid = 1;
 				status=0;
 				break;
-	}   
+				
+		case 99:
+				printHelp();
+				status = 0;
+	}
+}
+
+void printString(const char* str)
+{
+	size_t len = strlen(str);
+
+	if (len > 254) {
+		return;
+	}
+
+	for (uint8_t idx = 0; idx < len; idx++) {
+		USART_0_write(*(str + idx));
+	}
+}
+
+void printCrLf(void)
+{
+	printString("\r\n");
+}
+
+void printState(void)
+{
+	char buf[4] = { ' ', ' ', '?' };
+
+	printString("\r\n## C1 C2 C3 C4 C5 C6 C7 C8  L1 L2 L3 L4 L5 L6 L7 L8  CV CH\r\n ");
+
+	for (int idx = 0; idx < 18; idx++) {
+		if (idx == 8 || idx == 16) {
+			USART_0_write(' ');
+		}
+		buf[2] = *(oldrelais + idx) ?  '1' : '0';
+		printString(buf);
+	}
+	printString("\r\n");
+}
+
+void printWelcome(void)
+{
+	printCrLf();
+	USART_0_write(12U);
+	printCrLf();
+	printCrLf();
+	printString("* Welcome to the DL0WH modified BiTuner (ATmega88) *");
+	printCrLf();
+}
+
+void printHelp(void)
+{
+	printCrLf();
+	printString("Commands: Cxy or Lxy or Vy or Hy - where: x=1..8, y=0 (off) or 1 (on)");
+	printCrLf();
+	printCrLf();
 }

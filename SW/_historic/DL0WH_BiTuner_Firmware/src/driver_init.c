@@ -159,19 +159,34 @@ void system_init()
 
 	EXTERNAL_IRQ_0_initialization();
 
-	ADC_0_initialization();
+	//ADC_0_initialization();
 
-	AC_0_initialization();
+	//AC_0_initialization();
 
-	I2C_0_initialization();
+	//I2C_0_initialization();
 
-	DAC_0_initialization();
+	//DAC_0_initialization();
 
-	PWM_0_initialization();
+	//PWM_0_initialization();
 
-	PWM_1_initialization();
+	//PWM_1_initialization();
 
 	TIMER_0_initialization();
+
+	/* GPIO init */
+	{	
+		//PORTB_set_port_dir(0xc0, PORT_DIR_IN);
+		PORTB_set_port_dir(0x07, PORT_DIR_OUT);
+		PORTB_write_port(0x00);
+
+		//PORTC_set_port_dir(0xc0, PORT_DIR_IN);
+		PORTC_set_port_dir(0x3f, PORT_DIR_OUT);
+		PORTC_write_port(0x02);
+
+		//PORTD_set_port_dir(0x01, PORT_DIR_IN);
+		PORTD_set_port_dir(0xfc, PORT_DIR_OUT);
+		PORTD_write_port(0x00);
+	}
 
 	USART_0_initialization();
 }
