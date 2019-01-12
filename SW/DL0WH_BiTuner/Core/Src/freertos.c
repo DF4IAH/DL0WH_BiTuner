@@ -161,12 +161,13 @@ void vApplicationMallocFailedHook(void);
 /* Functions needed when configGENERATE_RUN_TIME_STATS is on */
 __weak void configureTimerForRunTimeStats(void)
 {
-
+  /* Overwritten by main.c */
 }
 
 __weak unsigned long getRunTimeCounterValue(void)
 {
-return 0;
+  /* Overwritten by main.c */
+  return 0;
 }
 /* USER CODE END 1 */
 
@@ -182,6 +183,8 @@ __weak void vApplicationIdleHook( void )
    important that vApplicationIdleHook() is permitted to return to its calling
    function, because it is the responsibility of the idle task to clean up
    memory allocated by the kernel to any task that has since been deleted. */
+
+  /* Overwritten by main.c */
 }
 /* USER CODE END 2 */
 
@@ -191,6 +194,8 @@ __weak void vApplicationStackOverflowHook(TaskHandle_t xTask, signed char *pcTas
    /* Run time stack overflow checking is performed if
    configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2. This hook function is
    called if a stack overflow is detected. */
+
+  /* Overwritten by main.c */
 }
 /* USER CODE END 4 */
 
@@ -207,11 +212,14 @@ __weak void vApplicationMallocFailedHook(void)
    FreeRTOSConfig.h, and the xPortGetFreeHeapSize() API function can be used
    to query the size of free heap space that remains (although it does not
    provide information on how the remaining heap might be fragmented). */
+
+  /* Overwritten by main.c */
 }
 
 
 /* Local functions */
 
+/* Store driver error information */
 static void rtosDefaultCheckSpiDrvError(uint8_t variant)
 {
   if (spi1RxBuffer[0]) {
@@ -225,6 +233,7 @@ static void rtosDefaultCheckSpiDrvError(uint8_t variant)
   }
 }
 
+/* Set and reset relays accordingly */
 static void rtosDefaultSpiRelays(uint64_t relaySettings)
 {
   const uint16_t relayC   = 0xffffU &  relaySettings;
@@ -234,7 +243,7 @@ static void rtosDefaultSpiRelays(uint64_t relaySettings)
   /* Disable the PWM signal in case it is still on */
   HAL_GPIO_WritePin(GPIO_SPI_PWM_GPIO_Port, GPIO_SPI_PWM_Pin, GPIO_PIN_RESET);
 
-  /* Release reset of all SPI drivers */
+  /* Release reset signal of all SPI drivers */
   HAL_GPIO_WritePin(GPIO_SPI_RST_GPIO_Port, GPIO_SPI_RST_Pin, GPIO_PIN_SET);
 
   /* Preparations */
@@ -303,14 +312,14 @@ static void rtosDefaultSpiRelays(uint64_t relaySettings)
     spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgOnOff), spiMsgOnOff);
   }
 
-  /* Enable PWM for 30 ms */
+  /* Enable PWM for 30 ms and thus energizes the relay coils for that time */
   {
     HAL_GPIO_WritePin(GPIO_SPI_PWM_GPIO_Port, GPIO_SPI_PWM_Pin, GPIO_PIN_SET);
     osDelay(30UL);
     HAL_GPIO_WritePin(GPIO_SPI_PWM_GPIO_Port, GPIO_SPI_PWM_Pin, GPIO_PIN_RESET);
   }
 
-  /* Check output states */
+  /* Check output states for any driver errors */
   {
     const uint8_t spiMsgAllOff[] = { 0x00U, 0x00U, 0x00U };
 
@@ -334,21 +343,28 @@ static void rtosDefaultUpdateRelays(void)
    * Relay idx as follows:
    *  0 ..  7 <--> C1 .. C8
    *  8 .. 15 <--> L1 .. L8
-   * 16      <--> CV
-   * 17      <--> CH
+   * 16       <--> CV
+   * 17       <--> CH
+   * 18 .. 23 spare output lines
    */
 
-  static uint32_t matcherCurrent  = 0x3ffUL;
+  static uint32_t matcherCurrent  = 0UL;
 
   const uint32_t  newDiff         = matcherCurrent ^ s_rtos_Matcher;
   const uint32_t  newSet          = newDiff & s_rtos_Matcher;
   const uint32_t  newClr          = newDiff & matcherCurrent;
   uint64_t        newRelays       = 0ULL;
 
+  /* Concatenate all interleaved relay coils for SET and RESET
+   *         Bit .. .. 3        2       1        0
+   * Result:  .. .. .. C1.RESET C1.SET  C0.RESET C0.SET .
+   */
   for (int8_t idx = 23; idx >= 0; idx--) {
+    /* RESET coil */
     newRelays <<= 1;
     newRelays |= ((newClr >> idx) & 0x01ULL);
 
+    /* SET coil */
     newRelays <<= 1;
     newRelays |= ((newSet >> idx) & 0x01ULL);
   }
@@ -356,6 +372,7 @@ static void rtosDefaultUpdateRelays(void)
   /* Send new relay settings via the SPI bus */
   rtosDefaultSpiRelays(newRelays);
 
+  /* Store current state */
   matcherCurrent = s_rtos_Matcher;
 }
 
@@ -367,6 +384,12 @@ static void rtosDefaultInit(void)
 
   /* Enable ADC access */
   s_rtos_DefaultTask_adc_enable = 1U;
+
+  /* Set relays to default setting
+   * L's are shorted when SET - inverted logic
+   */
+  s_rtos_Matcher = 0x00ff00UL;
+  rtosDefaultUpdateRelays();
 }
 
 static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
@@ -405,7 +428,8 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
   /* Set and reset relays */
   case MsgDefault__SetVar03_C_L_CV_CH:
     {
-      s_rtos_Matcher = 0x3ffUL & msgAry[1];
+      /* L's are shorted when SET - inverted logic */
+      s_rtos_Matcher = 0x3ffUL & (msgAry[1] ^0x00ff00UL);
       rtosDefaultUpdateRelays();
     }
     break;

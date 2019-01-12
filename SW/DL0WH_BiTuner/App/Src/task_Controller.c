@@ -35,6 +35,37 @@ extern float                g_adc_fwd_mv;
 extern float                g_adc_swr;
 
 
+static const float Controller_C0_pf                           = 25.0f;
+static float Controller_Cs_pF[8]                              = {
+    25.0f,
+    //33.0f,
+    50.0f,
+    89.0f,
+    165.0f,
+    340.0f,
+    600.0f,
+    1137.0f,
+    1939.0f
+};
+
+static const float Controller_L0_nH                           = 50.0f;
+static const float Controller_Ls_nH[8]                        = {
+    187.0f,
+    375.0f,
+    750.0f,
+    1.5e+3f,
+    3.0e+3f,
+    6.0e+3f,
+    12.0e+3f,
+    24.0e+3f
+};
+
+static const float          Controller_AutoSWR_P_mW_Min       = 5.0f;
+static const float          Controller_AutoSWR_P_mW_Max       = 15.0f;
+static const float          Controller_AutoSWR_SWR_Max        = 1.1f;
+static const float          Controller_AutoSWR_Time_ms_Max    = 750;
+static uint32_t             s_controller_swr_tmr              = 0UL;
+
 static ControllerMsg2Proc_t s_msg_in                          = { 0 };
 
 static ControllerMods_t     s_mod_start                       = { 0 };
@@ -48,24 +79,30 @@ static DefaultMcuClocking_t s_controller_McuClocking          = DefaultMcuClocki
 static float                s_controller_adc_fwd_mv           = 0.0f;
 static float                s_controller_adc_swr              = 0.0f;
 static float                s_controller_adc_fwd_mw           = 0.0f;
+static float                s_controller_last_swr             = 0.0f;
 static uint8_t              s_controller_opti_L_val           = 0U;
+static uint8_t              s_controller_opti_L_min_val       = 0U;
+static uint8_t              s_controller_opti_L_max_val       = 0U;
 static uint8_t              s_controller_opti_C_val           = 0U;
-static uint8_t              s_controller_opti_CV              = 1U;
-static uint8_t              s_controller_opti_CH              = 0U;
+static uint8_t              s_controller_opti_CV              = true;
+static uint8_t              s_controller_opti_CH              = false;
+
 
 
 static void controllerFSM(void)
 {
-  // TODO
   switch (s_controller_FSM_state)
   {
   case ControllerFsm__NOP:
   case ControllerFsm__doAdc:
+  {
     s_controller_doAdc = true;
     s_controller_FSM_state = ControllerFsm__adcEval;
+  }
     break;
 
   case ControllerFsm__adcEval:
+  {
     /* Pull global vars */
     {
       __disable_irq();
@@ -76,32 +113,199 @@ static void controllerFSM(void)
       s_controller_adc_fwd_mw     = mainCalc_mV_to_mW(s_controller_adc_fwd_mv);
     }
 
-    if ((5.0f <= s_controller_adc_fwd_mw) && (s_controller_adc_fwd_mw <= 15.0f) &&
-        (1.1f <  s_controller_adc_swr)) {
+    /* Check if auto tuner should start */
+    if ((Controller_AutoSWR_P_mW_Min    <= s_controller_adc_fwd_mw) && (s_controller_adc_fwd_mw <= Controller_AutoSWR_P_mW_Max) &&
+        (Controller_AutoSWR_SWR_Max     <  s_controller_adc_swr) &&
+        (Controller_AutoSWR_Time_ms_Max <= (osKernelSysTick() - s_controller_swr_tmr))) {
+
       /* Run VSWR optimization */
-      s_controller_FSM_opti   = ControllerOpti__CV_L;
+      s_controller_FSM_opti   = ControllerOpti__CV_L_double;
       s_controller_opti_L_val = 1U;
       s_controller_opti_C_val = 0U;
       s_controller_opti_CV    = true;
       s_controller_opti_CH    = false;
-      s_controller_FSM_state  = ControllerFsm__findImagZero;
+      s_controller_FSM_state  = ControllerFsm__findImagZeroL;
 
+      /* Store current SWR before next ADC event */
+      s_controller_last_swr = s_controller_adc_swr;
+
+      /* Prepare next ADC value */
+      s_controller_doAdc = true;
 
     } else {
+      /* Reset SWR start timer */
+      s_controller_swr_tmr = osKernelSysTick();
+
       /* Overdrive, to low energy or VSWR good enough */
       s_controller_FSM_state = ControllerFsm__doAdc;
     }
+  }
     break;
 
-  case ControllerFsm__findImagZero:
+  case ControllerFsm__findImagZeroL:
+  {
+    if ((Controller_AutoSWR_P_mW_Min > s_controller_adc_fwd_mw) || (s_controller_adc_fwd_mw > Controller_AutoSWR_P_mW_Max)) {
+      /* Reset SWR start timer */
+      s_controller_swr_tmr = osKernelSysTick();
 
-    s_controller_FSM_state = ControllerFsm__NOP;
+      /* Overdrive or to low energy */
+      s_controller_FSM_state = ControllerFsm__doAdc;
+    }
+
+    /* Check for SWR */
+    if (s_controller_adc_swr < s_controller_last_swr) {
+      /* SWR got better */
+
+      /* Inductance at least this value */
+      s_controller_opti_L_min_val = s_controller_opti_L_val;
+
+      if (s_controller_FSM_opti == ControllerOpti__CV_L_double) {
+        /* Double L for quick access */
+        s_controller_opti_L_val <<= 1;
+      }
+
+    } else {
+      /* SWR got worse */
+
+      /* Inductance at most this value */
+      s_controller_opti_L_max_val = s_controller_opti_L_val;
+
+      if (s_controller_FSM_opti == ControllerOpti__CV_L_double) {
+        /* Change strategy */
+        s_controller_FSM_opti = ControllerOpti__CV_L_half;
+      }
+    }
+
+    if (s_controller_FSM_opti == ControllerOpti__CV_L_half) {
+      /* Find intermediate L */
+      s_controller_opti_L_val = (uint8_t) (((uint16_t)s_controller_opti_L_min_val + (uint16_t)s_controller_opti_L_max_val) >> 1);
+
+      if (1U >= (s_controller_opti_L_max_val - s_controller_opti_L_min_val)) {
+        /* Optimize C, keep L one step ahead */
+        s_controller_opti_C_val = 1U;
+        s_controller_opti_L_val++;
+        s_controller_FSM_state = ControllerFsm__findMinSwrC;
+      }
+    }
+
+    /* Store current SWR before next ADC event */
+    s_controller_last_swr = s_controller_adc_swr;
+    s_controller_doAdc    = true;
+  }
+    break;
+
+  case ControllerFsm__findMinSwrC:
+  {
+    if ((Controller_AutoSWR_P_mW_Min > s_controller_adc_fwd_mw) || (s_controller_adc_fwd_mw > Controller_AutoSWR_P_mW_Max)) {
+      /* Reset SWR start timer */
+      s_controller_swr_tmr = osKernelSysTick();
+
+      /* Overdrive or to low energy */
+      s_controller_FSM_state = ControllerFsm__doAdc;
+    }
+
+  }
+    break;
+
+  case ControllerFsm__findMinSwrL:
+  {
+    if ((Controller_AutoSWR_P_mW_Min > s_controller_adc_fwd_mw) || (s_controller_adc_fwd_mw > Controller_AutoSWR_P_mW_Max)) {
+      /* Reset SWR start timer */
+      s_controller_swr_tmr = osKernelSysTick();
+
+      /* Overdrive or to low energy */
+      s_controller_FSM_state = ControllerFsm__doAdc;
+    }
+
+  }
     break;
 
   default:
+  {
     s_controller_FSM_state = ControllerFsm__NOP;
   }
+
+  }  // switch ()
 }
+
+float controllerCalcMatcherC2pF(uint8_t Cval)
+{
+  float sum = Controller_C0_pf;
+
+  for (uint8_t idx = 0; idx < 8; idx++) {
+    if (Cval & (1U << idx)) {
+      sum += Controller_Cs_pF[idx];
+    }
+  }
+  return sum;
+}
+
+float controllerCalcMatcherL2nH(uint8_t Lval)
+{
+  float sum = Controller_L0_nH;
+
+  for (uint8_t idx = 0; idx < 8; idx++) {
+    if (Lval & (1U << idx)) {
+      sum += Controller_Ls_nH[idx];
+    }
+  }
+  return sum;
+}
+
+uint8_t controllerCalcMatcherPF2C(float pF)
+{
+  float lastC = controllerCalcMatcherC2pF(0);
+
+  for (uint16_t val = 1U; val < 256U; val++) {
+    const float valC = controllerCalcMatcherC2pF(val);
+
+    if (valC >= pF) {
+      /* Determine which distance is lower */
+      if ((pF - lastC) < (valC - pF)) {
+        /* The previous one */
+        return --val;
+
+      } else {
+        /* This one */
+        return val;
+      }
+    }
+
+    /* Store for next iteration */
+    lastC = valC;
+  }
+
+  /* Need more pF than we can deliver */
+  return 255U;
+}
+
+uint8_t controllerCalcMatcherNH2L(float nH)
+{
+  float lastL = controllerCalcMatcherL2nH(0);
+
+  for (uint16_t val = 1U; val < 256U; val++) {
+    const float valL = controllerCalcMatcherL2nH(val);
+
+    if (valL >= nH) {
+      /* Determine which distance is lower */
+      if ((nH - lastL) < (valL - nH)) {
+        /* The previous one */
+        return --val;
+
+      } else {
+        /* This one */
+        return val;
+      }
+    }
+
+    /* Store for next iteration */
+    lastL = valL;
+  }
+
+  /* Need more nH than we can deliver */
+  return 255U;
+}
+
 
 uint32_t controllerCalcMsgHdr(ControllerMsgDestinations_t dst, ControllerMsgDestinations_t src, uint8_t lengthBytes, uint8_t cmd)
 {
@@ -110,7 +314,7 @@ uint32_t controllerCalcMsgHdr(ControllerMsgDestinations_t dst, ControllerMsgDest
 
 static uint32_t controllerCalcMsgInit(uint32_t* ary, ControllerMsgDestinations_t dst, uint32_t startDelayMs)
 {
-  ary[0] = controllerCalcMsgHdr(dst, Destinations__Controller, sizeof(uint32_t), MsgController__InitDo);
+  ary[0] = 0; // controllerCalcMsgHdr(dst, Destinations__Controller, sizeof(uint32_t), MsgController__InitDo);
   ary[1] = startDelayMs;
   return 2UL;
 }
@@ -471,16 +675,17 @@ static void controllerInit(void)
     }
   }
 
-  /* Run relays */
+  /* Set relay state */
   {
     uint32_t msgAry[2];
 
-    /* Compose relay bitmap: L's are inverted */
-    msgAry[1] = ((uint32_t) s_controller_opti_C_val               ) |
-                ((uint32_t)(s_controller_opti_L_val ^ 0xffU) <<  8) |
-                ((uint32_t) s_controller_opti_CV             << 16) |
-                ((uint32_t) s_controller_opti_CH             << 17);
+    /* Compose relay bitmap */
+    msgAry[1] = ((uint32_t)s_controller_opti_C_val      ) |
+                ((uint32_t)s_controller_opti_L_val <<  8) |
+                ((uint32_t)s_controller_opti_CV    << 16) |
+                ((uint32_t)s_controller_opti_CH    << 17);
 
+    /* Three extra bytes to take over */
     msgAry[0] = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 3, MsgDefault__SetVar03_C_L_CV_CH);
     controllerMsgPushToOutQueue(sizeof(msgAry) / sizeof(uint32_t), msgAry, osWaitForever);
   }
@@ -493,6 +698,9 @@ static void controllerInit(void)
   } else {
     controllerCyclicStop();
   }
+
+  /* Reset SWR start timer */
+  s_controller_swr_tmr = osKernelSysTick();
 
   //#define I2C1_BUS_ADDR_SCAN
   #ifdef I2C1_BUS_ADDR_SCAN

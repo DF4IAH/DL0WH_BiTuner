@@ -78,24 +78,30 @@ typedef enum ControllerFsm_ENUM {
   ControllerFsm__NOP                                          = 0U,
   ControllerFsm__doAdc,
   ControllerFsm__adcEval,
-  ControllerFsm__findImagZero,
+  ControllerFsm__findImagZeroL,
+  ControllerFsm__findMinSwrC,
+  ControllerFsm__findMinSwrL,
 
 } ControllerFsm_t;
 
 typedef enum ControllerOpti_ENUM {
 
   ControllerOpti__NOP                                         = 0U,
-  ControllerOpti__CV_L,
-  ControllerOpti__CV_C,
-  ControllerOpti__CH_L,
-  ControllerOpti__CH_C,
+  ControllerOpti__CV_L_double,
+  ControllerOpti__CV_L_half,
+  ControllerOpti__CV_C_double,
+  ControllerOpti__CV_C_half,
+  ControllerOpti__CH_L_double,
+  ControllerOpti__CH_L_half,
+  ControllerOpti__CH_C_double,
+  ControllerOpti__CH_C_half,
 
 } ControllerOpti_t;
 
 
 
-
-
+float controllerCalcMatcherC2pF(uint8_t Cval);
+float controllerCalcMatcherL2nH(uint8_t Lval);
 uint32_t controllerCalcMsgHdr(ControllerMsgDestinations_t dst, ControllerMsgDestinations_t src, uint8_t lengthBytes, uint8_t cmd);
 
 uint32_t controllerMsgPushToInQueue(uint8_t msgLen, uint32_t* msgAry, uint32_t waitMs);
