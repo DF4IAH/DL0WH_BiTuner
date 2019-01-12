@@ -183,6 +183,7 @@ typedef enum RtosMsgDefaultCmds_ENUM {
 
   MsgDefault__SetVar01_IOs                                    = 0x41U,
   MsgDefault__SetVar02_Clocking,
+  MsgDefault__SetVar03_C_L_CV_CH,
 
 //MsgDefault__GetVar01_x                                      = 0x81U,
 

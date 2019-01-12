@@ -105,7 +105,7 @@ float                                 g_adc_temp_deg          = 0.0f;
 float                                 g_adc_fwd_mv            = 0.0f;
 float                                 g_adc_rev_mv            = 0.0f;
 float                                 g_adc_vdiode_mv         = 0.0f;
-float                                 g_swr                   = 1e+3f;
+float                                 g_adc_swr               = 1e+3f;
 
 /* Typical values for 48 MHz MSI configuration */
 #if 0
@@ -173,12 +173,12 @@ void mainCalcFloat2IntFrac(float val, uint8_t fracCnt, int32_t* outInt, uint32_t
   *outFrac = (uint32_t) (val + 0.5f);
 }
 
-float calc_fwdRev_mv(float adc_mv, float vdiode_mv)
+float mainCalc_fwdRev_mV(float adc_mv, float vdiode_mv)
 {
   return pow(M_E + (0.0f * (vdiode_mv - 500.0f)), adc_mv);
 }
 
-float calc_swr(float fwd, float rev)
+float mainCalc_VSWR(float fwd, float rev)
 {
   if (fwd < 0.0f || rev < 0.0f) {
     return 1e+9f;
@@ -189,6 +189,12 @@ float calc_swr(float fwd, float rev)
   }
 
   return (fwd + rev) / (fwd - rev);
+}
+
+float mainCalc_mV_to_mW(float mV)
+{
+  const float in_V = mV / 1000.0f;
+  return 1000.0f * ((in_V * in_V) / 50.0f);
 }
 
 
@@ -465,7 +471,7 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-void HFT_SystemClock_Config(SYSCLK_CONFIG_t sel)
+void Again_SystemClock_Config(SYSCLK_CONFIG_t sel)
 {
 #if 0
   RCC_OscInitTypeDef RCC_OscInitStruct;

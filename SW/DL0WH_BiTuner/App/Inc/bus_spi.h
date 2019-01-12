@@ -24,19 +24,19 @@
 
 typedef enum EG_SPI1_ENUM {
 
-  EG_SPI1_C__BUS_DONE                 = 0x0001U,
-  EG_SPI1_L__BUS_DONE                 = 0x0002U,
-  EG_SPI1_EXT__BUS_DONE               = 0x0004U,
+  EG_SPI1_C__BUS_DONE                                         = 0x0001U,
+  EG_SPI1_L__BUS_DONE                                         = 0x0002U,
+  EG_SPI1_EXT__BUS_DONE                                       = 0x0004U,
 
-  EG_SPI1__BUS_FREE                   = 0x0010U,
-  EG_SPI1__BUS_ERROR                  = 0x0080U,
+  EG_SPI1__BUS_FREE                                           = 0x0010U,
+  EG_SPI1__BUS_ERROR                                          = 0x0080U,
 
 } EG_SPI1_t;
 
 
 typedef enum SPI1_CHIPS_ENUM {
 
-  SPI1_C                             = 1,
+  SPI1_C                                                      = 1,
   SPI1_L,
   SPI1_EXT,
 

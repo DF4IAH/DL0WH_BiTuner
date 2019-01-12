@@ -101,8 +101,15 @@
 # define max(a,b)                                             (a) > (b) ?  (a) : (b)
 #endif
 
+#ifndef false
+# define false 0
+#endif
+#ifndef true
+# define true 1
+#endif
 
-#define BITUNER_CTRL_VERSION                                 20190106UL
+
+#define BITUNER_CTRL_VERSION                                 20190112UL
 
 
 typedef enum POWERSWITCH_ENUM {
@@ -130,13 +137,14 @@ uint32_t crcCalc(const uint32_t* ptr, uint32_t len);
 
 uint8_t sel_u8_from_u32(uint32_t in_u32, uint8_t sel);
 void mainCalcFloat2IntFrac(float val, uint8_t fracCnt, int32_t* outInt, uint32_t* outFrac);
-float calc_fwdRev_mv(float adc_mv, float vdiode_mv);
-float calc_swr(float fwd, float rev);
+float mainCalc_fwdRev_mV(float adc_mv, float vdiode_mv);
+float mainCalc_VSWR(float fwd, float rev);
+float mainCalc_mV_to_mW(float mV);
 void mainPowerSwitchDo(POWERSWITCH_ENUM_t sw, uint8_t enable);
 void SystemResetbyARMcore(void);
 
 void mainPowerSwitchInit(void);
-void HFT_SystemClock_Config(SYSCLK_CONFIG_t sel);
+void Again_SystemClock_Config(SYSCLK_CONFIG_t sel);
 
 /* USER CODE END Private defines */
 

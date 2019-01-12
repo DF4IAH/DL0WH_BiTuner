@@ -200,7 +200,7 @@ uint8_t spiProcessSpi1MsgLocked(SPI1_CHIPS_t chip, uint8_t msgLen, uint8_t waitC
     }
 
     /* Wait some time for free bus */
-    osDelay(2);
+    osDelay(2UL);
   } while (1);
 
   /* Activate low active NSS/SEL transaction */

@@ -73,6 +73,28 @@ typedef struct ControllerMsg2Proc {
 } ControllerMsg2Proc_t;
 
 
+typedef enum ControllerFsm_ENUM {
+
+  ControllerFsm__NOP                                          = 0U,
+  ControllerFsm__doAdc,
+  ControllerFsm__adcEval,
+  ControllerFsm__findImagZero,
+
+} ControllerFsm_t;
+
+typedef enum ControllerOpti_ENUM {
+
+  ControllerOpti__NOP                                         = 0U,
+  ControllerOpti__CV_L,
+  ControllerOpti__CV_C,
+  ControllerOpti__CH_L,
+  ControllerOpti__CH_C,
+
+} ControllerOpti_t;
+
+
+
+
 
 uint32_t controllerCalcMsgHdr(ControllerMsgDestinations_t dst, ControllerMsgDestinations_t src, uint8_t lengthBytes, uint8_t cmd);
 

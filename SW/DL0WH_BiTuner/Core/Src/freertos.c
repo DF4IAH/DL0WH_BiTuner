@@ -61,6 +61,7 @@
 #include "usb_device.h"
 
 // App
+#include "bus_spi.h"
 #include "device_adc.h"
 #include "task_Controller.h"
 #include "task_USB.h"
@@ -84,6 +85,11 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
+extern volatile uint8_t               spi1TxBuffer[SPI1_BUFFERSIZE];
+extern volatile uint8_t               spi1RxBuffer[SPI1_BUFFERSIZE];
+
+extern SPI_HandleTypeDef              hspi1;
+
 extern float                          g_adc_refint_val;
 extern float                          g_adc_vref_mv;
 extern float                          g_adc_bat_mv;
@@ -91,7 +97,7 @@ extern float                          g_adc_temp_deg;
 extern float                          g_adc_fwd_mv;
 extern float                          g_adc_rev_mv;
 extern float                          g_adc_vdiode_mv;
-extern float                          g_swr;
+extern float                          g_adc_swr;
 
 EventGroupHandle_t                    adcEventGroupHandle;
 EventGroupHandle_t                    extiEventGroupHandle;
@@ -99,8 +105,15 @@ EventGroupHandle_t                    globalEventGroupHandle;
 EventGroupHandle_t                    spiEventGroupHandle;
 EventGroupHandle_t                    usbToHostEventGroupHandle;
 
-static uint8_t                        s_rtos_DefaultTask_adc_enable;
-static uint32_t                       s_rtos_DefaultTaskStartTime;
+static uint8_t                        s_rtos_DefaultTask_adc_enable     = 0U;
+static uint32_t                       s_rtos_DefaultTaskStartTime       = 0UL;
+
+static uint32_t                       s_rtos_lastErrorBuf[16]           = { 0UL };
+static uint8_t                        s_rtos_lastErrorCnt               = 0U;
+
+static uint32_t                       s_rtos_Matcher                    = 0UL;
+
+
 
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
@@ -199,6 +212,154 @@ __weak void vApplicationMallocFailedHook(void)
 
 /* Local functions */
 
+static void rtosDefaultCheckSpiDrvError(uint8_t variant)
+{
+  if (spi1RxBuffer[0]) {
+    s_rtos_lastErrorBuf[s_rtos_lastErrorCnt++] = \
+        (((uint32_t) variant         ) << 24) |
+        (((uint32_t)(spi1RxBuffer[0])) << 16) |
+        (((uint32_t)(spi1RxBuffer[1])) <<  8) |
+        (((uint32_t)(spi1RxBuffer[2]))      );
+
+    s_rtos_lastErrorCnt &= 0x0f;
+  }
+}
+
+static void rtosDefaultSpiRelays(uint64_t relaySettings)
+{
+  const uint16_t relayC   = 0xffffU &  relaySettings;
+  const uint16_t relayL   = 0xffffU & (relaySettings >> 16);
+  const uint16_t relayExt = 0xffffU & (relaySettings >> 32);
+
+  /* Disable the PWM signal in case it is still on */
+  HAL_GPIO_WritePin(GPIO_SPI_PWM_GPIO_Port, GPIO_SPI_PWM_Pin, GPIO_PIN_RESET);
+
+  /* Release reset of all SPI drivers */
+  HAL_GPIO_WritePin(GPIO_SPI_RST_GPIO_Port, GPIO_SPI_RST_Pin, GPIO_PIN_SET);
+
+  /* Preparations */
+  {
+    /* Open Load Current Enable */
+    const uint8_t spiMsgOpenLoadCurrentEnable[] = { 0x04U, 0xffU, 0xffU };
+    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
+    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
+    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
+
+    /* Retry on over-voltage, no restart on over temp */
+    const uint8_t spiMsgRetryOnOvervolNoRetryOverTemp[] = { 0x09U, 0xffU, 0xffU };
+    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgRetryOnOvervolNoRetryOverTemp), spiMsgRetryOnOvervolNoRetryOverTemp);
+    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgRetryOnOvervolNoRetryOverTemp), spiMsgRetryOnOvervolNoRetryOverTemp);
+    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgRetryOnOvervolNoRetryOverTemp), spiMsgRetryOnOvervolNoRetryOverTemp);
+
+    /* No SFPD */
+    const uint8_t spiMsgSFPDdisabled[] = { 0x0cU, 0x00U, 0x00U };
+    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgSFPDdisabled), spiMsgSFPDdisabled);
+    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgSFPDdisabled), spiMsgSFPDdisabled);
+    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgSFPDdisabled), spiMsgSFPDdisabled);
+
+    /* PWM on all outputs */
+    const uint8_t spiMsgPWMenabled[] = { 0x10U, 0xffU, 0xffU };
+    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgPWMenabled), spiMsgPWMenabled);
+    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgPWMenabled), spiMsgPWMenabled);
+    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgPWMenabled), spiMsgPWMenabled);
+
+    /* PWM signal is AND'ed */
+    const uint8_t spiMsgPWMand[] = { 0x14U, 0x00U, 0x00U };
+    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgPWMand), spiMsgPWMand);
+    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgPWMand), spiMsgPWMand);
+    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgPWMand), spiMsgPWMand);
+  }
+
+  /* Relays for C */
+  {
+    /* Relay outputs to be driven ON/OFF */
+    uint8_t spiMsgOnOff[3];
+    uint8_t msgLen = 0U;
+    spiMsgOnOff[msgLen++] = 0x00;
+    spiMsgOnOff[msgLen++] = (uint8_t) (0x00ffU & (relayC >> 8));
+    spiMsgOnOff[msgLen++] = (uint8_t) (0x00ffU &  relayC      );
+    spiProcessSpi1MsgTemplate(SPI1_C, sizeof(spiMsgOnOff), spiMsgOnOff);
+  }
+
+  /* Relays for L */
+  {
+    /* Relay outputs to be driven ON/OFF */
+    uint8_t spiMsgOnOff[3];
+    uint8_t msgLen = 0U;
+    spiMsgOnOff[msgLen++] = 0x00;
+    spiMsgOnOff[msgLen++] = (uint8_t) (0x00ffU & (relayL >> 8));
+    spiMsgOnOff[msgLen++] = (uint8_t) (0x00ffU &  relayL      );
+    spiProcessSpi1MsgTemplate(SPI1_L, sizeof(spiMsgOnOff), spiMsgOnOff);
+  }
+
+  /* Relays for Ext */
+  {
+    /* Relay outputs to be driven ON/OFF */
+    uint8_t spiMsgOnOff[3];
+    uint8_t msgLen = 0U;
+    spiMsgOnOff[msgLen++] = 0x00;
+    spiMsgOnOff[msgLen++] = (uint8_t) (0x00ffU & (relayExt >> 8));
+    spiMsgOnOff[msgLen++] = (uint8_t) (0x00ffU &  relayExt      );
+    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgOnOff), spiMsgOnOff);
+  }
+
+  /* Enable PWM for 30 ms */
+  {
+    HAL_GPIO_WritePin(GPIO_SPI_PWM_GPIO_Port, GPIO_SPI_PWM_Pin, GPIO_PIN_SET);
+    osDelay(30UL);
+    HAL_GPIO_WritePin(GPIO_SPI_PWM_GPIO_Port, GPIO_SPI_PWM_Pin, GPIO_PIN_RESET);
+  }
+
+  /* Check output states */
+  {
+    const uint8_t spiMsgAllOff[] = { 0x00U, 0x00U, 0x00U };
+
+    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgAllOff), spiMsgAllOff);
+    rtosDefaultCheckSpiDrvError('C');
+
+    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgAllOff), spiMsgAllOff);
+    rtosDefaultCheckSpiDrvError('L');
+
+    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgAllOff), spiMsgAllOff);
+    rtosDefaultCheckSpiDrvError('X');
+  }
+
+  /* Reset all SPI drivers */
+  HAL_GPIO_WritePin(GPIO_SPI_RST_GPIO_Port, GPIO_SPI_RST_Pin, GPIO_PIN_RESET);
+}
+
+static void rtosDefaultUpdateRelays(void)
+{
+  /*
+   * Relay idx as follows:
+   *  0 ..  7 <--> C1 .. C8
+   *  8 .. 15 <--> L1 .. L8
+   * 16      <--> CV
+   * 17      <--> CH
+   */
+
+  static uint32_t matcherCurrent  = 0x3ffUL;
+
+  const uint32_t  newDiff         = matcherCurrent ^ s_rtos_Matcher;
+  const uint32_t  newSet          = newDiff & s_rtos_Matcher;
+  const uint32_t  newClr          = newDiff & matcherCurrent;
+  uint64_t        newRelays       = 0ULL;
+
+  for (int8_t idx = 23; idx >= 0; idx--) {
+    newRelays <<= 1;
+    newRelays |= ((newClr >> idx) & 0x01ULL);
+
+    newRelays <<= 1;
+    newRelays |= ((newSet >> idx) & 0x01ULL);
+  }
+
+  /* Send new relay settings via the SPI bus */
+  rtosDefaultSpiRelays(newRelays);
+
+  matcherCurrent = s_rtos_Matcher;
+}
+
+
 static void rtosDefaultInit(void)
 {
   /* Power switch settings */
@@ -241,6 +402,14 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
     }
     break;
 
+  /* Set and reset relays */
+  case MsgDefault__SetVar03_C_L_CV_CH:
+    {
+      s_rtos_Matcher = 0x3ffUL & msgAry[1];
+      rtosDefaultUpdateRelays();
+    }
+    break;
+
   /* MCU clocking set-up */
   case MsgDefault__SetVar02_Clocking:
     {
@@ -249,7 +418,7 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
       switch (mcuClocking) {
       case DefaultMcuClocking_16MHz_MSI:
         {
-          HFT_SystemClock_Config(SYSCLK_CONFIG_16MHz_MSI);
+          Again_SystemClock_Config(SYSCLK_CONFIG_16MHz_MSI);
         }
         break;
 
@@ -364,7 +533,7 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
           }
 
           /* Get the linearized voltage */
-          float l_adc_fwd_mv = calc_fwdRev_mv(adcGetVal(ADC_ADC2_IN1_FWDREV_MV), l_adc_vdiode_mv);
+          float l_adc_fwd_mv = mainCalc_fwdRev_mV(adcGetVal(ADC_ADC2_IN1_FWDREV_MV), l_adc_vdiode_mv);
 
           /* Push to global var */
           {
@@ -410,14 +579,14 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
           }
 
           /* Get the linearized voltage and (V)SWR */
-          float l_adc_rev_mv = calc_fwdRev_mv(adcGetVal(ADC_ADC2_IN1_FWDREV_MV), l_adc_vdiode_mv);
-          float l_swr        = calc_swr(l_adc_fwd_mv, l_adc_rev_mv);
+          float l_adc_rev_mv = mainCalc_fwdRev_mV(adcGetVal(ADC_ADC2_IN1_FWDREV_MV), l_adc_vdiode_mv);
+          float l_swr        = mainCalc_VSWR(l_adc_fwd_mv, l_adc_rev_mv);
 
           /* Push to global vars */
           {
             __disable_irq();
             g_adc_rev_mv  = l_adc_rev_mv;
-            g_swr         = l_swr;
+            g_adc_swr     = l_swr;
             __enable_irq();
           }
 
@@ -585,10 +754,9 @@ void StartDefaultTask(void const * argument)
   /* USER CODE BEGIN StartDefaultTask */
 
   /* defaultTaskInit() section */
-  {
-    s_rtos_DefaultTask_adc_enable = 0U;
-    s_rtos_DefaultTaskStartTime   = 0UL;
-  }
+
+  /* SPI1 init */
+  spix_Init(&hspi1, spi1_BSemHandle);
 
   /* Wait until controller is up */
   xEventGroupWaitBits(globalEventGroupHandle,

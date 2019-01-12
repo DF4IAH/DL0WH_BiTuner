@@ -31,18 +31,76 @@ extern osSemaphoreId        usb_BSemHandle;
 
 extern EventGroupHandle_t   globalEventGroupHandle;
 
+extern float                g_adc_fwd_mv;
+extern float                g_adc_swr;
+
+
 static ControllerMsg2Proc_t s_msg_in                          = { 0 };
 
 static ControllerMods_t     s_mod_start                       = { 0 };
 static ControllerMods_t     s_mod_rdy                         = { 0 };
-static uint8_t              s_controller_doCycle              = 0;
-static uint8_t              s_controller_tuning               = 0;
+static ControllerFsm_t      s_controller_FSM_state            = ControllerFsm__NOP;
+static ControllerOpti_t     s_controller_FSM_opti             = ControllerOpti__NOP;
+static _Bool                s_controller_doCycle              = false;
+static _Bool                s_controller_doAdc                = false;
 static DefaultMcuClocking_t s_controller_McuClocking          = DefaultMcuClocking__4MHz_MSI;
+
+static float                s_controller_adc_fwd_mv           = 0.0f;
+static float                s_controller_adc_swr              = 0.0f;
+static float                s_controller_adc_fwd_mw           = 0.0f;
+static uint8_t              s_controller_opti_L_val           = 0U;
+static uint8_t              s_controller_opti_C_val           = 0U;
+static uint8_t              s_controller_opti_CV              = 1U;
+static uint8_t              s_controller_opti_CH              = 0U;
 
 
 static void controllerFSM(void)
 {
   // TODO
+  switch (s_controller_FSM_state)
+  {
+  case ControllerFsm__NOP:
+  case ControllerFsm__doAdc:
+    s_controller_doAdc = true;
+    s_controller_FSM_state = ControllerFsm__adcEval;
+    break;
+
+  case ControllerFsm__adcEval:
+    /* Pull global vars */
+    {
+      __disable_irq();
+      s_controller_adc_fwd_mv     = g_adc_fwd_mv;
+      s_controller_adc_swr        = g_adc_swr;
+      __enable_irq();
+
+      s_controller_adc_fwd_mw     = mainCalc_mV_to_mW(s_controller_adc_fwd_mv);
+    }
+
+    if ((5.0f <= s_controller_adc_fwd_mw) && (s_controller_adc_fwd_mw <= 15.0f) &&
+        (1.1f <  s_controller_adc_swr)) {
+      /* Run VSWR optimization */
+      s_controller_FSM_opti   = ControllerOpti__CV_L;
+      s_controller_opti_L_val = 1U;
+      s_controller_opti_C_val = 0U;
+      s_controller_opti_CV    = true;
+      s_controller_opti_CH    = false;
+      s_controller_FSM_state  = ControllerFsm__findImagZero;
+
+
+    } else {
+      /* Overdrive, to low energy or VSWR good enough */
+      s_controller_FSM_state = ControllerFsm__doAdc;
+    }
+    break;
+
+  case ControllerFsm__findImagZero:
+
+    s_controller_FSM_state = ControllerFsm__NOP;
+    break;
+
+  default:
+    s_controller_FSM_state = ControllerFsm__NOP;
+  }
 }
 
 uint32_t controllerCalcMsgHdr(ControllerMsgDestinations_t dst, ControllerMsgDestinations_t src, uint8_t lengthBytes, uint8_t cmd)
@@ -265,16 +323,16 @@ static void controllerCyclicTimerEvent(void)
   uint32_t  msgAry[16];
   uint8_t   msgLen = 0U;
 
-  if (!s_controller_tuning) {
+  /* FSM logic */
+  controllerFSM();
+
+  if (s_controller_doAdc) {
     /* Get ADC channels */
     msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc01_MCU_ADC1);
     msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc02_MCU_ADC3_VDIODE);
     msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc03_MCU_ADC2_FWD);
     msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc04_MCU_ADC2_REV);
   }
-
-  /* FSM logic */
-  controllerFSM();
 
   /* Push to queue */
   controllerMsgPushToInQueue(msgLen, msgAry, 1UL);
@@ -411,6 +469,20 @@ static void controllerInit(void)
           75UL);
       controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
     }
+  }
+
+  /* Run relays */
+  {
+    uint32_t msgAry[2];
+
+    /* Compose relay bitmap: L's are inverted */
+    msgAry[1] = ((uint32_t) s_controller_opti_C_val               ) |
+                ((uint32_t)(s_controller_opti_L_val ^ 0xffU) <<  8) |
+                ((uint32_t) s_controller_opti_CV             << 16) |
+                ((uint32_t) s_controller_opti_CH             << 17);
+
+    msgAry[0] = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 3, MsgDefault__SetVar03_C_L_CV_CH);
+    controllerMsgPushToOutQueue(sizeof(msgAry) / sizeof(uint32_t), msgAry, osWaitForever);
   }
 
   /* Enable service cycle */
