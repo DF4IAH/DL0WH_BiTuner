@@ -63,7 +63,9 @@ static const float Controller_Ls_nH[8]                        = {
 static const float          Controller_AutoSWR_P_mW_Min       = 5.0f;
 static const float          Controller_AutoSWR_P_mW_Max       = 15.0f;
 static const float          Controller_AutoSWR_SWR_Max        = 1.1f;
-static const float          Controller_AutoSWR_Time_ms_Max    = 750;
+static const float          Controller_AutoSWR_Time_ms_Max    = 750.0f;
+static const uint8_t        Controller_AutoSWR_CVHpong_Max    = 4U;
+static const uint8_t        Controller_AutoSWR_LCpong_Max     = 6U;
 static uint32_t             s_controller_swr_tmr              = 0UL;
 
 static ControllerMsg2Proc_t s_msg_in                          = { 0 };
@@ -71,23 +73,53 @@ static ControllerMsg2Proc_t s_msg_in                          = { 0 };
 static ControllerMods_t     s_mod_start                       = { 0 };
 static ControllerMods_t     s_mod_rdy                         = { 0 };
 static ControllerFsm_t      s_controller_FSM_state            = ControllerFsm__NOP;
-static ControllerOpti_t     s_controller_FSM_opti             = ControllerOpti__NOP;
-static _Bool                s_controller_doCycle              = false;
-static _Bool                s_controller_doAdc                = false;
-static DefaultMcuClocking_t s_controller_McuClocking          = DefaultMcuClocking__4MHz_MSI;
+static ControllerOptiCVH_t  s_controller_FSM_optiCVH          = ControllerOptiCVH__CV;
+static ControllerOptiLC_t   s_controller_FSM_optiLC           = ControllerOptiLC__L_double;
+static uint8_t              s_controller_opti_CVHpongCtr      = 0U;
+static uint8_t              s_controller_opti_LCPongCtr       = 0U;
+static uint8_t              s_controller_opti_L_val           = 0U;
+static uint8_t              s_controller_opti_L_min_val       = 0U;
+static uint8_t              s_controller_opti_L_max_val       = 0U;
+static uint8_t              s_controller_opti_C_val           = 0U;
+static uint8_t              s_controller_opti_C_min_val       = 0U;
+static uint8_t              s_controller_opti_C_max_val       = 0U;
 
 static float                s_controller_adc_fwd_mv           = 0.0f;
 static float                s_controller_adc_swr              = 0.0f;
 static float                s_controller_adc_fwd_mw           = 0.0f;
 static float                s_controller_last_swr             = 0.0f;
-static uint8_t              s_controller_opti_L_val           = 0U;
-static uint8_t              s_controller_opti_L_min_val       = 0U;
-static uint8_t              s_controller_opti_L_max_val       = 0U;
-static uint8_t              s_controller_opti_C_val           = 0U;
-static uint8_t              s_controller_opti_CV              = true;
-static uint8_t              s_controller_opti_CH              = false;
+
+static _Bool                s_controller_doCycle              = false;
+static _Bool                s_controller_doAdc                = false;
+static DefaultMcuClocking_t s_controller_McuClocking          = DefaultMcuClocking__4MHz_MSI;
 
 
+static void controllerPushOptiVars(void)
+{
+  uint8_t controller_opti_CV;
+  uint8_t controller_opti_CH;
+  uint32_t msgAry[2];
+
+  /* Update CV/CH state */
+  if (s_controller_FSM_optiCVH == ControllerOptiCVH__CH) {
+    controller_opti_CV  = 0U;
+    controller_opti_CH  = 1U;
+
+  } else {
+    controller_opti_CV  = 1U;
+    controller_opti_CH  = 0U;
+  }
+
+  /* Compose relay bitmap */
+  msgAry[1] = ((uint32_t)  controller_opti_CH    << 17) |
+              ((uint32_t)  controller_opti_CV    << 16) |
+              ((uint32_t)s_controller_opti_L_val <<  8) |
+              ((uint32_t)s_controller_opti_C_val      ) ;
+
+  /* Three extra bytes to take over */
+  msgAry[0] = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 3, MsgDefault__SetVar03_C_L_CV_CH);
+  controllerMsgPushToOutQueue(sizeof(msgAry) / sizeof(uint32_t), msgAry, osWaitForever);
+}
 
 static void controllerFSM(void)
 {
@@ -119,11 +151,12 @@ static void controllerFSM(void)
         (Controller_AutoSWR_Time_ms_Max <= (osKernelSysTick() - s_controller_swr_tmr))) {
 
       /* Run VSWR optimization */
-      s_controller_FSM_opti   = ControllerOpti__CV_L_double;
-      s_controller_opti_L_val = 1U;
-      s_controller_opti_C_val = 0U;
-      s_controller_opti_CV    = true;
-      s_controller_opti_CH    = false;
+      s_controller_FSM_optiCVH      = ControllerOptiCVH__CV;
+      s_controller_FSM_optiLC       = ControllerOptiLC__L_double;
+      s_controller_opti_L_val       = 1U;
+      s_controller_opti_C_val       = 0U;
+      controllerPushOptiVars();
+      s_controller_opti_L_max_val = s_controller_opti_L_min_val = s_controller_opti_L_val = 1U;
       s_controller_FSM_state  = ControllerFsm__findImagZeroL;
 
       /* Store current SWR before next ADC event */
@@ -156,10 +189,17 @@ static void controllerFSM(void)
     if (s_controller_adc_swr < s_controller_last_swr) {
       /* SWR got better */
 
+      if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Max) {
+        /* SWR: we have got it */
+        s_controller_FSM_state = ControllerFsm__doAdc;
+        s_controller_doAdc     = true;
+        break;
+      }
+
       /* Inductance at least this value */
       s_controller_opti_L_min_val = s_controller_opti_L_val;
 
-      if (s_controller_FSM_opti == ControllerOpti__CV_L_double) {
+      if (s_controller_FSM_optiLC == ControllerOptiLC__L_double) {
         /* Double L for quick access */
         s_controller_opti_L_val <<= 1;
       }
@@ -170,23 +210,172 @@ static void controllerFSM(void)
       /* Inductance at most this value */
       s_controller_opti_L_max_val = s_controller_opti_L_val;
 
-      if (s_controller_FSM_opti == ControllerOpti__CV_L_double) {
+      if (s_controller_FSM_optiLC == ControllerOptiLC__L_double) {
         /* Change strategy */
-        s_controller_FSM_opti = ControllerOpti__CV_L_half;
+        s_controller_FSM_optiLC = ControllerOptiLC__L_half;
       }
     }
 
-    if (s_controller_FSM_opti == ControllerOpti__CV_L_half) {
+    if (s_controller_FSM_optiLC == ControllerOptiLC__L_half) {
       /* Find intermediate L */
       s_controller_opti_L_val = (uint8_t) (((uint16_t)s_controller_opti_L_min_val + (uint16_t)s_controller_opti_L_max_val) >> 1);
 
       if (1U >= (s_controller_opti_L_max_val - s_controller_opti_L_min_val)) {
-        /* Optimize C, keep L one step ahead */
-        s_controller_opti_C_val = 1U;
-        s_controller_opti_L_val++;
-        s_controller_FSM_state = ControllerFsm__findMinSwrC;
+        /* Advance L by 25% */
+        uint16_t advanced = (uint16_t)s_controller_opti_L_val + ((uint16_t)s_controller_opti_L_val >> 2);
+        if (advanced > 255U) {
+          advanced = 255U;
+        }
+        s_controller_opti_L_val = (uint8_t)advanced;
+
+        /* Optimize C */
+        s_controller_opti_C_max_val   = s_controller_opti_C_min_val = s_controller_opti_C_val = 0U;
+        s_controller_opti_LCPongCtr   = 0U;
+        s_controller_FSM_optiLC       = ControllerOptiLC__C_double;
+        s_controller_FSM_state        = ControllerFsm__findMinSwrC;
       }
     }
+    controllerPushOptiVars();
+
+    if (s_controller_FSM_state == ControllerFsm__findMinSwrC) {
+      /* Forget this minimum due to L advance */
+      s_controller_last_swr = 9.9f;
+
+    } else {
+      /* Store current SWR before next ADC event */
+      s_controller_last_swr = s_controller_adc_swr;
+    }
+
+    s_controller_doAdc = true;
+  }
+    break;
+
+  case ControllerFsm__findMinSwrC:
+  {
+    // TODO: Switch CVH
+    if ((Controller_AutoSWR_P_mW_Min > s_controller_adc_fwd_mw) || (s_controller_adc_fwd_mw > Controller_AutoSWR_P_mW_Max)) {
+      /* Reset SWR start timer */
+      s_controller_swr_tmr = osKernelSysTick();
+
+      /* Overdrive or to low energy */
+      s_controller_FSM_state = ControllerFsm__doAdc;
+    }
+
+    /* Check for SWR */
+    if (s_controller_adc_swr < s_controller_last_swr) {
+      /* SWR got better */
+
+      if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Max) {
+        /* SWR: we have got it */
+        s_controller_FSM_state = ControllerFsm__doAdc;
+        s_controller_doAdc     = true;
+        break;
+      }
+
+      /* New limit */
+      if (s_controller_FSM_optiLC == ControllerOptiLC__C_cntDwn) {
+        /* Decreasing */
+        s_controller_opti_C_max_val = s_controller_opti_C_val;
+
+      } else {
+        /* Increasing */
+        s_controller_opti_C_min_val = s_controller_opti_C_val;
+      }
+
+      /* Search strategy */
+      if (s_controller_FSM_optiLC == ControllerOptiLC__C_double) {
+        /* Double C for quick access */
+        s_controller_opti_C_val <<= 1;
+
+      } else if (s_controller_FSM_optiLC == ControllerOptiLC__C_cntUp) {
+        /* Single step increase */
+        s_controller_opti_C_val++;
+
+        if (s_controller_opti_C_val == 255U) {
+          /* Banging the limit - start over again */
+          s_controller_FSM_state = ControllerFsm__doAdc;
+        }
+
+      } else if (s_controller_FSM_optiLC == ControllerOptiLC__C_cntDwn) {
+        /* Single step decrease */
+        if (--s_controller_opti_C_val == 0U) {
+          if (++s_controller_opti_LCPongCtr <= Controller_AutoSWR_LCpong_Max) {
+            /* Change over to L trim */
+            s_controller_FSM_optiLC = ControllerOptiLC__L_cntUp;
+            s_controller_FSM_state  = ControllerFsm__findMinSwrL;
+
+          } else {
+            /* Exhausted - start over again */
+            s_controller_FSM_state = ControllerFsm__doAdc;
+          }
+        }
+      }
+
+    } else {
+      /* SWR got worse */
+
+      /* New limit */
+      if (s_controller_FSM_optiLC == ControllerOptiLC__L_cntDwn) {
+        /* Decreasing */
+        s_controller_opti_C_min_val = s_controller_opti_C_val;
+
+      } else {
+        /* Increasing */
+        s_controller_opti_C_max_val = s_controller_opti_C_val;
+      }
+
+      /* Search strategy */
+      if (s_controller_FSM_optiLC == ControllerOptiLC__C_double) {
+        /* Change strategy */
+        s_controller_FSM_optiLC = ControllerOptiLC__C_half;
+
+      } else if (s_controller_FSM_optiLC == ControllerOptiLC__C_cntUp) {
+        /* Change strategy */
+        s_controller_FSM_optiLC = ControllerOptiLC__C_cntDwn;
+
+        /* Single step decrease */
+        if (--s_controller_opti_C_val == 0U) {
+          if (++s_controller_opti_LCPongCtr <= Controller_AutoSWR_LCpong_Max) {
+            /* Change over to L trim */
+            s_controller_FSM_optiLC = ControllerOptiLC__L_cntUp;
+            s_controller_FSM_state  = ControllerFsm__findMinSwrL;
+
+          } else {
+            /* Exhausted - start over again */
+            s_controller_FSM_state = ControllerFsm__doAdc;
+          }
+        }
+
+      } else if (s_controller_FSM_optiLC == ControllerOptiLC__C_cntDwn) {
+        if (++s_controller_opti_LCPongCtr <= Controller_AutoSWR_LCpong_Max) {
+          /* Change over to L trim */
+          s_controller_FSM_optiLC = ControllerOptiLC__L_cntUp;
+          s_controller_FSM_state  = ControllerFsm__findMinSwrL;
+
+        } else {
+          /* Exhausted - start over again */
+          s_controller_FSM_state = ControllerFsm__doAdc;
+        }
+      }
+    }
+
+    if (s_controller_FSM_optiLC == ControllerOptiLC__C_half) {
+      /* Find intermediate C */
+      s_controller_opti_C_val = (uint8_t) (((uint16_t)s_controller_opti_C_min_val + (uint16_t)s_controller_opti_C_max_val) >> 1);
+
+      if (1U >= (s_controller_opti_C_max_val - s_controller_opti_C_min_val)) {
+        if (++s_controller_opti_LCPongCtr <= Controller_AutoSWR_LCpong_Max) {
+          /* Optimize L, again */
+          s_controller_FSM_optiLC = ControllerOptiLC__L_cntUp;
+          s_controller_FSM_state  = ControllerFsm__findMinSwrL;
+
+        } else {
+          /* Exhausted - start over again */
+          s_controller_FSM_state = ControllerFsm__doAdc;
+        }
+      }
+    }
+    controllerPushOptiVars();
 
     /* Store current SWR before next ADC event */
     s_controller_last_swr = s_controller_adc_swr;
@@ -194,21 +383,9 @@ static void controllerFSM(void)
   }
     break;
 
-  case ControllerFsm__findMinSwrC:
-  {
-    if ((Controller_AutoSWR_P_mW_Min > s_controller_adc_fwd_mw) || (s_controller_adc_fwd_mw > Controller_AutoSWR_P_mW_Max)) {
-      /* Reset SWR start timer */
-      s_controller_swr_tmr = osKernelSysTick();
-
-      /* Overdrive or to low energy */
-      s_controller_FSM_state = ControllerFsm__doAdc;
-    }
-
-  }
-    break;
-
   case ControllerFsm__findMinSwrL:
   {
+    // TODO: Switch CVH
     if ((Controller_AutoSWR_P_mW_Min > s_controller_adc_fwd_mw) || (s_controller_adc_fwd_mw > Controller_AutoSWR_P_mW_Max)) {
       /* Reset SWR start timer */
       s_controller_swr_tmr = osKernelSysTick();
@@ -217,6 +394,125 @@ static void controllerFSM(void)
       s_controller_FSM_state = ControllerFsm__doAdc;
     }
 
+    /* Check for SWR */
+    if (s_controller_adc_swr < s_controller_last_swr) {
+      /* SWR got better */
+
+      if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Max) {
+        /* SWR: we have got it */
+        s_controller_FSM_state = ControllerFsm__doAdc;
+        s_controller_doAdc     = true;
+        break;
+      }
+
+      /* New limit */
+      if (s_controller_FSM_optiLC == ControllerOptiLC__L_cntDwn) {
+        /* Decreasing */
+        s_controller_opti_L_max_val = s_controller_opti_L_val;
+
+      } else {
+        /* Increasing */
+        s_controller_opti_L_min_val = s_controller_opti_L_val;
+      }
+
+      /* Search strategy */
+      if (s_controller_FSM_optiLC == ControllerOptiLC__L_double) {
+        /* Double L for quick access */
+        s_controller_opti_L_val <<= 1;
+
+      } else if (s_controller_FSM_optiLC == ControllerOptiLC__L_cntUp) {
+        /* Single step increase */
+        s_controller_opti_L_val++;
+
+        if (s_controller_opti_L_val == 255U) {
+          /* Banging the limit - start over again */
+          s_controller_FSM_state = ControllerFsm__doAdc;
+        }
+
+      } else if (s_controller_FSM_optiLC == ControllerOptiLC__L_cntDwn) {
+        /* Single step decrease */
+        if (--s_controller_opti_L_val == 0U) {
+          if (++s_controller_opti_LCPongCtr <= Controller_AutoSWR_LCpong_Max) {
+            /* Change over to C trim */
+            s_controller_FSM_optiLC = ControllerOptiLC__C_cntUp;
+            s_controller_FSM_state  = ControllerFsm__findMinSwrC;
+
+          } else {
+            /* Exhausted - start over again */
+            s_controller_FSM_state = ControllerFsm__doAdc;
+          }
+        }
+      }
+
+    } else {
+      /* SWR got worse */
+
+      /* New limit */
+      if (s_controller_FSM_optiLC == ControllerOptiLC__L_cntDwn) {
+        /* Decreasing */
+        s_controller_opti_L_min_val = s_controller_opti_L_val;
+
+      } else {
+        /* Increasing */
+        s_controller_opti_L_max_val = s_controller_opti_L_val;
+      }
+
+      /* Search strategy */
+      if (s_controller_FSM_optiLC == ControllerOptiLC__L_double) {
+        /* Change strategy */
+        s_controller_FSM_optiLC = ControllerOptiLC__L_half;
+
+      } else if (s_controller_FSM_optiLC == ControllerOptiLC__L_cntUp) {
+        /* Change strategy */
+        s_controller_FSM_optiLC = ControllerOptiLC__L_cntDwn;
+
+        /* Single step decrease */
+        if (--s_controller_opti_L_val == 0U) {
+          if (++s_controller_opti_LCPongCtr <= Controller_AutoSWR_LCpong_Max) {
+            /* Change over to C trim */
+            s_controller_FSM_optiLC = ControllerOptiLC__C_cntUp;
+            s_controller_FSM_state  = ControllerFsm__findMinSwrC;
+
+          } else {
+            /* Exhausted - start over again */
+            s_controller_FSM_state = ControllerFsm__doAdc;
+          }
+        }
+
+      } else if (s_controller_FSM_optiLC == ControllerOptiLC__L_cntDwn) {
+        if (++s_controller_opti_LCPongCtr <= Controller_AutoSWR_LCpong_Max) {
+          /* Change over to C trim */
+          s_controller_FSM_optiLC = ControllerOptiLC__C_cntUp;
+          s_controller_FSM_state  = ControllerFsm__findMinSwrC;
+
+        } else {
+          /* Exhausted - start over again */
+          s_controller_FSM_state = ControllerFsm__doAdc;
+        }
+      }
+    }
+
+    if (s_controller_FSM_optiLC == ControllerOptiLC__L_half) {
+      /* Find intermediate L */
+      s_controller_opti_L_val = (uint8_t) (((uint16_t)s_controller_opti_L_min_val + (uint16_t)s_controller_opti_L_max_val) >> 1);
+
+      if (1U >= (s_controller_opti_L_max_val - s_controller_opti_L_min_val)) {
+        if (++s_controller_opti_LCPongCtr <= Controller_AutoSWR_LCpong_Max) {
+          /* Optimize C, again */
+          s_controller_FSM_optiLC = ControllerOptiLC__C_cntUp;
+          s_controller_FSM_state  = ControllerFsm__findMinSwrC;
+
+        } else {
+          /* Exhausted - start over again */
+          s_controller_FSM_state = ControllerFsm__doAdc;
+        }
+      }
+    }
+    controllerPushOptiVars();
+
+    /* Store current SWR before next ADC event */
+    s_controller_last_swr = s_controller_adc_swr;
+    s_controller_doAdc    = true;
   }
     break;
 
@@ -224,7 +520,6 @@ static void controllerFSM(void)
   {
     s_controller_FSM_state = ControllerFsm__NOP;
   }
-
   }  // switch ()
 }
 
@@ -676,19 +971,7 @@ static void controllerInit(void)
   }
 
   /* Set relay state */
-  {
-    uint32_t msgAry[2];
-
-    /* Compose relay bitmap */
-    msgAry[1] = ((uint32_t)s_controller_opti_C_val      ) |
-                ((uint32_t)s_controller_opti_L_val <<  8) |
-                ((uint32_t)s_controller_opti_CV    << 16) |
-                ((uint32_t)s_controller_opti_CH    << 17);
-
-    /* Three extra bytes to take over */
-    msgAry[0] = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 3, MsgDefault__SetVar03_C_L_CV_CH);
-    controllerMsgPushToOutQueue(sizeof(msgAry) / sizeof(uint32_t), msgAry, osWaitForever);
-  }
+  controllerPushOptiVars();
 
   /* Enable service cycle */
   if (s_controller_doCycle) {

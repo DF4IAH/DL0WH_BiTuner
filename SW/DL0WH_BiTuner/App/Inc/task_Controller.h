@@ -84,20 +84,25 @@ typedef enum ControllerFsm_ENUM {
 
 } ControllerFsm_t;
 
-typedef enum ControllerOpti_ENUM {
+typedef enum ControllerOptiCVH_ENUM {
 
-  ControllerOpti__NOP                                         = 0U,
-  ControllerOpti__CV_L_double,
-  ControllerOpti__CV_L_half,
-  ControllerOpti__CV_C_double,
-  ControllerOpti__CV_C_half,
-  ControllerOpti__CH_L_double,
-  ControllerOpti__CH_L_half,
-  ControllerOpti__CH_C_double,
-  ControllerOpti__CH_C_half,
+  ControllerOptiCVH__CV                                       = 0U,
+  ControllerOptiCVH__CH,
 
-} ControllerOpti_t;
+} ControllerOptiCVH_t;
 
+typedef enum ControllerOptiLC_ENUM {
+
+  ControllerOptiLC__L_double                                  = 0U,
+  ControllerOptiLC__L_half,
+  ControllerOptiLC__L_cntUp,
+  ControllerOptiLC__L_cntDwn,
+  ControllerOptiLC__C_double,
+  ControllerOptiLC__C_half,
+  ControllerOptiLC__C_cntUp,
+  ControllerOptiLC__C_cntDwn,
+
+} ControllerOptiLC_t;
 
 
 float controllerCalcMatcherC2pF(uint8_t Cval);
