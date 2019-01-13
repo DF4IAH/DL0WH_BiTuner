@@ -47,19 +47,19 @@ void mainCalcFloat2IntFrac(float val, uint8_t fracCnt, int32_t* outInt, uint32_t
     return;
   }
 
-  *outInt = (int32_t) val;
-  val -= *outInt;
+  *outInt  = (int32_t) val;
+  val     -= *outInt;
 
   if (isNeg) {
     val = -val;
   }
-  val *= powf(10, fracCnt);
-  *outFrac = (uint32_t) (val + 0.5f);
+  val      *= powf(10, fracCnt);
+  *outFrac  = (uint32_t) (val + 0.5f);
 }
 
 float mainCalc_fwdRev_mV(float adc_mv, float vdiode_mv)
 {
-  return powf((M_E + 0.0f * (vdiode_mv - 500.0f)), adc_mv / 144.0f);
+  return powf((M_E + (0.0f * (vdiode_mv - 500.0f))), adc_mv / 144.0f);
 }
 
 float mainCalc_VSWR(float fwd, float rev)
