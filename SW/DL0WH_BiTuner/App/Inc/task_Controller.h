@@ -77,8 +77,9 @@ typedef enum ControllerFsm_ENUM {
 
   ControllerFsm__NOP                                          = 0U,
   ControllerFsm__doAdc,
-  ControllerFsm__adcEval,
+  ControllerFsm__startAuto,
   ControllerFsm__findImagZeroL,
+  ControllerFsm__findImagZeroC,
   ControllerFsm__findMinSwrC,
   ControllerFsm__findMinSwrL,
 
