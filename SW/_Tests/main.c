@@ -143,12 +143,12 @@ int main(int argc, char* argv[])
   }
 
   printf("\r\nTEST 3:  [C] pF to C_val:\r\n");
-  for (float pF = 0.0f; pF < 4500.0f; pF += 25.0f) {
+  for (float pF = 0.0f; pF < 4400.0f; pF += 25.0f) {
     printf("C=%f pF: C_val=%03d\r\n", pF, controllerCalcMatcherPF2C(pF));
   }
 
   printf("\r\nTEST 4:  [L] nH to L_val:\r\n");
-  for (float nH = 0.0f; nH < 45000.0f; nH += 250.0f) {
+  for (float nH = 0.0f; nH < 48000.0f; nH += 187.5f) {
     printf("L=%f nH: L_val=%03d\r\n", nH, controllerCalcMatcherNH2L(nH));
   }
 
