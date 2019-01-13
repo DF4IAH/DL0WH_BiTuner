@@ -55,6 +55,8 @@ uint32_t controllerCalcMsgInit(uint32_t* ary, ControllerMsgDestinations_t dst, u
 
 float controllerCalcMatcherC2pF(uint8_t Cval);
 float controllerCalcMatcherL2nH(uint8_t Lval);
+uint8_t controllerCalcMatcherPF2C(float pF);
+uint8_t controllerCalcMatcherNH2L(float nH);
 uint32_t controllerCalcMsgHdr(ControllerMsgDestinations_t dst, ControllerMsgDestinations_t src, uint8_t lengthBytes, uint8_t cmd);
 
 void controllerCyclicTimerEvent(void);
