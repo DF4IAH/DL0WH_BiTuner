@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "prove.h"
 
@@ -106,56 +107,36 @@ float controllerCalcMatcherL2nH(uint8_t Lval)
 
 uint8_t controllerCalcMatcherPF2C(float pF)
 {
-  float lastC = controllerCalcMatcherC2pF(0);
+  float   absMin  = 1e+3f;
+  uint8_t valThis = 0U;
 
-  for (uint16_t val = 1U; val < 256U; val++) {
-    const float valC = controllerCalcMatcherC2pF(val);
+  for (uint16_t val = 0U; val < 256U; val++) {
+    const float valC    = controllerCalcMatcherC2pF(val);
+    const float absThis = fabs(valC - pF);
 
-    if (valC >= pF) {
-      /* Determine which distance is lower */
-      if ((pF - lastC) < (valC - pF)) {
-        /* The previous one */
-        return --val;
-
-      } else {
-        /* This one */
-        return val;
-      }
+    if (absMin > absThis) {
+      absMin  = absThis;
+      valThis = val;
     }
-
-    /* Store for next iteration */
-    lastC = valC;
   }
-
-  /* Need more pF than we can deliver */
-  return 255U;
+  return valThis;
 }
 
 uint8_t controllerCalcMatcherNH2L(float nH)
 {
-  float lastL = controllerCalcMatcherL2nH(0);
+  float   absMin  = 1e+3f;
+  uint8_t valThis = 0U;
 
-  for (uint16_t val = 1U; val < 256U; val++) {
-    const float valL = controllerCalcMatcherL2nH(val);
+  for (uint16_t val = 0U; val < 256U; val++) {
+    const float valL    = controllerCalcMatcherL2nH(val);
+    const float absThis = fabs(valL - nH);
 
-    if (valL >= nH) {
-      /* Determine which distance is lower */
-      if ((nH - lastL) < (valL - nH)) {
-        /* The previous one */
-        return --val;
-
-      } else {
-        /* This one */
-        return val;
-      }
+    if (absMin > absThis) {
+      absMin = absThis;
+      valThis = val;
     }
-
-    /* Store for next iteration */
-    lastL = valL;
   }
-
-  /* Need more nH than we can deliver */
-  return 255U;
+  return valThis;
 }
 
 
