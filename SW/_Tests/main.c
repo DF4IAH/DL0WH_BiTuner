@@ -53,13 +53,13 @@ void mainCalcFloat2IntFrac(float val, uint8_t fracCnt, int32_t* outInt, uint32_t
   if (isNeg) {
     val = -val;
   }
-  val *= pow(10, fracCnt);
+  val *= powf(10, fracCnt);
   *outFrac = (uint32_t) (val + 0.5f);
 }
 
 float mainCalc_fwdRev_mV(float adc_mv, float vdiode_mv)
 {
-  return (float) pow(M_E + (0.0f * (vdiode_mv - 500.0f)), adc_mv);
+  return powf((M_E + 0.0f * (vdiode_mv - 500.0f)), adc_mv / 144.0f);
 }
 
 float mainCalc_VSWR(float fwd, float rev)
@@ -102,8 +102,8 @@ void simulator(void)
     /* Get the linearized voltage and (V)SWR */
 
     /* Simulated ADC values */
-    uint16_t adcFwd     = 946U;
-    uint16_t adcRev     = 622U;
+    const uint16_t adcFwd = 946U;
+    uint16_t       adcRev = 850U;
 
     /* Get the linearized voltage */
     float l_adc_fwd_mv  = mainCalc_fwdRev_mV(adcFwd, g_adc_vdiode_mv);
@@ -122,8 +122,8 @@ void simulator(void)
     }
   }
 
-  printf("simulator: g_adc_fwd_mv=%f mV, g_adc_rev_mv=%f mV, g_swr=%f.\r\n", (double)g_adc_fwd_mv, (double)g_adc_rev_mv, (double)g_adc_swr);
-  exit(0);
+  //printf("simulator: g_adc_fwd_mv=%f mV, g_adc_rev_mv=%f mV, g_swr=%f.\r\n", (double)g_adc_fwd_mv, (double)g_adc_rev_mv, (double)g_adc_swr);
+  //exit(0);
 }
 
 
@@ -131,6 +131,16 @@ void simulator(void)
 int main(int argc, char* argv[])
 {
   controllerInit();
+
+  printf("\r\nTEST 1:  C_val to [C] pF:\r\n");
+  for (int val=0; val< 256; val++) {
+    printf("C_val=%03d: C=%f pF\r\n", val, controllerCalcMatcherC2pF(val));
+  }
+
+  printf("\r\nTEST 2:  L_val to [L] nH:\r\n");
+  for (int val=0; val< 256; val++) {
+    printf("C_val=%03d: L=%f nH\r\n", val, controllerCalcMatcherL2nH(val));
+  }
 
   while (1) {
     controllerCyclicTimerEvent();
