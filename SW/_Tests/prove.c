@@ -166,7 +166,7 @@ static _Bool controllerFSM_checkPower(void)
       uint32_t  pwr_f;
 
       mainCalcFloat2IntFrac(s_controller_adc_fwd_mw, 3, &pwr_i, &pwr_f);
-      const int len = sprintf(buf, "Controller FSM: power=%d.%03u out of [%u .. %u] Watts - stop auto tuner.\r\n",
+      const int len = sprintf(buf, "Controller FSM: power=%5d.%03u out of [%u .. %u] Watts - stop auto tuner.\r\n",
                               pwr_i, pwr_f,
                               (uint16_t)Controller_AutoSWR_P_mW_Min, (uint16_t)Controller_AutoSWR_P_mW_Max);
       usbLogLen(buf, len);
@@ -193,7 +193,7 @@ static _Bool controllerFSM_checkSwrTime(void)
       uint32_t  swr_f;
 
       mainCalcFloat2IntFrac(s_controller_adc_swr, 3, &swr_i, &swr_f);
-      const int len = sprintf(buf, "Controller FSM: SWR=%d.%03u is good enough - stop auto tuner.\r\n",
+      const int len = sprintf(buf, "Controller FSM: SWR=%2d.%03u is good enough - stop auto tuner.\r\n",
                               swr_i, swr_f);
       usbLogLen(buf, len);
     }
@@ -387,7 +387,7 @@ static void controllerFSM_optiHalfStrategy(void)
 static void controllerFSM_logState(void)
 {
   /* Show current state of optimization */
-  char      buf[256];
+  char      buf[512];
   int32_t   s_controller_opti_L_val_i, s_controller_opti_L_min_val_i, s_controller_opti_L_max_val_i, s_controller_opti_C_val_i, s_controller_opti_C_min_val_i, s_controller_opti_C_max_val_i;
   uint32_t  s_controller_opti_L_val_f, s_controller_opti_L_min_val_f, s_controller_opti_L_max_val_f, s_controller_opti_C_val_f, s_controller_opti_C_min_val_f, s_controller_opti_C_max_val_f;
   int len;
@@ -400,7 +400,7 @@ static void controllerFSM_logState(void)
   mainCalcFloat2IntFrac(s_controller_opti_C_max_val_i,  3, &s_controller_opti_C_max_val_i, &s_controller_opti_C_max_val_f);
   len = sprintf(buf, "Controller FSM:\tcontrollerFSM_logState - FSM_state=%u, FSM_optiLC=%u, FSM_optiVCH=%u, FSM_opti_L=%03u, FSM_opti_C=%03u,\r\n" \
                 "\t\t\topti_CVHpongCtr=%03u, opti_LCpongCtr=%03u,\r\n" \
-                "\t\t\tL_val=%5lu.%03lu nH, L_min=%5lu.%03lu nH, L_max=%5lu.%03lu nH\t\tC_val=%5lu.%03lu pF, C_min=%5lu.%03lu pF, C_max=%5lu.%03lu pF,\r\n",
+                "\t\t\tL_val=%5d.%03u nH, L_min=%5d.%03u nH, L_max=%5d.%03u nH\t\tC_val=%5d.%03u pF, C_min=%5d.%03u pF, C_max=%5d.%03u pF,\r\n",
                 s_controller_FSM_state, s_controller_FSM_optiLC, s_controller_FSM_optiCVH, s_controller_opti_L, s_controller_opti_C,
                 s_controller_opti_CVHpongCtr, s_controller_opti_LCpongCtr,
                 s_controller_opti_L_val_i, s_controller_opti_L_val_f,  s_controller_opti_L_min_val_i, s_controller_opti_L_min_val_f,  s_controller_opti_L_max_val_i, s_controller_opti_L_max_val_f,
@@ -413,9 +413,9 @@ static void controllerFSM_logState(void)
 
   mainCalcFloat2IntFrac(s_controller_adc_swr,  3, &swr_i,      &swr_f);
   mainCalcFloat2IntFrac(s_controller_last_swr, 3, &last_swr_i, &last_swr_f);
-  len = sprintf(buf, "\t\t\tSum L=%5lunH, C=%5lupF,\r\n" \
-                "\t\t\tfwd_mv=%5lumV, fwd_mw=%5lumW,\r\n" \
-                "\t\t\tswr=%5lu.%03lu, last_swr=%5lu.%03lu.\r\n\r\n",
+  len = sprintf(buf, "\t\t\tSum L=%5u nH, C=%5u pF,\r\n" \
+                "\t\t\tfwd_mv=%5u mV, fwd_mw=%5u mW,\r\n" \
+                "\t\t\tswr=%5d.%03u, last_swr=%5d.%03u.\r\n\r\n",
                 (uint32_t)controllerCalcMatcherL2nH(s_controller_opti_L_val), (uint32_t)controllerCalcMatcherC2pF(s_controller_opti_C_val),
                 (uint32_t)s_controller_adc_fwd_mv, (uint32_t)s_controller_adc_fwd_mw,
                 swr_i, swr_f, last_swr_i, last_swr_f);
