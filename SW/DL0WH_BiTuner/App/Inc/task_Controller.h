@@ -106,10 +106,10 @@ typedef enum ControllerOptiLC_ENUM {
 } ControllerOptiLC_t;
 
 
-float controllerCalcMatcherC2pF(uint8_t Cval);
 float controllerCalcMatcherL2nH(uint8_t Lval);
-uint8_t controllerCalcMatcherPF2C(float pF);
+float controllerCalcMatcherC2pF(uint8_t Cval);
 uint8_t controllerCalcMatcherNH2L(float nH);
+uint8_t controllerCalcMatcherPF2C(float pF);
 uint32_t controllerCalcMsgHdr(ControllerMsgDestinations_t dst, ControllerMsgDestinations_t src, uint8_t lengthBytes, uint8_t cmd);
 
 uint32_t controllerMsgPushToInQueue(uint8_t msgLen, uint32_t* msgAry, uint32_t waitMs);
