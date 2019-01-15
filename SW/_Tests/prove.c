@@ -145,6 +145,8 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz)
 {
   const float Z0    = 50.0f;
   const float omega = (float) (2.0 * M_PI * frequencyHz);
+  const float l_L   = 0.0f;  // s_controller_opti_L_val;
+  const float l_C   = 0.0f;  // s_controller_opti_C_val;
   float outR        = antOhmR;
   float outX        = antOhmI;
   float gammaRe     = 0.0f;
@@ -157,7 +159,7 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz)
     /* Inductivity at the antenna */
 
     /* Serial structure */
-    float LOhmX = omega * (s_controller_opti_L_val * 1e-9f);
+    float LOhmX = omega * (l_L * 1e-9f);
     outX += LOhmX;
 
     /* Parallel structure */
@@ -168,7 +170,7 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz)
       cInv(&outG, &outY, outR, outX);
 
       /* Capacity */
-      const float COhmX = 1.0f / (omega * (s_controller_opti_L_val * 1e-12f));
+      const float COhmX = 1.0f / (omega * (l_C * 1e-12f));
       float CSimG = 0.0f;
       float CSimY = 0.0f;
       cInv(&CSimG, &CSimY, 0.0f, COhmX);
@@ -191,7 +193,7 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz)
       cInv(&outG, &outY, outR, outX);
 
       /* Capacity */
-      const float COhmX = 1.0f / (omega * (s_controller_opti_C_val * 1e-12f));
+      const float COhmX = 1.0f / (omega * (l_C * 1e-12f));
       float CSimG = 0.0f;
       float CSimY = 0.0f;
       cInv(&CSimG, &CSimY, 0.0f, COhmX);
@@ -204,7 +206,7 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz)
     }
 
     /* Serial structure */
-    float LOhmX = omega * (s_controller_opti_L_val * 1e-9f);
+    float LOhmX = omega * (l_L * 1e-9f);
     outX += LOhmX;
   }
 
@@ -219,7 +221,7 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz)
 
     int len = sprintf(buf,
         "VSWR_Simu: Resulting Impedance at the transceiver Z= R (%3d.%03u Ohm) + jX (%3d.%03u Ohm)\t\t having L=%5d nH and C=%5d pF\r\n",
-        trxRi, trxRf,  trxXi, trxXf,  (uint32_t)s_controller_opti_L_val, (uint32_t)s_controller_opti_C_val);
+        trxRi, trxRf,  trxXi, trxXf,  (uint32_t)l_L, (uint32_t)l_C);
 
     usbLogLen(buf, len);
   }
@@ -274,6 +276,7 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz)
     usbLogLen(buf, len);
   }
 
+  exit(0);
   return vswr;
 }
 
