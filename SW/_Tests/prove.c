@@ -392,12 +392,12 @@ static void controllerFSM_logState(void)
   uint32_t  s_controller_opti_L_val_f, s_controller_opti_L_min_val_f, s_controller_opti_L_max_val_f, s_controller_opti_C_val_f, s_controller_opti_C_min_val_f, s_controller_opti_C_max_val_f;
   int len;
 
-  mainCalcFloat2IntFrac(s_controller_opti_L_val_i,      3, &s_controller_opti_L_val_i,     &s_controller_opti_L_val_f);
-  mainCalcFloat2IntFrac(s_controller_opti_L_min_val_i,  3, &s_controller_opti_L_min_val_i, &s_controller_opti_L_min_val_f);
-  mainCalcFloat2IntFrac(s_controller_opti_L_max_val_i,  3, &s_controller_opti_L_max_val_i, &s_controller_opti_L_max_val_f);
-  mainCalcFloat2IntFrac(s_controller_opti_C_val_i,      3, &s_controller_opti_C_val_i,     &s_controller_opti_C_val_f);
-  mainCalcFloat2IntFrac(s_controller_opti_C_min_val_i,  3, &s_controller_opti_C_min_val_i, &s_controller_opti_C_min_val_f);
-  mainCalcFloat2IntFrac(s_controller_opti_C_max_val_i,  3, &s_controller_opti_C_max_val_i, &s_controller_opti_C_max_val_f);
+  mainCalcFloat2IntFrac(s_controller_opti_L_val,      3, &s_controller_opti_L_val_i,     &s_controller_opti_L_val_f);
+  mainCalcFloat2IntFrac(s_controller_opti_L_min_val,  3, &s_controller_opti_L_min_val_i, &s_controller_opti_L_min_val_f);
+  mainCalcFloat2IntFrac(s_controller_opti_L_max_val,  3, &s_controller_opti_L_max_val_i, &s_controller_opti_L_max_val_f);
+  mainCalcFloat2IntFrac(s_controller_opti_C_val,      3, &s_controller_opti_C_val_i,     &s_controller_opti_C_val_f);
+  mainCalcFloat2IntFrac(s_controller_opti_C_min_val,  3, &s_controller_opti_C_min_val_i, &s_controller_opti_C_min_val_f);
+  mainCalcFloat2IntFrac(s_controller_opti_C_max_val,  3, &s_controller_opti_C_max_val_i, &s_controller_opti_C_max_val_f);
   len = sprintf(buf, "Controller FSM:\tcontrollerFSM_logState - FSM_state=%u, FSM_optiLC=%u, FSM_optiVCH=%u, FSM_opti_L=%03u, FSM_opti_C=%03u,\r\n" \
                 "\t\t\topti_CVHpongCtr=%03u, opti_LCpongCtr=%03u,\r\n" \
                 "\t\t\tL_val=%5d.%03u nH, L_min=%5d.%03u nH, L_max=%5d.%03u nH\t\tC_val=%5d.%03u pF, C_min=%5d.%03u pF, C_max=%5d.%03u pF,\r\n",
