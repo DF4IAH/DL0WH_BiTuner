@@ -58,7 +58,7 @@ float controllerCalcMatcherL2nH(uint8_t Lval);
 float controllerCalcMatcherC2pF(uint8_t Cval);
 uint8_t controllerCalcMatcherNH2L(float nH);
 uint8_t controllerCalcMatcherPF2C(float pF);
-float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz);
+float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float Z0R, float Z0I, float frequencyHz);
 
 void controllerCyclicTimerEvent(void);
 void controllerInit(void);

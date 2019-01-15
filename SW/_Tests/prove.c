@@ -23,7 +23,7 @@ static const float Controller_Ls_nH[8]                        = {
     24.0e+3f
 };
 
-static const float Controller_C0_pf                           = 25.0f;
+static const float Controller_C0_pF                           = 25.0f;
 static float Controller_Cs_pF[8]                              = {
     25.0f,
     //33.0f,
@@ -97,7 +97,7 @@ float controllerCalcMatcherL2nH(uint8_t Lval)
 
 float controllerCalcMatcherC2pF(uint8_t Cval)
 {
-  float sum = Controller_C0_pf;
+  float sum = Controller_C0_pF;
 
   for (uint8_t idx = 0; idx < 8; idx++) {
     if (Cval & (1U << idx)) {
@@ -141,12 +141,12 @@ uint8_t controllerCalcMatcherPF2C(float pF)
   return valThis;
 }
 
-float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz)
+float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float Z0R, float Z0I, float frequencyHz)
 {
-  const float Z0    = 50.0f;
+  const float Z0abs = sqrtf(Z0R * Z0R + Z0I * Z0I);
   const float omega = (float) (2.0 * M_PI * frequencyHz);
-  const float l_L   = 0.0f;  // s_controller_opti_L_val;
-  const float l_C   = 0.0f;  // s_controller_opti_C_val;
+  float L_nH        = s_controller_opti_L_val;
+  float C_pF        = s_controller_opti_C_val;
   float outR        = antOhmR;
   float outX        = antOhmI;
   float gammaRe     = 0.0f;
@@ -155,12 +155,38 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz)
   float gammaPhi    = 0.0f;
   float vswr        = 99.0f;
 
+  /* For security only */
+  if (L_nH < 10.0f) {
+    L_nH = Controller_L0_nH;
+  }
+  if (C_pF < 1.0f) {
+    C_pF = Controller_C0_pF;
+  }
+
   if (s_controller_FSM_optiCVH == ControllerOptiCVH__CV) {
     /* Inductivity at the antenna */
 
     /* Serial structure */
-    float LOhmX = omega * (l_L * 1e-9f);
+    float LOhmX = omega * (L_nH * 1e-9f);
     outX += LOhmX;
+
+#if 0
+    /* Log */
+    {
+      char      buf[256];
+      int32_t   outRi, outXi;
+      uint32_t  outRf, outXf;
+
+      mainCalcFloat2IntFrac(outR, 3U, &outRi, &outRf);
+      mainCalcFloat2IntFrac(outX, 3U, &outXi, &outXf);
+
+      int len = sprintf(buf,
+          "VSWR_Simu: Re= %3d.%03u, Im= %3d.%03u\r\n",
+          outRi, outRf,  outXi, outXf);
+
+      usbLogLen(buf, len);
+    }
+#endif
 
     /* Parallel structure */
     {
@@ -169,11 +195,47 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz)
       float outY = 0.0f;
       cInv(&outG, &outY, outR, outX);
 
+#if 0
+      /* Log */
+      {
+        char      buf[256];
+        int32_t   outGi, outYi;
+        uint32_t  outGf, outYf;
+
+        mainCalcFloat2IntFrac(outG, 3U, &outGi, &outGf);
+        mainCalcFloat2IntFrac(outY, 3U, &outYi, &outYf);
+
+        int len = sprintf(buf,
+            "VSWR_Simu: Re= %3d.%03u, Im= %3d.%03u\r\n",
+            outGi, outGf,  outYi, outYf);
+
+        usbLogLen(buf, len);
+      }
+#endif
+
       /* Capacity */
-      const float COhmX = 1.0f / (omega * (l_C * 1e-12f));
+      const float COhmX = -1.0f / (omega * (C_pF * 1e-12f));
       float CSimG = 0.0f;
       float CSimY = 0.0f;
       cInv(&CSimG, &CSimY, 0.0f, COhmX);
+
+#if 0
+      /* Log */
+      {
+        char      buf[256];
+        int32_t   CSimGi, CSimYi;
+        uint32_t  CSimGf, CSimYf;
+
+        mainCalcFloat2IntFrac(CSimG, 3U, &CSimGi, &CSimGf);
+        mainCalcFloat2IntFrac(CSimY, 3U, &CSimYi, &CSimYf);
+
+        int len = sprintf(buf,
+            "VSWR_Simu: Re= %3d.%03u, Im= %3d.%03u\r\n",
+            CSimGi, CSimGf,  CSimYi, CSimYf);
+
+        usbLogLen(buf, len);
+      }
+#endif
 
       /* Adding C parallel to the circuit */
       outY += CSimY;
@@ -193,7 +255,7 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz)
       cInv(&outG, &outY, outR, outX);
 
       /* Capacity */
-      const float COhmX = 1.0f / (omega * (l_C * 1e-12f));
+      const float COhmX = -1.0f / (omega * (C_pF * 1e-12f));
       float CSimG = 0.0f;
       float CSimY = 0.0f;
       cInv(&CSimG, &CSimY, 0.0f, COhmX);
@@ -206,13 +268,13 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz)
     }
 
     /* Serial structure */
-    float LOhmX = omega * (l_L * 1e-9f);
+    float LOhmX = omega * (L_nH * 1e-9f);
     outX += LOhmX;
   }
 
   /* Log impedance at the transceiver */
   {
-    char buf[512];
+    char      buf[256];
     int32_t   trxRi, trxXi;
     uint32_t  trxRf, trxXf;
 
@@ -221,7 +283,7 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz)
 
     int len = sprintf(buf,
         "VSWR_Simu: Resulting Impedance at the transceiver Z= R (%3d.%03u Ohm) + jX (%3d.%03u Ohm)\t\t having L=%5d nH and C=%5d pF\r\n",
-        trxRi, trxRf,  trxXi, trxXf,  (uint32_t)l_L, (uint32_t)l_C);
+        trxRi, trxRf,  trxXi, trxXf,  (uint32_t)L_nH, (uint32_t)C_pF);
 
     usbLogLen(buf, len);
   }
@@ -229,15 +291,18 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz)
   /* Calculate Gamma = (Z - 1) / (Z + 1) */
   {
     /* Normalized Impedance */
-    cDiv(&gammaRe, &gammaIm, (outR/Z0 - 1.0f), (outX/Z0), (outR/Z0 + 1.0f), (outX/Z0));
+    float outRnorm = outR / Z0abs;
+    float outXnorm = outX / Z0abs;
+
+    cDiv(&gammaRe, &gammaIm, (outRnorm - 1.0f), outXnorm, (outRnorm + 1.0f), outXnorm);
 
     gammaAbs = sqrtf(gammaRe * gammaRe  +  gammaIm * gammaIm);
-    gammaPhi = (float) (2.0 * M_E * atan(gammaIm / gammaRe));
+    gammaPhi = (float) ((180.0 / M_PI) * atan2(gammaIm, gammaRe));
   }
 
   /* Log reflection coefficient at the transceiver */
   {
-    char buf[512];
+    char      buf[256];
     int32_t   gammaAbsi, gammaPhii, gammaRei, gammaImi;
     uint32_t  gammaAbsf, gammaPhif, gammaRef, gammaImf;
 
@@ -370,13 +435,13 @@ static void controllerFSM_switchOverCVH(void)
     if (s_controller_FSM_optiCVH == ControllerOptiCVH__CH) {
       s_controller_FSM_optiLC = ControllerOptiLC__C_double;
       s_controller_opti_L_val = Controller_L0_nH;
-      s_controller_opti_C_val = Controller_C0_pf + Controller_Cs_pF[0];
+      s_controller_opti_C_val = Controller_C0_pF + Controller_Cs_pF[0];
       s_controller_FSM_state  = ControllerFsm__findImagZeroC;
 
     } else {
       s_controller_FSM_optiLC = ControllerOptiLC__L_double;
       s_controller_opti_L_val = Controller_L0_nH + Controller_Ls_nH[0];
-      s_controller_opti_C_val = Controller_C0_pf;
+      s_controller_opti_C_val = Controller_C0_pF;
       s_controller_FSM_state  = ControllerFsm__findImagZeroL;
     }
 
@@ -440,8 +505,8 @@ static void controllerFSM_zeroXHalfStrategy(void)
         }
 
         /* Next optimize C */
-        s_controller_opti_C_min_val = Controller_C0_pf;
-        s_controller_opti_C_max_val = s_controller_opti_C_val = Controller_C0_pf + Controller_Cs_pF[0];
+        s_controller_opti_C_min_val = Controller_C0_pF;
+        s_controller_opti_C_max_val = s_controller_opti_C_val = Controller_C0_pF + Controller_Cs_pF[0];
         s_controller_opti_LCpongCtr = 0U;
         s_controller_FSM_optiLC     = ControllerOptiLC__C_double;
         s_controller_FSM_state      = ControllerFsm__findMinSwrC;
@@ -599,7 +664,7 @@ static void controllerFSM(void)
     s_controller_opti_LCpongCtr   = 0U;
     s_controller_opti_L_min_val   = Controller_L0_nH;
     s_controller_opti_L_max_val   =                               s_controller_opti_L_val = Controller_L0_nH + Controller_Ls_nH[0];
-    s_controller_opti_C_max_val   = s_controller_opti_C_min_val = s_controller_opti_C_val = Controller_C0_pf;
+    s_controller_opti_C_max_val   = s_controller_opti_C_min_val = s_controller_opti_C_val = Controller_C0_pF;
 
     /* Push opti data to relays */
     controllerFSM_pushOptiVars();
@@ -791,8 +856,8 @@ static void controllerFSM(void)
       } else if (s_controller_FSM_optiLC == ControllerOptiLC__C_cntDwn) {
         /* Single step decrease */
         s_controller_opti_C_val -= Controller_Cs_pF[0];
-        if (s_controller_opti_C_val < Controller_C0_pf) {
-          s_controller_opti_C_val = Controller_C0_pf;
+        if (s_controller_opti_C_val < Controller_C0_pF) {
+          s_controller_opti_C_val = Controller_C0_pF;
 
           if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
             /* Change over to L trim */
@@ -830,8 +895,8 @@ static void controllerFSM(void)
 
         /* Single step decrease */
         s_controller_opti_C_val -= Controller_Cs_pF[0];
-        if (s_controller_opti_C_val < Controller_C0_pf) {
-          s_controller_opti_C_val = Controller_C0_pf;
+        if (s_controller_opti_C_val < Controller_C0_pF) {
+          s_controller_opti_C_val = Controller_C0_pF;
 
           if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
             /* Change over to L trim */

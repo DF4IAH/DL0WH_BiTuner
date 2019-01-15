@@ -94,7 +94,9 @@ uint32_t osKernelSysTick(void)
 void simulator(void)
 {
   const float antOhmR = 30.0f;
-  const float antOhmI = -50.0f;
+  const float antOhmI =-50.0f;
+  const float Z0R     = 50.0f;
+  const float Z0I     = 0.0f;
   const float qrg     = 1.8e6f;  // 160 meter band
   g_adc_vdiode_mv     = 500U;
   g_adc_refint_val    = 1638U;
@@ -117,7 +119,7 @@ void simulator(void)
     float l_swr         = mainCalc_VSWR(l_adc_fwd_mv, l_adc_rev_mv);
 #else
     /* Simulate SWR */
-    float l_swr         = controllerCalc_VSWR_Simu(antOhmR, antOhmI, qrg);
+    float l_swr         = controllerCalc_VSWR_Simu(antOhmR, antOhmI, Z0R, Z0I, qrg);
 #endif
 
     /* Push to global vars */

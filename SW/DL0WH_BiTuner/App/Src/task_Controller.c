@@ -49,7 +49,7 @@ static const float Controller_Ls_nH[8]                        = {
     24.0e+3f
 };
 
-static const float Controller_C0_pf                           = 25.0f;
+static const float Controller_C0_pF                           = 25.0f;
 static float Controller_Cs_pF[8]                              = {
     25.0f,
     //33.0f,
@@ -114,7 +114,7 @@ float controllerCalcMatcherL2nH(uint8_t Lval)
 
 float controllerCalcMatcherC2pF(uint8_t Cval)
 {
-  float sum = Controller_C0_pf;
+  float sum = Controller_C0_pF;
 
   for (uint8_t idx = 0; idx < 8; idx++) {
     if (Cval & (1U << idx)) {
@@ -437,13 +437,13 @@ static void controllerFSM_switchOverCVH(void)
     if (s_controller_FSM_optiCVH == ControllerOptiCVH__CH) {
       s_controller_FSM_optiLC = ControllerOptiLC__C_double;
       s_controller_opti_L_val = Controller_L0_nH;
-      s_controller_opti_C_val = Controller_C0_pf + Controller_Cs_pF[0];
+      s_controller_opti_C_val = Controller_C0_pF + Controller_Cs_pF[0];
       s_controller_FSM_state  = ControllerFsm__findImagZeroC;
 
     } else {
       s_controller_FSM_optiLC = ControllerOptiLC__L_double;
       s_controller_opti_L_val = Controller_L0_nH + Controller_Ls_nH[0];
-      s_controller_opti_C_val = Controller_C0_pf;
+      s_controller_opti_C_val = Controller_C0_pF;
       s_controller_FSM_state  = ControllerFsm__findImagZeroL;
     }
 
@@ -507,8 +507,8 @@ static void controllerFSM_zeroXHalfStrategy(void)
         }
 
         /* Next optimize C */
-        s_controller_opti_C_min_val = Controller_C0_pf;
-        s_controller_opti_C_max_val = s_controller_opti_C_val = Controller_C0_pf + Controller_Cs_pF[0];
+        s_controller_opti_C_min_val = Controller_C0_pF;
+        s_controller_opti_C_max_val = s_controller_opti_C_val = Controller_C0_pF + Controller_Cs_pF[0];
         s_controller_opti_LCpongCtr = 0U;
         s_controller_FSM_optiLC     = ControllerOptiLC__C_double;
         s_controller_FSM_state      = ControllerFsm__findMinSwrC;
@@ -666,7 +666,7 @@ static void controllerFSM(void)
     s_controller_opti_LCpongCtr   = 0U;
     s_controller_opti_L_min_val   = Controller_L0_nH;
     s_controller_opti_L_max_val   =                               s_controller_opti_L_val = Controller_L0_nH + Controller_Ls_nH[0];
-    s_controller_opti_C_max_val   = s_controller_opti_C_min_val = s_controller_opti_C_val = Controller_C0_pf;
+    s_controller_opti_C_max_val   = s_controller_opti_C_min_val = s_controller_opti_C_val = Controller_C0_pF;
 
     /* Push opti data to relays */
     controllerFSM_pushOptiVars();
@@ -858,8 +858,8 @@ static void controllerFSM(void)
       } else if (s_controller_FSM_optiLC == ControllerOptiLC__C_cntDwn) {
         /* Single step decrease */
         s_controller_opti_C_val -= Controller_Cs_pF[0];
-        if (s_controller_opti_C_val < Controller_C0_pf) {
-          s_controller_opti_C_val = Controller_C0_pf;
+        if (s_controller_opti_C_val < Controller_C0_pF) {
+          s_controller_opti_C_val = Controller_C0_pF;
 
           if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
             /* Change over to L trim */
@@ -897,8 +897,8 @@ static void controllerFSM(void)
 
         /* Single step decrease */
         s_controller_opti_C_val -= Controller_Cs_pF[0];
-        if (s_controller_opti_C_val < Controller_C0_pf) {
-          s_controller_opti_C_val = Controller_C0_pf;
+        if (s_controller_opti_C_val < Controller_C0_pF) {
+          s_controller_opti_C_val = Controller_C0_pF;
 
           if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
             /* Change over to L trim */
