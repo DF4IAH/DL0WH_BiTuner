@@ -697,7 +697,7 @@ static void controllerFSM(void)
 
       if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Max) {
         /* SWR: we have got it */
-        s_controller_FSM_state = ControllerFsm__doAdc;
+        s_controller_FSM_state = ControllerFsm__done;
         s_controller_doAdc     = true;
 
         /* Logging */
@@ -757,7 +757,7 @@ static void controllerFSM(void)
 
       if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Max) {
         /* SWR: we have got it */
-        s_controller_FSM_state = ControllerFsm__doAdc;
+        s_controller_FSM_state = ControllerFsm__done;
         s_controller_doAdc     = true;
 
         /* Logging */
@@ -817,7 +817,7 @@ static void controllerFSM(void)
 
       if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Max) {
         /* SWR: we have got it */
-        s_controller_FSM_state = ControllerFsm__doAdc;
+        s_controller_FSM_state = ControllerFsm__done;
         s_controller_doAdc     = true;
 
         /* Logging */
@@ -951,7 +951,7 @@ static void controllerFSM(void)
 
       if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Max) {
         /* SWR: we have got it */
-        s_controller_FSM_state = ControllerFsm__doAdc;
+        s_controller_FSM_state = ControllerFsm__done;
         s_controller_doAdc     = true;
 
         /* Logging */
@@ -1068,6 +1068,14 @@ static void controllerFSM(void)
     /* Show current state of optimization */
     controllerFSM_logState();
  }
+    break;
+
+  case ControllerFsm__done:
+  {
+    /* Done - wait for new start */
+    s_controller_FSM_state = ControllerFsm__doAdc;
+    controllerFSM_startAdc();
+  }
     break;
 
   default:

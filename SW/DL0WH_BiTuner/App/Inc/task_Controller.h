@@ -82,6 +82,7 @@ typedef enum ControllerFsm_ENUM {
   ControllerFsm__findImagZeroC,
   ControllerFsm__findMinSwrC,
   ControllerFsm__findMinSwrL,
+  ControllerFsm__done,
 
 } ControllerFsm_t;
 

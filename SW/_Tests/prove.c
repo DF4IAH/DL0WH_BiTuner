@@ -153,7 +153,6 @@ static void controllerFSM_getGlobalVars(void)
   s_controller_adc_fwd_mw     = mainCalc_mV_to_mW(s_controller_adc_fwd_mv);
   printf("controllerFSM_getGlobalVars: s_controller_adc_fwd_mv=%f mV, s_controller_adc_swr=%f, s_controller_adc_fwd_mw=%f mW\r\n",
           s_controller_adc_fwd_mv, s_controller_adc_swr, s_controller_adc_fwd_mw);
-  exit(0);
 }
 
 static _Bool controllerFSM_checkPower(void)
@@ -491,7 +490,7 @@ static void controllerFSM(void)
 
       if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Max) {
         /* SWR: we have got it */
-        s_controller_FSM_state = ControllerFsm__doAdc;
+        s_controller_FSM_state = ControllerFsm__done;
         s_controller_doAdc     = true;
 
         /* Logging */
@@ -551,7 +550,7 @@ static void controllerFSM(void)
 
       if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Max) {
         /* SWR: we have got it */
-        s_controller_FSM_state = ControllerFsm__doAdc;
+        s_controller_FSM_state = ControllerFsm__done;
         s_controller_doAdc     = true;
 
         /* Logging */
@@ -611,7 +610,7 @@ static void controllerFSM(void)
 
       if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Max) {
         /* SWR: we have got it */
-        s_controller_FSM_state = ControllerFsm__doAdc;
+        s_controller_FSM_state = ControllerFsm__done;
         s_controller_doAdc     = true;
 
         /* Logging */
@@ -745,7 +744,7 @@ static void controllerFSM(void)
 
       if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Max) {
         /* SWR: we have got it */
-        s_controller_FSM_state = ControllerFsm__doAdc;
+        s_controller_FSM_state = ControllerFsm__done;
         s_controller_doAdc     = true;
 
         /* Logging */
@@ -862,6 +861,16 @@ static void controllerFSM(void)
     /* Show current state of optimization */
     controllerFSM_logState();
  }
+    break;
+
+  case ControllerFsm__done:
+  {
+    exit(0);
+
+    /* Done - wait for new start */
+    s_controller_FSM_state = ControllerFsm__doAdc;
+    controllerFSM_startAdc();
+  }
     break;
 
   default:

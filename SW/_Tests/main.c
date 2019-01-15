@@ -132,25 +132,33 @@ int main(int argc, char* argv[])
 {
   controllerInit();
 
+#if 0
   printf("\r\nTEST 1:  C_val to [C] pF:\r\n");
   for (int val=0; val< 256; val++) {
     printf("C_val=%03d: C=%f pF\r\n", val, controllerCalcMatcherC2pF(val));
   }
+#endif
 
+#if 0
   printf("\r\nTEST 2:  L_val to [L] nH:\r\n");
   for (int val=0; val< 256; val++) {
     printf("C_val=%03d: L=%f nH\r\n", val, controllerCalcMatcherL2nH(val));
   }
+#endif
 
+#if 0
   printf("\r\nTEST 3:  [C] pF to C_val:\r\n");
   for (float pF = 0.0f; pF < 4400.0f; pF += 25.0f) {
     printf("C=%f pF: C_val=%03d\r\n", pF, controllerCalcMatcherPF2C(pF));
   }
+#endif
 
+#if 0
   printf("\r\nTEST 4:  [L] nH to L_val:\r\n");
   for (float nH = 0.0f; nH < 48000.0f; nH += 187.5f) {
     printf("L=%f nH: L_val=%03d\r\n", nH, controllerCalcMatcherNH2L(nH));
   }
+#endif
 
   while (1) {
     controllerCyclicTimerEvent();
