@@ -86,7 +86,7 @@ uint32_t osKernelSysTick(void)
 {
   static uint32_t s_now = 0UL;
 
-  return ++s_now;
+  return s_now += 500UL;
 }
 
 
@@ -131,11 +131,7 @@ void simulator(void)
       __enable_irq();
     }
   }
-
-  //printf("simulator: g_adc_fwd_mv=%f mV, g_adc_rev_mv=%f mV, g_swr=%f.\r\n", (double)g_adc_fwd_mv, (double)g_adc_rev_mv, (double)g_adc_swr);
-  //exit(0);
 }
-
 
 
 int main(int argc, char* argv[])
