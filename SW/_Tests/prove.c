@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include "complex.h"
 
 #include "prove.h"
 
@@ -138,6 +139,142 @@ uint8_t controllerCalcMatcherPF2C(float pF)
     }
   }
   return valThis;
+}
+
+float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float frequencyHz)
+{
+  const float Z0    = 50.0f;
+  const float omega = (float) (2.0 * M_PI * frequencyHz);
+  float outR        = antOhmR;
+  float outX        = antOhmI;
+  float gammaRe     = 0.0f;
+  float gammaIm     = 0.0f;
+  float gammaAbs    = 0.0f;
+  float gammaPhi    = 0.0f;
+  float vswr        = 99.0f;
+
+  if (s_controller_FSM_optiCVH == ControllerOptiCVH__CV) {
+    /* Inductivity at the antenna */
+
+    /* Serial structure */
+    float LOhmX = omega * (s_controller_opti_L_val * 1e-9f);
+    outX += LOhmX;
+
+    /* Parallel structure */
+    {
+      /* Invert to admitance */
+      float outG = 0.0f;
+      float outY = 0.0f;
+      cInv(&outG, &outY, outR, outX);
+
+      /* Capacity */
+      const float COhmX = 1.0f / (omega * (s_controller_opti_L_val * 1e-12f));
+      float CSimG = 0.0f;
+      float CSimY = 0.0f;
+      cInv(&CSimG, &CSimY, 0.0f, COhmX);
+
+      /* Adding C parallel to the circuit */
+      outY += CSimY;
+
+      /* Revert to impedance */
+      cInv(&outR, &outX, outG, outY);
+    }
+
+  } else {
+    /* Capacity at the antenna */
+
+    /* Parallel structure */
+    {
+      /* Invert to admitance */
+      float outG = 0.0f;
+      float outY = 0.0f;
+      cInv(&outG, &outY, outR, outX);
+
+      /* Capacity */
+      const float COhmX = 1.0f / (omega * (s_controller_opti_C_val * 1e-12f));
+      float CSimG = 0.0f;
+      float CSimY = 0.0f;
+      cInv(&CSimG, &CSimY, 0.0f, COhmX);
+
+      /* Adding C parallel to the circuit */
+      outY += CSimY;
+
+      /* Revert to impedance */
+      cInv(&outR, &outX, outG, outY);
+    }
+
+    /* Serial structure */
+    float LOhmX = omega * (s_controller_opti_L_val * 1e-9f);
+    outX += LOhmX;
+  }
+
+  /* Log impedance at the transceiver */
+  {
+    char buf[512];
+    int32_t   trxRi, trxXi;
+    uint32_t  trxRf, trxXf;
+
+    mainCalcFloat2IntFrac(outR, 3U, &trxRi, &trxRf);
+    mainCalcFloat2IntFrac(outX, 3U, &trxXi, &trxXf);
+
+    int len = sprintf(buf,
+        "VSWR_Simu: Resulting Impedance at the transceiver Z= R (%3d.%03u Ohm) + jX (%3d.%03u Ohm)\t\t having L=%5d nH and C=%5d pF\r\n",
+        trxRi, trxRf,  trxXi, trxXf,  (uint32_t)s_controller_opti_L_val, (uint32_t)s_controller_opti_C_val);
+
+    usbLogLen(buf, len);
+  }
+
+  /* Calculate Gamma = (Z - 1) / (Z + 1) */
+  {
+    /* Normalized Impedance */
+    cDiv(&gammaRe, &gammaIm, (outR/Z0 - 1.0f), (outX/Z0), (outR/Z0 + 1.0f), (outX/Z0));
+
+    gammaAbs = sqrtf(gammaRe * gammaRe  +  gammaIm * gammaIm);
+    gammaPhi = (float) (2.0 * M_E * atan(gammaIm / gammaRe));
+  }
+
+  /* Log reflection coefficient at the transceiver */
+  {
+    char buf[512];
+    int32_t   gammaAbsi, gammaPhii, gammaRei, gammaImi;
+    uint32_t  gammaAbsf, gammaPhif, gammaRef, gammaImf;
+
+    mainCalcFloat2IntFrac(gammaAbs, 3U, &gammaAbsi, &gammaAbsf);
+    mainCalcFloat2IntFrac(gammaPhi, 3U, &gammaPhii, &gammaPhif);
+    mainCalcFloat2IntFrac(gammaRe,  3U, &gammaRei,  &gammaRef);
+    mainCalcFloat2IntFrac(gammaIm,  3U, &gammaImi,  &gammaImf);
+
+    int len = sprintf(buf,
+        "VSWR_Simu: Resulting Gamma at the transceiver |Gamma|= %1d.%03u,  Phi(Gamma)= %3d.%03u having Re(Gamma)= %3d.%03u, Im(Gamma)= %3d.%03u\r\n",
+        gammaAbsi, gammaAbsf,  gammaPhii, gammaPhif,  gammaRei, gammaRef,  gammaImi, gammaImf);
+
+    usbLogLen(buf, len);
+  }
+
+  /* Calculate VSWR = (1 + GammaAbs) / (1 - GammaAbs) */
+  if (gammaAbs < 0.99f) {
+    vswr = (1.0f + gammaAbs) / (1.0f - gammaAbs);
+
+  } else {
+    vswr = 99.9f;
+  }
+
+  /* Log reflection coefficient at the transceiver */
+  {
+    char buf[256];
+    int32_t   vswri;
+    uint32_t  vswrf;
+
+    mainCalcFloat2IntFrac(vswr, 3U, &vswri, &vswrf);
+
+    int len = sprintf(buf,
+        "VSWR_Simu: Resulting VSWR at the transceiver VSWR= %3d.%03u\r\n",
+        vswri, vswrf);
+
+    usbLogLen(buf, len);
+  }
+
+  return vswr;
 }
 
 

@@ -93,9 +93,12 @@ uint32_t osKernelSysTick(void)
 
 void simulator(void)
 {
-  g_adc_vdiode_mv   = 500U;
-  g_adc_refint_val  = 1638U;
-  g_adc_vref_mv     = 4095U;
+  const float antOhmR = 30.0f;
+  const float antOhmI = -50.0f;
+  const float qrg     = 1.8e6f;  // 160 meter band
+  g_adc_vdiode_mv     = 500U;
+  g_adc_refint_val    = 1638U;
+  g_adc_vref_mv       = 4095U;
 
   /* Code from freetos.c */
   {
@@ -110,7 +113,12 @@ void simulator(void)
 
     /* Get the linearized voltage and (V)SWR */
     float l_adc_rev_mv  = mainCalc_fwdRev_mV(adcRev, g_adc_vdiode_mv);
+#if 0
     float l_swr         = mainCalc_VSWR(l_adc_fwd_mv, l_adc_rev_mv);
+#else
+    /* Simulate SWR */
+    float l_swr         = controllerCalc_VSWR_Simu(antOhmR, antOhmI, qrg);
+#endif
 
     /* Push to global vars */
     {
