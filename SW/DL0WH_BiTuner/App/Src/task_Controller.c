@@ -354,6 +354,8 @@ uint32_t controllerMsgPullFromOutQueue(uint32_t* msgAry, ControllerMsgDestinatio
 
 static void controllerFSM_getGlobalVars(void)
 {
+  s_controller_last_swr       = s_controller_adc_swr;
+
   __disable_irq();
   s_controller_adc_fwd_mv     = g_adc_fwd_mv;
   s_controller_adc_swr        = g_adc_swr;
@@ -489,7 +491,6 @@ static void controllerFSM_pushOptiVars(void)
 
 static void controllerFSM_startAdc(void)
 {
-  s_controller_last_swr = s_controller_adc_swr;
   s_controller_doAdc    = true;
 }
 
@@ -623,10 +624,9 @@ static void controllerFSM_logState(void)
 
   mainCalcFloat2IntFrac(s_controller_adc_swr,  3, &swr_i,      &swr_f);
   mainCalcFloat2IntFrac(s_controller_last_swr, 3, &last_swr_i, &last_swr_f);
-  len = sprintf(buf, "\t\t\tSum L=%5lu nH, C=%5lu pF,\r\n" \
+  len = sprintf(buf,
                 "\t\t\tfwd_mv=%5lu mV, fwd_mw=%5lu mW,\r\n" \
                 "\t\t\tswr=%5ld.%03lu, last_swr=%5ld.%03lu.\r\n\r\n",
-                (uint32_t)controllerCalcMatcherL2nH(s_controller_opti_L_val), (uint32_t)controllerCalcMatcherC2pF(s_controller_opti_C_val),
                 (uint32_t)s_controller_adc_fwd_mv, (uint32_t)s_controller_adc_fwd_mw,
                 swr_i, swr_f, last_swr_i, last_swr_f);
   usbLogLen(buf, len);

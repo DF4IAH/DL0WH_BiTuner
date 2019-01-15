@@ -295,6 +295,8 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float Z0R, float Z0
 
 static void controllerFSM_getGlobalVars(void)
 {
+  s_controller_last_swr       = s_controller_adc_swr;
+
   __disable_irq();
   s_controller_adc_fwd_mv     = g_adc_fwd_mv;
   s_controller_adc_swr        = g_adc_swr;
@@ -432,7 +434,6 @@ static void controllerFSM_pushOptiVars(void)
 
 static void controllerFSM_startAdc(void)
 {
-  s_controller_last_swr = s_controller_adc_swr;
   s_controller_doAdc    = true;
 }
 
@@ -566,10 +567,9 @@ static void controllerFSM_logState(void)
 
   mainCalcFloat2IntFrac(s_controller_adc_swr,  3, &swr_i,      &swr_f);
   mainCalcFloat2IntFrac(s_controller_last_swr, 3, &last_swr_i, &last_swr_f);
-  len = sprintf(buf, "\t\t\tSum L=%5u nH, C=%5u pF,\r\n" \
+  len = sprintf(buf,
                 "\t\t\tfwd_mv=%5u mV, fwd_mw=%5u mW,\r\n" \
                 "\t\t\tswr=%5d.%03u, last_swr=%5d.%03u.\r\n\r\n",
-                (uint32_t)controllerCalcMatcherL2nH(s_controller_opti_L_val), (uint32_t)controllerCalcMatcherC2pF(s_controller_opti_C_val),
                 (uint32_t)s_controller_adc_fwd_mv, (uint32_t)s_controller_adc_fwd_mw,
                 swr_i, swr_f, last_swr_i, last_swr_f);
   usbLogLen(buf, len);
@@ -595,20 +595,16 @@ static void controllerFSM(void)
   case ControllerFsm__startAuto:
   {
     /* Pull global vars */
-    puts("A21");
     controllerFSM_getGlobalVars();
 
-    puts("A22");
     /* Check for security */
     if (controllerFSM_checkPower())
       break;
 
-    puts("A23");
     /* Check if auto tuner should start */
     if (controllerFSM_checkSwrTime())
       break;
 
-    puts("A24");
     /* Run (V)SWR optimization */
     s_controller_FSM_optiCVH      = ControllerOptiCVH__CV;
     s_controller_FSM_optiLC       = ControllerOptiLC__L_double;
