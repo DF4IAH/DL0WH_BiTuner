@@ -170,24 +170,6 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float Z0R, float Z0
     float LOhmX = omega * (L_nH * 1e-9f);
     outX += LOhmX;
 
-#if 0
-    /* Log */
-    {
-      char      buf[256];
-      int32_t   outRi, outXi;
-      uint32_t  outRf, outXf;
-
-      mainCalcFloat2IntFrac(outR, 3U, &outRi, &outRf);
-      mainCalcFloat2IntFrac(outX, 3U, &outXi, &outXf);
-
-      int len = sprintf(buf,
-          "VSWR_Simu: Re= %3d.%03u, Im= %3d.%03u\r\n",
-          outRi, outRf,  outXi, outXf);
-
-      usbLogLen(buf, len);
-    }
-#endif
-
     /* Parallel structure */
     {
       /* Invert to admitance */
@@ -195,47 +177,11 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float Z0R, float Z0
       float outY = 0.0f;
       cInv(&outG, &outY, outR, outX);
 
-#if 0
-      /* Log */
-      {
-        char      buf[256];
-        int32_t   outGi, outYi;
-        uint32_t  outGf, outYf;
-
-        mainCalcFloat2IntFrac(outG, 3U, &outGi, &outGf);
-        mainCalcFloat2IntFrac(outY, 3U, &outYi, &outYf);
-
-        int len = sprintf(buf,
-            "VSWR_Simu: Re= %3d.%03u, Im= %3d.%03u\r\n",
-            outGi, outGf,  outYi, outYf);
-
-        usbLogLen(buf, len);
-      }
-#endif
-
       /* Capacity */
       const float COhmX = -1.0f / (omega * (C_pF * 1e-12f));
       float CSimG = 0.0f;
       float CSimY = 0.0f;
       cInv(&CSimG, &CSimY, 0.0f, COhmX);
-
-#if 0
-      /* Log */
-      {
-        char      buf[256];
-        int32_t   CSimGi, CSimYi;
-        uint32_t  CSimGf, CSimYf;
-
-        mainCalcFloat2IntFrac(CSimG, 3U, &CSimGi, &CSimGf);
-        mainCalcFloat2IntFrac(CSimY, 3U, &CSimYi, &CSimYf);
-
-        int len = sprintf(buf,
-            "VSWR_Simu: Re= %3d.%03u, Im= %3d.%03u\r\n",
-            CSimGi, CSimGf,  CSimYi, CSimYf);
-
-        usbLogLen(buf, len);
-      }
-#endif
 
       /* Adding C parallel to the circuit */
       outY += CSimY;
@@ -282,7 +228,7 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float Z0R, float Z0
     mainCalcFloat2IntFrac(outX, 3U, &trxXi, &trxXf);
 
     int len = sprintf(buf,
-        "VSWR_Simu: Resulting Impedance at the transceiver Z= R (%3d.%03u Ohm) + jX (%3d.%03u Ohm)\t\t having L=%5d nH and C=%5d pF\r\n",
+        "VSWR_Simu: Resulting Impedance at the transceiver Z= R (%3d.%03u Ohm) + jX (%3d.%03u Ohm)\t\t having L=%5d nH and C=%5d pF, ",
         trxRi, trxRf,  trxXi, trxXf,  (uint32_t)L_nH, (uint32_t)C_pF);
 
     usbLogLen(buf, len);
@@ -312,7 +258,7 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float Z0R, float Z0
     mainCalcFloat2IntFrac(gammaIm,  3U, &gammaImi,  &gammaImf);
 
     int len = sprintf(buf,
-        "VSWR_Simu: Resulting Gamma at the transceiver |Gamma|= %1d.%03u,  Phi(Gamma)= %3d.%03u having Re(Gamma)= %3d.%03u, Im(Gamma)= %3d.%03u\r\n",
+        "|Gamma|= %1d.%03u,  Phi(Gamma)= %3d.%03u having Re(Gamma)= %3d.%03u, Im(Gamma)= %3d.%03u, ",
         gammaAbsi, gammaAbsf,  gammaPhii, gammaPhif,  gammaRei, gammaRef,  gammaImi, gammaImf);
 
     usbLogLen(buf, len);
@@ -328,20 +274,19 @@ float controllerCalc_VSWR_Simu(float antOhmR, float antOhmI, float Z0R, float Z0
 
   /* Log reflection coefficient at the transceiver */
   {
-    char buf[256];
+    char buf[128];
     int32_t   vswri;
     uint32_t  vswrf;
 
     mainCalcFloat2IntFrac(vswr, 3U, &vswri, &vswrf);
 
     int len = sprintf(buf,
-        "VSWR_Simu: Resulting VSWR at the transceiver VSWR= %3d.%03u\r\n",
+        "VSWR= %d.%03u.\r\n\r\n",
         vswri, vswrf);
 
     usbLogLen(buf, len);
   }
 
-  exit(0);
   return vswr;
 }
 
@@ -356,8 +301,8 @@ static void controllerFSM_getGlobalVars(void)
   __enable_irq();
 
   s_controller_adc_fwd_mw     = mainCalc_mV_to_mW(s_controller_adc_fwd_mv);
-  printf("controllerFSM_getGlobalVars: s_controller_adc_fwd_mv=%f mV, s_controller_adc_swr=%f, s_controller_adc_fwd_mw=%f mW\r\n",
-          s_controller_adc_fwd_mv, s_controller_adc_swr, s_controller_adc_fwd_mw);
+  printf("controllerFSM_getGlobalVars: s_controller_adc_fwd_mv= %.3f mV, s_controller_adc_fwd_mw= %.3f mW, s_controller_adc_swr= %.3f\r\n",
+          s_controller_adc_fwd_mv, s_controller_adc_fwd_mw, s_controller_adc_swr);
 }
 
 static _Bool controllerFSM_checkPower(void)
@@ -370,7 +315,8 @@ static _Bool controllerFSM_checkPower(void)
       uint32_t  pwr_f;
 
       mainCalcFloat2IntFrac(s_controller_adc_fwd_mw, 3, &pwr_i, &pwr_f);
-      const int len = sprintf(buf, "Controller FSM: power=%5d.%03u out of [%u .. %u] Watts - stop auto tuner.\r\n",
+      const int len = sprintf(buf,
+                              "Controller FSM: power=%5d.%03u out of [%u .. %u] Watts - stop auto tuner.\r\n",
                               pwr_i, pwr_f,
                               (uint16_t)Controller_AutoSWR_P_mW_Min, (uint16_t)Controller_AutoSWR_P_mW_Max);
       usbLogLen(buf, len);
@@ -397,7 +343,8 @@ static _Bool controllerFSM_checkSwrTime(void)
       uint32_t  swr_f;
 
       mainCalcFloat2IntFrac(s_controller_adc_swr, 3, &swr_i, &swr_f);
-      const int len = sprintf(buf, "Controller FSM: SWR=%2d.%03u is good enough - stop auto tuner.\r\n",
+      const int len = sprintf(buf,
+                              "Controller FSM: SWR= %2d.%03u is good enough - stop auto tuner.\r\n",
                               swr_i, swr_f);
       usbLogLen(buf, len);
     }
@@ -425,7 +372,8 @@ static void controllerFSM_switchOverCVH(void)
     /* Logging */
     {
       char      buf[128];
-      const int len = sprintf(buf, "Controller FSM: switch over the constellation to %d (0: CV, 1: CH), CVH pingpong ctr=%u.\r\n",
+      const int len = sprintf(buf,
+                              "Controller FSM: switch over the constellation to %d (0: CV, 1: CH), CVH pingpong ctr=%u.\r\n",
                               !s_controller_FSM_optiCVH, s_controller_opti_CVHpongCtr);
       usbLogLen(buf, len);
     }
@@ -602,9 +550,10 @@ static void controllerFSM_logState(void)
   mainCalcFloat2IntFrac(s_controller_opti_C_val,      3, &s_controller_opti_C_val_i,     &s_controller_opti_C_val_f);
   mainCalcFloat2IntFrac(s_controller_opti_C_min_val,  3, &s_controller_opti_C_min_val_i, &s_controller_opti_C_min_val_f);
   mainCalcFloat2IntFrac(s_controller_opti_C_max_val,  3, &s_controller_opti_C_max_val_i, &s_controller_opti_C_max_val_f);
-  len = sprintf(buf, "Controller FSM:\tcontrollerFSM_logState - FSM_state=%u, FSM_optiLC=%u, FSM_optiVCH=%u, FSM_opti_L=%03u, FSM_opti_C=%03u,\r\n" \
-                "\t\t\topti_CVHpongCtr=%03u, opti_LCpongCtr=%03u,\r\n" \
-                "\t\t\tL_val=%5d.%03u nH, L_min=%5d.%03u nH, L_max=%5d.%03u nH\t\tC_val=%5d.%03u pF, C_min=%5d.%03u pF, C_max=%5d.%03u pF,\r\n",
+  len = sprintf(buf,
+                "Controller FSM:\tcontrollerFSM_logState - FSM_state= %u, FSM_optiLC= %u, FSM_optiVCH= %u, FSM_opti_L= %03u, FSM_opti_C= %03u,\r\n" \
+                "\t\t\topti_CVHpongCtr= %03u, opti_LCpongCtr= %03u,\r\n" \
+                "\t\t\tL_val= %5d.%03u nH, L_min= %5d.%03u nH, L_max= %5d.%03u nH\t\tC_val= %5d.%03u pF, C_min= %5d.%03u pF, C_max= %5d.%03u pF,\r\n",
                 s_controller_FSM_state, s_controller_FSM_optiLC, s_controller_FSM_optiCVH, s_controller_opti_L, s_controller_opti_C,
                 s_controller_opti_CVHpongCtr, s_controller_opti_LCpongCtr,
                 s_controller_opti_L_val_i, s_controller_opti_L_val_f,  s_controller_opti_L_min_val_i, s_controller_opti_L_min_val_f,  s_controller_opti_L_max_val_i, s_controller_opti_L_max_val_f,
@@ -646,16 +595,20 @@ static void controllerFSM(void)
   case ControllerFsm__startAuto:
   {
     /* Pull global vars */
+    puts("A21");
     controllerFSM_getGlobalVars();
 
+    puts("A22");
     /* Check for security */
     if (controllerFSM_checkPower())
       break;
 
+    puts("A23");
     /* Check if auto tuner should start */
     if (controllerFSM_checkSwrTime())
       break;
 
+    puts("A24");
     /* Run (V)SWR optimization */
     s_controller_FSM_optiCVH      = ControllerOptiCVH__CV;
     s_controller_FSM_optiLC       = ControllerOptiLC__L_double;
@@ -1094,6 +1047,7 @@ void controllerCyclicTimerEvent(void)
 
   /* FSM logic */
   controllerFSM();
+  printf("TimerEvent: s_controller_FSM_state= %d\r\n", s_controller_FSM_state);
 
   if (s_controller_doAdc) {
     /* Get ADC channels */
