@@ -95,10 +95,10 @@ void simulator(void)
 {
   /* 30R -j50R --> 0.570 sec */
   /* 80R -j50R --> 2.190 sec */
-  /* 30R +j50R --> ---   sec */
+  /* 30R +j50R --> 1.500 sec */
   /* 80R +j50R --> ---   sec */
   const float antOhmR = 30.0f;
-  const float antOhmI = 50.0f;
+  const float antOhmI =-50.0f;
   const float Z0R     = 50.0f;
   const float Z0I     = 0.0f;
   const float qrg     = 1.8e6f;  // 160 meter band
