@@ -123,7 +123,7 @@ void simulator(void)
     float l_swr         = mainCalc_VSWR(l_adc_fwd_mv, l_adc_rev_mv);
 #else
     /* Simulate SWR */
-    float l_swr         = controllerCalc_VSWR_Simu(antOhmR, antOhmI, Z0R, Z0I, qrg);
+    float l_swr         = controllerCalcVSWR_Simu(antOhmR, antOhmI, Z0R, Z0I, qrg);
 #endif
 
     /* Push to global vars */
