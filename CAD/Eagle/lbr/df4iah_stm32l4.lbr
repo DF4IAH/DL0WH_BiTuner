@@ -44,9 +44,9 @@
 <layer number="44" name="Drills" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="45" name="Holes" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="46" name="Milling" color="3" fill="1" visible="yes" active="yes"/>
-<layer number="47" name="Measures" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="47" name="Measures" color="13" fill="1" visible="yes" active="yes"/>
 <layer number="48" name="Document" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="49" name="Reference" color="13" fill="1" visible="yes" active="yes"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="51" name="tDocu" color="14" fill="1" visible="yes" active="yes"/>
 <layer number="52" name="bDocu" color="6" fill="1" visible="yes" active="yes"/>
 <layer number="91" name="Nets" color="2" fill="1" visible="yes" active="yes"/>
@@ -221,6 +221,10 @@
 <wire x1="-10" y1="-9.25" x2="-10" y2="-10" width="0.254" layer="21"/>
 <wire x1="-9.25" y1="-10" x2="-10" y2="-10" width="0.254" layer="21"/>
 <circle x="-10.43" y="10.43" radius="0.2" width="0.4" layer="21"/>
+<dimension x1="9.95" y1="8.75" x2="-9.95" y2="8.75" x3="0" y3="12.5" textsize="0.5" layer="47" width="0.05"/>
+<dimension x1="-8.75" y1="9.95" x2="-8.75" y2="-9.95" x3="-12.5" y3="0" textsize="0.5" layer="47" width="0.05"/>
+<dimension x1="-8.75" y1="11.3" x2="-8.75" y2="-11.3" x3="-14.5" y3="0" textsize="0.5" layer="47" width="0.05"/>
+<dimension x1="11.3" y1="8.75" x2="-11.3" y2="8.75" x3="0" y3="13.5" textsize="0.5" layer="47" width="0.05"/>
 </package>
 <package name="LQFP100">
 <wire x1="-7.62" y1="7.62" x2="-7.62" y2="-6.35" width="0.2" layer="51"/>
@@ -589,11 +593,11 @@
 <wire x1="-5" y1="4.25" x2="-5" y2="-5" width="0.127" layer="51"/>
 <wire x1="-5" y1="-5" x2="5" y2="-5" width="0.127" layer="51"/>
 <wire x1="5" y1="-5" x2="5" y2="5" width="0.127" layer="51"/>
-<dimension x1="6.35" y1="3.8" x2="-6.35" y2="3.8" x3="0" y3="8.255" textsize="0.5" layer="49" width="0.05"/>
-<dimension x1="5.15" y1="3.8" x2="-5.15" y2="3.8" x3="0" y3="6.985" textsize="0.5" layer="49" width="0.05"/>
+<dimension x1="6.35" y1="3.8" x2="-6.35" y2="3.8" x3="0" y3="8.255" textsize="0.5" layer="47" width="0.05"/>
+<dimension x1="5.15" y1="3.8" x2="-5.15" y2="3.8" x3="0" y3="6.985" textsize="0.5" layer="47" width="0.05"/>
 <circle x="-5.6" y="5.6" radius="0.2" width="0.4" layer="21"/>
-<dimension x1="-3.8" y1="5.15" x2="-3.8" y2="-5.15" x3="-6.985" y3="0" textsize="0.5" layer="49" width="0.05"/>
-<dimension x1="-3.8" y1="6.35" x2="-3.8" y2="-6.35" x3="-8.255" y3="0" textsize="0.5" layer="49" width="0.05"/>
+<dimension x1="-3.8" y1="5.15" x2="-3.8" y2="-5.15" x3="-6.985" y3="0" textsize="0.5" layer="47" width="0.05"/>
+<dimension x1="-3.8" y1="6.35" x2="-3.8" y2="-6.35" x3="-8.255" y3="0" textsize="0.5" layer="47" width="0.05"/>
 <wire x1="-4.25" y1="5" x2="-5" y2="4.25" width="0.254" layer="21"/>
 <wire x1="-5" y1="-4.25" x2="-5" y2="-5" width="0.254" layer="21"/>
 <wire x1="5" y1="-5" x2="5" y2="-4.25" width="0.254" layer="21"/>
