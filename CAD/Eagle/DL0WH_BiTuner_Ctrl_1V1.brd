@@ -46,11 +46,11 @@
 <layer number="36" name="bGlue" color="7" fill="5" visible="no" active="yes"/>
 <layer number="37" name="tTest" color="7" fill="1" visible="no" active="yes"/>
 <layer number="38" name="bTest" color="7" fill="1" visible="no" active="yes"/>
-<layer number="39" name="tKeepout" color="4" fill="11" visible="no" active="yes"/>
-<layer number="40" name="bKeepout" color="1" fill="11" visible="no" active="yes"/>
-<layer number="41" name="tRestrict" color="4" fill="10" visible="no" active="yes"/>
-<layer number="42" name="bRestrict" color="1" fill="10" visible="no" active="yes"/>
-<layer number="43" name="vRestrict" color="2" fill="10" visible="no" active="yes"/>
+<layer number="39" name="tKeepout" color="4" fill="11" visible="yes" active="yes"/>
+<layer number="40" name="bKeepout" color="1" fill="11" visible="yes" active="yes"/>
+<layer number="41" name="tRestrict" color="4" fill="10" visible="yes" active="yes"/>
+<layer number="42" name="bRestrict" color="1" fill="10" visible="yes" active="yes"/>
+<layer number="43" name="vRestrict" color="2" fill="10" visible="yes" active="yes"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="yes"/>
 <layer number="45" name="Holes" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="46" name="Milling" color="3" fill="1" visible="yes" active="yes"/>
@@ -58,8 +58,8 @@
 <layer number="48" name="Document" color="7" fill="1" visible="no" active="yes"/>
 <layer number="49" name="Reference" color="7" fill="1" visible="no" active="yes"/>
 <layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
-<layer number="51" name="tDocu" color="14" fill="1" visible="yes" active="yes"/>
-<layer number="52" name="bDocu" color="6" fill="1" visible="yes" active="yes"/>
+<layer number="51" name="tDocu" color="14" fill="1" visible="no" active="yes"/>
+<layer number="52" name="bDocu" color="6" fill="1" visible="no" active="yes"/>
 <layer number="53" name="tGND_GNDA" color="7" fill="9" visible="no" active="no"/>
 <layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
 <layer number="56" name="wert" color="7" fill="1" visible="no" active="no"/>
@@ -3630,9 +3630,9 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="NAME" x="60.16625" y="7.3025" size="0.6096" layer="25" font="vector" ratio="10"/>
 <attribute name="VALUE" x="64.135" y="5.715" size="0.6096" layer="27" font="vector" ratio="10"/>
 </element>
-<element name="R0441" library="df4iah_rcl" package="R0402" value="0R" x="59.84875" y="16.8275" smashed="yes">
-<attribute name="NAME" x="54.76875" y="16.1925" size="0.6096" layer="25" font="vector" ratio="10"/>
-<attribute name="VALUE" x="59.21375" y="14.9225" size="0.6096" layer="27" font="vector" ratio="10"/>
+<element name="R0441" library="df4iah_rcl" package="R0402" value="0R" x="59.84875" y="16.98625" smashed="yes">
+<attribute name="NAME" x="54.76875" y="16.35125" size="0.6096" layer="25" font="vector" ratio="10"/>
+<attribute name="VALUE" x="59.21375" y="15.08125" size="0.6096" layer="27" font="vector" ratio="10"/>
 </element>
 <element name="C0451" library="df4iah_rcl" package="C0805" value="47uF" x="63.5" y="29.845" smashed="yes" rot="R90">
 <attribute name="NAME" x="62.23" y="28.575" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
@@ -3785,7 +3785,7 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="VALUE" x="-0.3175" y="52.705" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
 </element>
 <element name="U0101" library="df4iah_stm32l4" package="LQFP64" value="STM32L476RXT_64PIN_LDO" x="68.58" y="19.05" smashed="yes">
-<attribute name="NAME" x="62.6625" y="17.82125" size="0.8128" layer="25" rot="R90"/>
+<attribute name="NAME" x="62.50375" y="23.3775" size="0.8128" layer="25" rot="R90"/>
 <attribute name="VALUE" x="65.555" y="16.6" size="0.8128" layer="27"/>
 </element>
 <element name="H1721" library="df4iah_holes" package="3,0-PAD" value="MOUNT-PAD-ROUND3.0" x="53.086" y="3.81" locked="yes"/>
@@ -3966,19 +3966,19 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="VALUE" x="64.77" y="12.065" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
 </element>
 <element name="R0622" library="df4iah_rcl" package="R0402" value="0R" x="67.31" y="10.4775" smashed="yes" rot="MR270">
-<attribute name="NAME" x="66.9925" y="5.715" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="NAME" x="66.83375" y="6.0325" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="68.8975" y="12.065" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
 <element name="R0623" library="df4iah_rcl" package="R0402" value="47R" x="67.945" y="10.4775" smashed="yes" rot="R270">
-<attribute name="NAME" x="68.58" y="5.715" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="NAME" x="68.2625" y="6.0325" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="66.3575" y="12.065" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
 </element>
 <element name="R0624" library="df4iah_rcl" package="R0402" value="47R" x="69.5325" y="10.4775" smashed="yes" rot="R270">
-<attribute name="NAME" x="69.85" y="5.715" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="NAME" x="69.85" y="6.0325" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="67.945" y="12.065" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
 </element>
 <element name="R0625" library="df4iah_rcl" package="R0402" value="47R" x="68.8975" y="10.4775" smashed="yes" rot="MR270">
-<attribute name="NAME" x="68.58" y="5.715" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="NAME" x="68.58" y="6.0325" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="70.485" y="12.065" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
 <element name="R0626" library="df4iah_rcl" package="R0402" value="47R" x="76.835" y="12.3825" smashed="yes">
@@ -3986,11 +3986,11 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="VALUE" x="75.2475" y="10.795" size="0.6096" layer="27" font="vector" ratio="10"/>
 </element>
 <element name="R0724" library="df4iah_rcl" package="R0402" value="47R" x="70.485" y="10.4775" smashed="yes" rot="MR270">
-<attribute name="NAME" x="70.1675" y="5.715" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="NAME" x="70.1675" y="6.0325" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="72.0725" y="12.065" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
 <element name="R0824" library="df4iah_rcl" package="R0402" value="47R" x="71.12" y="10.4775" smashed="yes" rot="R270">
-<attribute name="NAME" x="71.4375" y="5.715" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
+<attribute name="NAME" x="71.59625" y="6.0325" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="69.5325" y="12.065" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
 </element>
 <element name="U1301" library="df4iah_powersupply" package="S-PDSO-G10" value="TPS62051" x="15.24" y="39.37" rot="R180"/>
@@ -4543,7 +4543,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="65.33" y1="13.275" x2="65.3375" y2="13.2675" width="0.3048" layer="1"/>
 <wire x1="65.3375" y1="13.2675" x2="65.3375" y2="7.855" width="0.3048" layer="1"/>
 <wire x1="65.3375" y1="7.855" x2="65.42" y2="7.62" width="0.3048" layer="1"/>
-<wire x1="59.19875" y1="16.8275" x2="58.0875" y2="17.765" width="0.3048" layer="1"/>
+<wire x1="59.19875" y1="16.98625" x2="58.0875" y2="17.765" width="0.3048" layer="1"/>
 <wire x1="58.0875" y1="17.765" x2="57.785" y2="17.93875" width="0.3048" layer="1"/>
 <wire x1="57.785" y1="17.93875" x2="57.61125" y2="18.0975" width="0.1524" layer="1"/>
 <wire x1="57.61125" y1="18.0975" x2="57.62625" y2="18.0825" width="0.1524" layer="1"/>
@@ -4611,7 +4611,7 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="67.31" y1="21.2725" x2="67.945" y2="21.9075" width="0.3048" layer="1"/>
 <wire x1="67.945" y1="21.9075" x2="72.0725" y2="21.9075" width="0.3048" layer="1"/>
 <via x="59.21375" y="16.66875" extent="1-16" drill="0.3048"/>
-<wire x1="59.19875" y1="16.8275" x2="59.055" y2="16.66875" width="0.1524" layer="1"/>
+<wire x1="59.19875" y1="16.98625" x2="59.055" y2="16.66875" width="0.1524" layer="1"/>
 <wire x1="59.055" y1="16.66875" x2="59.21375" y2="16.66875" width="0.3048" layer="1"/>
 <wire x1="59.595625" y1="15.5575" x2="59.3725" y2="15.5575" width="0.3048" layer="16"/>
 <wire x1="59.3725" y1="15.5575" x2="59.3725" y2="16.51" width="0.3048" layer="16"/>
@@ -4764,7 +4764,7 @@ Subminiature Tact Switch for SMT</description>
 <contactref element="R0441" pad="2"/>
 <contactref element="U0101" pad="12"/>
 <wire x1="62.805" y1="17.3" x2="61.08" y2="17.3" width="0.1524" layer="1"/>
-<wire x1="61.08" y1="17.3" x2="60.49875" y2="16.8275" width="0.1524" layer="1"/>
+<wire x1="61.08" y1="17.3" x2="60.49875" y2="16.98625" width="0.1524" layer="1"/>
 </signal>
 <signal name="PH3_BOOT0">
 <contactref element="R0221" pad="2"/>
@@ -6919,66 +6919,66 @@ Subminiature Tact Switch for SMT</description>
 <approved hash="7,40,b1293fe296673dd4"/>
 <approved hash="7,40,4129cdac6b09c034"/>
 <approved hash="7,40,c801aea92f846e94"/>
-<approved hash="18,29,121f16e71e831a7b"/>
 <approved hash="18,29,0a830cad048402aa"/>
+<approved hash="18,29,121f16e71e831a7b"/>
 <approved hash="18,29,eb485d47dd456b4a"/>
 <approved hash="18,29,d27a7471f4735278"/>
 <approved hash="18,29,a821bf2a3f2b2820"/>
 <approved hash="18,29,9113961c161d1112"/>
-<approved hash="18,29,d3f4cba64ba753f5"/>
-<approved hash="18,29,44724223c222c473"/>
+<approved hash="18,29,4ed94c8acc8bced8"/>
 <approved hash="18,29,96b3751d4ef5f8df"/>
 <approved hash="18,29,5bb6d16e2b2e71d0"/>
 <approved hash="18,29,c90dc1ff41fe490c"/>
+<approved hash="18,29,d3f4cba64ba753f5"/>
+<approved hash="18,29,44724223c222c473"/>
 <approved hash="18,29,fa4a4d6e788a942a"/>
 <approved hash="18,29,73916be64d08d023"/>
 <approved hash="18,29,50805771d770d081"/>
-<approved hash="18,29,4ed94c8acc8bced8"/>
 <approved hash="18,29,d453d20d520c5452"/>
 <approved hash="18,29,6f363edf03c4af53"/>
 <approved hash="18,29,0784aee116711710"/>
-<approved hash="18,29,89d5ffd018dc89be"/>
 <approved hash="18,29,a13ffeb24f4c76f0"/>
+<approved hash="18,29,89d5ffd018dc89be"/>
 <approved hash="18,29,92a92722273c92b7"/>
 <approved hash="18,29,e6ce5b4b5b55e6d0"/>
 <approved hash="18,29,17da9fc5277583e5"/>
 <approved hash="18,29,9e859eb2d17e7c90"/>
-<approved hash="18,29,57395767d766d738"/>
-<approved hash="18,29,d3ead21b521a53eb"/>
+<approved hash="18,29,b6470f6f618a9326"/>
 <approved hash="18,29,cdb3c9e049e14db2"/>
 <approved hash="18,29,c718c74947484719"/>
-<approved hash="18,29,509e4ecccecdd09f"/>
 <approved hash="18,29,4a674495c494ca66"/>
+<approved hash="18,29,509e4ecccecdd09f"/>
+<approved hash="18,29,57395767d766d738"/>
 <approved hash="18,29,91b26c1002f9badf"/>
-<approved hash="18,29,b6470f6f618a9326"/>
+<approved hash="18,29,d3ead21b521a53eb"/>
 <approved hash="18,29,629439ae79a22298"/>
 <approved hash="18,29,3aee626522697ae2"/>
-<approved hash="18,29,7fdafc5ffc5a7fdf"/>
 <approved hash="18,29,0bbd803680330bb8"/>
-<approved hash="18,29,3721ce97382357cb"/>
+<approved hash="18,29,7fdafc5ffc5a7fdf"/>
 <approved hash="18,29,cf0c2cdff819628a"/>
-<approved hash="18,29,94381372f8d826f5"/>
+<approved hash="18,29,3721ce97382357cb"/>
 <approved hash="18,29,6a0663ef38fb876b"/>
+<approved hash="18,29,94381372f8d826f5"/>
 <approved hash="18,29,e08e69056907e08c"/>
 <approved hash="18,29,94e9156c156e94eb"/>
 <approved hash="18,29,ecd7545c1440accb"/>
 <approved hash="18,29,b4ad0f974f8bf4b1"/>
-<approved hash="18,29,2df5ae70ae732df6"/>
 <approved hash="18,29,5992d219d21a5991"/>
-<approved hash="18,29,4a01c784c7874a02"/>
+<approved hash="18,29,2df5ae70ae732df6"/>
 <approved hash="18,29,3e66bbedbbee3e65"/>
-<approved hash="18,29,ebb6523d1221abaa"/>
+<approved hash="18,29,4a01c784c7874a02"/>
 <approved hash="18,29,b3cc09f649eaf3d0"/>
-<approved hash="18,29,e30c5889588be30e"/>
+<approved hash="18,29,ebb6523d1221abaa"/>
 <approved hash="18,29,976b24e024e29769"/>
+<approved hash="18,29,e30c5889588be30e"/>
 <approved hash="18,29,0c7f8df48df10c7a"/>
 <approved hash="18,29,7818f19df198781d"/>
 <approved hash="18,29,dd9f041444189d93"/>
 <approved hash="18,29,85e55fdf1fd3c5e9"/>
-<approved hash="18,29,91270aa20aac9129"/>
 <approved hash="18,29,e54076cb76c5e54e"/>
-<approved hash="18,29,5a54dfdfdfd85a53"/>
+<approved hash="18,29,91270aa20aac9129"/>
 <approved hash="18,29,2e33a3b6a3b12e34"/>
+<approved hash="18,29,5a54dfdfdfd85a53"/>
 <approved hash="18,29,473fc4bac4c54740"/>
 <approved hash="18,29,3358b8d3b8ac3327"/>
 <approved hash="18,29,db7e05f545f99b72"/>
@@ -6994,41 +6994,41 @@ Subminiature Tact Switch for SMT</description>
 <approved hash="18,29,001b87d78a6df241"/>
 <approved hash="18,29,8ea30d260d208ea5"/>
 <approved hash="18,29,fac4714f7149fac2"/>
-<approved hash="18,29,8b26c2d9b8c2dbcf"/>
 <approved hash="18,29,2a309894c9455113"/>
+<approved hash="18,29,8b26c2d9b8c2dbcf"/>
 <approved hash="18,29,c6128bf08bf0c612"/>
-<approved hash="18,29,51c8d843d85c51d7"/>
 <approved hash="18,29,25afa42aa43525b0"/>
-<approved hash="18,29,c8dd43564350c8db"/>
+<approved hash="18,29,51c8d843d85c51d7"/>
 <approved hash="18,29,bcba3f3f3f39bcbc"/>
+<approved hash="18,29,c8dd43564350c8db"/>
 <approved hash="18,29,dbc65643564ddbc8"/>
 <approved hash="18,29,afa12a2a2a24afaf"/>
 <approved hash="18,29,f2f5be17be17f2f5"/>
-<approved hash="18,29,823180f34d230513"/>
 <approved hash="18,29,93266abfeca55fce"/>
+<approved hash="18,29,823180f34d230513"/>
 <approved hash="18,29,06b5953e953b06b0"/>
 <approved hash="18,29,72d2e957e95272d7"/>
-<approved hash="18,29,89e10064006689e3"/>
 <approved hash="18,29,fd867c0d7c0ffd84"/>
+<approved hash="18,29,89e10064006689e3"/>
 <approved hash="18,29,20ed9b689b6b20ee"/>
 <approved hash="18,29,548ae701e7025489"/>
 <approved hash="18,29,cb9f4e144e16cb9d"/>
 <approved hash="18,29,bff8327d327fbffa"/>
 <approved hash="18,29,a26329e829eaa261"/>
 <approved hash="18,29,d60455815583d606"/>
-<approved hash="18,29,f3fa3c982d4210f7"/>
 <approved hash="18,29,9ab947c0e8188e75"/>
+<approved hash="18,29,f3fa3c982d4210f7"/>
 <approved hash="18,29,63d30997447f5d23"/>
-<approved hash="18,29,789ebeb0b69a70b4"/>
 <approved hash="18,29,6002a4faac9d6865"/>
-<approved hash="18,29,327a29f5a98ab205"/>
-<approved hash="18,29,0b4800c380bc8b37"/>
-<approved hash="18,29,6a4b61c3e1bcea34"/>
-<approved hash="18,29,a21ab613366c2265"/>
+<approved hash="18,29,789ebeb0b69a70b4"/>
 <approved hash="18,29,43195911d96ec366"/>
+<approved hash="18,29,a21ab613366c2265"/>
+<approved hash="18,29,6a4b61c3e1bcea34"/>
 <approved hash="18,29,bae89161111e3a97"/>
-<approved hash="18,29,65c2af4d2f40e5cf"/>
+<approved hash="18,29,0b4800c380bc8b37"/>
+<approved hash="18,29,327a29f5a98ab205"/>
 <approved hash="18,29,5cf0867b0676dcfd"/>
+<approved hash="18,29,65c2af4d2f40e5cf"/>
 <approved hash="18,29,14a1dfa95fa494ac"/>
 <approved hash="18,29,f5a230abb0a675af"/>
 <approved hash="18,29,3df3e77b6776bdfe"/>
