@@ -4,9 +4,9 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "prove.h"
+#include "prove.hpp"
 
-#include "main.h"
+#include "main.hpp"
 
 
 float                                 g_adc_refint_val        = 0.0f;

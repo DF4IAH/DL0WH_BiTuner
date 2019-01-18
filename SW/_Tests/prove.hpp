@@ -1,7 +1,7 @@
 #ifndef TASK_CONTROLLER_H_
 #define TASK_CONTROLLER_H_
 
-#include "main.h"
+#include "main.hpp"
 
 
 typedef enum ControllerMsgDestinations_ENUM {

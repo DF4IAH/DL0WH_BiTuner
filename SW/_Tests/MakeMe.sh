@@ -1,4 +1,4 @@
 #!/bin/sh
 
-gcc -O0 -o TestAlgo -I. main.c prove.c complex.c -lm
+g++ -O0 -o TestAlgo -I. main.cpp prove.cpp complex.cpp -lm
 
