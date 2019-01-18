@@ -680,6 +680,9 @@ static void controllerFSM_DoubleStrategy(void)
       s_controller_opti_max_swr          = s_controller_opti_mid_swr;
     }
 
+    s_controller_opti_L_min_val          = s_controller_opti_L_min_cand_val;
+    s_controller_opti_L_min_cand_val     = s_controller_opti_L_mid_val;
+
   } else {
     /* Double C */
     s_controller_opti_C_mid_val *= 2.0f;
@@ -693,7 +696,13 @@ static void controllerFSM_DoubleStrategy(void)
       s_controller_opti_C_max_val        = s_controller_opti_C_mid_val;
       s_controller_opti_max_swr          = s_controller_opti_mid_swr;
     }
+
+    s_controller_opti_C_min_val          = s_controller_opti_C_min_cand_val;
+    s_controller_opti_C_min_cand_val     = s_controller_opti_C_mid_val;
   }
+
+  s_controller_opti_min_swr            = s_controller_opti_min_cand_swr;
+  s_controller_opti_min_cand_swr       = s_controller_opti_mid_swr;
 }
 
 static void controllerFSM_HalfStrategy(void)
