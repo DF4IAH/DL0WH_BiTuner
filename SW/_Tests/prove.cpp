@@ -46,8 +46,8 @@ static const float            Controller_AutoSWR_P_mW_Min       = 5.0f;
 static const float            Controller_AutoSWR_P_mW_Max       = 15.0f;
 static const float            Controller_AutoSWR_SWR_Max        = 1.1f;
 static const float            Controller_AutoSWR_Time_ms_Max    = 750.0f;
-static const uint8_t          Controller_AutoSWR_CVHpong_Max    = 3U;
-static const uint8_t          Controller_AutoSWR_LCpong_Max     = 5U;
+static const uint8_t          Controller_AutoSWR_CVHpong_Max    = 1U;
+static const uint8_t          Controller_AutoSWR_LCpong_Max     = 10U;
 static uint32_t               s_controller_swr_tmr              = 0UL;
 static uint32_t               s_controller_30ms_cnt             = 0UL;
 
@@ -649,7 +649,7 @@ static void controllerFSM_ZeroXHalfStrategy(void)
       /* Check if optimum found by increase of L */
       if (s_controller_opti_swr_1st_L > Controller_Ls_nH[0]) {
         /* Advance L, at least by one step, limiting */
-        const float advanced = s_controller_opti_swr_1st_L * 1.5f + Controller_Ls_nH[0];
+        const float advanced = s_controller_opti_swr_1st_L * 1.4f + Controller_Ls_nH[0];
         if (advanced > 2.0f * Controller_Ls_nH[7]) {
           s_controller_opti_L = controllerCalcMatcherNH2L( controllerCalcMatcherL2nH(advanced) );
 
@@ -667,6 +667,9 @@ static void controllerFSM_ZeroXHalfStrategy(void)
 
         /* Forget this minimum due to C advance */
         s_controller_adc_swr        = 99.9f;
+        s_controller_opti_L_swr.clear();
+        s_controller_opti_C_swr.clear();
+        
       } else {
         /* Switch over to opposite CVH constellation */
         controllerFSM_SwitchOverCVH();
@@ -682,7 +685,7 @@ static void controllerFSM_ZeroXHalfStrategy(void)
       /* Check if optimum found by increase of C */
       if (s_controller_opti_swr_1st_C > Controller_Cs_pF[0]) {
         /* Advance C, at least by one step, limiting */
-        const float advanced = s_controller_opti_swr_1st_C * 1.2f + Controller_Cs_pF[0];
+        const float advanced = s_controller_opti_swr_1st_C * 1.4f + Controller_Cs_pF[0];
         if (advanced > 2.0f * Controller_Cs_pF[7]) {
           s_controller_opti_C = controllerCalcMatcherPF2C( controllerCalcMatcherC2pF(advanced) );
         } else {
@@ -699,6 +702,9 @@ static void controllerFSM_ZeroXHalfStrategy(void)
 
         /* Forget this minimum due to L advance */
         s_controller_adc_swr        = 99.9f;
+        s_controller_opti_L_swr.clear();
+        s_controller_opti_C_swr.clear();
+        
       } else {
         /* Switch over to opposite CVH constellation */
         controllerFSM_SwitchOverCVH();
@@ -728,6 +734,11 @@ static void controllerFSM_OptiHalfStrategy(void)
         s_controller_FSM_optiUpDn   = ControllerOptiUpDn__Up;
         s_controller_FSM_state      = ControllerFsm__findMinSwr;
 
+        /* New combination with new maps */
+        s_controller_adc_swr        = 99.9f;
+        s_controller_opti_L_swr.clear();
+        s_controller_opti_C_swr.clear();
+
       } else {
         /* Switch over to opposite CVH constellation */
         controllerFSM_SwitchOverCVH();
@@ -745,6 +756,11 @@ static void controllerFSM_OptiHalfStrategy(void)
         s_controller_FSM_optiStrat  = (s_controller_adc_swr < 1.5f) ?  ControllerOptiStrat__SingleCnt : ControllerOptiStrat__Double;
         s_controller_FSM_optiUpDn   = ControllerOptiUpDn__Up;
         s_controller_FSM_state      = ControllerFsm__findMinSwr;
+
+        /* New combination with new maps */
+        s_controller_adc_swr        = 99.9f;
+        s_controller_opti_L_swr.clear();
+        s_controller_opti_C_swr.clear();
 
       } else {
         /* Switch over to opposite CVH constellation */
@@ -779,6 +795,11 @@ static void controllerFSM_OptiSingleCntStrategy(void)
         if (s_controller_FSM_optiStrat == ControllerOptiStrat__Double) {
           s_controller_opti_C       = Controller_C0_pF;
         }
+
+        /* New combination with new maps */
+        s_controller_adc_swr        = 99.9f;
+        s_controller_opti_L_swr.clear();
+        s_controller_opti_C_swr.clear();
       
       } else {
         /* Exhausted - try opposite CVH setup */
@@ -814,7 +835,12 @@ static void controllerFSM_OptiSingleCntStrategy(void)
             if (s_controller_FSM_optiStrat == ControllerOptiStrat__Double) {
               s_controller_opti_C       = Controller_C0_pF;
             }
-          
+
+            /* New combination with new maps */
+            s_controller_adc_swr        = 99.9f;
+            s_controller_opti_L_swr.clear();
+            s_controller_opti_C_swr.clear();
+  
           } else {
             /* Exhausted - try opposite CVH setup */
             controllerFSM_SwitchOverCVH();
@@ -839,6 +865,11 @@ static void controllerFSM_OptiSingleCntStrategy(void)
         if (s_controller_FSM_optiStrat == ControllerOptiStrat__Double) {
           s_controller_opti_L       = Controller_L0_nH;
         }
+
+        /* New combination with new maps */
+        s_controller_adc_swr        = 99.9f;
+        s_controller_opti_L_swr.clear();
+        s_controller_opti_C_swr.clear();
 
       } else {
         /* Exhausted - try opposite CVH setup */
@@ -874,6 +905,11 @@ static void controllerFSM_OptiSingleCntStrategy(void)
             if (s_controller_FSM_optiStrat == ControllerOptiStrat__Double) {
               s_controller_opti_L       = Controller_L0_nH;
             }
+
+            /* New combination with new maps */
+            s_controller_adc_swr        = 99.9f;
+            s_controller_opti_L_swr.clear();
+            s_controller_opti_C_swr.clear();
 
           } else {
             /* Exhausted - try opposite CVH setup */
