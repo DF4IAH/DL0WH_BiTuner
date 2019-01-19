@@ -45,7 +45,6 @@ typedef enum ControllerOptiStrat_ENUM {
 
   ControllerOptiStrat__Double                                 = 0U,
   ControllerOptiStrat__Half,
-  ControllerOptiStrat__SingleCnt,
 
 } ControllerOptiStrat_t;
 

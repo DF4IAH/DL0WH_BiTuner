@@ -93,12 +93,23 @@ uint32_t osKernelSysTick(void)
 
 void simulator(void)
 {
-  /* 30R -j50R --> 0.300 sec, 1.350 sec */
-  /* 80R -j50R --> 0.300 sec, 1.260 sec */
-  /* 30R +j50R --> 0.420 sec, 1.350 (SWR=1.237) sec */
-  /* 80R +j50R --> 0.330 sec, ---   sec */
-  const float antOhmR = 30.0f;
-  const float antOhmI =-50.0f;
+  /* 45R -j10R --> 0.180 sec, 0.300 sec (SWR=1.081) */
+  /* 45R +j10R --> 0.180 sec, 0.180 sec (SWR=1.063) */
+  /* 55R -j10R --> 0.180 sec, 1.140 sec (SWR=1.074) */
+  /* 55R +j10R --> 0.300 sec, 1.260 sec (SWR=1.094) */
+
+  /* 30R -j50R --> 0.300 sec, 1.290 sec (SWR=1.046) */
+  /* 30R +j50R --> 0.420 sec, 1.050 sec (SWR=1.035) */
+  /* 80R -j50R --> 0.300 sec, 2.340 sec (SWR=1.033) */
+  /* 80R +j50R --> 0.330 sec, 1.230 sec (SWR=1.039) */
+
+  /*  5R -j50R --> 0.300 sec, 2.460 sec (SWR=1.201) */
+  /*  5R +j50R --> 0.420 sec, 1.380 sec (SWR=1.567) */
+  /*500R -j50R --> 0.300 sec, 3.180 sec (SWR=2.064) */
+  /*500R +j50R --> 0.150 sec, 1.890 sec (SWR=1.880) */
+
+  const float antOhmR = 75.0f;
+  const float antOhmI =-100.0f;
   const float Z0R     = 50.0f;
   const float Z0I     = 0.0f;
   const float qrg     = 1.8e6f;  // 160 meter band
