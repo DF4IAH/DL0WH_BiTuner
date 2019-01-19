@@ -93,20 +93,20 @@ uint32_t osKernelSysTick(void)
 
 void simulator(void)
 {
-  /* 45R -j10R --> 0.180 sec, 0.300 sec (SWR=1.081) */
-  /* 45R +j10R --> 0.180 sec, 0.180 sec (SWR=1.063) */
-  /* 55R -j10R --> 0.180 sec, 1.140 sec (SWR=1.074) */
-  /* 55R +j10R --> 0.300 sec, 1.260 sec (SWR=1.094) */
+  /* 45R -j 10R --> 0.390 sec (SWR=1.084) */
+  /* 45R +j 10R --> 0.210 sec (SWR=1.063) */
+  /* 55R -j 10R --> 1.320 sec (SWR=1.092) */
+  /* 55R +j 10R --> 1.350 sec (SWR=1.125) */
 
-  /* 30R -j50R --> 0.300 sec, 1.290 sec (SWR=1.046) */
-  /* 30R +j50R --> 0.420 sec, 1.050 sec (SWR=1.035) */
-  /* 80R -j50R --> 0.300 sec, 2.340 sec (SWR=1.033) */
-  /* 80R +j50R --> 0.330 sec, 1.230 sec (SWR=1.039) */
+  /* 30R -j 50R --> 1.290 sec (SWR=1.089) */
+  /* 30R +j 50R --> 1.080 sec (SWR=1.045) */
+  /* 80R -j 50R --> 2.640 sec (SWR=1.033) */
+  /* 80R +j 50R --> 1.260 sec (SWR=1.092) */
 
-  /*  5R -j50R --> 0.300 sec, 2.460 sec (SWR=1.201) */
-  /*  5R +j50R --> 0.420 sec, 1.380 sec (SWR=1.567) */
-  /*500R -j50R --> 0.300 sec, 3.180 sec (SWR=2.064) */
-  /*500R +j50R --> 0.150 sec, 1.890 sec (SWR=1.880) */
+  /*  5R -j 50R --> 2.550 sec (SWR=1.420) */
+  /*  5R +j 50R --> 0.750 sec (SWR=1.091) */
+  /*500R -j500R --> 2.490 sec (SWR=1.757) */
+  /*500R +j500R --> 2.370 sec (SWR=2.085) */
 
   const float antOhmR = 500.0f;
   const float antOhmI =-500.0f;
