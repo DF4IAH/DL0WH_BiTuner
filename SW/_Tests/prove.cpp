@@ -165,7 +165,7 @@ float controllerCalcVSWR_Simu(float antOhmR, float antOhmI, float Z0R, float Z0I
   float gammaIm     = 0.0f;
   float gammaAbs    = 0.0f;
   float gammaPhi    = 0.0f;
-  float vswr        = 99.0f;
+  float vswr        = 99.9f;
 
   /* For security only */
   if (L_nH < 1.0f) {
@@ -391,7 +391,7 @@ static void controllerFSM_GetGlobalVars(void)
   map<float, float>::iterator it;
   
   /* Presets */
-  s_controller_opti_swr_2nd   = s_controller_opti_swr_1st   = 100.0f;
+  s_controller_opti_swr_2nd   = s_controller_opti_swr_1st   = 99.9f;
   s_controller_opti_swr_2nd_L = s_controller_opti_swr_1st_L = 0.0f;
   s_controller_opti_swr_2nd_C = s_controller_opti_swr_1st_C = 0.0f;
 
@@ -598,8 +598,38 @@ static void controllerFSM_DoubleStrategy(void)
 
 static void controllerFSM_HalfStrategy(void)
 {
-  s_controller_opti_L = (s_controller_opti_swr_1st_L + s_controller_opti_swr_2nd_L) / 2.0f; 
-  s_controller_opti_C = (s_controller_opti_swr_1st_C + s_controller_opti_swr_2nd_C) / 2.0f;   
+  if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
+    s_controller_opti_L = (s_controller_opti_swr_1st_L + s_controller_opti_swr_2nd_L) / 2.0f;
+
+  } else {
+    s_controller_opti_C = (s_controller_opti_swr_1st_C + s_controller_opti_swr_2nd_C) / 2.0f;   
+  }
+}
+
+static void controllerFSM_SingleCntStrategy(void)
+{
+  if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
+    /* Single step L */
+    if (s_controller_FSM_optiUpDn == ControllerOptiUpDn__Up) {
+      /* Up */
+      s_controller_opti_L += Controller_Ls_nH[0];
+      
+    } else {
+      /* Down */
+      s_controller_opti_L -= Controller_Ls_nH[0];
+    }
+    
+  } else {
+    /* Single step C */
+    if (s_controller_FSM_optiUpDn == ControllerOptiUpDn__Up) {
+      /* Up */
+      s_controller_opti_C += Controller_Cs_pF[0];
+      
+    } else {
+      /* Down */
+      s_controller_opti_C -= Controller_Cs_pF[0];
+    }
+  }
 }
 
 static void controllerFSM_ZeroXHalfStrategy(void)
@@ -679,16 +709,17 @@ static void controllerFSM_ZeroXHalfStrategy(void)
 
 static void controllerFSM_OptiHalfStrategy(void)
 {
-  if (s_controller_FSM_optiStrat == ControllerOptiStrat__Half) {
+  if (s_controller_FSM_optiStrat != ControllerOptiStrat__Half) {
     return;
   }
   
-  if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
-    /* Find intermediate L */
-    controllerFSM_HalfStrategy();
+  /* Work out the half strategy */
+  controllerFSM_HalfStrategy();
 
+  if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
     const float L_diff_abs = fabs(s_controller_opti_swr_1st_L - s_controller_opti_swr_2nd_L);
 
+    printf("controllerFSM_OptiHalfStrategy 1: abs(swr_1st_L - swr_2nd_L)=%f\r\n", L_diff_abs);
     if (L_diff_abs <= Controller_Ls_nH[0]) {
       if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
         /* Optimize C, again */
@@ -704,11 +735,9 @@ static void controllerFSM_OptiHalfStrategy(void)
     }
 
   } else {
-    /* Find intermediate C */
-    controllerFSM_HalfStrategy();
-
     const float C_diff_abs = fabs(s_controller_opti_swr_1st_C - s_controller_opti_swr_2nd_C);
 
+    printf("controllerFSM_OptiHalfStrategy 2: abs(swr_1st_C - swr_2nd_C)=%f\r\n", C_diff_abs);
     if (C_diff_abs <= Controller_Cs_pF[0]) {
       if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
         /* Optimize L, again */
@@ -720,6 +749,137 @@ static void controllerFSM_OptiHalfStrategy(void)
       } else {
         /* Switch over to opposite CVH constellation */
         controllerFSM_SwitchOverCVH();
+      }
+    }
+  }
+}
+
+static void controllerFSM_OptiSingleCntStrategy(void)
+{
+  if (s_controller_FSM_optiStrat != ControllerOptiStrat__SingleCnt) {
+    return;
+  }
+  
+  /* Work out the single count step strategy */
+  controllerFSM_SingleCntStrategy();
+
+  if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
+    /* Single step L */
+    const float L_diff_abs = fabs(s_controller_opti_swr_1st_L - s_controller_opti_swr_2nd_L);
+    s_controller_FSM_optiUpDn = (s_controller_opti_swr_1st_L >= s_controller_opti_L) ?  ControllerOptiUpDn__Up : ControllerOptiUpDn__Dn;
+
+    if (L_diff_abs <= Controller_Ls_nH[0]) {
+      /* L is optimized */
+
+      if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
+        /* Change over to C trim */
+        s_controller_FSM_optiLC     = ControllerOptiLC__C;
+        s_controller_FSM_optiUpDn   = ControllerOptiUpDn__Up;
+        s_controller_FSM_optiStrat  = (s_controller_adc_swr < 1.5f) ?  ControllerOptiStrat__SingleCnt : ControllerOptiStrat__Double;
+        if (s_controller_FSM_optiStrat == ControllerOptiStrat__Double) {
+          s_controller_opti_C       = Controller_C0_pF;
+        }
+      
+      } else {
+        /* Exhausted - try opposite CVH setup */
+        controllerFSM_SwitchOverCVH();
+      }
+    
+    } else {
+      /* Process counter */
+
+      if (s_controller_FSM_optiUpDn == ControllerOptiUpDn__Up) {
+        /* Up */
+
+        /* Saturate */
+        if (s_controller_opti_L > 2.0f * Controller_Ls_nH[7]) {
+          s_controller_opti_L = controllerCalcMatcherL2nH( controllerCalcMatcherNH2L(s_controller_opti_L) );
+
+          /* Banging the limit - try opposite CVH setup */
+          controllerFSM_SwitchOverCVH();
+        }
+      
+      } else {
+        /* Down */
+
+        /* Saturate to zero */
+        if (s_controller_opti_L < (Controller_L0_nH + Controller_Ls_nH[0])) {
+          s_controller_opti_L = Controller_L0_nH;
+
+          if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
+            /* Change over to C trim */
+            s_controller_FSM_optiLC     = ControllerOptiLC__C;
+            s_controller_FSM_optiUpDn   = ControllerOptiUpDn__Up;
+            s_controller_FSM_optiStrat  = (s_controller_adc_swr < 1.5f) ?  ControllerOptiStrat__SingleCnt : ControllerOptiStrat__Double;
+            if (s_controller_FSM_optiStrat == ControllerOptiStrat__Double) {
+              s_controller_opti_C       = Controller_C0_pF;
+            }
+          
+          } else {
+            /* Exhausted - try opposite CVH setup */
+            controllerFSM_SwitchOverCVH();
+          }
+        }
+      }
+    }
+
+  } else {
+    /* Single step C */
+    const float C_diff_abs = fabs(s_controller_opti_swr_1st_C - s_controller_opti_swr_2nd_C);
+    s_controller_FSM_optiUpDn = (s_controller_opti_swr_1st_C >= s_controller_opti_C) ?  ControllerOptiUpDn__Up : ControllerOptiUpDn__Dn;
+
+    if (C_diff_abs <= Controller_Cs_pF[0]) {
+      /* C is optimized */
+
+      if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
+        /* Change over to L trim */
+        s_controller_FSM_optiLC     = ControllerOptiLC__L;
+        s_controller_FSM_optiUpDn   = ControllerOptiUpDn__Up;
+        s_controller_FSM_optiStrat  = (s_controller_adc_swr < 1.5f) ?  ControllerOptiStrat__SingleCnt : ControllerOptiStrat__Double;
+        if (s_controller_FSM_optiStrat == ControllerOptiStrat__Double) {
+          s_controller_opti_L       = Controller_L0_nH;
+        }
+
+      } else {
+        /* Exhausted - try opposite CVH setup */
+        controllerFSM_SwitchOverCVH();
+      }
+    
+    } else {
+      /* Process counter */
+
+      if (s_controller_FSM_optiUpDn == ControllerOptiUpDn__Up) {
+        /* Up */
+
+        /* Saturate */
+        if (s_controller_opti_C > 2.0f * Controller_Cs_pF[7]) {
+          s_controller_opti_C = controllerCalcMatcherC2pF( controllerCalcMatcherPF2C(s_controller_opti_C) );
+
+          /* Banging the limit - try opposite CVH setup */
+          controllerFSM_SwitchOverCVH();
+        }
+      
+      } else {
+        /* Down */
+
+        /* Saturate to zero */
+        if (s_controller_opti_C < (Controller_C0_pF + Controller_Cs_pF[0])) {
+          s_controller_opti_C = Controller_C0_pF;
+
+          if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
+            /* Change over to L trim */
+            s_controller_FSM_optiLC     = ControllerOptiLC__L;
+            s_controller_FSM_optiUpDn   = ControllerOptiUpDn__Up;
+            s_controller_FSM_optiStrat  = (s_controller_adc_swr < 1.5f) ?  ControllerOptiStrat__SingleCnt : ControllerOptiStrat__Double;
+            if (s_controller_FSM_optiStrat == ControllerOptiStrat__Double) {
+              s_controller_opti_L       = Controller_L0_nH;
+            }
+
+          } else {
+            /* Exhausted - try opposite CVH setup */
+            controllerFSM_SwitchOverCVH();
+          }
+        }
       }
     }
   }
@@ -838,7 +998,6 @@ static void controllerFSM(void)
 
   case ControllerFsm__findMinSwr:
   {
-exit(0);
     /* Pull global vars */
     controllerFSM_GetGlobalVars();
 
@@ -860,159 +1019,30 @@ exit(0);
         break;
       }
 
-      /* Search strategy */
-      if (s_controller_FSM_optiStrat == ControllerOptiStrat__Double) {
-        /* Double C for quick access */
-        controllerFSM_DoubleStrategy();
-
-      } else if (s_controller_FSM_optiStrat == ControllerOptiStrat__Half) {        
-        /* Half strategy */
-        controllerFSM_OptiHalfStrategy();
-        
-      } else if (s_controller_FSM_optiStrat == ControllerOptiStrat__SingleCnt) {
-#if 0
-        if (s_controller_FSM_optiUpDn == ControllerOptiUpDn__Up) {
-          /* Single step increase */
-          /* Up direction */
-
-          if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
-            /* Inductivity */
-            s_controller_opti_L += Controller_Ls_nH[0];
-            if (s_controller_opti_L >= 2.0f * Controller_Ls_nH[7]) {
-              s_controller_opti_L = controllerCalcMatcherL2nH( controllerCalcMatcherNH2L(s_controller_opti_L) );
-
-              /* Banging the limit - try opposite CVH setup */
-              controllerFSM_SwitchOverCVH();
-            }
-
-          } else {
-            /* Capacity */
-            s_controller_opti_C += Controller_Cs_pF[0];
-            if (s_controller_opti_C >= 2.0f * Controller_Cs_pF[7]) {
-              s_controller_opti_C = controllerCalcMatcherC2pF( controllerCalcMatcherPF2C(s_controller_opti_C) );
-
-              /* Banging the limit - try opposite CVH setup */
-              controllerFSM_SwitchOverCVH();
-            }
-          }
-
-        } else {
-          /* Single step decrease */
-          /* Down direction */
-
-          if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
-            /* Inductivity */
-            s_controller_opti_L -= Controller_Ls_nH[0];
-            if (s_controller_opti_L < Controller_L0_nH) {
-              s_controller_opti_L = Controller_L0_nH;
-
-              if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
-                /* Change over to C trim */
-                s_controller_FSM_optiLC     = ControllerOptiLC__C;
-                s_controller_FSM_optiStrat  = (s_controller_opti_mid_swr < 1.5f) ?  ControllerOptiStrat__SingleCnt : ControllerOptiStrat__Double;
-
-              } else {
-                /* Exhausted - try opposite CVH setup */
-                controllerFSM_SwitchOverCVH();
-              }
-            }
-
-          } else {
-            /* Capacity */
-            s_controller_opti_C -= Controller_Cs_pF[0];
-            if (s_controller_opti_C < Controller_C0_pF) {
-              s_controller_opti_C = Controller_C0_pF;
-
-              if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
-                /* Change over to L trim */
-                s_controller_FSM_optiLC     = ControllerOptiLC__L;
-                s_controller_FSM_optiStrat  = (s_controller_opti_mid_swr < 1.5f) ?  ControllerOptiStrat__SingleCnt : ControllerOptiStrat__Double;
-
-              } else {
-                /* Exhausted - try opposite CVH setup */
-                controllerFSM_SwitchOverCVH();
-              }
-            }
-          }
-        }
-#endif
-      }
-
     } else {
       /* SWR got worse */
 
-      /* Search strategy */
       if (s_controller_FSM_optiStrat == ControllerOptiStrat__Double) {
         /* Change strategy */
-        s_controller_FSM_optiStrat  = ControllerOptiStrat__Half;
-        s_controller_FSM_optiUpDn   = ControllerOptiUpDn__Dn;
-
-      } else if (s_controller_FSM_optiStrat == ControllerOptiStrat__Half) {        
-        /* Half strategy */
-        controllerFSM_OptiHalfStrategy();
-
-      } else if (s_controller_FSM_optiStrat == ControllerOptiStrat__SingleCnt) {
-#if 0
-        /* Change direction */
-        s_controller_FSM_optiUpDn   = (s_controller_FSM_optiUpDn == ControllerOptiUpDn__Up) ?  ControllerOptiUpDn__Dn : ControllerOptiUpDn__Up;
-
-        if (s_controller_FSM_optiUpDn == ControllerOptiUpDn__Up) {
-          /* Single step increase */
-          /* Up direction */
-
-          if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
-            /* Change over to opposite L/C component trim */
-            s_controller_FSM_optiLC     = (s_controller_FSM_optiLC == ControllerOptiLC__L) ?  ControllerOptiLC__C : ControllerOptiLC__L;
-            s_controller_FSM_optiStrat  = (s_controller_opti_mid_swr < 1.5f) ?  ControllerOptiStrat__SingleCnt : ControllerOptiStrat__Double;
-
-          } else {
-            /* Switch over to opposite CVH constellation */
-            controllerFSM_SwitchOverCVH();
-          }
-
-        } else {
-          /* Single step decrease */
-          /* Down direction */
-
-          if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
-            /* Inductivity */
-            s_controller_opti_L -= Controller_Ls_nH[0];
-            if (s_controller_opti_L < Controller_L0_nH) {
-              s_controller_opti_L = Controller_L0_nH;
-
-              if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
-                /* Change over to C trim */
-                s_controller_FSM_optiLC     = ControllerOptiLC__C;
-                s_controller_FSM_optiStrat  = (s_controller_opti_mid_swr < 1.5f) ?  ControllerOptiStrat__SingleCnt : ControllerOptiStrat__Double;
-
-              } else {
-                /* Switch over to opposite CVH constellation */
-                controllerFSM_SwitchOverCVH();
-              }
-            }
-
-          } else {
-            /* Capacity */
-            s_controller_opti_C -= Controller_Cs_pF[0];
-            if (s_controller_opti_C < Controller_C0_pF) {
-              s_controller_opti_C = Controller_C0_pF;
-
-              if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
-                /* Change over to L trim */
-                s_controller_FSM_optiLC     = ControllerOptiLC__L;
-                s_controller_FSM_optiStrat  = (s_controller_opti_mid_swr < 1.5f) ?  ControllerOptiStrat__SingleCnt : ControllerOptiStrat__Double;
-
-              } else {
-                /* Switch over to opposite CVH constellation */
-                controllerFSM_SwitchOverCVH();
-              }
-            }
-          }
-        }
-#endif
+        s_controller_FSM_optiStrat = ControllerOptiStrat__Half;
+        s_controller_FSM_optiUpDn  = ControllerOptiUpDn__Dn;
       }
     }
 
+    /* Execute the strategy */
+    if (s_controller_FSM_optiStrat == ControllerOptiStrat__Double) {
+      /* Double L/C for quick access */
+      controllerFSM_DoubleStrategy();
+
+    } else if (s_controller_FSM_optiStrat == ControllerOptiStrat__Half) {
+      /* Half strategy */
+      controllerFSM_OptiHalfStrategy();
+      
+    } else if (s_controller_FSM_optiStrat == ControllerOptiStrat__SingleCnt) {
+      /* Single count step strategy */
+      controllerFSM_OptiSingleCntStrategy();
+    }
+        
     /* Push opti data to relays */
     controllerFSM_PushOptiVars();
     controllerFSM_StartAdc();
