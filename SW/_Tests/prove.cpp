@@ -44,6 +44,7 @@ static float Controller_Cp_pF[8]                              = {
 
 static const float            Controller_AutoSWR_P_mW_Min       = 5.0f;
 static const float            Controller_AutoSWR_P_mW_Max       = 15.0f;
+static const float            Controller_AutoSWR_SWR_Init       = 999.9f;
 static const float            Controller_AutoSWR_SWR_Min        = 1.1f;
 static const float            Controller_AutoSWR_SWR_Max        = 10.0f;
 static const uint8_t          Controller_AutoSWR_SWR_Max_Cnt    = 30U;
@@ -172,7 +173,7 @@ float controllerCalcVSWR_Simu(float antOhmR, float antOhmI, float Z0R, float Z0I
   float gammaIm     = 0.0f;
   float gammaAbs    = 0.0f;
   float gammaPhi    = 0.0f;
-  float vswr        = 99.9f;
+  float vswr        = Controller_AutoSWR_SWR_Init;
 
   /* For security only */
   if (L_nH < 1.0f) {
@@ -288,7 +289,7 @@ float controllerCalcVSWR_Simu(float antOhmR, float antOhmI, float Z0R, float Z0I
     vswr = (1.0f + gammaAbs) / (1.0f - gammaAbs);
 
   } else {
-    vswr = 99.9f;
+    vswr = Controller_AutoSWR_SWR_Init;
   }
 
   /* Log reflection coefficient at the transceiver */
@@ -408,7 +409,7 @@ static void controllerFSM_GetGlobalVars(void)
   map<float, float>::iterator it;
   
   /* Presets */
-  s_controller_opti_swr_2nd   = s_controller_opti_swr_1st   = 99.9f;
+  s_controller_opti_swr_2nd   = s_controller_opti_swr_1st   = Controller_AutoSWR_SWR_Init;
   s_controller_opti_swr_2nd_L = s_controller_opti_swr_1st_L = 0.0f;
   s_controller_opti_swr_2nd_C = s_controller_opti_swr_1st_C = 0.0f;
 
@@ -417,7 +418,7 @@ static void controllerFSM_GetGlobalVars(void)
   s_controller_adc_swr        = g_adc_swr;
   __enable_irq();
 
-  if (s_controller_adc_swr < 99.9f) {
+  if (s_controller_adc_swr < Controller_AutoSWR_SWR_Init) {
     /* Add current data to the maps */
     //printf("controllerFSM_GetGlobalVars 1: adding swr= %.3f to the L/C maps.\r\n", s_controller_adc_swr);
     s_controller_opti_L_swr[s_controller_adc_swr] = s_controller_opti_L;
@@ -672,7 +673,7 @@ static void controllerFSM_ZeroXHalfStrategy(void)
         s_controller_FSM_state      = ControllerFsm__findMinSwr;
 
         /* Forget this minimum due to C advance */
-        s_controller_adc_swr        = 99.9f;
+        s_controller_adc_swr        = Controller_AutoSWR_SWR_Init;
         s_controller_opti_L_swr.clear();
         s_controller_opti_C_swr.clear();
         
@@ -707,7 +708,7 @@ static void controllerFSM_ZeroXHalfStrategy(void)
         s_controller_FSM_state      = ControllerFsm__findMinSwr;
 
         /* Forget this minimum due to L advance */
-        s_controller_adc_swr        = 99.9f;
+        s_controller_adc_swr        = Controller_AutoSWR_SWR_Init;
         s_controller_opti_L_swr.clear();
         s_controller_opti_C_swr.clear();
         
@@ -742,7 +743,6 @@ static void controllerFSM_OptiHalfStrategy(void)
         s_controller_FSM_state      = ControllerFsm__findMinSwr;
 
         /* New combination with new maps */
-        //s_controller_adc_swr        = 99.9f;
         s_controller_opti_L_swr.clear();
         s_controller_opti_C_swr.clear();
 
@@ -766,7 +766,6 @@ static void controllerFSM_OptiHalfStrategy(void)
         s_controller_FSM_state      = ControllerFsm__findMinSwr;
 
         /* New combination with new maps */
-        //s_controller_adc_swr        = 99.9f;
         s_controller_opti_L_swr.clear();
         s_controller_opti_C_swr.clear();
 
@@ -787,7 +786,7 @@ static void controllerFSM(void)
   case ControllerFsm__doAdc:
   {
     /* Init SWR compare value */
-    s_controller_adc_swr = 99.9f;
+    s_controller_adc_swr = Controller_AutoSWR_SWR_Init;
 
     /* Erase map for new L/C combinations */
     s_controller_opti_L_swr.clear();
@@ -821,7 +820,7 @@ static void controllerFSM(void)
     s_controller_FSM_optiUpDn     = ControllerOptiUpDn__Up;
     s_controller_FSM_state        = ControllerFsm__findImagZero;
     s_controller_opti_CVHpongCtr  = s_controller_opti_LCpongCtr = s_controller_bad_swr_ctr = 0U;
-    s_controller_best_swr         = s_controller_adc_swr = 99.9f;
+    s_controller_best_swr         = s_controller_adc_swr = Controller_AutoSWR_SWR_Init;
     s_controller_opti_L           = Controller_L0_nH + Controller_Ls_nH[0];
     s_controller_opti_C           = Controller_C0_pF;
 

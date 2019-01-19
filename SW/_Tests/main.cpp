@@ -93,26 +93,48 @@ uint32_t osKernelSysTick(void)
 
 void simulator(void)
 {
-  /* 45R -j 10R --> 0.390 sec (SWR=1.084) */
-  /* 45R +j 10R --> 0.210 sec (SWR=1.063) */
-  /* 55R -j 10R --> 1.320 sec (SWR=1.092) */
-  /* 55R +j 10R --> 1.350 sec (SWR=1.125) */
+  /* Test impedances for AutoTune-Algo robustness check
+   *          Real (Ohm)  Imag (j Ohm)    Duration Auto-Tune
+   *
+   *          45.00        -10.00    -->  0.390 sec (VSWR= 1: 1.084)  VERY GOOD
+   *          45.00        +10.00    -->  0.210 sec (VSWR= 1: 1.063)  VERY GOOD
+   *          55.00        -10.00    -->  1.320 sec (VSWR= 1: 1.092)  GOOD
+   *          55.00        +10.00    -->  1.350 sec (VSWR= 1: 1.125)  FAIR
 
-  /* 30R -j 50R --> 1.290 sec (SWR=1.089) */
-  /* 30R +j 50R --> 1.080 sec (SWR=1.045) */
-  /* 80R -j 50R --> 2.640 sec (SWR=1.033) */
-  /* 80R +j 50R --> 1.260 sec (SWR=1.092) */
+   *          30.00        -50.00    -->  1.290 sec (VSWR= 1: 1.089)  GOOD
+   *          30.00        +50.00    -->  1.080 sec (VSWR= 1: 1.045)  GOOD
+   *          80.00        -50.00    -->  2.640 sec (VSWR= 1: 1.033)  FAIR
+   *          80.00        +50.00    -->  1.260 sec (VSWR= 1: 1.092)  GOOD
 
-  /*  5R -j 50R --> 2.550 sec (SWR=1.420) */
-  /*  5R +j 50R --> 0.750 sec (SWR=1.091) */
-  /*500R -j500R --> 2.490 sec (SWR=1.757) */
-  /*500R +j500R --> 2.370 sec (SWR=2.085) */
+   *           5.00        -50.00    -->  2.550 sec (VSWR= 1: 1.420)  POOR
+   *           5.00        +50.00    -->  0.750 sec (VSWR= 1: 1.091)  VERY GOOD
+   *         500.00       -500.00    -->  2.490 sec (VSWR= 1: 1.757)  POOR
+   *         500.00       +500.00    -->  2.370 sec (VSWR= 1: 2.085)  BAD
+   */
 
-  const float antOhmR = 500.0f;
-  const float antOhmI =-500.0f;
+  /* Groundplane with at least 3 radials horizontal
+   * lambda   Real (Ohm)  Imag (j Ohm)    Duration Auto-Tune
+   *
+   * 0.160    12.24       -254.10    -->  2.160 sec (VSWR= 1: 1.040)  FAIR
+   * 0.222    28.13        -58.57    -->  0.540 sec (VSWR= 1: 1.057)  VERY GOOD
+   * 0.242    36.01         -0.22    -->  0.810 sec (VSWR= 1: 1.388)  FAIR
+   * 0.250    39.71        +23.22    -->  0.420 sec (VSWR= 1: 1.080)  VERY GOOD
+   * 0.270    50.68        +82.94    -->  1.080 sec (VSWR= 1: 1.049)  GOOD
+   * 0.330   113.10       +299.80    -->  2.550 sec (VSWR= 1: 1.852)  POOR
+   * 0.488  2380.00         +7.47    -->  2.250 sec (VSWR= 1: 3.072)  BAD
+   * 0.615   112.40       -489.60    -->  2.790 sec (VSWR= 1: 1.065)  FAIR
+   * 0.740    53.14         -3.30    -->  0.000 sec (VSWR= 1: 1.095)  BEST
+   */
+
+  /* Antenna */
+  const float antOhmR =  45.00f;
+  const float antOhmI = +10.00f;
+
+  /* Z0 */
   const float Z0R     =  50.0f;
-  const float Z0I     = 0.0f;
-  const float qrg     = 1.8e6f;  // 160 meter band
+  const float Z0I     =  +0.0f;
+
+  const float qrg     = 1.8e6f;  // 1.8 MHz, 160 meter band
   g_adc_vdiode_mv     = 500U;
   g_adc_refint_val    = 1638U;
   g_adc_vref_mv       = 4095U;
