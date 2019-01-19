@@ -70,6 +70,11 @@ static float                  s_controller_opti_swr_1st_C       = 0.0f;
 static float                  s_controller_opti_swr_2nd         = 0.0f;
 static float                  s_controller_opti_swr_2nd_L       = 0.0f;
 static float                  s_controller_opti_swr_2nd_C       = 0.0f;
+static uint8_t                s_controller_bad_swr_ctr          = 0U;
+static float                  s_controller_best_swr             = 0.0f;
+static float                  s_controller_best_swr_L           = 0.0f;
+static float                  s_controller_best_swr_C           = 0.0f;
+static ControllerOptiCVH_t    s_controller_best_swr_CVH         = ControllerOptiCVH__CV;
 
 static float                  s_controller_adc_fwd_mv           = 0.0f;
 static float                  s_controller_adc_swr              = 0.0f;
@@ -414,6 +419,11 @@ static void controllerFSM_GetGlobalVars(void)
       case 0:
         s_controller_opti_swr_1st   = it->first;
         s_controller_opti_swr_1st_L = it->second;
+
+        if (s_controller_best_swr > s_controller_opti_swr_1st) {
+          s_controller_best_swr_L   = s_controller_opti_swr_1st_L;
+          s_controller_best_swr_CVH = s_controller_FSM_optiCVH;
+        }
         //printf("controllerFSM_GetGlobalVars 3-0: swr_1st=%f, swr_1st_L=%f\r\n", s_controller_opti_swr_1st, s_controller_opti_swr_1st_L);
         break;
         
@@ -432,6 +442,11 @@ static void controllerFSM_GetGlobalVars(void)
     switch (idx) {
       case 0:
         s_controller_opti_swr_1st_C = it->second;
+
+        if (s_controller_best_swr > it->first) {
+          s_controller_best_swr     = s_controller_opti_swr_1st;
+          s_controller_best_swr_C   = s_controller_opti_swr_1st_C;
+        }
         //printf("controllerFSM_GetGlobalVars 4-0: swr_1st=%f, swr_1st_C=%f\r\n", s_controller_opti_swr_1st, s_controller_opti_swr_1st_C);
         break;
         
@@ -573,6 +588,7 @@ static void controllerFSM_SwitchOverCVH(void)
     s_controller_FSM_optiStrat    = ControllerOptiStrat__Double;
     s_controller_FSM_optiUpDn     = ControllerOptiUpDn__Up;
     s_controller_FSM_state        = ControllerFsm__findImagZero;
+    s_controller_bad_swr_ctr      = 0U;
 
     /* Erase map for new L/C combinations */
     s_controller_opti_L_swr.clear();
@@ -580,7 +596,8 @@ static void controllerFSM_SwitchOverCVH(void)
 
   } else {
     /* Exhausted - start over again */
-    s_controller_FSM_state        = ControllerFsm__doAdc;
+    s_controller_FSM_state        = ControllerFsm__done;
+    s_controller_doAdc            = true;
   }
 }
 
@@ -624,7 +641,7 @@ static void controllerFSM_ZeroXHalfStrategy(void)
       /* Check if optimum found by increase of L */
       if (s_controller_opti_swr_1st_L > Controller_Ls_nH[0]) {
         /* Advance L, at least by one step, limiting */
-        const float advanced = s_controller_opti_swr_1st_L * 1.5f + Controller_Ls_nH[0];
+        const float advanced = s_controller_opti_swr_1st_L * 1.4f + Controller_Ls_nH[0];
         if (advanced > 2.0f * Controller_Ls_nH[7]) {
           s_controller_opti_L = controllerCalcMatcherNH2L( controllerCalcMatcherL2nH(advanced) );
 
@@ -660,7 +677,7 @@ static void controllerFSM_ZeroXHalfStrategy(void)
       /* Check if optimum found by increase of C */
       if (s_controller_opti_swr_1st_C > Controller_Cs_pF[0]) {
         /* Advance C, at least by one step, limiting */
-        const float advanced = s_controller_opti_swr_1st_C * 1.5f + Controller_Cs_pF[0];
+        const float advanced = s_controller_opti_swr_1st_C * 1.4f + Controller_Cs_pF[0];
         if (advanced > 2.0f * Controller_Cs_pF[7]) {
           s_controller_opti_C = controllerCalcMatcherPF2C( controllerCalcMatcherC2pF(advanced) );
         } else {
@@ -794,6 +811,7 @@ static void controllerFSM(void)
     s_controller_opti_L           = Controller_L0_nH + Controller_Ls_nH[0];
     s_controller_opti_C           = Controller_C0_pF;
     s_controller_adc_swr          = 99.9f;
+    s_controller_bad_swr_ctr      = 0U;
 
     /* Logging */
     {
@@ -821,6 +839,15 @@ static void controllerFSM(void)
 
     /* Show current state of optimization */
     controllerFSM_LogState();
+
+    /* Check if SWR is not usable in that constellation */
+    if (s_controller_adc_swr > 10.0f) {
+      if (s_controller_bad_swr_ctr++ > 12U) {
+        /* Switch over to opposite CVH constellation */
+        controllerFSM_SwitchOverCVH();
+        break;
+      }
+    }
 
     /* Check for SWR */
     if (s_controller_adc_swr == s_controller_opti_swr_1st) {
@@ -871,6 +898,15 @@ static void controllerFSM(void)
     /* Show current state of optimization */
     controllerFSM_LogState();
 
+    /* Check if SWR is not usable in that constellation */
+    if (s_controller_adc_swr > 10.0f) {
+      if (s_controller_bad_swr_ctr++ > 12U) {
+        /* Switch over to opposite CVH constellation */
+        controllerFSM_SwitchOverCVH();
+        break;
+      }
+    }
+
     /* Check for SWR */
     if (s_controller_adc_swr == s_controller_opti_swr_1st) {
       /* SWR got better */
@@ -909,10 +945,23 @@ static void controllerFSM(void)
 
   case ControllerFsm__done:
   {
-    exit(0);
+    /* Take the best result */
+    s_controller_FSM_optiCVH  = s_controller_best_swr_CVH;
+    s_controller_opti_L       = s_controller_best_swr_L;
+    s_controller_opti_C       = s_controller_best_swr_C;
 
-    /* Done - wait for new start */
-    s_controller_FSM_state = ControllerFsm__doAdc;
+    /* Show current state of optimization */
+    controllerFSM_LogState();
+
+    /* Push opti data to relays */
+    controllerFSM_PushOptiVars();
+
+    /* Check if current VSWR is good enough */
+    if (s_controller_adc_swr > Controller_AutoSWR_SWR_Max) {
+      /* Done - wait for new start */
+      s_controller_FSM_state = ControllerFsm__doAdc;
+    }
+
     controllerFSM_StartAdc();
   }
     break;

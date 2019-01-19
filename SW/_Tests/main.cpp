@@ -108,9 +108,9 @@ void simulator(void)
   /*500R -j50R --> 0.300 sec, 3.180 sec (SWR=2.064) */
   /*500R +j50R --> 0.150 sec, 1.890 sec (SWR=1.880) */
 
-  const float antOhmR = 75.0f;
-  const float antOhmI =-100.0f;
-  const float Z0R     = 50.0f;
+  const float antOhmR = 500.0f;
+  const float antOhmI =-500.0f;
+  const float Z0R     =  50.0f;
   const float Z0I     = 0.0f;
   const float qrg     = 1.8e6f;  // 160 meter band
   g_adc_vdiode_mv     = 500U;
