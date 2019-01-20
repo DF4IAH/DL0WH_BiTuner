@@ -4,19 +4,17 @@
 #include <math.h>
 
 //#include <vector>
-#include <map>
 
 #include "complex.hpp"
 
 #include "prove.hpp"
 
 
-extern float                g_adc_fwd_mv;
-extern float                g_adc_swr;
-
-
 using namespace std;
 
+
+extern float                g_adc_fwd_mv;
+extern float                g_adc_swr;
 
 
 static const float Controller_L0_nH                           = 50.0f;
@@ -54,6 +52,7 @@ static const uint8_t          Controller_AutoSWR_SWR_Max_Cnt    = 30U;
 static const float            Controller_AutoSWR_Time_ms_Max    = 750.0f;
 static const uint8_t          Controller_AutoSWR_CVHpong_Max    = 1U;
 static const uint8_t          Controller_AutoSWR_LCpong_Max     = 6U;
+
 static uint32_t               s_controller_swr_tmr              = 0UL;
 static uint32_t               s_controller_30ms_cnt             = 0UL;
 
@@ -68,8 +67,6 @@ static uint8_t                s_controller_opti_L_relays        = 0U;
 static uint8_t                s_controller_opti_C_relays        = 0U;
 static float                  s_controller_opti_L               = 0U;
 static float                  s_controller_opti_C               = 0U;
-static map<float, float>      s_controller_opti_L_swr;
-static map<float, float>      s_controller_opti_C_swr;
 static float                  s_controller_opti_swr_1st         = 0.0f;
 static float                  s_controller_opti_swr_1st_L       = 0.0f;
 static float                  s_controller_opti_swr_1st_C       = 0.0f;
@@ -95,6 +92,7 @@ static bool                   s_controller_doCycle              = false;
 static bool                   s_controller_doAdc                = false;
 
 
+/* Calculation function */
 
 uint32_t controllerCalcMsgHdr(ControllerMsgDestinations_t dst, ControllerMsgDestinations_t src, uint8_t lengthBytes, uint8_t cmd)
 {
@@ -107,9 +105,6 @@ uint32_t controllerCalcMsgInit(uint32_t* ary, ControllerMsgDestinations_t dst, u
   ary[1] = startDelayMs;
   return 2UL;
 }
-
-
-/* Calculation function */
 
 float controllerCalcMatcherL2nH(uint8_t Lval)
 {
@@ -430,14 +425,6 @@ static void controllerFSM_LogState(void)
 
 static void controllerFSM_GetGlobalVars(void)
 {
-  uint8_t                     idx = 0U;
-  map<float, float>::iterator it;
-  
-  /* Presets */
-  s_controller_opti_swr_2nd   = s_controller_opti_swr_1st   = Controller_AutoSWR_SWR_Init;
-  s_controller_opti_swr_2nd_L = s_controller_opti_swr_1st_L = 0.0f;
-  s_controller_opti_swr_2nd_C = s_controller_opti_swr_1st_C = 0.0f;
-
   __disable_irq();
   s_controller_adc_fwd_mv     = g_adc_fwd_mv;
   s_controller_adc_swr        = g_adc_swr;
@@ -446,59 +433,26 @@ static void controllerFSM_GetGlobalVars(void)
   if (s_controller_adc_swr < Controller_AutoSWR_SWR_Init) {
     /* Add current data to the maps */
     //printf("controllerFSM_GetGlobalVars 1: adding swr= %.3f to the L/C maps.\r\n", s_controller_adc_swr);
-    s_controller_opti_L_swr[s_controller_adc_swr] = s_controller_opti_L;
-    s_controller_opti_C_swr[s_controller_adc_swr] = s_controller_opti_C;
-  }
-  
-  //printf("controllerFSM_GetGlobalVars 2: having %ld L/C entries in their maps.\r\n", s_controller_opti_L_swr.size());
-  
-  for (idx = 0U, it = s_controller_opti_L_swr.begin(); it != s_controller_opti_L_swr.end(); idx++, it++) {
-    switch (idx) {
-      case 0:
-        s_controller_opti_swr_1st   = it->first;
-        s_controller_opti_swr_1st_L = it->second;
+    if (s_controller_adc_swr < s_controller_opti_swr_1st) {
+      /* Move back */
+      s_controller_opti_swr_2nd   = s_controller_opti_swr_1st;
+      s_controller_opti_swr_2nd_L = s_controller_opti_swr_1st_L;
+      s_controller_opti_swr_2nd_C = s_controller_opti_swr_1st_C;
 
-        if (s_controller_best_swr > s_controller_opti_swr_1st) {
-          s_controller_best_swr_L   = s_controller_opti_swr_1st_L;
-          s_controller_best_swr_CVH = s_controller_FSM_optiCVH;
-        }
-        //printf("controllerFSM_GetGlobalVars 3-0: swr_1st=%f, swr_1st_L=%f\r\n", s_controller_opti_swr_1st, s_controller_opti_swr_1st_L);
-        break;
-        
-      case 1:
-        s_controller_opti_swr_2nd   = it->first;
-        s_controller_opti_swr_2nd_L = it->second;
-        //printf("controllerFSM_GetGlobalVars 3-1: swr_2nd=%f, swr_2nd_L=%f\r\n", s_controller_opti_swr_2nd, s_controller_opti_swr_2nd_L);
-        break;
-        
-      default:
-        break;
+      /* Enter */
+      s_controller_opti_swr_1st   = s_controller_adc_swr;
+      s_controller_opti_swr_1st_L = s_controller_opti_L;
+      s_controller_opti_swr_1st_C = s_controller_opti_C;
+
+    } else if (s_controller_adc_swr < s_controller_opti_swr_2nd) {
+      /* Enter */
+      s_controller_opti_swr_2nd   = s_controller_adc_swr;
+      s_controller_opti_swr_2nd_L = s_controller_opti_L;
+      s_controller_opti_swr_2nd_C = s_controller_opti_C;
     }
   }
   
-  for (idx = 0U, it = s_controller_opti_C_swr.begin(); it != s_controller_opti_C_swr.end(); idx++, it++) {
-    switch (idx) {
-      case 0:
-        s_controller_opti_swr_1st_C = it->second;
-
-        if (s_controller_best_swr > it->first) {
-          s_controller_best_swr     = s_controller_opti_swr_1st;
-          s_controller_best_swr_C   = s_controller_opti_swr_1st_C;
-        }
-        //printf("controllerFSM_GetGlobalVars 4-0: swr_1st=%f, swr_1st_C=%f\r\n", s_controller_opti_swr_1st, s_controller_opti_swr_1st_C);
-        break;
-        
-      case 1:
-        s_controller_opti_swr_2nd_C = it->second;
-        //printf("controllerFSM_GetGlobalVars 4-1: swr_2nd=%f, swr_2nd_C=%f\r\n", s_controller_opti_swr_2nd, s_controller_opti_swr_2nd_C);
-        break;
-        
-      default:
-        break;
-    }
-  }
-  
-  s_controller_adc_fwd_mw     = mainCalc_mV_to_mW(s_controller_adc_fwd_mv);
+  s_controller_adc_fwd_mw = mainCalc_mV_to_mW(s_controller_adc_fwd_mv);
 #if 0
   printf("controllerFSM_GetGlobalVars: s_controller_adc_fwd_mv= %.3f mV, s_controller_adc_fwd_mw= %.3f mW, s_controller_adc_swr= %.3f\r\n",
           s_controller_adc_fwd_mv, s_controller_adc_fwd_mw, s_controller_adc_swr);
@@ -580,7 +534,7 @@ static bool controllerFSM_CheckSwrTime(void)
 
       mainCalcFloat2IntFrac(s_controller_adc_swr, 3, &swr_i, &swr_f);
       const int len = sprintf(buf,
-                              "Controller FSM: SWR= %2d.%03u is good enough - stop auto tuner.\r\n",
+                              "Controller FSM: VSWR= %2d.%03u is good enough - stop auto tuner.\r\n",
                               swr_i, swr_f);
       usbLogLen(buf, len);
     }
@@ -630,9 +584,9 @@ static void controllerFSM_SwitchOverCVH(void)
     s_controller_FSM_optiUpDn     = ControllerOptiUpDn__Up;
     s_controller_FSM_state        = ControllerFsm__findImagZero;
 
-    /* Erase map for new L/C combinations */
-    s_controller_opti_L_swr.clear();
-    s_controller_opti_C_swr.clear();
+    /* Erase array for new L/C combinations */
+    s_controller_opti_swr_1st     = Controller_AutoSWR_SWR_Init;
+    s_controller_opti_swr_2nd     = Controller_AutoSWR_SWR_Init;
 
   } else {
     /* Exhausted - start over again */
@@ -746,8 +700,10 @@ static void controllerFSM_ZeroXHalfStrategy(void)
 
         /* Forget this minimum due to C advance */
         s_controller_adc_swr        = Controller_AutoSWR_SWR_Init;
-        s_controller_opti_L_swr.clear();
-        s_controller_opti_C_swr.clear();
+
+        /* Erase array for new L/C combinations */
+        s_controller_opti_swr_1st   = Controller_AutoSWR_SWR_Init;
+        s_controller_opti_swr_2nd   = Controller_AutoSWR_SWR_Init;
         
       } else {
         /* Switch over to opposite CVH constellation */
@@ -787,8 +743,10 @@ static void controllerFSM_ZeroXHalfStrategy(void)
 
         /* Forget this minimum due to L advance */
         s_controller_adc_swr        = Controller_AutoSWR_SWR_Init;
-        s_controller_opti_L_swr.clear();
-        s_controller_opti_C_swr.clear();
+
+        /* Erase array for new L/C combinations */
+        s_controller_opti_swr_1st   = Controller_AutoSWR_SWR_Init;
+        s_controller_opti_swr_2nd   = Controller_AutoSWR_SWR_Init;
         
       } else {
         /* Switch over to opposite CVH constellation */
@@ -827,9 +785,9 @@ static void controllerFSM_OptiHalfStrategy(void)
         s_controller_FSM_optiUpDn   = ControllerOptiUpDn__Up;
         s_controller_FSM_state      = ControllerFsm__findMinSwr;
 
-        /* New combination with new maps */
-        s_controller_opti_L_swr.clear();
-        s_controller_opti_C_swr.clear();
+        /* Erase array for new L/C combinations */
+        s_controller_opti_swr_1st   = Controller_AutoSWR_SWR_Init;
+        s_controller_opti_swr_2nd   = Controller_AutoSWR_SWR_Init;
 
       } else {
         /* Switch over to opposite CVH constellation */
@@ -857,9 +815,9 @@ static void controllerFSM_OptiHalfStrategy(void)
         s_controller_FSM_optiUpDn   = ControllerOptiUpDn__Up;
         s_controller_FSM_state      = ControllerFsm__findMinSwr;
 
-        /* New combination with new maps */
-        s_controller_opti_L_swr.clear();
-        s_controller_opti_C_swr.clear();
+        /* Erase array for new L/C combinations */
+        s_controller_opti_swr_1st   = Controller_AutoSWR_SWR_Init;
+        s_controller_opti_swr_2nd   = Controller_AutoSWR_SWR_Init;
 
       } else {
         /* Switch over to opposite CVH constellation */
@@ -880,9 +838,9 @@ static void controllerFSM(void)
     /* Init SWR compare value */
     s_controller_adc_swr = Controller_AutoSWR_SWR_Init;
 
-    /* Erase map for new L/C combinations */
-    s_controller_opti_L_swr.clear();
-    s_controller_opti_C_swr.clear();
+    /* Erase array for new L/C combinations */
+    s_controller_opti_swr_1st   = Controller_AutoSWR_SWR_Init;
+    s_controller_opti_swr_2nd   = Controller_AutoSWR_SWR_Init;
 
     #if 0
     /* Erase Xnull vector */

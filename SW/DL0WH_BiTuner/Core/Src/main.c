@@ -68,11 +68,12 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <math.h>
-#include "task_USB.h"
+
 #include "device_adc.h"
 #include "bus_i2c.h"
 #include "bus_spi.h"
 #include "task_Controller.h"
+#include "task_USB.h"
 
 
 #define  PERIOD_VALUE       (uint32_t)(16000UL - 1)                                             /* Period Value = 1ms */
@@ -163,14 +164,14 @@ void mainCalcFloat2IntFrac(float val, uint8_t fracCnt, int32_t* outInt, uint32_t
     return;
   }
 
-  *outInt  = (int32_t) val;
-  val     -= *outInt;
+  *outInt    = (int32_t) val;
+  val       -= *outInt;
 
   if (isNeg) {
     val = -val;
   }
-  val      *= powf(10, fracCnt);
-  *outFrac  = (uint32_t) (val + 0.5f);
+  val       *= powf(10, fracCnt);
+  *outFrac   = (uint32_t) (val + 0.5f);
 }
 
 float mainCalc_fwdRev_mV(float adc_mv, float vdiode_mv)

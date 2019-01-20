@@ -78,10 +78,8 @@ typedef enum ControllerFsm_ENUM {
   ControllerFsm__NOP                                          = 0U,
   ControllerFsm__doAdc,
   ControllerFsm__startAuto,
-  ControllerFsm__findImagZeroL,
-  ControllerFsm__findImagZeroC,
-  ControllerFsm__findMinSwrC,
-  ControllerFsm__findMinSwrL,
+  ControllerFsm__findImagZero,
+  ControllerFsm__findMinSwr,
   ControllerFsm__done,
 
 } ControllerFsm_t;
@@ -95,23 +93,33 @@ typedef enum ControllerOptiCVH_ENUM {
 
 typedef enum ControllerOptiLC_ENUM {
 
-  ControllerOptiLC__L_double                                  = 0U,
-  ControllerOptiLC__L_half,
-  ControllerOptiLC__L_cntUp,
-  ControllerOptiLC__L_cntDwn,
-  ControllerOptiLC__C_double,
-  ControllerOptiLC__C_half,
-  ControllerOptiLC__C_cntUp,
-  ControllerOptiLC__C_cntDwn,
+  ControllerOptiLC__L                                         = 0U,
+  ControllerOptiLC__C,
 
 } ControllerOptiLC_t;
 
+typedef enum ControllerOptiStrat_ENUM {
+
+  ControllerOptiStrat__Double                                 = 0U,
+  ControllerOptiStrat__Half,
+
+} ControllerOptiStrat_t;
+
+typedef enum ControllerOptiUpDn_ENUM {
+
+  ControllerOptiUpDn__Up                                      = 0U,
+  ControllerOptiUpDn__Dn,
+
+} ControllerOptiUpDn_t;
+
+
+uint32_t controllerCalcMsgHdr(ControllerMsgDestinations_t dst, ControllerMsgDestinations_t src, uint8_t lengthBytes, uint8_t cmd);
+uint32_t controllerCalcMsgInit(uint32_t* ary, ControllerMsgDestinations_t dst, uint32_t startDelayMs);
 
 float controllerCalcMatcherL2nH(uint8_t Lval);
 float controllerCalcMatcherC2pF(uint8_t Cval);
 uint8_t controllerCalcMatcherNH2L(float nH);
 uint8_t controllerCalcMatcherPF2C(float pF);
-uint32_t controllerCalcMsgHdr(ControllerMsgDestinations_t dst, ControllerMsgDestinations_t src, uint8_t lengthBytes, uint8_t cmd);
 
 uint32_t controllerMsgPushToInQueue(uint8_t msgLen, uint32_t* msgAry, uint32_t waitMs);
 void controllerMsgPushToOutQueue(uint8_t msgLen, uint32_t* msgAry, uint32_t waitMs);

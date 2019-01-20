@@ -56,7 +56,6 @@ typedef enum ControllerOptiUpDn_ENUM {
 } ControllerOptiUpDn_t;
 
 
-
 uint32_t controllerCalcMsgHdr(ControllerMsgDestinations_t dst, ControllerMsgDestinations_t src, uint8_t lengthBytes, uint8_t cmd);
 uint32_t controllerCalcMsgInit(uint32_t* ary, ControllerMsgDestinations_t dst, uint32_t startDelayMs);
 

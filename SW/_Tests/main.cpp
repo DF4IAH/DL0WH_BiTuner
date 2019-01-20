@@ -208,6 +208,6 @@ int main(int argc, char* argv[])
 
     simulator();
 
-    usleep(1000);
+    //usleep(1000);
   }
 }
