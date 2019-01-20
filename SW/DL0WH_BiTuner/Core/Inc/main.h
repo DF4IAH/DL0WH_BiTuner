@@ -109,7 +109,7 @@
 #endif
 
 
-#define BITUNER_CTRL_VERSION                                 20190113UL
+#define BITUNER_CTRL_VERSION                                 20190120UL
 
 
 typedef enum POWERSWITCH_ENUM {
