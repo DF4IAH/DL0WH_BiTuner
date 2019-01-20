@@ -2,7 +2,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+
+//#include <vector>
 #include <map>
+
 #include "complex.hpp"
 
 #include "prove.hpp"
@@ -78,6 +81,11 @@ static float                  s_controller_best_swr             = 0.0f;
 static float                  s_controller_best_swr_L           = 0.0f;
 static float                  s_controller_best_swr_C           = 0.0f;
 static ControllerOptiCVH_t    s_controller_best_swr_CVH         = ControllerOptiCVH__CV;
+#if 0
+static vector<float>          s_controller_xnull_L;
+static vector<float>          s_controller_xnull_C;
+static float                  s_controller_xnull_LC_ratio       = 0.0f;
+#endif
 
 static float                  s_controller_adc_fwd_mv           = 0.0f;
 static float                  s_controller_adc_swr              = 0.0f;
@@ -160,6 +168,23 @@ uint8_t controllerCalcMatcherPF2C(float pF)
   }
   return valThis;
 }
+
+#if 0
+static void controllerCalcMatcherLcRatio(void)
+{
+  if (!s_controller_xnull_L.empty() && !s_controller_xnull_LC_ratio) {
+    const int   vCnt    = s_controller_xnull_L.size();
+    const float deltaL  = s_controller_xnull_L[vCnt - 1] - s_controller_xnull_L[0];
+    const float deltaC  = s_controller_xnull_C[vCnt - 1] - s_controller_xnull_C[0];
+
+    s_controller_xnull_LC_ratio = (deltaC != 0.0f) ?  deltaL / deltaC : 0.0f;
+
+    printf("controllerCalcMatcherLcRatio: new xnull_LC_ratio= %f, deltaL= %f, deltaC= %f.\r\n",
+        s_controller_xnull_LC_ratio,
+        deltaL, deltaC);
+  }
+}
+#endif
 
 float controllerCalcVSWR_Simu(float antOhmR, float antOhmI, float Z0R, float Z0I, float frequencyHz)
 {
@@ -360,7 +385,7 @@ static void controllerFSM_LogState(void)
                 "\r\nController FSM:\tcontrollerFSM_LogState: time= %5d ms (iteration= %03u)\r\n" \
                 "\ta)\t\t FSM_state= %u, optiLC= %c, optiStrat= %u, optiUpDn= %s, optiCVH= %s:\r\n" \
                 "\tb)\t\t opti_L= %5u nH (%03u), opti_C= %5u pF (%03u),\r\n" \
-                "\tc)\t\t opti_CVHpongCtr= %03u, opti_LCpongCtr= %03u, bad_swr_ctr= %02u,\r\n",
+                "\tc)\t\t opti_CVHpongCtr= %u, opti_LCpongCtr= %u, bad_swr_ctr= %02u,\r\n",
                 s_controller_30ms_cnt,
                 (s_controller_30ms_cnt / 30),
                 s_controller_FSM_state,
@@ -619,23 +644,64 @@ static void controllerFSM_SwitchOverCVH(void)
 static void controllerFSM_DoubleStrategy(void)
 {
   if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
+    //const float delta_L = s_controller_opti_L;
+
     /* Double L */
-    s_controller_opti_L *= 2.0f;
+    s_controller_opti_L += s_controller_opti_L;
+
+    #if 0
+    /* Parallel strategy */
+    if (s_controller_xnull_LC_ratio != 0.0f) {
+      s_controller_opti_C += 0.1f * (delta_L / s_controller_xnull_LC_ratio);
+    }
+    #endif
 
   } else {
+    //const float delta_C = s_controller_opti_C;
+
     /* Double C */
-    s_controller_opti_C *= 2.0f;
+    s_controller_opti_C += s_controller_opti_C;
+
+    #if 0
+    /* Parallel strategy */
+    if (s_controller_xnull_LC_ratio != 0.0f) {
+      s_controller_opti_C += 0.1f * (delta_C * s_controller_xnull_LC_ratio);
+    }
+    #endif
   }
 }
 
 static void controllerFSM_HalfStrategy(void)
 {
   if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
-    /* Overshoot L to allow C to grow either */
+    //const float lastL = s_controller_opti_L;
+
+    /* Mean L */
     s_controller_opti_L = (s_controller_opti_swr_1st_L + s_controller_opti_swr_2nd_L) / 2.0f;
 
+    #if 0
+    /* Parallel strategy */
+    if (s_controller_xnull_LC_ratio != 0.0f) {
+      const float deltaL = s_controller_opti_L - lastL;
+
+      s_controller_opti_C *= deltaL / s_controller_xnull_LC_ratio;
+    }
+    #endif
+
   } else {
+    //const float lastC = s_controller_opti_C;
+
+    /* Mean C */
     s_controller_opti_C = (s_controller_opti_swr_1st_C + s_controller_opti_swr_2nd_C) / 2.0f;
+
+    #if 0
+    /* Parallel strategy */
+    if (s_controller_xnull_LC_ratio != 0.0f) {
+      const float deltaC = s_controller_opti_C - lastC;
+
+      s_controller_opti_C *= deltaC * s_controller_xnull_LC_ratio;
+    }
+    #endif
   }
 }
 
@@ -653,6 +719,12 @@ static void controllerFSM_ZeroXHalfStrategy(void)
     
     printf("controllerFSM_ZeroXHalfStrategy 1: abs(swr_1st_L - swr_2nd_L)=%f\r\n", L_diff_abs);
     if (L_diff_abs <= Controller_Ls_nH[0]) {
+      #if 0
+      /* First zero X found */
+      s_controller_xnull_L.push_back(s_controller_opti_L);
+      s_controller_xnull_C.push_back(s_controller_opti_C);
+      #endif
+
       /* Check if optimum found by increase of L */
       if (s_controller_opti_swr_1st_L > Controller_Ls_nH[0]) {
         /* Advance L, at least by one step, limiting */
@@ -689,6 +761,12 @@ static void controllerFSM_ZeroXHalfStrategy(void)
     
     printf("controllerFSM_ZeroXHalfStrategy 2: abs(swr_1st_C - swr_2nd_C)=%f\r\n", C_diff_abs);
     if (C_diff_abs <= Controller_Cp_pF[0]) {
+      #if 0
+      /* First zero X found */
+      s_controller_xnull_C.push_back(s_controller_opti_C);
+      s_controller_xnull_L.push_back(s_controller_opti_L);
+      #endif
+
       /* Check if optimum found by increase of C */
       if (s_controller_opti_swr_1st_C > Controller_Cp_pF[0]) {
         /* Advance C, at least by one step, limiting */
@@ -734,6 +812,13 @@ static void controllerFSM_OptiHalfStrategy(void)
 
     printf("controllerFSM_OptiHalfStrategy 1: abs(swr_1st_L - swr_2nd_L)=%f\r\n", L_diff_abs);
     if (L_diff_abs <= Controller_Ls_nH[0]) {
+      #if 0
+      /* Again, zero X found */
+      s_controller_xnull_L.push_back(s_controller_opti_L);
+      s_controller_xnull_C.push_back(s_controller_opti_C);
+      controllerCalcMatcherLcRatio();
+      #endif
+
       if (++s_controller_opti_LCpongCtr < Controller_AutoSWR_LCpong_Max) {
         /* Optimize C, again */
         s_controller_opti_C         = Controller_C0_pF + Controller_Cp_pF[0];
@@ -757,6 +842,13 @@ static void controllerFSM_OptiHalfStrategy(void)
 
     printf("controllerFSM_OptiHalfStrategy 2: abs(swr_1st_C - swr_2nd_C)=%f\r\n", C_diff_abs);
     if (C_diff_abs <= Controller_Cp_pF[0]) {
+      #if 0
+      /* Again, zero X found */
+      s_controller_xnull_L.push_back(s_controller_opti_L);
+      s_controller_xnull_C.push_back(s_controller_opti_C);
+      controllerCalcMatcherLcRatio();
+      #endif
+
       if (++s_controller_opti_LCpongCtr < Controller_AutoSWR_LCpong_Max) {
         /* Optimize L, again */
         s_controller_opti_L         = Controller_L0_nH + Controller_Ls_nH[0];
@@ -791,6 +883,13 @@ static void controllerFSM(void)
     /* Erase map for new L/C combinations */
     s_controller_opti_L_swr.clear();
     s_controller_opti_C_swr.clear();
+
+    #if 0
+    /* Erase Xnull vector */
+    s_controller_xnull_L.clear();
+    s_controller_xnull_C.clear();
+    s_controller_xnull_LC_ratio = 0.0f;
+    #endif
 
     controllerFSM_StartAdc();
 
