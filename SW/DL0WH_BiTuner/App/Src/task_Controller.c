@@ -21,6 +21,7 @@
 //#include "stm32l4xx_hal_gpio.h"
 #include "bus_spi.h"
 #include "task_USB.h"
+#include "task_Interpreter.h"
 
 
 extern osMessageQId         controllerInQueueHandle;
@@ -428,7 +429,7 @@ static uint32_t controllerMsgPullFromInQueue(void)
         s_msg_in.msgDst   = (ControllerMsgDestinations_t)   (0xffUL & (token >> 24U));
         s_msg_in.msgSrc   = (ControllerMsgDestinations_t)   (0xffUL & (token >> 16U));
         s_msg_in.msgLen   =                                  0xffUL & (token >>  8U) ;
-        s_msg_in.msgCmd   = (ControllerMsgControllerCmds_t) (0xffUL &  token        );
+        s_msg_in.msgCmd   = (ControllerCmds_t) (0xffUL &  token        );
 
         /* Init option fields */
         s_msg_in.bRemain  = s_msg_in.msgLen;
@@ -1227,6 +1228,60 @@ static void controllerFSM(void)
 }
 
 
+/* Model interaction */
+
+static void controllerSetL(uint8_t relLnum, uint8_t relEnable)
+{
+  uint8_t relay = controllerCalcMatcherNH2L(s_controller_opti_L);
+  if (relEnable) {
+    relay |=   1UL << relLnum;
+
+  } else {
+    relay &= ~(1UL << relLnum);
+  }
+  s_controller_opti_L = controllerCalcMatcherL2nH(relay);
+
+  controllerFSM_PushOptiVars();
+}
+
+static void controllerSetC(uint8_t relLnum, uint8_t relEnable)
+{
+  uint8_t relay = controllerCalcMatcherPF2C(s_controller_opti_C);
+  if (relEnable) {
+    relay |=   1UL << relLnum;
+
+  } else {
+    relay &= ~(1UL << relLnum);
+  }
+  s_controller_opti_C = controllerCalcMatcherC2pF(relay);
+
+  controllerFSM_PushOptiVars();
+}
+
+static void controllerPrintLC(void)
+{
+  const uint8_t relL = controllerCalcMatcherNH2L(s_controller_opti_L);
+  const uint8_t relC = controllerCalcMatcherPF2C(s_controller_opti_C);
+  uint32_t relays = 0UL;
+  char buf[4] = { ' ', ' ', '?' };
+
+  relays |= ((uint32_t)relC <<  0);
+  relays |= ((uint32_t)relL <<  8);
+  relays |= s_controller_FSM_optiCVH == ControllerOptiCVH__CV ?  0x100UL : 0x200UL;
+
+  usbLog("\r\n## C1 C2 C3 C4 C5 C6 C7 C8  L1 L2 L3 L4 L5 L6 L7 L8  CV CH\r\n ");
+
+  for (uint8_t idx = 0U; idx < 18U; idx++) {
+    if (idx == 8 || idx == 16) {
+      usbLogLen(" ", 1);
+    }
+    buf[2] = (relays & (1UL << idx)) != 0UL ?  '1' : '0';
+    usbLogLen(buf, 3);
+  }
+  usbLogLen("\r\n", 2);
+}
+
+
 /* Timer functions */
 
 static void controllerCyclicStart(uint32_t period_ms)
@@ -1293,7 +1348,7 @@ static void controllerMsgProcessor(void)
     /* Message is for us */
 
     /* Register all ready modules */
-    switch (s_msg_in.msgCmd) {
+    switch ((ControllerCmds_t) s_msg_in.msgCmd) {
     case MsgController__InitDone:
       {
         switch (s_msg_in.msgSrc) {
@@ -1329,11 +1384,46 @@ static void controllerMsgProcessor(void)
     {
       controllerCyclicTimerEvent();
     }
-    break;
 
     default:
+    {
+      if (s_msg_in.msgSrc == Destinations__Interpreter) {
+        switch ((InterpreterCmds_t) s_msg_in.msgCmd)
+        {
+        case MsgInterpreter__CallFunc01_Restart:
+          SystemResetbyARMcore();
+          break;
+
+        case MsgInterpreter__CallFunc02_PrintLC:
+          controllerPrintLC();
+          break;
+
+        case MsgInterpreter__SetVar01_L:
+        {
+          const uint8_t relNum    = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 24U));
+          const uint8_t relEnable = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 16U));
+          controllerSetL(relNum, relEnable);
+        }
+          break;
+
+        case MsgInterpreter__SetVar02_C:
+        {
+          const uint8_t relNum    = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 24U));
+          const uint8_t relEnable = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 16U));
+          controllerSetC(relNum, relEnable);
+        }
+          break;
+
+        default:
+          Error_Handler();
+        }  // switch ((interpreterCmds_t) s_msg_in.msgCmd)
+
+        break;
+      }  // if (msgSrc == Interpreter)
+
       Error_Handler();
-    }  // switch (s_msg_in.msgCmd)
+    }  // default:
+    }  // switch ((controllerCmds_t) s_msg_in.msgCmd)
   }  // else
 
   /* Discard message */

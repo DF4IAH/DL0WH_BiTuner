@@ -38,7 +38,7 @@ typedef struct ControllerMods {
 } ControllerMods_t;
 
 
-typedef enum ControllerMsgControllerCmds_ENUM {
+typedef enum ControllerCmds_ENUM {
 
   MsgController__InitDo                                       = 0x01U,
   MsgController__InitDone,
@@ -53,7 +53,7 @@ typedef enum ControllerMsgControllerCmds_ENUM {
   MsgController__CallFunc02_CyclicTimerStart,
   MsgController__CallFunc03_CyclicTimerStop,
 
-} ControllerMsgControllerCmds_t;
+} ControllerCmds_t;
 
 
 typedef struct ControllerMsg2Proc {
@@ -63,7 +63,7 @@ typedef struct ControllerMsg2Proc {
 
   ControllerMsgDestinations_t         msgSrc;
   ControllerMsgDestinations_t         msgDst;                                                         // Not in use yet
-  ControllerMsgControllerCmds_t       msgCmd;
+  ControllerCmds_t       msgCmd;
   uint8_t                             msgLen;
 
   uint8_t                             bRemain;

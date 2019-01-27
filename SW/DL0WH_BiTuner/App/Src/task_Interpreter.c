@@ -363,7 +363,7 @@ static void interpreterMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
 {
   uint32_t                msgIdx  = 0UL;
   const uint32_t          hdr     = msgAry[msgIdx++];
-  const interpreterCmds_t cmd     = (interpreterCmds_t) (0xffUL & hdr);
+  const InterpreterCmds_t cmd     = (InterpreterCmds_t) (0xffUL & hdr);
 
   switch (cmd) {
   case MsgInterpreter__InitDo:

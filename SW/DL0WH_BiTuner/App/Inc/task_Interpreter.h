@@ -11,7 +11,7 @@
 #include "main.h"
 
 
-typedef enum interpreterCmds_ENUM {
+typedef enum InterpreterCmds_ENUM {
 
   MsgInterpreter__InitDo                                      = 0x01U,
   MsgInterpreter__InitDone,
@@ -24,7 +24,7 @@ typedef enum interpreterCmds_ENUM {
   MsgInterpreter__CallFunc01_Restart                          = 0xc1U,
   MsgInterpreter__CallFunc02_PrintLC,
 
-} interpreterCmds_t;
+} InterpreterCmds_t;
 
 
 void interpreterPrintHelp(void);
