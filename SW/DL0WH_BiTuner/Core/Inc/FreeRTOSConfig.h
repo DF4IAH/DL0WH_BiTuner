@@ -166,6 +166,9 @@ typedef enum EG_GLOBAL {
   EG_GLOBAL__Controller_QUEUE_IN                              = (1UL <<  1UL ),
   EG_GLOBAL__Controller_QUEUE_OUT                             = (1UL <<  2UL ),
 
+  EG_GLOBAL__Interpreter_QUEUE_IN                             = (1UL <<  9UL ),
+  EG_GLOBAL__Interpreter_QUEUE_OUT                            = (1UL << 10UL ),
+
 } EG_GLOBAL_t;
 
 

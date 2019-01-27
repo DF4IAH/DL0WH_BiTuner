@@ -120,13 +120,14 @@ osThreadId defaultTaskHandle;
 osThreadId controllerTaskHandle;
 osThreadId usbToHostTaskHandle;
 osThreadId usbFromHostTaskHandle;
+osThreadId interpreterTaskHandle;
 osMessageQId usbToHostQueueHandle;
 osMessageQId usbFromHostQueueHandle;
 osMessageQId controllerInQueueHandle;
 osMessageQId controllerOutQueueHandle;
 osTimerId defaultTimerHandle;
 osTimerId controllerTimerHandle;
-osSemaphoreId c2Default_BSemHandle;
+osSemaphoreId c2default_BSemHandle;
 osSemaphoreId i2c1_BSemHandle;
 osSemaphoreId spi1_BSemHandle;
 osSemaphoreId cQin_BSemHandle;
@@ -134,6 +135,7 @@ osSemaphoreId cQout_BSemHandle;
 osSemaphoreId c2usbToHost_BSemHandle;
 osSemaphoreId c2usbFromHost_BSemHandle;
 osSemaphoreId usb_BSemHandle;
+osSemaphoreId c2interpreter_BSemHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -144,6 +146,7 @@ void StartDefaultTask(void const * argument);
 void StartControllerTask(void const * argument);
 void StartUsbToHostTask(void const * argument);
 void StartUsbFromHostTask(void const * argument);
+void StartInterpreterTask(void const * argument);
 void rtosDefaultTimerCallback(void const * argument);
 void rtosControllerTimerCallback(void const * argument);
 
@@ -649,9 +652,9 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_MUTEX */
 
   /* Create the semaphores(s) */
-  /* definition and creation of c2Default_BSem */
-  osSemaphoreDef(c2Default_BSem);
-  c2Default_BSemHandle = osSemaphoreCreate(osSemaphore(c2Default_BSem), 1);
+  /* definition and creation of c2default_BSem */
+  osSemaphoreDef(c2default_BSem);
+  c2default_BSemHandle = osSemaphoreCreate(osSemaphore(c2default_BSem), 1);
 
   /* definition and creation of i2c1_BSem */
   osSemaphoreDef(i2c1_BSem);
@@ -681,6 +684,10 @@ void MX_FREERTOS_Init(void) {
   osSemaphoreDef(usb_BSem);
   usb_BSemHandle = osSemaphoreCreate(osSemaphore(usb_BSem), 1);
 
+  /* definition and creation of c2interpreter_BSem */
+  osSemaphoreDef(c2interpreter_BSem);
+  c2interpreter_BSemHandle = osSemaphoreCreate(osSemaphore(c2interpreter_BSem), 1);
+
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
@@ -704,16 +711,20 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of controllerTask */
-  osThreadDef(controllerTask, StartControllerTask, osPriorityIdle, 0, 256);
+  osThreadDef(controllerTask, StartControllerTask, osPriorityBelowNormal, 0, 256);
   controllerTaskHandle = osThreadCreate(osThread(controllerTask), NULL);
 
   /* definition and creation of usbToHostTask */
-  osThreadDef(usbToHostTask, StartUsbToHostTask, osPriorityIdle, 0, 128);
+  osThreadDef(usbToHostTask, StartUsbToHostTask, osPriorityAboveNormal, 0, 128);
   usbToHostTaskHandle = osThreadCreate(osThread(usbToHostTask), NULL);
 
   /* definition and creation of usbFromHostTask */
-  osThreadDef(usbFromHostTask, StartUsbFromHostTask, osPriorityIdle, 0, 128);
+  osThreadDef(usbFromHostTask, StartUsbFromHostTask, osPriorityAboveNormal, 0, 128);
   usbFromHostTaskHandle = osThreadCreate(osThread(usbFromHostTask), NULL);
+
+  /* definition and creation of interpreterTask */
+  osThreadDef(interpreterTask, StartInterpreterTask, osPriorityNormal, 0, 256);
+  interpreterTaskHandle = osThreadCreate(osThread(interpreterTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -870,6 +881,24 @@ void StartUsbFromHostTask(void const * argument)
     usbUsbFromHostTaskLoop();
   }
   /* USER CODE END StartUsbFromHostTask */
+}
+
+/* USER CODE BEGIN Header_StartInterpreterTask */
+/**
+* @brief Function implementing the interpreterTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartInterpreterTask */
+void StartInterpreterTask(void const * argument)
+{
+  /* USER CODE BEGIN StartInterpreterTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartInterpreterTask */
 }
 
 /* rtosDefaultTimerCallback function */
