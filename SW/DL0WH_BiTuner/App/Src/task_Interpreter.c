@@ -308,9 +308,12 @@ const uint8_t               interpreterHelpMsg003[]            = "\t============
 
 const uint8_t               interpreterHelpMsg111[]            =     "\t\t> Main commands\r\n";
 const uint8_t               interpreterHelpMsg112[]            =     "\t\t--------------------------------------------------------------------------\r\n";
-const uint8_t               interpreterHelpMsg121[]            = "\t\tc\t\tClear screen.\r\n";
+const uint8_t               interpreterHelpMsg121[]            = "\t\tCxy\t\tC relay x 0..7  if y=1 SET  or if y=0 RESET.\r\n";
+const uint8_t               interpreterHelpMsg122[]            = "\t\tLxy\t\tL relay x 0..7  if y=1 SET  or if y=0 RESET.\r\n";
+const uint8_t               interpreterHelpMsg123[]            = "\t\tCL\t\tSet C at the TRX-side and the L to the antenna side (Gamma).\r\n";
+const uint8_t               interpreterHelpMsg124[]            = "\t\tLC\t\tSet L at the TRX-side and the C to the antenna side (reverted Gamma).\r\n";
+const uint8_t               interpreterHelpMsg125[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";
 const uint8_t               interpreterHelpMsg131[]            = "\t\thelp\t\tPrint this list of commands.\r\n";
-const uint8_t               interpreterHelpMsg141[]            = "\t\tmon <n>\t\tMonitor bitmask:\r\n";
 const uint8_t               interpreterHelpMsg151[]            = "\t\trestart\t\tRestart this device.\r\n\r\n";
 
 void interpreterPrintHelp(void)
@@ -329,8 +332,11 @@ void interpreterPrintHelp(void)
   usbToHostWait(interpreterHelpMsg111, strlen((char*) interpreterHelpMsg111));
   usbToHostWait(interpreterHelpMsg112, strlen((char*) interpreterHelpMsg112));
   usbToHostWait(interpreterHelpMsg121, strlen((char*) interpreterHelpMsg121));
+  usbToHostWait(interpreterHelpMsg122, strlen((char*) interpreterHelpMsg122));
+  usbToHostWait(interpreterHelpMsg123, strlen((char*) interpreterHelpMsg123));
+  usbToHostWait(interpreterHelpMsg124, strlen((char*) interpreterHelpMsg124));
+  usbToHostWait(interpreterHelpMsg125, strlen((char*) interpreterHelpMsg125));
   usbToHostWait(interpreterHelpMsg131, strlen((char*) interpreterHelpMsg131));
-  usbToHostWait(interpreterHelpMsg141, strlen((char*) interpreterHelpMsg141));
   usbToHostWait(interpreterHelpMsg151, strlen((char*) interpreterHelpMsg151));
 
   osSemaphoreRelease(usbToHostBinarySemHandle);
