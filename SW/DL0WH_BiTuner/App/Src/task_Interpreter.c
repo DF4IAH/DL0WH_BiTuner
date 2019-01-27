@@ -29,6 +29,7 @@ extern osMessageQId         usbFromHostQueueHandle;
 extern osMessageQId         interOutQueueHandle;
 
 extern osSemaphoreId        usbToHostBinarySemHandle;
+extern osSemaphoreId        c2interpreter_BSemHandle;
 
 extern EventGroupHandle_t   globalEventGroupHandle;
 extern EventGroupHandle_t   controllerEventGroupHandle;
@@ -45,6 +46,9 @@ const uint16_t              Interpreter_MaxWaitMs             = 100;
 
 static uint8_t              s_interpreter_enable              = 0U;
 static uint32_t             s_interpreterStartTime            = 0UL;
+
+static uint8_t              s_interpreterLineBuf[256]         = { 0 };
+static uint32_t             s_interpreterLineBufLen           = 0UL;
 
 
 /* Private function prototypes -----------------------------------------------*/
@@ -150,16 +154,22 @@ static void interpreterDoInterprete__HexString(const char* buf, uint16_t len)
 }
 #endif
 
-static void interpreterDoInterprete(const uint8_t* buf, uint16_t len)
+static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 {
-  const char *cb = (const char*) buf;
+  const char *cb = (const char*) s_interpreterLineBuf;
 
-  if (0) {
+  for (uint32_t idx = 0; idx < len; idx++) {
+    if (idx + s_interpreterLineBufLen < 254) {
+      s_interpreterLineBuf[s_interpreterLineBufLen++] = buf[idx];
+    }
+  }
+
+  if (false) {
+
 #if 0
   } else if (!strncmp("adr ", cb, 4) && (4 < len)) {
     const long    adrEnable   = strtol(cb + 4, NULL, 10);
     const uint8_t pushAry[3]  = { 2, InterOutQueueCmds__ADRset, (adrEnable ?  1U : 0U) };
-    interpreterPushToInterOutQueue(pushAry, sizeof(pushAry));
 
   } else if (!strncmp("c", cb, 1) && (1 == len)) {
     interpreterClearScreen();
@@ -167,13 +177,11 @@ static void interpreterDoInterprete(const uint8_t* buf, uint16_t len)
   } else if (!strncmp("conf ", cb, 5) && (5 < len)) {
     const long    confEnable  = strtol(cb + 5, NULL, 10);
     const uint8_t pushAry[3]  = { 2, InterOutQueueCmds__ConfirmedPackets, (confEnable ?  1U : 0U) };
-    interpreterPushToInterOutQueue(pushAry, sizeof(pushAry));
 
   } else if (!strncmp("dr ", cb, 3) && (3 < len)) {
     const long    val         = strtol(cb + 3, NULL, 10);
     const uint8_t drSet = (uint8_t) val;
     const uint8_t pushAry[3]  = { 2, InterOutQueueCmds__DRset, drSet };
-    interpreterPushToInterOutQueue(pushAry, sizeof(pushAry));
 
   } else if (!strncmp("f ", cb, 2) && (2 < len)) {
     /* LoRaBare frequency setting [f]=Hz */
@@ -183,16 +191,39 @@ static void interpreterDoInterprete(const uint8_t* buf, uint16_t len)
     const uint8_t frequencyHz2 = (uint8_t) (f >> 16U) & 0xffUL;
     const uint8_t frequencyHz3 = (uint8_t) (f >> 24U) & 0xffUL;
     const uint8_t pushAry[6]   = { 5, InterOutQueueCmds__LoRaBareFrequency, frequencyHz0, frequencyHz1, frequencyHz2, frequencyHz3 };
-    interpreterPushToInterOutQueue(pushAry, sizeof(pushAry));
+
 #endif
   } else if (!strncmp("help", cb, 4) && (4 == len)) {
     interpreterPrintHelp();
+
+  } else if (!strncmp("C", cb, 1) && (3 == len)) {
+    /* Set capacitance */
+    const uint32_t valLsw      = *(cb + 1) > '0' ?  *(cb + 1) - '0' : 0;
+    const uint32_t valLenable  = *(cb + 2) == '1' ?  1UL : 0UL;
+    if (valLsw < 8) {
+      uint32_t cmd[2];
+      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgInterpreter__SetVar02_C);
+      cmd[1] = (valLsw      << 24U) |
+               (valLenable  << 16U) ;
+      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, osWaitForever);
+    }
+
+  } else if (!strncmp("L", cb, 1) && (3 == len)) {
+    /* Set inductance */
+    const uint8_t valLsw      = *(cb + 1) > '0' ?  *(cb + 1) - '0' : 0;
+    const uint8_t valLenable  = *(cb + 2) == '1' ?  1U : 0U;
+    if (valLsw < 8) {
+      uint32_t cmd[2];
+      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgInterpreter__SetVar01_L);
+      cmd[1] = (valLsw      << 24U) |
+               (valLenable  << 16U) ;
+      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, osWaitForever);
+    }
 
 #if 0
   } else if (!strncmp("push", cb, 4) && (4 == len)) {
     /* Set flag for sending and upload data */
     const uint8_t pushAry[2]  = { 1, InterOutQueueCmds__DoSendDataUp };
-    interpreterPushToInterOutQueue(pushAry, sizeof(pushAry));
 
   } else if (!strncmp("mon ", cb, 4) && (4 < len)) {
     const long    val         = strtol(cb + 4, NULL, 10);
@@ -203,27 +234,26 @@ static void interpreterDoInterprete(const uint8_t* buf, uint16_t len)
     const long    val         = strtol(cb + 7, NULL, 10);
     const uint8_t pwrRed      = (uint8_t) val;
     const uint8_t pushAry[3]  = { 2, InterOutQueueCmds__PwrRedDb, pwrRed };
-    interpreterPushToInterOutQueue(pushAry, sizeof(pushAry));
 
   } else if (!strncmp("reqcheck", cb, 8) && (8 == len)) {
     /* LoRaWAN link check message */
     const uint8_t pushAry[2]  = { 1, InterOutQueueCmds__LinkCheckReq };
-    interpreterPushToInterOutQueue(pushAry, sizeof(pushAry));
 
   } else if (!strncmp("reqtime", cb, 7) && (7 == len)) {
     /* LoRaWAN device time message */
     const uint8_t pushAry[2]  = { 1, InterOutQueueCmds__DeviceTimeReq };
-    interpreterPushToInterOutQueue(pushAry, sizeof(pushAry));
+
 #endif
   } else if (!strncmp("restart", cb, 7) && (7 == len)) {
-    SystemResetbyARMcore();
+    uint32_t cmd[1];
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgInterpreter__CallFunc01_Restart);
+    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, osWaitForever);
 
 #if 0
   } else if (!strncmp("rx ", cb, 3) && (3 < len)) {
     /* LoRaBare frequency setting [f]=Hz */
     const long    rxEnable     = strtol(cb + 3, NULL, 10);
     const uint8_t pushAry[3]   = { 2, InterOutQueueCmds__LoRaBareRxEnable, (rxEnable ?  1U : 0U) };
-    interpreterPushToInterOutQueue(pushAry, sizeof(pushAry));
 
   } else if (!strncmp("timer ", cb, 6) && (6 < len)) {
     /* LoRaWAN timer setting [timer]=s */
@@ -231,21 +261,40 @@ static void interpreterDoInterprete(const uint8_t* buf, uint16_t len)
     const uint8_t repeatTimer0 = (uint8_t) (val     ) & 0xffUL;
     const uint8_t repeatTimer1 = (uint8_t) (val >> 8) & 0xffUL;
     const uint8_t pushAry[4]  = { 3, InterOutQueueCmds__Timer, repeatTimer0, repeatTimer1 };
-    interpreterPushToInterOutQueue(pushAry, sizeof(pushAry));
-
-  } else if (!strncmp("\"", cb, 1) && (1 < len)) {
-    interpreterSendLoRaBare(cb + 1, len - 1);
-
-  } else if (!strncmp("0x", cb, 2) && (2 < len)) {
-    interpreterDoInterprete__HexString(cb + 2, len - 2);
-
-  } else if (!strncmp("$", cb, 1) && (1 < len)) {
-    interpreterSendNMEA(cb, len);
 #endif
+
+  } else if (!strncmp("?", cb, 1) && (1 == len)) {
+    uint32_t cmd[1];
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgInterpreter__CallFunc02_PrintLC);
+    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, osWaitForever);
 
   } else {
     interpreterUnknownCommand();
   }
+
+  /* Slice out until next line follows */
+  uint32_t newIdx = 0UL;
+  for (uint32_t idx = 0; idx < s_interpreterLineBufLen; idx++) {
+    const uint8_t c0 = s_interpreterLineBuf[idx];
+    const uint8_t c1 = s_interpreterLineBuf[idx];
+
+    if (c0 == 0x0a || c0 == 0x0d) {
+      newIdx = (c1 == 0x0a || c1 == 0x0d) ?  (idx + 1) : idx;
+      break;
+    }
+  }
+
+  /* Truncate current line */
+  if (newIdx) {
+    /* Line termination found: cue to next line */
+    memmove(s_interpreterLineBuf, s_interpreterLineBuf + newIdx, s_interpreterLineBufLen - newIdx + 1UL);
+    s_interpreterLineBufLen -= newIdx;
+
+  } else {
+    /* Old single line clear */
+    s_interpreterLineBufLen = 0UL;
+  }
+  memset(s_interpreterLineBuf + (sizeof(s_interpreterLineBuf) - s_interpreterLineBufLen), 0, sizeof(s_interpreterLineBuf) - s_interpreterLineBufLen);
 }
 
 
@@ -359,6 +408,7 @@ void interpreterTaskLoop(void)
 {
   uint32_t  msgLen                        = 0UL;
   uint32_t  msgAry[CONTROLLER_MSG_Q_LEN];
+  uint8_t   usbAry[32];
 
   /* Wait for door bell and hand-over controller out queue */
   {
@@ -375,8 +425,8 @@ void interpreterTaskLoop(void)
 
   /* Check if data from the USB host is available */
   //  ev = osMessageGet(usbFromHostQueueHandle, 1UL);
-  uint32_t len = interpreterMsgPullUsbFromHostQueue(msgAry, 1UL);
+  uint32_t len = usbPullFromOutQueue(usbAry, 1UL);
   if (len) {
-    interpreterDoInterprete(msgAry, len);
+    interpreterDoInterprete(usbAry, len);
   }
 }

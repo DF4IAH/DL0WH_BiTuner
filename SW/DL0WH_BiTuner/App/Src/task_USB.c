@@ -26,9 +26,11 @@
 /* Variables -----------------------------------------------------------------*/
 extern osMessageQId         usbFromHostQueueHandle;
 extern osMessageQId         usbToHostQueueHandle;
+
+extern osSemaphoreId        usb_BSemHandle;
 extern osSemaphoreId        c2usbToHost_BSemHandle;
 extern osSemaphoreId        c2usbFromHost_BSemHandle;
-extern osSemaphoreId        usb_BSemHandle;
+extern osSemaphoreId        usbFromHost_BSemHandle;
 
 extern EventGroupHandle_t   globalEventGroupHandle;
 extern EventGroupHandle_t   usbToHostEventGroupHandle;
@@ -106,6 +108,31 @@ void usbFromHostFromIRQ(const uint8_t* buf, uint32_t len)
 
 
 const char usbClrScrBuf[4] = { 0x0c, 0x0d, 0x0a, 0 };
+
+/* Messaging */
+
+uint32_t usbPullFromOutQueue(uint8_t* msgAry, uint32_t waitMs)
+{
+  uint32_t len = 0UL;
+
+  /* Get semaphore to queue out */
+  osSemaphoreWait(usbFromHost_BSemHandle, waitMs);
+
+  do {
+    osEvent ev = osMessageGet(usbFromHostQueueHandle, waitMs);
+    if (ev.status == osEventMessage) {
+      msgAry[len++] = ev.value.v;
+
+    } else {
+      break;
+    }
+  } while (1);
+
+  /* Return semaphore */
+  osSemaphoreRelease(usbFromHost_BSemHandle);
+
+  return len;
+}
 
 
 /* USB-to-Host */

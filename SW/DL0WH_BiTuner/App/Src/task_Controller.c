@@ -9,6 +9,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "task_Controller.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -25,7 +26,7 @@
 extern osMessageQId         controllerInQueueHandle;
 extern osMessageQId         controllerOutQueueHandle;
 extern osTimerId            controllerTimerHandle;
-extern osSemaphoreId        c2Default_BSemHandle;
+extern osSemaphoreId        c2default_BSemHandle;
 extern osSemaphoreId        cQin_BSemHandle;
 extern osSemaphoreId        cQout_BSemHandle;
 extern osSemaphoreId        c2usbToHost_BSemHandle;
@@ -373,7 +374,7 @@ void controllerMsgPushToOutQueue(uint8_t msgLen, uint32_t* msgAry, uint32_t wait
   /* Ring bell at the destination */
   switch ((ControllerMsgDestinations_t) (msgAry[0] >> 24)) {
   case Destinations__Rtos_Default:
-    semId = c2Default_BSemHandle;
+    semId = c2default_BSemHandle;
     break;
 
   case Destinations__Network_USBtoHost:
@@ -1346,7 +1347,7 @@ static void controllerInit(void)
 
   /* Prepare all semaphores */
   {
-    osSemaphoreWait(c2Default_BSemHandle,     osWaitForever);
+    osSemaphoreWait(c2default_BSemHandle,     osWaitForever);
     osSemaphoreWait(c2usbToHost_BSemHandle,   osWaitForever);
     osSemaphoreWait(c2usbFromHost_BSemHandle, osWaitForever);
   }

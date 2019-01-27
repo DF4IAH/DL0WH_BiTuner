@@ -43,6 +43,8 @@ void usbToHostWait(const uint8_t* buf, uint32_t len);
 void usbLogLen(const char* str, int len);
 void usbLog(const char* str);
 
+uint32_t usbPullFromOutQueue(uint8_t* msgAry, uint32_t waitMs);
+
 
 /* Called from the USB CDC backend */
 void usbFromHostFromIRQ(const uint8_t* buf, uint32_t len);

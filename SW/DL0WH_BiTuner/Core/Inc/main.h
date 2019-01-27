@@ -88,6 +88,63 @@
 
 /* USER CODE BEGIN Private defines */
 
+#ifndef PI
+# define PI                                                   3.14159265358979f
+#endif
+
+#ifndef min
+# define min(a,b)                                             (a) < (b) ?  (a) : (b)
+#endif
+
+#ifndef max
+# define max(a,b)                                             (a) > (b) ?  (a) : (b)
+#endif
+
+#ifndef false
+# define false 0
+#endif
+#ifndef true
+# define true 1
+#endif
+
+
+#define BITUNER_CTRL_VERSION                                 20190127UL
+
+
+typedef enum POWERSWITCH_ENUM {
+
+  POWERSWITCH__BAT_SW                                         = 1,
+  POWERSWITCH__BAT_HICUR,
+
+  POWERSWITCH__SLOWER_24MHZ,
+
+} POWERSWITCH_ENUM_t;
+
+typedef enum SYSCLK_CONFIG_ENUM {
+
+  SYSCLK_CONFIG_04MHz_MSI                                     =  4000,
+  SYSCLK_CONFIG_08MHz_MSI                                     =  8000,
+  SYSCLK_CONFIG_16MHz_MSI                                     = 16000,
+  SYSCLK_CONFIG_24MHz_MSI                                     = 24000,
+  SYSCLK_CONFIG_48MHz_MSI                                     = 48000,
+  SYSCLK_CONFIG_80MHz_MSI16_PLL                               = 80000,
+
+} SYSCLK_CONFIG_t;
+
+uint32_t crcCalc(const uint32_t* ptr, uint32_t len);
+
+
+uint8_t sel_u8_from_u32(uint32_t in_u32, uint8_t sel);
+void mainCalcFloat2IntFrac(float val, uint8_t fracCnt, int32_t* outInt, uint32_t* outFrac);
+float mainCalc_fwdRev_mV(float adc_mv, float vdiode_mv);
+float mainCalc_VSWR(float fwd, float rev);
+float mainCalc_mV_to_mW(float mV);
+void mainPowerSwitchDo(POWERSWITCH_ENUM_t sw, uint8_t enable);
+void mainPowerSwitchInit(void);
+void SystemResetbyARMcore(void);
+
+void Again_SystemClock_Config(SYSCLK_CONFIG_t sel);
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

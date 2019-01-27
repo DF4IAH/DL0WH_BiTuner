@@ -136,6 +136,7 @@ osSemaphoreId c2usbToHost_BSemHandle;
 osSemaphoreId c2usbFromHost_BSemHandle;
 osSemaphoreId usb_BSemHandle;
 osSemaphoreId c2interpreter_BSemHandle;
+osSemaphoreId usbFromHost_BSemHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -688,6 +689,10 @@ void MX_FREERTOS_Init(void) {
   osSemaphoreDef(c2interpreter_BSem);
   c2interpreter_BSemHandle = osSemaphoreCreate(osSemaphore(c2interpreter_BSem), 1);
 
+  /* definition and creation of usbFromHost_BSem */
+  osSemaphoreDef(usbFromHost_BSem);
+  usbFromHost_BSemHandle = osSemaphoreCreate(osSemaphore(usbFromHost_BSem), 1);
+
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
@@ -768,9 +773,11 @@ void MX_FREERTOS_Init(void) {
   vQueueAddToRegistry(cQout_BSemHandle,         "Resc cQout BSem");
   vQueueAddToRegistry(usb_BSemHandle,           "Resc USB BSem");
 
-  vQueueAddToRegistry(c2Default_BSemHandle,     "Wake c2Default BSem");
+  vQueueAddToRegistry(c2default_BSemHandle,     "Wake c2default BSem");
+  vQueueAddToRegistry(c2interpreter_BSemHandle, "Wake c2interpreter BSem");
   vQueueAddToRegistry(c2usbFromHost_BSemHandle, "Wake c2usbFromHost BSem");
   vQueueAddToRegistry(c2usbToHost_BSemHandle,   "Wake c2usbToHost BSem");
+  vQueueAddToRegistry(usbFromHost_BSemHandle,   "Wake usbFromHost BSem");
   /* USER CODE END RTOS_QUEUES */
 }
 
@@ -811,7 +818,7 @@ void StartDefaultTask(void const * argument)
 
     /* Wait for door bell and hand-over controller out queue */
     {
-      osSemaphoreWait(c2Default_BSemHandle, osWaitForever);
+      osSemaphoreWait(c2default_BSemHandle, osWaitForever);
       msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Rtos_Default, 1UL);                // Special case of callbacks need to limit blocking time
     }
 
