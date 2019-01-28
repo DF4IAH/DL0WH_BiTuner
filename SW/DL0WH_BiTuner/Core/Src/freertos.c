@@ -121,10 +121,16 @@ osThreadId controllerTaskHandle;
 osThreadId usbToHostTaskHandle;
 osThreadId usbFromHostTaskHandle;
 osThreadId interpreterTaskHandle;
+osThreadId uartTaskHandle;
+osThreadId catTaskHandle;
 osMessageQId usbToHostQueueHandle;
 osMessageQId usbFromHostQueueHandle;
 osMessageQId controllerInQueueHandle;
 osMessageQId controllerOutQueueHandle;
+osMessageQId uartTxQueueHandle;
+osMessageQId uartRxQueueHandle;
+osMessageQId catTxQueueHandle;
+osMessageQId catRxQueueHandle;
 osTimerId defaultTimerHandle;
 osTimerId controllerTimerHandle;
 osSemaphoreId c2default_BSemHandle;
@@ -137,6 +143,10 @@ osSemaphoreId c2usbFromHost_BSemHandle;
 osSemaphoreId usb_BSemHandle;
 osSemaphoreId c2interpreter_BSemHandle;
 osSemaphoreId usbFromHost_BSemHandle;
+osSemaphoreId uart_BSemHandle;
+osSemaphoreId cat_BSemHandle;
+osSemaphoreId c2uart_BSemHandle;
+osSemaphoreId c2cat_BSemHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -148,6 +158,8 @@ void StartControllerTask(void const * argument);
 void StartUsbToHostTask(void const * argument);
 void StartUsbFromHostTask(void const * argument);
 void StartInterpreterTask(void const * argument);
+void StartUartTask(void const * argument);
+void StartCatTask(void const * argument);
 void rtosDefaultTimerCallback(void const * argument);
 void rtosControllerTimerCallback(void const * argument);
 
@@ -693,6 +705,22 @@ void MX_FREERTOS_Init(void) {
   osSemaphoreDef(usbFromHost_BSem);
   usbFromHost_BSemHandle = osSemaphoreCreate(osSemaphore(usbFromHost_BSem), 1);
 
+  /* definition and creation of uart_BSem */
+  osSemaphoreDef(uart_BSem);
+  uart_BSemHandle = osSemaphoreCreate(osSemaphore(uart_BSem), 1);
+
+  /* definition and creation of cat_BSem */
+  osSemaphoreDef(cat_BSem);
+  cat_BSemHandle = osSemaphoreCreate(osSemaphore(cat_BSem), 1);
+
+  /* definition and creation of c2uart_BSem */
+  osSemaphoreDef(c2uart_BSem);
+  c2uart_BSemHandle = osSemaphoreCreate(osSemaphore(c2uart_BSem), 1);
+
+  /* definition and creation of c2cat_BSem */
+  osSemaphoreDef(c2cat_BSem);
+  c2cat_BSemHandle = osSemaphoreCreate(osSemaphore(c2cat_BSem), 1);
+
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
@@ -731,6 +759,14 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(interpreterTask, StartInterpreterTask, osPriorityNormal, 0, 256);
   interpreterTaskHandle = osThreadCreate(osThread(interpreterTask), NULL);
 
+  /* definition and creation of uartTask */
+  osThreadDef(uartTask, StartUartTask, osPriorityAboveNormal, 0, 256);
+  uartTaskHandle = osThreadCreate(osThread(uartTask), NULL);
+
+  /* definition and creation of catTask */
+  osThreadDef(catTask, StartCatTask, osPriorityAboveNormal, 0, 256);
+  catTaskHandle = osThreadCreate(osThread(catTask), NULL);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -755,6 +791,26 @@ void MX_FREERTOS_Init(void) {
 /* what about the sizeof here??? cd native code */
   osMessageQDef(controllerOutQueue, 32, uint32_t);
   controllerOutQueueHandle = osMessageCreate(osMessageQ(controllerOutQueue), NULL);
+
+  /* definition and creation of uartTxQueue */
+/* what about the sizeof here??? cd native code */
+  osMessageQDef(uartTxQueue, 256, uint8_t);
+  uartTxQueueHandle = osMessageCreate(osMessageQ(uartTxQueue), NULL);
+
+  /* definition and creation of uartRxQueue */
+/* what about the sizeof here??? cd native code */
+  osMessageQDef(uartRxQueue, 32, uint8_t);
+  uartRxQueueHandle = osMessageCreate(osMessageQ(uartRxQueue), NULL);
+
+  /* definition and creation of catTxQueue */
+/* what about the sizeof here??? cd native code */
+  osMessageQDef(catTxQueue, 256, uint8_t);
+  catTxQueueHandle = osMessageCreate(osMessageQ(catTxQueue), NULL);
+
+  /* definition and creation of catRxQueue */
+/* what about the sizeof here??? cd native code */
+  osMessageQDef(catRxQueue, 32, uint8_t);
+  catRxQueueHandle = osMessageCreate(osMessageQ(catRxQueue), NULL);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -906,6 +962,42 @@ void StartInterpreterTask(void const * argument)
     osDelay(1);
   }
   /* USER CODE END StartInterpreterTask */
+}
+
+/* USER CODE BEGIN Header_StartUartTask */
+/**
+* @brief Function implementing the uartTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartUartTask */
+void StartUartTask(void const * argument)
+{
+  /* USER CODE BEGIN StartUartTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartUartTask */
+}
+
+/* USER CODE BEGIN Header_StartCatTask */
+/**
+* @brief Function implementing the catTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartCatTask */
+void StartCatTask(void const * argument)
+{
+  /* USER CODE BEGIN StartCatTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartCatTask */
 }
 
 /* rtosDefaultTimerCallback function */
