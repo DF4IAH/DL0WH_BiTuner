@@ -202,7 +202,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     const uint32_t valLenable  = *(cb + 2) == '1' ?  1UL : 0UL;
     if (valLsw < 8) {
       uint32_t cmd[2];
-      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgInterpreter__SetVar02_C);
+      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 2U, MsgInterpreter__SetVar02_C);
       cmd[1] = (valLsw      << 24U) |
                (valLenable  << 16U) ;
       controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, osWaitForever);
@@ -214,17 +214,25 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     const uint8_t valLenable  = *(cb + 2) == '1' ?  1U : 0U;
     if (valLsw < 8) {
       uint32_t cmd[2];
-      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgInterpreter__SetVar01_L);
+      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 2U, MsgInterpreter__SetVar01_L);
       cmd[1] = (valLsw      << 24U) |
                (valLenable  << 16U) ;
       controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, osWaitForever);
     }
 
-#if 0
-  } else if (!strncmp("push", cb, 4) && (4 == len)) {
-    /* Set flag for sending and upload data */
-    const uint8_t pushAry[2]  = { 1, InterOutQueueCmds__DoSendDataUp };
+  } else if (!strncmp("CL", cb, 2) && (2 == len)) {
+    /* Set configuration to Gamma (CV) */
+    uint32_t cmd[1];
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgInterpreter__SetVar03_CL);
+    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, osWaitForever);
 
+  } else if (!strncmp("LC", cb, 2) && (2 == len)) {
+    /* Set configuration to reverted Gamma (CH) */
+    uint32_t cmd[1];
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgInterpreter__SetVar04_LC);
+    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, osWaitForever);
+
+#if 0
   } else if (!strncmp("mon ", cb, 4) && (4 < len)) {
     const long    val         = strtol(cb + 4, NULL, 10);
     g_monMsk                  = (uint32_t) val;
@@ -246,7 +254,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 #endif
   } else if (!strncmp("restart", cb, 7) && (7 == len)) {
     uint32_t cmd[1];
-    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgInterpreter__CallFunc01_Restart);
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgInterpreter__CallFunc01_Restart);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, osWaitForever);
 
 #if 0
@@ -265,7 +273,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 
   } else if (!strncmp("?", cb, 1) && (1 == len)) {
     uint32_t cmd[1];
-    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgInterpreter__CallFunc02_PrintLC);
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgInterpreter__CallFunc02_PrintLC);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, osWaitForever);
 
   } else {

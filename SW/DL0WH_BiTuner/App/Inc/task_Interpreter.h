@@ -18,6 +18,8 @@ typedef enum InterpreterCmds_ENUM {
 
   MsgInterpreter__SetVar01_L                                  = 0x41U,
   MsgInterpreter__SetVar02_C,
+  MsgInterpreter__SetVar03_CL,
+  MsgInterpreter__SetVar04_LC,
 
 //MsgInterpreter__GetVar01_y                                  = 0x81U,
 

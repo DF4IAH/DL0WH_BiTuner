@@ -602,34 +602,42 @@ static void controllerFSM_LogState(void)
 
 static void controllerFSM_GetGlobalVars(void)
 {
-  __disable_irq();
-  s_controller_adc_fwd_mv     = g_adc_fwd_mv;
-  s_controller_adc_swr        = g_adc_swr;
-  __enable_irq();
+  /* Disabled IRQ section */
+  {
+    __disable_irq();
 
-  if (s_controller_adc_swr < Controller_AutoSWR_SWR_Init) {
-    /* Add current data to the maps */
-    //printf("controllerFSM_GetGlobalVars 1: adding swr= %.3f to the L/C maps.\r\n", s_controller_adc_swr);
-    if (s_controller_adc_swr < s_controller_opti_swr_1st) {
-      /* Move back */
-      s_controller_opti_swr_2nd   = s_controller_opti_swr_1st;
-      s_controller_opti_swr_2nd_L = s_controller_opti_swr_1st_L;
-      s_controller_opti_swr_2nd_C = s_controller_opti_swr_1st_C;
+    s_controller_adc_fwd_mv     = g_adc_fwd_mv;
+    s_controller_adc_swr        = g_adc_swr;
 
-      /* Enter */
-      s_controller_opti_swr_1st   = s_controller_adc_swr;
-      s_controller_opti_swr_1st_L = s_controller_opti_L;
-      s_controller_opti_swr_1st_C = s_controller_opti_C;
+    if (s_controller_adc_swr < Controller_AutoSWR_SWR_Init) {
+      /* Add current data to the maps */
+      //printf("controllerFSM_GetGlobalVars 1: adding swr= %.3f to the L/C maps.\r\n", s_controller_adc_swr);
+      if (s_controller_adc_swr < s_controller_opti_swr_1st) {
+        /* Move back */
+        s_controller_opti_swr_2nd   = s_controller_opti_swr_1st;
+        s_controller_opti_swr_2nd_L = s_controller_opti_swr_1st_L;
+        s_controller_opti_swr_2nd_C = s_controller_opti_swr_1st_C;
 
-    } else if (s_controller_adc_swr < s_controller_opti_swr_2nd) {
-      /* Enter */
-      s_controller_opti_swr_2nd   = s_controller_adc_swr;
-      s_controller_opti_swr_2nd_L = s_controller_opti_L;
-      s_controller_opti_swr_2nd_C = s_controller_opti_C;
+        /* Enter */
+        s_controller_opti_swr_1st   = s_controller_adc_swr;
+        s_controller_opti_swr_1st_L = s_controller_opti_L;
+        s_controller_opti_swr_1st_C = s_controller_opti_C;
+
+      } else if (s_controller_adc_swr < s_controller_opti_swr_2nd) {
+        /* Enter */
+        s_controller_opti_swr_2nd   = s_controller_adc_swr;
+        s_controller_opti_swr_2nd_L = s_controller_opti_L;
+        s_controller_opti_swr_2nd_C = s_controller_opti_C;
+      }
     }
+    __enable_irq();
   }
 
-  s_controller_adc_fwd_mw = mainCalc_mV_to_mW(s_controller_adc_fwd_mv);
+  const float fwdMv = mainCalc_mV_to_mW(s_controller_adc_fwd_mv);
+
+  __disable_irq();
+  s_controller_adc_fwd_mw = fwdMv;
+  __enable_irq();
 }
 
 static void controllerFSM_PushOptiVars(void)
@@ -639,11 +647,22 @@ static void controllerFSM_PushOptiVars(void)
   uint32_t msgAry[2];
 
   /* Calculate current L and C counter setings */
-  s_controller_opti_L_relays = controllerCalcMatcherNH2L(s_controller_opti_L);
-  s_controller_opti_C_relays = controllerCalcMatcherPF2C(s_controller_opti_C);
+  __disable_irq();
+  const float               valL      = s_controller_opti_L;
+  const float               valC      = s_controller_opti_C;
+  const ControllerOptiCVH_t configLC  = s_controller_FSM_optiCVH;
+  __enable_irq();
+
+  const uint8_t relL = controllerCalcMatcherNH2L(valL);
+  const uint8_t relC = controllerCalcMatcherPF2C(valC);
+
+  __disable_irq();
+  s_controller_opti_L_relays = relL;
+  s_controller_opti_C_relays = relC;
+  __enable_irq();
 
   /* Update CV/CH state */
-  if (s_controller_FSM_optiCVH == ControllerOptiCVH__CH) {
+  if (configLC == ControllerOptiCVH__CH) {
     controller_opti_CV  = 0U;
     controller_opti_CH  = 1U;
 
@@ -653,10 +672,10 @@ static void controllerFSM_PushOptiVars(void)
   }
 
   /* Compose relay bitmap */
-  msgAry[1] = ((uint32_t)  controller_opti_CH << 17) |
-              ((uint32_t)  controller_opti_CV << 16) |
-              ((uint32_t)s_controller_opti_L  <<  8) |
-              ((uint32_t)s_controller_opti_C       ) ;
+  msgAry[1] = ((uint32_t)controller_opti_CH << 17) |
+              ((uint32_t)controller_opti_CV << 16) |
+              ((uint32_t)valL               <<  8) |
+              ((uint32_t)valC                    ) ;
 
   /* Three extra bytes to take over */
   msgAry[0] = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 3, MsgDefault__SetVar03_C_L_CV_CH);
@@ -1232,6 +1251,10 @@ static void controllerFSM(void)
 
 static void controllerSetL(uint8_t relLnum, uint8_t relEnable)
 {
+  __disable_irq();
+  float valL = s_controller_opti_L;
+  __enable_irq();
+
   uint8_t relay = controllerCalcMatcherNH2L(s_controller_opti_L);
   if (relEnable) {
     relay |=   1UL << relLnum;
@@ -1239,46 +1262,83 @@ static void controllerSetL(uint8_t relLnum, uint8_t relEnable)
   } else {
     relay &= ~(1UL << relLnum);
   }
-  s_controller_opti_L = controllerCalcMatcherL2nH(relay);
+  valL = controllerCalcMatcherL2nH(relay);
+
+  __disable_irq();
+  s_controller_opti_L = valL;
+  __enable_irq();
 
   controllerFSM_PushOptiVars();
 }
 
 static void controllerSetC(uint8_t relLnum, uint8_t relEnable)
 {
-  uint8_t relay = controllerCalcMatcherPF2C(s_controller_opti_C);
+  __disable_irq();
+  float valC = s_controller_opti_C;
+  __enable_irq();
+
+  uint8_t relay = controllerCalcMatcherPF2C(valC);
   if (relEnable) {
     relay |=   1UL << relLnum;
 
   } else {
     relay &= ~(1UL << relLnum);
   }
-  s_controller_opti_C = controllerCalcMatcherC2pF(relay);
+  valC = controllerCalcMatcherC2pF(relay);
+
+  __disable_irq();
+  s_controller_opti_C = valC;
+  __enable_irq();
 
   controllerFSM_PushOptiVars();
 }
 
+static void controllerSetConfigLC(bool isLC)
+{
+  __disable_irq();
+  s_controller_FSM_optiCVH = isLC ?  ControllerOptiCVH__CH : ControllerOptiCVH__CV;
+  __enable_irq();
+}
+
 static void controllerPrintLC(void)
 {
-  const uint8_t relL = controllerCalcMatcherNH2L(s_controller_opti_L);
-  const uint8_t relC = controllerCalcMatcherPF2C(s_controller_opti_C);
-  uint32_t relays = 0UL;
-  char buf[4] = { ' ', ' ', '?' };
+  __disable_irq();
+  const float valL                          = s_controller_opti_L;
+  const float valC                          = s_controller_opti_C;
+  const       ControllerOptiCVH_t configLC  = s_controller_FSM_optiCVH;
+  __enable_irq();
 
-  relays |= ((uint32_t)relC <<  0);
-  relays |= ((uint32_t)relL <<  8);
-  relays |= s_controller_FSM_optiCVH == ControllerOptiCVH__CV ?  0x100UL : 0x200UL;
+  /* Print relay settings */
+  {
+    const uint8_t relL = controllerCalcMatcherNH2L(valL);
+    const uint8_t relC = controllerCalcMatcherPF2C(valC);
+    uint32_t relays = 0UL;
+    char buf[4] = { ' ', ' ', '?' };
 
-  usbLog("\r\n## C1 C2 C3 C4 C5 C6 C7 C8  L1 L2 L3 L4 L5 L6 L7 L8  CV CH\r\n ");
+    relays |= ((uint32_t)relC <<  0);
+    relays |= ((uint32_t)relL <<  8);
+    relays |= s_controller_FSM_optiCVH == ControllerOptiCVH__CV ?  0x100UL : 0x200UL;
 
-  for (uint8_t idx = 0U; idx < 18U; idx++) {
-    if (idx == 8 || idx == 16) {
-      usbLogLen(" ", 1);
+    usbLog("\r\n## C1 C2 C3 C4 C5 C6 C7 C8  L1 L2 L3 L4 L5 L6 L7 L8  CV CH\r\n ");
+
+    for (uint8_t idx = 0U; idx < 18U; idx++) {
+      if (idx == 8 || idx == 16) {
+        usbLogLen(" ", 1);
+      }
+      buf[2] = (relays & (1UL << idx)) != 0UL ?  '1' : '0';
+      usbLogLen(buf, 3);
     }
-    buf[2] = (relays & (1UL << idx)) != 0UL ?  '1' : '0';
-    usbLogLen(buf, 3);
+    usbLogLen("\r\n", 2);
   }
-  usbLogLen("\r\n", 2);
+
+  /* Print L/C configuration and L, C values */
+  {
+    const char*    sConfig      = configLC == ControllerOptiCVH__CV ?  "C-L   normal Gamma" : "L-C reverted Gamma";
+    char           strbuf[128]  = { 0 };
+
+    const int len = snprintf(strbuf, (sizeof(strbuf) - 1), "Configuration: %s\t L= %6ld nH\t C= %6ld uF\r\n", sConfig, (uint32_t)valL, (uint32_t)valC);
+    usbLogLen(strbuf, len);
+  }
 }
 
 
@@ -1411,6 +1471,18 @@ static void controllerMsgProcessor(void)
           const uint8_t relNum    = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 24U));
           const uint8_t relEnable = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 16U));
           controllerSetC(relNum, relEnable);
+        }
+          break;
+
+        case MsgInterpreter__SetVar03_CL:
+        {
+          controllerSetConfigLC(false);
+        }
+          break;
+
+        case MsgInterpreter__SetVar04_LC:
+        {
+          controllerSetConfigLC(true);
         }
           break;
 
