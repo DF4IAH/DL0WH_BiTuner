@@ -604,7 +604,8 @@ static void controllerFSM_GetGlobalVars(void)
 {
   /* Disabled IRQ section */
   {
-    __disable_irq();
+    //__disable_irq();
+    taskDISABLE_INTERRUPTS();
 
     s_controller_adc_fwd_mv     = g_adc_fwd_mv;
     s_controller_adc_swr        = g_adc_swr;
@@ -630,14 +631,15 @@ static void controllerFSM_GetGlobalVars(void)
         s_controller_opti_swr_2nd_C = s_controller_opti_C;
       }
     }
-    __enable_irq();
+    taskENABLE_INTERRUPTS();
+    //__enable_irq();
   }
 
   const float fwdMv = mainCalc_mV_to_mW(s_controller_adc_fwd_mv);
 
-  __disable_irq();
+  taskDISABLE_INTERRUPTS();
   s_controller_adc_fwd_mw = fwdMv;
-  __enable_irq();
+  taskENABLE_INTERRUPTS();
 }
 
 static void controllerFSM_PushOptiVars(void)
@@ -647,19 +649,19 @@ static void controllerFSM_PushOptiVars(void)
   uint32_t msgAry[2];
 
   /* Calculate current L and C counter setings */
-  __disable_irq();
+  taskDISABLE_INTERRUPTS();
   const float               valL      = s_controller_opti_L;
   const float               valC      = s_controller_opti_C;
   const ControllerOptiCVH_t configLC  = s_controller_FSM_optiCVH;
-  __enable_irq();
+  taskENABLE_INTERRUPTS();
 
   const uint8_t relL = controllerCalcMatcherNH2L(valL);
   const uint8_t relC = controllerCalcMatcherPF2C(valC);
 
-  __disable_irq();
+  taskDISABLE_INTERRUPTS();
   s_controller_opti_L_relays = relL;
   s_controller_opti_C_relays = relC;
-  __enable_irq();
+  taskENABLE_INTERRUPTS();
 
   /* Update CV/CH state */
   if (configLC == ControllerOptiCVH__CH) {
@@ -1251,9 +1253,9 @@ static void controllerFSM(void)
 
 static void controllerSetL(uint8_t relLnum, uint8_t relEnable)
 {
-  __disable_irq();
+  taskDISABLE_INTERRUPTS();
   float valL = s_controller_opti_L;
-  __enable_irq();
+  taskENABLE_INTERRUPTS();
 
   uint8_t relay = controllerCalcMatcherNH2L(s_controller_opti_L);
   if (relEnable) {
@@ -1264,18 +1266,18 @@ static void controllerSetL(uint8_t relLnum, uint8_t relEnable)
   }
   valL = controllerCalcMatcherL2nH(relay);
 
-  __disable_irq();
+  taskDISABLE_INTERRUPTS();
   s_controller_opti_L = valL;
-  __enable_irq();
+  taskENABLE_INTERRUPTS();
 
   controllerFSM_PushOptiVars();
 }
 
 static void controllerSetC(uint8_t relLnum, uint8_t relEnable)
 {
-  __disable_irq();
+  taskDISABLE_INTERRUPTS();
   float valC = s_controller_opti_C;
-  __enable_irq();
+  taskENABLE_INTERRUPTS();
 
   uint8_t relay = controllerCalcMatcherPF2C(valC);
   if (relEnable) {
@@ -1286,27 +1288,27 @@ static void controllerSetC(uint8_t relLnum, uint8_t relEnable)
   }
   valC = controllerCalcMatcherC2pF(relay);
 
-  __disable_irq();
+  taskDISABLE_INTERRUPTS();
   s_controller_opti_C = valC;
-  __enable_irq();
+  taskENABLE_INTERRUPTS();
 
   controllerFSM_PushOptiVars();
 }
 
 static void controllerSetConfigLC(bool isLC)
 {
-  __disable_irq();
+  taskDISABLE_INTERRUPTS();
   s_controller_FSM_optiCVH = isLC ?  ControllerOptiCVH__CH : ControllerOptiCVH__CV;
-  __enable_irq();
+  taskENABLE_INTERRUPTS();
 }
 
 static void controllerPrintLC(void)
 {
-  __disable_irq();
+  taskDISABLE_INTERRUPTS();
   const float valL                          = s_controller_opti_L;
   const float valC                          = s_controller_opti_C;
   const       ControllerOptiCVH_t configLC  = s_controller_FSM_optiCVH;
-  __enable_irq();
+  taskENABLE_INTERRUPTS();
 
   /* Print relay settings */
   {
