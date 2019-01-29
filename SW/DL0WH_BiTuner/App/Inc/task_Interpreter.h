@@ -29,10 +29,12 @@ typedef enum InterpreterCmds_ENUM {
 } InterpreterCmds_t;
 
 
+void interpreterConsolePush(const char* buf, int bufLen);
 void interpreterPrintHelp(void);
 void interpreterShowCursor(void);
 void interpreterClearScreen(void);
 
+void interpreterGetterTask(void const * argument);
 void interpreterTaskInit(void);
 void interpreterTaskLoop(void);
 

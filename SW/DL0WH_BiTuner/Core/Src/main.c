@@ -1290,7 +1290,7 @@ void  vApplicationIdleHook(void)
   important that vApplicationIdleHook() is permitted to return to its calling
   function, because it is the responsibility of the idle task to clean up
   memory allocated by the kernel to any task that has since been deleted. */
-  /* TODO:
+  /* TODO: coding here
    * 1) Reduce 80 MHz  to  2 MHz
    * 2)  go to LPRun  (SMPS 2 High (-->  MR range 1) --> MR range 2 --> LPR
    * 3)  Go to LPSleep

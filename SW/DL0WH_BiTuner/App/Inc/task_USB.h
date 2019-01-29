@@ -37,9 +37,6 @@ typedef enum USB_TO_HOST_EG_ENUM {
 
 
 /* Called from the application */
-void usbToHost(const uint8_t* buf, uint32_t len);
-void usbToHostWait(const uint8_t* buf, uint32_t len);
-
 void usbLogLen(const char* str, int len);
 void usbLog(const char* str);
 

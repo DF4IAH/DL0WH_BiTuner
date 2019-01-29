@@ -27,8 +27,8 @@ typedef enum UartCmds_ENUM {
 
 typedef enum UART_EG_ENUM {
 
-  UART_EG__BUF_EMPTY                                          = (1UL <<  0U),
-  UART_EG__ECHO_ON                                            = (1UL <<  1U),
+  UART_EG__TX_BUF_EMPTY                                       = (1UL <<  0U),
+  UART_EG__TX_ECHO_ON                                         = (1UL <<  1U),
 
   UART_EG__DMA_TX_RUN                                         = (1UL <<  8U),
   UART_EG__DMA_TX_END                                         = (1UL <<  9U),
@@ -39,6 +39,8 @@ typedef enum UART_EG_ENUM {
 } UART_EG_t;
 
 
+void uartLogLen(const char* str, int len);
+void uartLog(const char* str);
 
 void uartTxPutterTask(void const * argument);
 void uartTxTaskInit(void);

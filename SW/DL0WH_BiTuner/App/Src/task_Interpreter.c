@@ -19,6 +19,7 @@
 
 #include "main.h"
 #include "task_USB.h"
+#include "task_UART.h"
 #include "task_Controller.h"
 
 #include "task_Interpreter.h"
@@ -26,6 +27,7 @@
 
 /* Variables -----------------------------------------------------------------*/
 extern osMessageQId         usbFromHostQueueHandle;
+extern osMessageQId         uartRxQueueHandle;
 extern osMessageQId         interOutQueueHandle;
 
 extern osSemaphoreId        c2interpreter_BSemHandle;
@@ -33,6 +35,7 @@ extern osSemaphoreId        c2interpreter_BSemHandle;
 extern EventGroupHandle_t   globalEventGroupHandle;
 extern EventGroupHandle_t   controllerEventGroupHandle;
 
+static osThreadId           s_interpreterGetterTaskHandle     = 0;
 
 //extern ENABLE_MASK_t        g_enableMsk;
 //extern MON_MASK_t           g_monMsk;
@@ -55,7 +58,8 @@ static uint32_t             s_interpreterLineBufLen           = 0UL;
 /* Private functions ---------------------------------------------------------*/
 static void interpreterUnknownCommand(void)
 {
-  usbLog("\r\n?? unknown command - please try 'help' ??\r\n\r\n");
+  const char* unknownStr = "\r\n?? unknown command - please try 'help' ??\r\n\r\n";
+  interpreterConsolePush(unknownStr, strlen(unknownStr));
 }
 
 #ifdef OLD
@@ -307,59 +311,122 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 
 /* Global functions ----------------------------------------------------------*/
 
-const uint8_t               interpreterHelpMsg001[]            = "\r\n";
-const uint8_t               interpreterHelpMsg002[]            = "\tHELP - list of commands:\r\n";
-const uint8_t               interpreterHelpMsg003[]            = "\t========================\r\n";
-//const uint8_t             interpreterHelpMsg011[]            = "\t\tCommand\t\tRemarks\r\n";
-//const uint8_t             interpreterHelpMsg012[]            = "\t\t-------\t\t-------\r\n";
+const char                  interpreterHelpMsg001[]            = "\r\n";
+const char                  interpreterHelpMsg002[]            = "\tHELP - list of commands:\r\n";
+const char                  interpreterHelpMsg003[]            = "\t========================\r\n";
+//const char                interpreterHelpMsg011[]            = "\t\tCommand\t\tRemarks\r\n";
+//const char                interpreterHelpMsg012[]            = "\t\t-------\t\t-------\r\n";
 
-const uint8_t               interpreterHelpMsg111[]            =     "\t\t> Main commands\r\n";
-const uint8_t               interpreterHelpMsg112[]            =     "\t\t--------------------------------------------------------------------------\r\n";
-const uint8_t               interpreterHelpMsg121[]            = "\t\tCxy\t\tC relay x 0..7  if y=1 SET  or if y=0 RESET.\r\n";
-const uint8_t               interpreterHelpMsg122[]            = "\t\tLxy\t\tL relay x 0..7  if y=1 SET  or if y=0 RESET.\r\n";
-const uint8_t               interpreterHelpMsg123[]            = "\t\tCL\t\tSet C at the TRX-side and the L to the antenna side (Gamma).\r\n";
-const uint8_t               interpreterHelpMsg124[]            = "\t\tLC\t\tSet L at the TRX-side and the C to the antenna side (reverted Gamma).\r\n";
-const uint8_t               interpreterHelpMsg125[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";
-const uint8_t               interpreterHelpMsg131[]            = "\t\thelp\t\tPrint this list of commands.\r\n";
-const uint8_t               interpreterHelpMsg151[]            = "\t\trestart\t\tRestart this device.\r\n\r\n";
+const char                  interpreterHelpMsg111[]            =     "\t\t> Main commands\r\n";
+const char                  interpreterHelpMsg112[]            =     "\t\t--------------------------------------------------------------------------\r\n";
+const char                  interpreterHelpMsg121[]            = "\t\tCxy\t\tC relay x 0..7  if y=1 SET  or if y=0 RESET.\r\n";
+const char                  interpreterHelpMsg122[]            = "\t\tLxy\t\tL relay x 0..7  if y=1 SET  or if y=0 RESET.\r\n";
+const char                  interpreterHelpMsg123[]            = "\t\tCL\t\tSet C at the TRX-side and the L to the antenna side (Gamma).\r\n";
+const char                  interpreterHelpMsg124[]            = "\t\tLC\t\tSet L at the TRX-side and the C to the antenna side (reverted Gamma).\r\n";
+const char                  interpreterHelpMsg125[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";
+const char                  interpreterHelpMsg131[]            = "\t\thelp\t\tPrint this list of commands.\r\n";
+const char                  interpreterHelpMsg151[]            = "\t\trestart\t\tRestart this device.\r\n\r\n";
+
+
+void interpreterConsolePush(const char* buf, int bufLen)
+{
+  /* Send to USB */
+  if (true) {
+    usbLogLen(buf, bufLen);
+  }
+
+  /* Send to UART */
+  if (true) {
+    uartLogLen(buf, bufLen);
+  }
+}
 
 void interpreterPrintHelp(void)
 {
-  usbToHostWait(interpreterHelpMsg001, strlen((char*) interpreterHelpMsg001));
-  usbToHostWait(interpreterHelpMsg002, strlen((char*) interpreterHelpMsg002));
-  usbToHostWait(interpreterHelpMsg003, strlen((char*) interpreterHelpMsg003));
-  usbToHostWait(interpreterHelpMsg001, strlen((char*) interpreterHelpMsg001));
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+  interpreterConsolePush(interpreterHelpMsg002, strlen(interpreterHelpMsg002));
+  interpreterConsolePush(interpreterHelpMsg003, strlen(interpreterHelpMsg003));
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
 
-//usbToHostWait(interpreterHelpMsg011, strlen((char*) interpreterHelpMsg011));
-//usbToHostWait(interpreterHelpMsg012, strlen((char*) interpreterHelpMsg012));
-//usbToHostWait(interpreterHelpMsg001, strlen((char*) interpreterHelpMsg001));
+  //interpreterConsolePush(interpreterHelpMsg011, strlen(interpreterHelpMsg011));
+  //interpreterConsolePush(interpreterHelpMsg012, strlen(interpreterHelpMsg012));
+  //interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
 
-  usbToHostWait(interpreterHelpMsg111, strlen((char*) interpreterHelpMsg111));
-  usbToHostWait(interpreterHelpMsg112, strlen((char*) interpreterHelpMsg112));
-  usbToHostWait(interpreterHelpMsg121, strlen((char*) interpreterHelpMsg121));
-  usbToHostWait(interpreterHelpMsg122, strlen((char*) interpreterHelpMsg122));
-  usbToHostWait(interpreterHelpMsg123, strlen((char*) interpreterHelpMsg123));
-  usbToHostWait(interpreterHelpMsg124, strlen((char*) interpreterHelpMsg124));
-  usbToHostWait(interpreterHelpMsg125, strlen((char*) interpreterHelpMsg125));
-  usbToHostWait(interpreterHelpMsg131, strlen((char*) interpreterHelpMsg131));
-  usbToHostWait(interpreterHelpMsg151, strlen((char*) interpreterHelpMsg151));
+  interpreterConsolePush(interpreterHelpMsg111, strlen(interpreterHelpMsg111));
+  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
+  interpreterConsolePush(interpreterHelpMsg121, strlen(interpreterHelpMsg121));
+  interpreterConsolePush(interpreterHelpMsg122, strlen(interpreterHelpMsg122));
+  interpreterConsolePush(interpreterHelpMsg123, strlen(interpreterHelpMsg123));
+  interpreterConsolePush(interpreterHelpMsg124, strlen(interpreterHelpMsg124));
+  interpreterConsolePush(interpreterHelpMsg125, strlen(interpreterHelpMsg125));
+  interpreterConsolePush(interpreterHelpMsg131, strlen(interpreterHelpMsg131));
+  interpreterConsolePush(interpreterHelpMsg151, strlen(interpreterHelpMsg151));
 }
 
 void interpreterShowCursor(void)
 {
-  usbLog("> ");
+  interpreterConsolePush("> ", 2UL);
 }
 
 void interpreterClearScreen(void)
 {
-  usbLog(usbClrScrBuf);
+  interpreterConsolePush(usbClrScrBuf, strlen(usbClrScrBuf));
 }
 
 
+void interpreterGetterTask(void const * argument)
+{
+  /* Handle serial console on input streams USB and UART */
+  for (;;) {
+    uint8_t inBuf[256]  = { 0U };
+    uint8_t inBufLen    = 0U;
+
+    /* Transfer USB input*/
+    osEvent ev = osMessageGet(usbFromHostQueueHandle, 1UL);
+    uint8_t* inBufPtr = inBuf;
+    while (ev.status == osEventMessage) {
+      if (inBufLen++ >= sizeof(inBuf) - 1) {
+        break;
+      }
+
+      *(inBufPtr++) = (uint8_t)ev.value.v;
+      ev = osMessageGet(usbFromHostQueueHandle, 1UL);
+    }
+
+    /* Transfer UART input*/
+    if (inBufLen < sizeof(inBuf) - 1) {
+      ev = osMessageGet(uartRxQueueHandle, 1UL);
+      while (ev.status == osEventMessage) {
+        if (inBufLen++ >= sizeof(inBuf) - 1) {
+          break;
+        }
+
+        *(inBufPtr++) = (uint8_t)ev.value.v;
+        ev = osMessageGet(uartRxQueueHandle, 1UL);
+      }
+    }
+
+    if (inBufLen) {
+      /* Echo */
+      if (true) {
+        interpreterConsolePush(inBuf, inBufLen);
+      }
+
+      /* Lets do the interpreter */
+      interpreterDoInterprete(inBuf, inBufLen);
+    }
+  }
+}
+
 static void interpreterInit(void)
 {
+  /* Prepare console output */
   interpreterClearScreen();
   interpreterPrintHelp();
+
+  /* Start console input thread */
+  osThreadDef(interpreterGetterTask, interpreterGetterTask, osPriorityNormal, 0, 128);
+  s_interpreterGetterTaskHandle = osThreadCreate(osThread(interpreterGetterTask), NULL);
 }
 
 static void interpreterMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
@@ -417,7 +484,6 @@ void interpreterTaskLoop(void)
 {
   uint32_t  msgLen                        = 0UL;
   uint32_t  msgAry[CONTROLLER_MSG_Q_LEN];
-  uint8_t   usbAry[32];
 
   /* Wait for door bell and hand-over controller out queue */
   {
@@ -430,12 +496,5 @@ void interpreterTaskLoop(void)
    * before ctrlQout is released results to request on an empty queue) */
   if (msgLen) {
     interpreterMsgProcess(msgLen, msgAry);
-  }
-
-  /* Check if data from the USB host is available */
-  //  ev = osMessageGet(usbFromHostQueueHandle, 1UL);
-  uint32_t len = usbPullFromOutQueue(usbAry, 1UL);
-  if (len) {
-    interpreterDoInterprete(usbAry, len);
   }
 }

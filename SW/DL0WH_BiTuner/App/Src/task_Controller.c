@@ -21,6 +21,7 @@
 //#include "stm32l4xx_hal_gpio.h"
 #include "bus_spi.h"
 #include "task_USB.h"
+#include "task_CAT.h"
 #include "task_Interpreter.h"
 
 
@@ -152,21 +153,17 @@ static void controllerUsbGreet(void)
 
   /* usbToHost block */
   {
-    osSemaphoreWait(usb_BSemHandle, 0);
+    interpreterConsolePush(controllerGreetMsg02, strlen(controllerGreetMsg02));
+    interpreterConsolePush(controllerGreetMsg03, strlen(controllerGreetMsg03));
+    interpreterConsolePush(controllerGreetMsg04, strlen(controllerGreetMsg04));
+    interpreterConsolePush(controllerGreetMsg03, strlen(controllerGreetMsg03));
+    interpreterConsolePush(controllerGreetMsg02, strlen(controllerGreetMsg02));
+    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
+    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
 
-    usbToHostWait((uint8_t*) controllerGreetMsg02, strlen(controllerGreetMsg02));
-    usbToHostWait((uint8_t*) controllerGreetMsg03, strlen(controllerGreetMsg03));
-    usbToHostWait((uint8_t*) controllerGreetMsg04, strlen(controllerGreetMsg04));
-    usbToHostWait((uint8_t*) controllerGreetMsg03, strlen(controllerGreetMsg03));
-    usbToHostWait((uint8_t*) controllerGreetMsg02, strlen(controllerGreetMsg02));
-    usbToHostWait((uint8_t*) controllerGreetMsg01, strlen(controllerGreetMsg01));
-    usbToHostWait((uint8_t*) controllerGreetMsg01, strlen(controllerGreetMsg01));
-
-    usbToHostWait((uint8_t*) verBuf, strlen(verBuf));
-    usbToHostWait((uint8_t*) controllerGreetMsg01, strlen(controllerGreetMsg01));
-    usbToHostWait((uint8_t*) controllerGreetMsg01, strlen(controllerGreetMsg01));
-
-    osSemaphoreRelease(usb_BSemHandle);
+    interpreterConsolePush(verBuf, strlen(verBuf));
+    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
+    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
   }
 }
 
@@ -233,19 +230,13 @@ static void controllerPrintMCU(void)
       "\t\tPackage(s)\t%s\r\n" \
       "\t\tFlash size\t%4u kB\r\n\r\n\r\n",
       lotBuf, uidWaf, uidPosX, uidPosY, packagePtr, flashSize);
-  usbLogLen(buf, len);
+  interpreterConsolePush(buf, len);
 }
 
 static void controllerInitAfterGreet(void)
 {
   /* Print MCU infos */
   controllerPrintMCU();
-
-  /* Print help table */
-  //interpreterPrintHelp();
-
-  /* At the last position show the cursor */
-  //interpreterShowCursor();
 }
 
 
@@ -396,6 +387,22 @@ void controllerMsgPushToOutQueue(uint8_t msgLen, uint32_t* msgAry, uint32_t wait
     semId = c2usbFromHost_BSemHandle;
     break;
 
+  case Destinations__Network_UartTx:
+    semId = c2uartTx_BSemHandle;
+    break;
+
+  case Destinations__Network_UartRx:
+    semId = c2uartRx_BSemHandle;
+    break;
+
+  case Destinations__Network_CatTx:
+    semId = c2catTx_BSemHandle;
+    break;
+
+  case Destinations__Network_CatRx:
+    semId = c2catRx_BSemHandle;
+    break;
+
   default:
     semId = 0;
   }  // switch ()
@@ -532,7 +539,7 @@ static void controllerFSM_LogAutoFinished(void)
     char buf[128];
 
     const int len = sprintf(buf, "Controller FSM: ControllerFsm__findImagZeroL - SWR good enough - tuner has finished.\r\n");
-    usbLogLen(buf, len);
+    interpreterConsolePush(buf, len);
   }
 }
 
@@ -578,7 +585,7 @@ static void controllerFSM_LogState(void)
                 (uint32_t)s_controller_opti_L, s_controller_opti_L_relays,
                 (uint32_t)s_controller_opti_C, s_controller_opti_C_relays,
                 s_controller_opti_CVHpongCtr, s_controller_opti_LCpongCtr, s_controller_bad_swr_ctr);
-  usbLogLen(buf, len);
+  interpreterConsolePush(buf, len);
 
   mainCalcFloat2IntFrac(s_controller_opti_swr_1st,    3, &s_controller_opti_swr_1st_i,    &s_controller_opti_swr_1st_f  );
   mainCalcFloat2IntFrac(s_controller_opti_swr_1st_L,  1, &s_controller_opti_swr_1st_L_i,  &s_controller_opti_swr_1st_L_f);
@@ -595,7 +602,7 @@ static void controllerFSM_LogState(void)
                 s_controller_opti_swr_2nd_L_i,      s_controller_opti_swr_2nd_L_f,
                 s_controller_opti_swr_2nd_C_i,      s_controller_opti_swr_2nd_C_f
                );
-  usbLogLen(buf, len);
+  interpreterConsolePush(buf, len);
 
   int32_t   swr_i, best_swr_i;
   uint32_t  swr_f, best_swr_f;
@@ -607,7 +614,7 @@ static void controllerFSM_LogState(void)
                 "\tf)\t\t swr= %2ld.%03lu, best_swr= %2ld.%03lu @ CVH= %u: L= %5lu nH, C= %5lu pF.\r\n\r\n",
                 (uint32_t)s_controller_adc_fwd_mv, (uint32_t)s_controller_adc_fwd_mw,
                 swr_i, swr_f,  best_swr_i, best_swr_f,  s_controller_best_swr_CVH, (uint32_t)s_controller_best_swr_L, (uint32_t)s_controller_best_swr_C);
-  usbLogLen(buf, len);
+  interpreterConsolePush(buf, len);
 }
 
 static void controllerFSM_GetGlobalVars(void)
@@ -713,7 +720,7 @@ static _Bool controllerFSM_CheckPower(void)
                               "Controller FSM: power= %5ld.%03lu out of [%u .. %u] Watts - stop auto tuner.\r\n",
                               pwr_i, pwr_f,
                               (uint16_t)Controller_AutoSWR_P_mW_Min, (uint16_t)Controller_AutoSWR_P_mW_Max);
-      usbLogLen(buf, len);
+      interpreterConsolePush(buf, len);
     }
 
     /* Reset SWR start timer */
@@ -740,7 +747,7 @@ static _Bool controllerFSM_CheckSwrTime(void)
       const int len = sprintf(buf,
                               "Controller FSM: VSWR= %2ld.%03lu is good enough - stop auto tuner.\r\n",
                               swr_i, swr_f);
-      usbLogLen(buf, len);
+      interpreterConsolePush(buf, len);
     }
 
     /* No need to start */
@@ -770,7 +777,7 @@ static void controllerFSM_SwitchOverCVH(void)
       const int len = sprintf(buf,
                               "Controller FSM: switch over the constellation to %d (0: CV, 1: CH), CVH pingpong ctr= %u.\r\n",
                               !s_controller_FSM_optiCVH, s_controller_opti_CVHpongCtr);
-      usbLogLen(buf, len);
+      interpreterConsolePush(buf, len);
     }
 
     /* Switch over to opposite CVH constellation */
@@ -1088,7 +1095,7 @@ static void controllerFSM(void)
       char buf[128];
 
       const int len = sprintf(buf, "Controller FSM: ControllerFsm__startAuto - start auto tuner.\r\n");
-      usbLogLen(buf, len);
+      interpreterConsolePush(buf, len);
     }
 
     /* Push opti data to relays */
@@ -1331,16 +1338,17 @@ static void controllerPrintLC(void)
     relays |= ((uint32_t)relL <<  8);
     relays |= s_controller_FSM_optiCVH == ControllerOptiCVH__CV ?  0x100UL : 0x200UL;
 
-    usbLog("\r\n## C1 C2 C3 C4 C5 C6 C7 C8  L1 L2 L3 L4 L5 L6 L7 L8  CV CH\r\n ");
+    const char* bufStr = "\r\n## C1 C2 C3 C4 C5 C6 C7 C8  L1 L2 L3 L4 L5 L6 L7 L8  CV CH\r\n ";
+    interpreterConsolePush(bufStr, strlen(bufStr));
 
     for (uint8_t idx = 0U; idx < 18U; idx++) {
       if (idx == 8 || idx == 16) {
-        usbLogLen(" ", 1);
+        interpreterConsolePush(" ", 1);
       }
       buf[2] = (relays & (1UL << idx)) != 0UL ?  '1' : '0';
-      usbLogLen(buf, 3);
+      interpreterConsolePush(buf, 3);
     }
-    usbLogLen("\r\n", 2);
+    interpreterConsolePush("\r\n", 2);
   }
 
   /* Print L/C configuration and L, C values */
@@ -1349,12 +1357,43 @@ static void controllerPrintLC(void)
     char           strbuf[128]  = { 0 };
 
     const int len = snprintf(strbuf, (sizeof(strbuf) - 1), "Configuration: %s\t L= %6ld nH\t C= %6ld uF\r\n", sConfig, (uint32_t)valL, (uint32_t)valC);
-    usbLogLen(strbuf, len);
+    interpreterConsolePush(strbuf, len);
   }
 }
 
 
 /* Timer functions */
+
+static void controllerCyclicTimerEvent(void)
+{
+  /* Cyclic job to do */
+
+  /* FSM logic */
+  controllerFSM();
+
+  /* Request ADC values for next iteration */
+  if (s_controller_doAdc) {
+    uint32_t  msgAry[4];
+    uint8_t   msgLen = 0U;
+
+    /* Get ADC channels */
+    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc01_MCU_ADC1);
+    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc02_MCU_ADC3_VDIODE);
+    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc03_MCU_ADC2_FWD);
+    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc04_MCU_ADC2_REV);
+
+    /* Push to queue */
+    controllerMsgPushToInQueue(msgLen, msgAry, 1UL);
+  }
+
+  /* Handle serial CAT interface packets */
+  {
+    //uint8_t inBuf[256]  = { 0U };
+    //uint8_t inBufLen    = 0U;
+
+    // TODO: coding here
+  }
+}
 
 static void controllerCyclicStart(uint32_t period_ms)
 {
@@ -1377,27 +1416,8 @@ void controllerTimerCallback(void const *argument)
   controllerMsgPushToInQueue(msgLen, msgAry, 1UL);
 }
 
-/* Cyclic job to do */
-static void controllerCyclicTimerEvent(void)
-{
-  uint32_t  msgAry[16];
-  uint8_t   msgLen = 0U;
 
-  /* FSM logic */
-  controllerFSM();
-
-  if (s_controller_doAdc) {
-    /* Get ADC channels */
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc01_MCU_ADC1);
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc02_MCU_ADC3_VDIODE);
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc03_MCU_ADC2_FWD);
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc04_MCU_ADC2_REV);
-  }
-
-  /* Push to queue */
-  controllerMsgPushToInQueue(msgLen, msgAry, 1UL);
-}
-
+/* Messaging */
 
 static void controllerMsgProcessor(void)
 {
@@ -1443,6 +1463,22 @@ static void controllerMsgProcessor(void)
 
         case Destinations__Network_USBfromHost:
           s_mod_rdy.network_USBfromHost = 1U;
+          break;
+
+        case Destinations__Network_UartTx:
+          s_mod_rdy.network_UartTx = 1U;
+          break;
+
+        case Destinations__Network_UartRx:
+          s_mod_rdy.network_UartRx = 1U;
+          break;
+
+        case Destinations__Network_CatTx:
+          s_mod_rdy.network_CatTx = 1U;
+          break;
+
+        case Destinations__Network_CatRx:
+          s_mod_rdy.network_CatRx = 1U;
           break;
 
         default:
@@ -1524,6 +1560,10 @@ static void controllerInit(void)
     osSemaphoreWait(c2default_BSemHandle,     osWaitForever);
     osSemaphoreWait(c2usbToHost_BSemHandle,   osWaitForever);
     osSemaphoreWait(c2usbFromHost_BSemHandle, osWaitForever);
+    osSemaphoreWait(c2uartTx_BSemHandle,      osWaitForever);
+    osSemaphoreWait(c2uartRx_BSemHandle,      osWaitForever);
+    osSemaphoreWait(c2catTx_BSemHandle,       osWaitForever);
+    osSemaphoreWait(c2catRx_BSemHandle,       osWaitForever);
   }
 
   /* Read FLASH data */
@@ -1543,6 +1583,10 @@ static void controllerInit(void)
     s_mod_start.rtos_Default                                  = 1U;
     s_mod_start.network_USBtoHost                             = 1U;
     s_mod_start.network_USBfromHost                           = 1U;
+    s_mod_start.network_UartTx                                = 1U;
+    s_mod_start.network_UartRx                                = 1U;
+    s_mod_start.network_CatTx                                 = 1U;
+    s_mod_start.network_CatRx                                 = 1U;
   }
 
   /* Signaling controller is up and running */
@@ -1574,6 +1618,38 @@ static void controllerInit(void)
       const uint32_t msgLen = controllerCalcMsgInit(msgAry,
           Destinations__Network_USBfromHost,
           75UL);
+      controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
+    }
+
+    /* network_UartTx */
+    if (s_mod_start.network_UartTx) {
+      const uint32_t msgLen = controllerCalcMsgInit(msgAry,
+          Destinations__Network_UartTx,
+          100UL);
+      controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
+    }
+
+    /* network_UartRx */
+    if (s_mod_start.network_UartRx) {
+      const uint32_t msgLen = controllerCalcMsgInit(msgAry,
+          Destinations__Network_UartRx,
+          125UL);
+      controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
+    }
+
+    /* network_CatTx */
+    if (s_mod_start.network_CatTx) {
+      const uint32_t msgLen = controllerCalcMsgInit(msgAry,
+          Destinations__Network_CatTx,
+          150UL);
+      controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
+    }
+
+    /* network_CatRx */
+    if (s_mod_start.network_CatRx) {
+      const uint32_t msgLen = controllerCalcMsgInit(msgAry,
+          Destinations__Network_CatRx,
+          175UL);
       controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
     }
   }

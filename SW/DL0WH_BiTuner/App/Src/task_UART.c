@@ -154,6 +154,42 @@ static void uartHalInit(void)
 
 /* UART TX */
 
+const uint8_t uartTx_MaxWaitQueueMs = 100U;
+static void uartTxPush(const uint8_t* buf, uint32_t len)
+{
+  if (buf && len) {
+    while (len--) {
+      osMessagePut(uartTxQueueHandle, *(buf++), uartTx_MaxWaitQueueMs);
+    }
+    osMessagePut(uartTxQueueHandle, 0, uartTx_MaxWaitQueueMs);
+  }
+}
+
+const uint16_t uartTxWait_MaxWaitSemMs = 500U;
+static void uartTxPushWait(const uint8_t* buf, uint32_t len)
+{
+  EventBits_t eb = xEventGroupWaitBits(uartEventGroupHandle, UART_EG__TX_BUF_EMPTY, 0UL, 0, uartTxWait_MaxWaitSemMs);
+  if (eb & UART_EG__TX_BUF_EMPTY) {
+    uartTxPush(buf, len);
+  }
+}
+
+void uartLogLen(const char* str, int len)
+{
+  if (s_uartTx_enable) {
+    osSemaphoreWait(uart_BSemHandle, 0UL);
+    uartTxPushWait((uint8_t*)str, len);
+    osSemaphoreRelease(uart_BSemHandle);
+  }
+}
+
+inline
+void uartLog(const char* str)
+{
+  uartLogLen(str, strlen(str));
+}
+
+
 static void uartTxStartDma(const uint8_t* cmdBuf, uint8_t cmdLen)
 {
   /* When TX is running wait for the end of the previous transfer */
@@ -186,6 +222,11 @@ void uartTxPutterTask(void const * argument)
 
   const uint32_t  lastBuf     = sizeof(buf) - 1;
 
+  /* Clear queue */
+  while (osMessageGet(uartTxQueueHandle, 1UL).status == osEventMessage) {
+  }
+  xEventGroupSetBits(uartEventGroupHandle, UART_EG__TX_BUF_EMPTY);
+
   /* TaskLoop */
   for (;;) {
     uint8_t len = 0U;
@@ -194,19 +235,26 @@ void uartTxPutterTask(void const * argument)
     for (uint32_t idx = 0UL; idx < lastBuf; idx++, bufPtr++) {
       osEvent ev = osMessageGet(uartTxQueueHandle, maxWaitMs);
       if (ev.status == osEventMessage) {
+        /* Group-Bit for empty queue cleared */
+        xEventGroupClearBits(uartEventGroupHandle, UART_EG__TX_BUF_EMPTY);
+
         *bufPtr = (uint8_t) ev.value.v;
 
       } else {
         *(++bufPtr) = 0U;
         len = idx;
+
         break;
       }
     }
     buf[lastBuf] = 0U;
 
-    /* Interrupt disabled section to inhibit DMA access */
+    /* Start DMA TX engine */
     if (len) {
       uartTxStartDma(buf, len);
+
+      /* Group-Bit for empty queue set */
+      xEventGroupSetBits(uartEventGroupHandle, UART_EG__TX_BUF_EMPTY);
 
     } else {
       /* Delay for the next attempt */

@@ -33,17 +33,6 @@ typedef enum ControllerMsgDestinations_ENUM {
 
 } ControllerMsgDestinations_t;
 
-
-typedef struct ControllerMods {
-
-  uint8_t                           rtos_Default;
-  uint8_t                           network_USBtoHost;
-  uint8_t                           network_USBfromHost;
-  uint8_t                           ADC;
-
-} ControllerMods_t;
-
-
 typedef enum ControllerCmds_ENUM {
 
   MsgController__InitDo                                       = 0x01U,
@@ -60,24 +49,6 @@ typedef enum ControllerCmds_ENUM {
   MsgController__CallFunc03_CyclicTimerStop,
 
 } ControllerCmds_t;
-
-
-typedef struct ControllerMsg2Proc {
-
-  uint32_t                            rawAry[CONTROLLER_MSG_Q_LEN];
-  uint8_t                             rawLen;
-
-  ControllerMsgDestinations_t         msgSrc;
-  ControllerMsgDestinations_t         msgDst;                                                         // Not in use yet
-  ControllerCmds_t       msgCmd;
-  uint8_t                             msgLen;
-
-  uint8_t                             bRemain;
-
-  uint8_t                             optLen;
-  uint8_t                             optAry[CONTROLLER_MSG_Q_LEN << 2];
-
-} ControllerMsg2Proc_t;
 
 
 typedef enum ControllerFsm_ENUM {
@@ -118,6 +89,37 @@ typedef enum ControllerOptiUpDn_ENUM {
   ControllerOptiUpDn__Dn,
 
 } ControllerOptiUpDn_t;
+
+
+typedef struct ControllerMods {
+
+  uint8_t                             rtos_Default;
+  uint8_t                             network_USBtoHost;
+  uint8_t                             network_USBfromHost;
+  uint8_t                             network_UartTx;
+  uint8_t                             network_UartRx;
+  uint8_t                             network_CatTx;
+  uint8_t                             network_CatRx;
+  uint8_t                             ADC;
+
+} ControllerMods_t;
+
+typedef struct ControllerMsg2Proc {
+
+  uint32_t                            rawAry[CONTROLLER_MSG_Q_LEN];
+  uint8_t                             rawLen;
+
+  ControllerMsgDestinations_t         msgSrc;
+  ControllerMsgDestinations_t         msgDst;
+  ControllerCmds_t                    msgCmd;
+  uint8_t                             msgLen;
+
+  uint8_t                             bRemain;
+
+  uint8_t                             optLen;
+  uint8_t                             optAry[CONTROLLER_MSG_Q_LEN << 2];
+
+} ControllerMsg2Proc_t;
 
 
 uint32_t controllerCalcMsgHdr(ControllerMsgDestinations_t dst, ControllerMsgDestinations_t src, uint8_t lengthBytes, uint8_t cmd);

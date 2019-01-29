@@ -55,7 +55,7 @@ volatile uint32_t           v_usbUsbFromHostISRBufLen               = 0UL;
 
 
 const uint8_t usbToHost_MaxWaitQueueMs = 100U;
-void usbToHost(const uint8_t* buf, uint32_t len)
+static void usbToHost(const uint8_t* buf, uint32_t len)
 {
 	if (buf && len) {
 		while (len--) {
@@ -66,7 +66,7 @@ void usbToHost(const uint8_t* buf, uint32_t len)
 }
 
 const uint16_t usbToHostWait_MaxWaitSemMs = 500U;
-void usbToHostWait(const uint8_t* buf, uint32_t len)
+static void usbToHostWait(const uint8_t* buf, uint32_t len)
 {
   EventBits_t eb = xEventGroupWaitBits(usbToHostEventGroupHandle, USB_TO_HOST_EG__BUF_EMPTY, 0UL, 0, usbToHostWait_MaxWaitSemMs);
   if (eb & USB_TO_HOST_EG__BUF_EMPTY) {
