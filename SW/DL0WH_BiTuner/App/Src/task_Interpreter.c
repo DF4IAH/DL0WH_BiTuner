@@ -409,7 +409,7 @@ void interpreterGetterTask(void const * argument)
     if (inBufLen) {
       /* Echo */
       if (true) {
-        interpreterConsolePush(inBuf, inBufLen);
+        interpreterConsolePush((char*)inBuf, inBufLen);
       }
 
       /* Lets do the interpreter */
