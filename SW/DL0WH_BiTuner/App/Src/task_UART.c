@@ -13,11 +13,13 @@
 
 #include "stm32l4xx_hal.h"
 #include "FreeRTOS.h"
+#include "cmsis_os.h"
 #include "task.h"
 #include "queue.h"
-#include "cmsis_os.h"
 #include "usart.h"
+
 #include "task_Controller.h"
+#include "task_CAT.h"
 
 #include "task_UART.h"
 
@@ -221,8 +223,6 @@ static void uartTxInit(void)
   /* Start putter thread */
   osThreadDef(uartTxPutterTask, uartTxPutterTask, osPriorityHigh, 0, 128);
   s_uartTxPutterTaskHandle = osThreadCreate(osThread(uartTxPutterTask), NULL);
-
-  xEventGroupSetBits(  uartEventGroupHandle, UART_EG__DMA_TX_END);
 }
 
 static void uartTxMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
@@ -303,7 +303,7 @@ static void uartRxStartDma(void)
   g_uartRxDmaBufLast = g_uartRxDmaBufIdx = 0U;
 
   /* Start RX DMA */
-  if (HAL_UART_Receive_DMA(&hlpuart1, g_uartRxDmaBuf, dmaBufSize) != HAL_OK)
+  if (HAL_UART_Receive_DMA(&hlpuart1, (uint8_t*)g_uartRxDmaBuf, dmaBufSize) != HAL_OK)
   {
     //Error_Handler();
   }
@@ -330,13 +330,10 @@ void uartRxGetterTask(void const * argument)
       /* USB OUT EP from host put data into the buffer */
       volatile uint8_t* bufPtr = g_uartRxDmaBuf + g_uartRxDmaBufLast;
 
-      for (int32_t idx = g_uartRxDmaBufLast; idx <= g_uartRxDmaBufIdx; ++idx, ++bufPtr) {
+      for (int32_t idx = g_uartRxDmaBufLast + 1U; idx <= g_uartRxDmaBufIdx; ++idx, ++bufPtr) {
         xQueueSendToBack(uartRxQueueHandle, (uint8_t*)bufPtr, maxWaitMs);
       }
       xQueueSendToBack(uartRxQueueHandle, nulBuf, maxWaitMs);
-
-      memset((char*) g_uartRxDmaBuf, 0, sizeof(g_uartRxDmaBuf));
-      g_uartRxDmaBufLast = g_uartRxDmaBufIdx = 0UL;
 
       taskENABLE_INTERRUPTS();
 
@@ -347,6 +344,10 @@ void uartRxGetterTask(void const * argument)
 
     /* Restart DMA if transfer has finished */
     if (UART_EG__DMA_RX_END & xEventGroupGetBits(uartEventGroupHandle)) {
+      /* Clear DMA buffer */
+      memset((char*) g_uartRxDmaBuf, 0, sizeof(g_uartRxDmaBuf));
+      g_uartRxDmaBufLast = g_uartRxDmaBufIdx = 0UL;
+
       xEventGroupClearBits(uartEventGroupHandle, UART_EG__DMA_RX_END);
 
       /* Reactivate UART RX DMA transfer */
@@ -427,7 +428,7 @@ void uartRxTaskLoop(void)
   /* Wait for door bell and hand-over controller out queue */
   {
     osSemaphoreWait(c2uartRx_BSemHandle, osWaitForever);
-    msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Network_UartRx, 1UL);                  // Special case of callbacks need to limit blocking time
+    msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Network_UartRx, 1UL);                // Special case of callbacks need to limit blocking time
   }
 
   /* Decode and execute the commands when a message exists
