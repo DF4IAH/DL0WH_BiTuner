@@ -33,7 +33,7 @@ void interpreterPrintHelp(void);
 void interpreterShowCursor(void);
 void interpreterClearScreen(void);
 
-void interpreterInterpreterTaskInit(void);
-void interpreterInterpreterTaskLoop(void);
+void interpreterTaskInit(void);
+void interpreterTaskLoop(void);
 
 #endif /* INC_TASK_INTERPRETER_H_ */

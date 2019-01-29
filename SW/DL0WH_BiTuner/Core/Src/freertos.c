@@ -64,7 +64,10 @@
 #include "bus_spi.h"
 #include "device_adc.h"
 #include "task_Controller.h"
+#include "task_Interpreter.h"
 #include "task_USB.h"
+#include "task_UART.h"
+#include "task_CAT.h"
 
 /* USER CODE END Includes */
 
@@ -104,6 +107,8 @@ EventGroupHandle_t                    extiEventGroupHandle;
 EventGroupHandle_t                    globalEventGroupHandle;
 EventGroupHandle_t                    spiEventGroupHandle;
 EventGroupHandle_t                    usbToHostEventGroupHandle;
+EventGroupHandle_t                    uartEventGroupHandle;
+EventGroupHandle_t                    catEventGroupHandle;
 
 static uint8_t                        s_rtos_DefaultTask_adc_enable     = 0U;
 static uint32_t                       s_rtos_DefaultTaskStartTime       = 0UL;
@@ -121,8 +126,10 @@ osThreadId controllerTaskHandle;
 osThreadId usbToHostTaskHandle;
 osThreadId usbFromHostTaskHandle;
 osThreadId interpreterTaskHandle;
-osThreadId uartTaskHandle;
-osThreadId catTaskHandle;
+osThreadId uartTxTaskHandle;
+osThreadId uartRxTaskHandle;
+osThreadId catTxTaskHandle;
+osThreadId catRxTaskHandle;
 osMessageQId usbToHostQueueHandle;
 osMessageQId usbFromHostQueueHandle;
 osMessageQId controllerInQueueHandle;
@@ -145,8 +152,12 @@ osSemaphoreId c2interpreter_BSemHandle;
 osSemaphoreId usbFromHost_BSemHandle;
 osSemaphoreId uart_BSemHandle;
 osSemaphoreId cat_BSemHandle;
-osSemaphoreId c2uart_BSemHandle;
-osSemaphoreId c2cat_BSemHandle;
+osSemaphoreId c2uartTx_BSemHandle;
+osSemaphoreId c2uartRx_BSemHandle;
+osSemaphoreId c2catTx_BSemHandle;
+osSemaphoreId c2catRx_BSemHandle;
+osSemaphoreId uartRx_BSemHandle;
+osSemaphoreId catRx_BSemHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -158,8 +169,10 @@ void StartControllerTask(void const * argument);
 void StartUsbToHostTask(void const * argument);
 void StartUsbFromHostTask(void const * argument);
 void StartInterpreterTask(void const * argument);
-void StartUartTask(void const * argument);
-void StartCatTask(void const * argument);
+void StartUartTxTask(void const * argument);
+void StartUartRxTask(void const * argument);
+void StartCatTxTask(void const * argument);
+void StartCatRxTask(void const * argument);
 void rtosDefaultTimerCallback(void const * argument);
 void rtosControllerTimerCallback(void const * argument);
 
@@ -390,6 +403,12 @@ static void rtosDefaultUpdateRelays(void)
 
   /* Store current state */
   matcherCurrent = s_rtos_Matcher;
+}
+
+
+static void defaultTimerCallback(void const * argument)
+{
+
 }
 
 
@@ -713,13 +732,29 @@ void MX_FREERTOS_Init(void) {
   osSemaphoreDef(cat_BSem);
   cat_BSemHandle = osSemaphoreCreate(osSemaphore(cat_BSem), 1);
 
-  /* definition and creation of c2uart_BSem */
-  osSemaphoreDef(c2uart_BSem);
-  c2uart_BSemHandle = osSemaphoreCreate(osSemaphore(c2uart_BSem), 1);
+  /* definition and creation of c2uartTx_BSem */
+  osSemaphoreDef(c2uartTx_BSem);
+  c2uartTx_BSemHandle = osSemaphoreCreate(osSemaphore(c2uartTx_BSem), 1);
 
-  /* definition and creation of c2cat_BSem */
-  osSemaphoreDef(c2cat_BSem);
-  c2cat_BSemHandle = osSemaphoreCreate(osSemaphore(c2cat_BSem), 1);
+  /* definition and creation of c2uartRx_BSem */
+  osSemaphoreDef(c2uartRx_BSem);
+  c2uartRx_BSemHandle = osSemaphoreCreate(osSemaphore(c2uartRx_BSem), 1);
+
+  /* definition and creation of c2catTx_BSem */
+  osSemaphoreDef(c2catTx_BSem);
+  c2catTx_BSemHandle = osSemaphoreCreate(osSemaphore(c2catTx_BSem), 1);
+
+  /* definition and creation of c2catRx_BSem */
+  osSemaphoreDef(c2catRx_BSem);
+  c2catRx_BSemHandle = osSemaphoreCreate(osSemaphore(c2catRx_BSem), 1);
+
+  /* definition and creation of uartRx_BSem */
+  osSemaphoreDef(uartRx_BSem);
+  uartRx_BSemHandle = osSemaphoreCreate(osSemaphore(uartRx_BSem), 1);
+
+  /* definition and creation of catRx_BSem */
+  osSemaphoreDef(catRx_BSem);
+  catRx_BSemHandle = osSemaphoreCreate(osSemaphore(catRx_BSem), 1);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
@@ -759,13 +794,21 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(interpreterTask, StartInterpreterTask, osPriorityNormal, 0, 256);
   interpreterTaskHandle = osThreadCreate(osThread(interpreterTask), NULL);
 
-  /* definition and creation of uartTask */
-  osThreadDef(uartTask, StartUartTask, osPriorityAboveNormal, 0, 256);
-  uartTaskHandle = osThreadCreate(osThread(uartTask), NULL);
+  /* definition and creation of uartTxTask */
+  osThreadDef(uartTxTask, StartUartTxTask, osPriorityAboveNormal, 0, 128);
+  uartTxTaskHandle = osThreadCreate(osThread(uartTxTask), NULL);
 
-  /* definition and creation of catTask */
-  osThreadDef(catTask, StartCatTask, osPriorityAboveNormal, 0, 256);
-  catTaskHandle = osThreadCreate(osThread(catTask), NULL);
+  /* definition and creation of uartRxTask */
+  osThreadDef(uartRxTask, StartUartRxTask, osPriorityAboveNormal, 0, 128);
+  uartRxTaskHandle = osThreadCreate(osThread(uartRxTask), NULL);
+
+  /* definition and creation of catTxTask */
+  osThreadDef(catTxTask, StartCatTxTask, osPriorityIdle, 0, 128);
+  catTxTaskHandle = osThreadCreate(osThread(catTxTask), NULL);
+
+  /* definition and creation of catRxTask */
+  osThreadDef(catRxTask, StartCatRxTask, osPriorityIdle, 0, 128);
+  catRxTaskHandle = osThreadCreate(osThread(catRxTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -821,6 +864,8 @@ void MX_FREERTOS_Init(void) {
   globalEventGroupHandle = xEventGroupCreate();
   spiEventGroupHandle = xEventGroupCreate();
   usbToHostEventGroupHandle = xEventGroupCreate();
+  uartEventGroupHandle = xEventGroupCreate();
+  catEventGroupHandle = xEventGroupCreate();
 
   /* add to registry */
   vQueueAddToRegistry(i2c1_BSemHandle,          "Resc I2C1 BSem");
@@ -828,12 +873,21 @@ void MX_FREERTOS_Init(void) {
   vQueueAddToRegistry(cQin_BSemHandle,          "Resc cQin BSem");
   vQueueAddToRegistry(cQout_BSemHandle,         "Resc cQout BSem");
   vQueueAddToRegistry(usb_BSemHandle,           "Resc USB BSem");
+  vQueueAddToRegistry(uart_BSemHandle,          "Resc UART BSem");
+  vQueueAddToRegistry(cat_BSemHandle,           "Resc CAT BSem");
 
   vQueueAddToRegistry(c2default_BSemHandle,     "Wake c2default BSem");
   vQueueAddToRegistry(c2interpreter_BSemHandle, "Wake c2interpreter BSem");
   vQueueAddToRegistry(c2usbFromHost_BSemHandle, "Wake c2usbFromHost BSem");
   vQueueAddToRegistry(c2usbToHost_BSemHandle,   "Wake c2usbToHost BSem");
+  vQueueAddToRegistry(c2uartTx_BSemHandle,      "Wake c2uartTx BSem");
+  vQueueAddToRegistry(c2uartRx_BSemHandle,      "Wake c2uartRx BSem");
+  vQueueAddToRegistry(c2catTx_BSemHandle,       "Wake c2catTx BSem");
+  vQueueAddToRegistry(c2catRx_BSemHandle,       "Wake c2catRx BSem");
+
   vQueueAddToRegistry(usbFromHost_BSemHandle,   "Wake usbFromHost BSem");
+  vQueueAddToRegistry(uartRx_BSemHandle,        "Wake uartRx BSem");
+  vQueueAddToRegistry(catRx_BSemHandle,         "Wake catRx BSem");
   /* USER CODE END RTOS_QUEUES */
 }
 
@@ -956,56 +1010,96 @@ void StartUsbFromHostTask(void const * argument)
 void StartInterpreterTask(void const * argument)
 {
   /* USER CODE BEGIN StartInterpreterTask */
+  interpreterTaskInit();
+
   /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
+  for (;;) {
+    interpreterTaskLoop();
   }
   /* USER CODE END StartInterpreterTask */
 }
 
-/* USER CODE BEGIN Header_StartUartTask */
+/* USER CODE BEGIN Header_StartUartTxTask */
 /**
-* @brief Function implementing the uartTask thread.
+* @brief Function implementing the uartTxTask thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_StartUartTask */
-void StartUartTask(void const * argument)
+/* USER CODE END Header_StartUartTxTask */
+void StartUartTxTask(void const * argument)
 {
-  /* USER CODE BEGIN StartUartTask */
+  /* USER CODE BEGIN StartUartTxTask */
+  uartTxTaskInit();
+
   /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
+  for (;;) {
+    uartTxTaskLoop();
   }
-  /* USER CODE END StartUartTask */
+  /* USER CODE END StartUartTxTask */
 }
 
-/* USER CODE BEGIN Header_StartCatTask */
+/* USER CODE BEGIN Header_StartUartRxTask */
 /**
-* @brief Function implementing the catTask thread.
+* @brief Function implementing the uartRxTask thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_StartCatTask */
-void StartCatTask(void const * argument)
+/* USER CODE END Header_StartUartRxTask */
+void StartUartRxTask(void const * argument)
 {
-  /* USER CODE BEGIN StartCatTask */
+  /* USER CODE BEGIN StartUartRxTask */
+  uartRxTaskInit();
+
   /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
+  for (;;) {
+    uartRxTaskLoop();
   }
-  /* USER CODE END StartCatTask */
+  /* USER CODE END StartUartRxTask */
+}
+
+/* USER CODE BEGIN Header_StartCatTxTask */
+/**
+* @brief Function implementing the catTxTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartCatTxTask */
+void StartCatTxTask(void const * argument)
+{
+  /* USER CODE BEGIN StartCatTxTask */
+  catTxTaskInit();
+
+  /* Infinite loop */
+  for (;;) {
+    catTxTaskLoop();
+  }
+  /* USER CODE END StartCatTxTask */
+}
+
+/* USER CODE BEGIN Header_StartCatRxTask */
+/**
+* @brief Function implementing the catRxTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartCatRxTask */
+void StartCatRxTask(void const * argument)
+{
+  /* USER CODE BEGIN StartCatRxTask */
+  catRxTaskInit();
+
+  /* Infinite loop */
+  for (;;) {
+    catRxTaskLoop();
+  }
+  /* USER CODE END StartCatRxTask */
 }
 
 /* rtosDefaultTimerCallback function */
 void rtosDefaultTimerCallback(void const * argument)
 {
   /* USER CODE BEGIN rtosDefaultTimerCallback */
-  // TODO: code here
-
+  defaultTimerCallback(argument);
   /* USER CODE END rtosDefaultTimerCallback */
 }
 

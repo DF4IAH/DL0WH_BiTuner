@@ -28,7 +28,6 @@
 extern osMessageQId         usbFromHostQueueHandle;
 extern osMessageQId         interOutQueueHandle;
 
-extern osSemaphoreId        usbToHostBinarySemHandle;
 extern osSemaphoreId        c2interpreter_BSemHandle;
 
 extern EventGroupHandle_t   globalEventGroupHandle;
@@ -326,8 +325,6 @@ const uint8_t               interpreterHelpMsg151[]            = "\t\trestart\t\
 
 void interpreterPrintHelp(void)
 {
-  osSemaphoreWait(usbToHostBinarySemHandle, 0);
-
   usbToHostWait(interpreterHelpMsg001, strlen((char*) interpreterHelpMsg001));
   usbToHostWait(interpreterHelpMsg002, strlen((char*) interpreterHelpMsg002));
   usbToHostWait(interpreterHelpMsg003, strlen((char*) interpreterHelpMsg003));
@@ -346,8 +343,6 @@ void interpreterPrintHelp(void)
   usbToHostWait(interpreterHelpMsg125, strlen((char*) interpreterHelpMsg125));
   usbToHostWait(interpreterHelpMsg131, strlen((char*) interpreterHelpMsg131));
   usbToHostWait(interpreterHelpMsg151, strlen((char*) interpreterHelpMsg151));
-
-  osSemaphoreRelease(usbToHostBinarySemHandle);
 }
 
 void interpreterShowCursor(void)

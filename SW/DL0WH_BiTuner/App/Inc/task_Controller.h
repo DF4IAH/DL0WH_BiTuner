@@ -25,6 +25,12 @@ typedef enum ControllerMsgDestinations_ENUM {
   Destinations__Network_USBtoHost,
   Destinations__Network_USBfromHost,
 
+  Destinations__Network_UartTx,
+  Destinations__Network_UartRx,
+
+  Destinations__Network_CatTx,
+  Destinations__Network_CatRx,
+
 } ControllerMsgDestinations_t;
 
 

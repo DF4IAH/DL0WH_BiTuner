@@ -26,13 +26,23 @@
 
 extern osMessageQId         controllerInQueueHandle;
 extern osMessageQId         controllerOutQueueHandle;
+
 extern osTimerId            controllerTimerHandle;
-extern osSemaphoreId        c2default_BSemHandle;
+
+extern osSemaphoreId        usb_BSemHandle;
+extern osSemaphoreId        uart_BSemHandle;
+extern osSemaphoreId        cat_BSemHandle;
+
 extern osSemaphoreId        cQin_BSemHandle;
 extern osSemaphoreId        cQout_BSemHandle;
+
+extern osSemaphoreId        c2default_BSemHandle;
 extern osSemaphoreId        c2usbToHost_BSemHandle;
 extern osSemaphoreId        c2usbFromHost_BSemHandle;
-extern osSemaphoreId        usb_BSemHandle;
+extern osSemaphoreId        c2uartTx_BSemHandle;
+extern osSemaphoreId        c2uartRx_BSemHandle;
+extern osSemaphoreId        c2catTx_BSemHandle;
+extern osSemaphoreId        c2catRx_BSemHandle;
 
 extern EventGroupHandle_t   globalEventGroupHandle;
 
