@@ -14992,7 +14992,7 @@ Anode left, Kathode right</description>
 <part name="R0626" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="47R"/>
 <part name="R0724" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="47R"/>
 <part name="R0824" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="47R"/>
-<part name="U1301" library="df4iah_powersupply" deviceset="TPS62051" device=""/>
+<part name="U1301" library="df4iah_powersupply" deviceset="TPS62051" device="" value="TPS62056"/>
 <part name="L1311" library="df4iah_rcl" deviceset="L-EU" device="4.50X3.20MM" value="10uH"/>
 <part name="R1321" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1MR"/>
 <part name="R1322" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1MR"/>

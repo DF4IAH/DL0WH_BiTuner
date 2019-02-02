@@ -3993,7 +3993,7 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="NAME" x="71.59625" y="6.0325" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="69.5325" y="12.065" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
 </element>
-<element name="U1301" library="df4iah_powersupply" package="S-PDSO-G10" value="TPS62051" x="15.24" y="39.37" rot="R180"/>
+<element name="U1301" library="df4iah_powersupply" package="S-PDSO-G10" value="TPS62056" x="15.24" y="39.37" rot="R180"/>
 <element name="L1311" library="df4iah_rcl" package="L_4.50MM_X_3.20MM" value="10uH" x="21.9075" y="36.83" smashed="yes" rot="R180">
 <attribute name="NAME" x="20.6375" y="38.735" size="0.6096" layer="25" font="vector" ratio="10"/>
 <attribute name="VALUE" x="23.1775" y="39.37" size="0.6096" layer="27" font="vector" ratio="10" rot="R180"/>
