@@ -53,7 +53,6 @@
 #include "adc.h"
 #include "crc.h"
 #include "i2c.h"
-#include "iwdg.h"
 #include "usart.h"
 #include "rng.h"
 #include "rtc.h"
@@ -348,7 +347,6 @@ int main(void)
   MX_ADC2_Init();
   MX_CRC_Init();
   MX_I2C1_Init();
-  MX_IWDG_Init();
   MX_LPUART1_UART_Init();
   MX_UART4_Init();
   MX_RNG_Init();
@@ -401,12 +399,11 @@ void SystemClock_Config(void)
 
     /**Initializes the CPU, AHB and APB busses clocks 
     */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI
-                              |RCC_OSCILLATORTYPE_LSE|RCC_OSCILLATORTYPE_MSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSE
+                              |RCC_OSCILLATORTYPE_MSI;
   RCC_OscInitStruct.LSEState = RCC_LSE_ON;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = 16;
-  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.MSIState = RCC_MSI_ON;
   RCC_OscInitStruct.MSICalibrationValue = 0;
   RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_11;
