@@ -85,7 +85,7 @@ void HAL_MspInit(void)
 
     /**PVD Configuration 
     */
-  sConfigPVD.PVDLevel = PWR_PVDLEVEL_5;
+  sConfigPVD.PVDLevel = PWR_PVDLEVEL_3;
   sConfigPVD.Mode = PWR_PVD_MODE_NORMAL;
   HAL_PWR_ConfigPVD(&sConfigPVD);
 

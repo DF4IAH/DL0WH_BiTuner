@@ -951,6 +951,8 @@ void StartDefaultTask(void const * argument)
 /* USER CODE END Header_StartControllerTask */
 void StartControllerTask(void const * argument)
 {
+  for (;;) { osDelay(1000); } // TODO: remove me!
+
   /* USER CODE BEGIN StartControllerTask */
   controllerTaskInit();
 
@@ -971,6 +973,8 @@ void StartControllerTask(void const * argument)
 /* USER CODE END Header_StartUsbToHostTask */
 void StartUsbToHostTask(void const * argument)
 {
+  for (;;) { osDelay(1000); } // TODO: remove me!
+
   /* USER CODE BEGIN StartUsbToHostTask */
   usbUsbToHostTaskInit();
 
@@ -990,6 +994,8 @@ void StartUsbToHostTask(void const * argument)
 /* USER CODE END Header_StartUsbFromHostTask */
 void StartUsbFromHostTask(void const * argument)
 {
+  for (;;) { osDelay(1000); } // TODO: remove me!
+
   /* USER CODE BEGIN StartUsbFromHostTask */
   usbUsbFromHostTaskInit();
 
@@ -1009,6 +1015,8 @@ void StartUsbFromHostTask(void const * argument)
 /* USER CODE END Header_StartInterpreterTask */
 void StartInterpreterTask(void const * argument)
 {
+  for (;;) { osDelay(1000); } // TODO: remove me!
+
   /* USER CODE BEGIN StartInterpreterTask */
   interpreterTaskInit();
 
@@ -1028,6 +1036,8 @@ void StartInterpreterTask(void const * argument)
 /* USER CODE END Header_StartUartTxTask */
 void StartUartTxTask(void const * argument)
 {
+  for (;;) { osDelay(1000); } // TODO: remove me!
+
   /* USER CODE BEGIN StartUartTxTask */
   uartTxTaskInit();
 
@@ -1047,6 +1057,8 @@ void StartUartTxTask(void const * argument)
 /* USER CODE END Header_StartUartRxTask */
 void StartUartRxTask(void const * argument)
 {
+  for (;;) { osDelay(1000); } // TODO: remove me!
+
   /* USER CODE BEGIN StartUartRxTask */
   uartRxTaskInit();
 
@@ -1066,6 +1078,8 @@ void StartUartRxTask(void const * argument)
 /* USER CODE END Header_StartCatTxTask */
 void StartCatTxTask(void const * argument)
 {
+  for (;;) { osDelay(1000); } // TODO: remove me!
+
   /* USER CODE BEGIN StartCatTxTask */
   catTxTaskInit();
 
@@ -1085,6 +1099,8 @@ void StartCatTxTask(void const * argument)
 /* USER CODE END Header_StartCatRxTask */
 void StartCatRxTask(void const * argument)
 {
+  for (;;) { osDelay(1000); } // TODO: remove me!
+
   /* USER CODE BEGIN StartCatRxTask */
   catRxTaskInit();
 

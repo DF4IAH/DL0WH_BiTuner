@@ -51,10 +51,8 @@
 #include "stm32l4xx_hal.h"
 #include "cmsis_os.h"
 #include "adc.h"
-#include "crc.h"
 #include "i2c.h"
 #include "usart.h"
-#include "rng.h"
 #include "rtc.h"
 #include "spi.h"
 #include "tim.h"
@@ -145,7 +143,11 @@ void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN 0 */
 uint32_t crcCalc(const uint32_t* ptr, uint32_t len)
 {
+#if 0
   return HAL_CRC_Calculate(&hcrc, (uint32_t*) ptr, len);
+#else
+  return 0UL;
+#endif
 }
 
 
@@ -345,11 +347,9 @@ int main(void)
   MX_GPIO_Init();
   MX_ADC1_Init();
   MX_ADC2_Init();
-  MX_CRC_Init();
   MX_I2C1_Init();
   MX_LPUART1_UART_Init();
   MX_UART4_Init();
-  MX_RNG_Init();
   MX_RTC_Init();
   MX_SPI1_Init();
   MX_TIM5_Init();
@@ -395,7 +395,7 @@ void SystemClock_Config(void)
     */
   HAL_PWR_EnableBkUpAccess();
 
-  __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_LOW);
+  __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_HIGH);
 
     /**Initializes the CPU, AHB and APB busses clocks 
     */
@@ -429,15 +429,13 @@ void SystemClock_Config(void)
 
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_UART4
                               |RCC_PERIPHCLK_LPUART1|RCC_PERIPHCLK_I2C1
-                              |RCC_PERIPHCLK_USB|RCC_PERIPHCLK_RNG
-                              |RCC_PERIPHCLK_ADC;
+                              |RCC_PERIPHCLK_USB|RCC_PERIPHCLK_ADC;
   PeriphClkInit.Uart4ClockSelection = RCC_UART4CLKSOURCE_PCLK1;
   PeriphClkInit.Lpuart1ClockSelection = RCC_LPUART1CLKSOURCE_PCLK1;
   PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_PCLK1;
   PeriphClkInit.AdcClockSelection = RCC_ADCCLKSOURCE_SYSCLK;
   PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
   PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_MSI;
-  PeriphClkInit.RngClockSelection = RCC_RNGCLKSOURCE_MSI;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);

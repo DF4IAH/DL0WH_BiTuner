@@ -514,6 +514,7 @@ uint32_t controllerMsgPullFromOutQueue(uint32_t* msgAry, ControllerMsgDestinatio
         for (uint8_t idx = 0; idx < cnt; idx++) {
           (void) osMessageGet(controllerOutQueueHandle, 1UL);
         }
+        break;
       }
     }
   } while (1);
