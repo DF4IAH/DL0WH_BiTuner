@@ -266,65 +266,74 @@ static void rtosDefaultCheckSpiDrvError(uint8_t variant)
 static void rtosDefaultSpiRelays(uint64_t relaySettings)
 {
   const uint16_t relayC   = 0xffffU &  relaySettings;
-  const uint16_t relayL   = 0xffffU & (relaySettings >> 16);
+    uint16_t relayL   = 0xffffU & (relaySettings >> 16);
   const uint16_t relayExt = 0xffffU & (relaySettings >> 32);
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
 
   /* Disable the PWM signal in case it is still on */
   HAL_GPIO_WritePin(GPIO_SPI_PWM_GPIO_Port, GPIO_SPI_PWM_Pin, GPIO_PIN_RESET);
 
   /* Release reset signal of all SPI drivers */
   HAL_GPIO_WritePin(GPIO_SPI_RST_GPIO_Port, GPIO_SPI_RST_Pin, GPIO_PIN_SET);
+  osDelay(1);
 
   /* Preparations */
-  {
-    /* Open Load Current Enable */
-    const uint8_t spiMsgOpenLoadCurrentEnable[] = { 0x04U, 0xffU, 0xffU };
-    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
-    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
-    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
-
-    /* Retry on over-voltage, no restart on over temp */
-    const uint8_t spiMsgRetryOnOvervolNoRetryOverTemp[] = { 0x09U, 0xffU, 0xffU };
-    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgRetryOnOvervolNoRetryOverTemp), spiMsgRetryOnOvervolNoRetryOverTemp);
-    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgRetryOnOvervolNoRetryOverTemp), spiMsgRetryOnOvervolNoRetryOverTemp);
-    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgRetryOnOvervolNoRetryOverTemp), spiMsgRetryOnOvervolNoRetryOverTemp);
-
-    /* No SFPD */
-    const uint8_t spiMsgSFPDdisabled[] = { 0x0cU, 0x00U, 0x00U };
-    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgSFPDdisabled), spiMsgSFPDdisabled);
-    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgSFPDdisabled), spiMsgSFPDdisabled);
-    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgSFPDdisabled), spiMsgSFPDdisabled);
-
-    /* PWM on all outputs */
-    const uint8_t spiMsgPWMenabled[] = { 0x10U, 0xffU, 0xffU };
-    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgPWMenabled), spiMsgPWMenabled);
-    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgPWMenabled), spiMsgPWMenabled);
-    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgPWMenabled), spiMsgPWMenabled);
-
-    /* PWM signal is AND'ed */
-    const uint8_t spiMsgPWMand[] = { 0x14U, 0x00U, 0x00U };
-    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgPWMand), spiMsgPWMand);
-    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgPWMand), spiMsgPWMand);
-    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgPWMand), spiMsgPWMand);
-  }
+  const uint8_t spiMsgOpenLoadCurrentEnable[]               = { 0x04U, 0x00U, 0x00U };
+  const uint8_t spiMsgRetryOnOvervolNoRetryOverTemp[]       = { 0x09U, 0xffU, 0xffU };
+  const uint8_t spiMsgSFPDdisabled[]                        = { 0x0cU, 0x00U, 0x00U };
+  const uint8_t spiMsgPWMenabled[]                          = { 0x10U, 0xffU, 0xffU };
+  const uint8_t spiMsgPWMand[]                              = { 0x14U, 0x00U, 0x00U };
 
   /* Relays for C */
   {
+    /* Open Load Current Enable */
+    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
+
+    /* Retry on over-voltage, no restart on over temp */
+    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgRetryOnOvervolNoRetryOverTemp), spiMsgRetryOnOvervolNoRetryOverTemp);
+
+    /* No SFPD */
+    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgSFPDdisabled), spiMsgSFPDdisabled);
+
+    /* PWM on all outputs */
+    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgPWMenabled), spiMsgPWMenabled);
+
+    /* PWM signal is AND'ed */
+    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgPWMand), spiMsgPWMand);
+
     /* Relay outputs to be driven ON/OFF */
     uint8_t spiMsgOnOff[3];
     uint8_t msgLen = 0U;
-    spiMsgOnOff[msgLen++] = 0x00;
+    spiMsgOnOff[msgLen++] = 0x00U;
     spiMsgOnOff[msgLen++] = (uint8_t) (0x00ffU & (relayC >> 8));
     spiMsgOnOff[msgLen++] = (uint8_t) (0x00ffU &  relayC      );
     spiProcessSpi1MsgTemplate(SPI1_C, sizeof(spiMsgOnOff), spiMsgOnOff);
   }
 
   /* Relays for L */
-  {
+  { relayL = 0xffffU;
+    /* Open Load Current Enable */
+    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
+
+    /* Retry on over-voltage, no restart on over temp */
+    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgRetryOnOvervolNoRetryOverTemp), spiMsgRetryOnOvervolNoRetryOverTemp);
+
+    /* No SFPD */
+    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgSFPDdisabled), spiMsgSFPDdisabled);
+
+    /* PWM on all outputs */
+    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgPWMenabled), spiMsgPWMenabled);
+
+    /* PWM signal is AND'ed */
+    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgPWMand), spiMsgPWMand);
+
     /* Relay outputs to be driven ON/OFF */
     uint8_t spiMsgOnOff[3];
     uint8_t msgLen = 0U;
-    spiMsgOnOff[msgLen++] = 0x00;
+    spiMsgOnOff[msgLen++] = 0x00U;
     spiMsgOnOff[msgLen++] = (uint8_t) (0x00ffU & (relayL >> 8));
     spiMsgOnOff[msgLen++] = (uint8_t) (0x00ffU &  relayL      );
     spiProcessSpi1MsgTemplate(SPI1_L, sizeof(spiMsgOnOff), spiMsgOnOff);
@@ -332,10 +341,25 @@ static void rtosDefaultSpiRelays(uint64_t relaySettings)
 
   /* Relays for Ext */
   {
+    /* Open Load Current Enable */
+    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
+
+    /* Retry on over-voltage, no restart on over temp */
+    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgRetryOnOvervolNoRetryOverTemp), spiMsgRetryOnOvervolNoRetryOverTemp);
+
+    /* No SFPD */
+    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgSFPDdisabled), spiMsgSFPDdisabled);
+
+    /* PWM on all outputs */
+    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgPWMenabled), spiMsgPWMenabled);
+
+    /* PWM signal is AND'ed */
+    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgPWMand), spiMsgPWMand);
+
     /* Relay outputs to be driven ON/OFF */
     uint8_t spiMsgOnOff[3];
     uint8_t msgLen = 0U;
-    spiMsgOnOff[msgLen++] = 0x00;
+    spiMsgOnOff[msgLen++] = 0x00U;
     spiMsgOnOff[msgLen++] = (uint8_t) (0x00ffU & (relayExt >> 8));
     spiMsgOnOff[msgLen++] = (uint8_t) (0x00ffU &  relayExt      );
     spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgOnOff), spiMsgOnOff);
@@ -904,11 +928,8 @@ void StartDefaultTask(void const * argument)
   MX_USB_DEVICE_Init();
 
   /* USER CODE BEGIN StartDefaultTask */
-
   /* defaultTaskInit() section */
-
-  /* SPI1 init */
-  spix_Init(&hspi1, spi1_BSemHandle);
+  //spix_Init(&hspi1, spi1_BSemHandle);
 
   /* Wait until controller is up */
   xEventGroupWaitBits(globalEventGroupHandle,
@@ -922,6 +943,7 @@ void StartDefaultTask(void const * argument)
   /* Give other tasks time to do the same */
   osDelay(10UL);
 
+  /* defaultTaskLoop() section */
   do {
     uint32_t msgLen                       = 0UL;
     uint32_t msgAry[CONTROLLER_MSG_Q_LEN];
@@ -951,8 +973,6 @@ void StartDefaultTask(void const * argument)
 /* USER CODE END Header_StartControllerTask */
 void StartControllerTask(void const * argument)
 {
-  for (;;) { osDelay(1000); } // TODO: remove me!
-
   /* USER CODE BEGIN StartControllerTask */
   controllerTaskInit();
 
@@ -973,9 +993,8 @@ void StartControllerTask(void const * argument)
 /* USER CODE END Header_StartUsbToHostTask */
 void StartUsbToHostTask(void const * argument)
 {
-  for (;;) { osDelay(1000); } // TODO: remove me!
-
   /* USER CODE BEGIN StartUsbToHostTask */
+  for (;;) { osDelay(1000); } // TODO: remove me!
   usbUsbToHostTaskInit();
 
   /* Infinite loop */
@@ -994,9 +1013,8 @@ void StartUsbToHostTask(void const * argument)
 /* USER CODE END Header_StartUsbFromHostTask */
 void StartUsbFromHostTask(void const * argument)
 {
-  for (;;) { osDelay(1000); } // TODO: remove me!
-
   /* USER CODE BEGIN StartUsbFromHostTask */
+  for (;;) { osDelay(1000); } // TODO: remove me!
   usbUsbFromHostTaskInit();
 
   /* Infinite loop */
@@ -1015,9 +1033,8 @@ void StartUsbFromHostTask(void const * argument)
 /* USER CODE END Header_StartInterpreterTask */
 void StartInterpreterTask(void const * argument)
 {
-  for (;;) { osDelay(1000); } // TODO: remove me!
-
   /* USER CODE BEGIN StartInterpreterTask */
+  for (;;) { osDelay(1000); } // TODO: remove me!
   interpreterTaskInit();
 
   /* Infinite loop */
@@ -1036,9 +1053,8 @@ void StartInterpreterTask(void const * argument)
 /* USER CODE END Header_StartUartTxTask */
 void StartUartTxTask(void const * argument)
 {
-  for (;;) { osDelay(1000); } // TODO: remove me!
-
   /* USER CODE BEGIN StartUartTxTask */
+  for (;;) { osDelay(1000); } // TODO: remove me!
   uartTxTaskInit();
 
   /* Infinite loop */
@@ -1057,9 +1073,8 @@ void StartUartTxTask(void const * argument)
 /* USER CODE END Header_StartUartRxTask */
 void StartUartRxTask(void const * argument)
 {
-  for (;;) { osDelay(1000); } // TODO: remove me!
-
   /* USER CODE BEGIN StartUartRxTask */
+  for (;;) { osDelay(1000); } // TODO: remove me!
   uartRxTaskInit();
 
   /* Infinite loop */
@@ -1078,9 +1093,8 @@ void StartUartRxTask(void const * argument)
 /* USER CODE END Header_StartCatTxTask */
 void StartCatTxTask(void const * argument)
 {
-  for (;;) { osDelay(1000); } // TODO: remove me!
-
   /* USER CODE BEGIN StartCatTxTask */
+  for (;;) { osDelay(1000); } // TODO: remove me!
   catTxTaskInit();
 
   /* Infinite loop */
@@ -1099,9 +1113,8 @@ void StartCatTxTask(void const * argument)
 /* USER CODE END Header_StartCatRxTask */
 void StartCatRxTask(void const * argument)
 {
-  for (;;) { osDelay(1000); } // TODO: remove me!
-
   /* USER CODE BEGIN StartCatRxTask */
+  for (;;) { osDelay(1000); } // TODO: remove me!
   catRxTaskInit();
 
   /* Infinite loop */

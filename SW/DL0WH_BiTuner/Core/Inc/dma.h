@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file           : usbd_conf.h
-  * @version        : v2.0_Cube
-  * @brief          : Header for usbd_conf.c file.
+  * File Name          : dma.h
+  * Description        : This file contains all the function prototypes for
+  *                      the dma.c file
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -46,159 +46,43 @@
   *
   ******************************************************************************
   */
-
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USBD_CONF__H__
-#define __USBD_CONF__H__
+#ifndef __dma_H
+#define __dma_H
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "stm32l4xx.h"
 #include "stm32l4xx_hal.h"
+#include "main.h"
 
-/* USER CODE BEGIN INCLUDE */
+/* DMA memory to memory transfer handles -------------------------------------*/
+extern void _Error_Handler(char*, int);
 
-/* USER CODE END INCLUDE */
+/* USER CODE BEGIN Includes */
 
-/** @addtogroup USBD_OTG_DRIVER
-  * @brief Driver for Usb device.
-  * @{
-  */
+/* USER CODE END Includes */
 
-/** @defgroup USBD_CONF USBD_CONF
-  * @brief Configuration file for Usb otg low level driver.
-  * @{
-  */
+/* USER CODE BEGIN Private defines */
 
-/** @defgroup USBD_CONF_Exported_Variables USBD_CONF_Exported_Variables
-  * @brief Public variables.
-  * @{
-  */
+/* USER CODE END Private defines */
 
-/**
-  * @}
-  */
+void MX_DMA_Init(void);
 
-/** @defgroup USBD_CONF_Exported_Defines USBD_CONF_Exported_Defines
-  * @brief Defines for configuration of the Usb device.
-  * @{
-  */
+/* USER CODE BEGIN Prototypes */
 
-/*---------- -----------*/
-#define USBD_MAX_NUM_INTERFACES     1
-/*---------- -----------*/
-#define USBD_MAX_NUM_CONFIGURATION     1
-/*---------- -----------*/
-#define USBD_MAX_STR_DESC_SIZ     512
-/*---------- -----------*/
-#define USBD_SUPPORT_USER_STRING     0
-/*---------- -----------*/
-#define USBD_DEBUG_LEVEL     0
-/*---------- -----------*/
-#define USBD_LPM_ENABLED     0
-/*---------- -----------*/
-#define USBD_SELF_POWERED     1
-
-/****************************************/
-/* #define for FS and HS identification */
-#define DEVICE_FS 		0
-
-/**
-  * @}
-  */
-
-/** @defgroup USBD_CONF_Exported_Macros USBD_CONF_Exported_Macros
-  * @brief Aliases.
-  * @{
-  */
-
-/* Memory management macros */
-
-/** Alias for memory allocation. */
-#define USBD_malloc         (uint32_t *)USBD_static_malloc
-
-/** Alias for memory release. */
-#define USBD_free           USBD_static_free
-
-/** Alias for memory set. */
-#define USBD_memset         /* Not used */
-
-/** Alias for memory copy. */
-#define USBD_memcpy         /* Not used */
-
-/** Alias for delay. */
-#define USBD_Delay          HAL_Delay
-
-/* DEBUG macros */
-
-#if (USBD_DEBUG_LEVEL > 0)
-#define USBD_UsrLog(...)    printf(__VA_ARGS__);\
-                            printf("\n");
-#else
-#define USBD_UsrLog(...)
-#endif
-
-#if (USBD_DEBUG_LEVEL > 1)
-
-#define USBD_ErrLog(...)    printf("ERROR: ") ;\
-                            printf(__VA_ARGS__);\
-                            printf("\n");
-#else
-#define USBD_ErrLog(...)
-#endif
-
-#if (USBD_DEBUG_LEVEL > 2)
-#define USBD_DbgLog(...)    printf("DEBUG : ") ;\
-                            printf(__VA_ARGS__);\
-                            printf("\n");
-#else
-#define USBD_DbgLog(...)
-#endif
-
-/**
-  * @}
-  */
-
-/** @defgroup USBD_CONF_Exported_Types USBD_CONF_Exported_Types
-  * @brief Types.
-  * @{
-  */
-
-/**
-  * @}
-  */
-
-/** @defgroup USBD_CONF_Exported_FunctionsPrototype USBD_CONF_Exported_FunctionsPrototype
-  * @brief Declaration of public functions for Usb device.
-  * @{
-  */
-
-/* Exported functions -------------------------------------------------------*/
-void *USBD_static_malloc(uint32_t size);
-void USBD_static_free(void *p);
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
+/* USER CODE END Prototypes */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __USBD_CONF__H__ */
+#endif /* __dma_H */
+
+/**
+  * @}
+  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -157,30 +157,24 @@ uint8_t spiProcessSpi1MsgLocked(SPI1_CHIPS_t chip, uint8_t msgLen, uint8_t waitC
     GPIOx     = GPIO_SPI_SEL_C_GPIO_Port;
     GPIO_Pin  = GPIO_SPI_SEL_C_Pin;
 
-    #if 0
     /* Activate clock for this GPIO */
-    __HAL_RCC_GPIOE_CLK_ENABLE();
-    #endif
+    __HAL_RCC_GPIOB_CLK_ENABLE();
     break;
 
   case SPI1_L:
     GPIOx     = GPIO_SPI_SEL_L_GPIO_Port;
     GPIO_Pin  = GPIO_SPI_SEL_L_Pin;
 
-    #if 0
     /* Activate clock for this GPIO */
-    __HAL_RCC_GPIOE_CLK_ENABLE();
-    #endif
+    __HAL_RCC_GPIOB_CLK_ENABLE();
     break;
 
   case SPI1_EXT:
     GPIOx     = GPIO_SPI_SEL_EXT_GPIO_Port;
     GPIO_Pin  = GPIO_SPI_SEL_EXT_Pin;
 
-    #if 0
     /* Activate clock for this GPIO */
-    __HAL_RCC_GPIOC_CLK_ENABLE();
-    #endif
+    __HAL_RCC_GPIOB_CLK_ENABLE();
     break;
 
   default:
@@ -285,8 +279,8 @@ void spix_Init(SPI_HandleTypeDef* dev, osSemaphoreId semaphoreHandle)
   if (!s_spix_UseCtr++) {
     switch (devIdx) {
     case 0:
-    //__HAL_RCC_GPIOx_CLK_ENABLE();                                                                   // SPI1: MCU_SPI1_SCK
-      MX_SPI1_Init();
+      __HAL_RCC_GPIOA_CLK_ENABLE();                                                                   // SPI1: MCU_SPI1_SCK
+      //MX_SPI1_Init();                                                                               // Already done in main()
       break;
 
     #if 0
@@ -294,7 +288,7 @@ void spix_Init(SPI_HandleTypeDef* dev, osSemaphoreId semaphoreHandle)
       __HAL_RCC_GPIOC_CLK_ENABLE();                                                                   // SPI3: MCU_SPI3_SCK, MCU_SPI3_MISO, MCU_SPI3_MOSI, MCU_OUT_AUDIO_DAC_SEL
       __HAL_RCC_GPIOD_CLK_ENABLE();                                                                   // SPI3: MCU_OUT_AUDIO_ADC_SEL
       __HAL_RCC_GPIOE_CLK_ENABLE();                                                                   // SPI3: MCU_OUT_AX_SEL, MCU_OUT_SX_SEL
-      MX_SPI3_Init();
+      //MX_SPI3_Init();                                                                               // Already done in main()
       break;
     #endif
 
