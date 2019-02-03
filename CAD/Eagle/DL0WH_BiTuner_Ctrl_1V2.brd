@@ -3648,7 +3648,7 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="NAME" x="54.01375" y="20.95125" size="0.6096" layer="25" font="vector" ratio="10"/>
 <attribute name="VALUE" x="61.08" y="24.5575" size="0.6096" layer="27" font="vector" ratio="10" rot="R180"/>
 </element>
-<element name="C0311" library="df4iah_rcl" package="C0402" value="18pF" x="57.62625" y="18.7325" smashed="yes" rot="R270">
+<element name="C0311" library="df4iah_rcl" package="C0402" value="22pF" x="57.62625" y="18.7325" smashed="yes" rot="R270">
 <attribute name="NAME" x="56.515" y="17.30375" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="55.72125" y="19.3675" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
 </element>
@@ -3713,7 +3713,7 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="NAME" x="76.67625" y="3.81" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
 <attribute name="VALUE" x="74.93" y="7.14375" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
-<element name="C0332" library="df4iah_rcl" package="C0402" value="8.2pF" x="60.96" y="24.4475" smashed="yes" rot="R90">
+<element name="C0332" library="df4iah_rcl" package="C0402" value="18pF" x="60.96" y="24.4475" smashed="yes" rot="R90">
 <attribute name="NAME" x="60.16625" y="23.1775" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="62.865" y="23.8125" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
 </element>
@@ -4160,6 +4160,7 @@ Subminiature Tact Switch for SMT</description>
 <attribute name="NAME" x="87.63" y="3.81" size="0.8128" layer="25" font="vector" ratio="15" rot="R90"/>
 <attribute name="VALUE" x="76.2" y="1.27" size="0.8128" layer="27" font="vector" ratio="15"/>
 </element>
+<element name="D1221" library="df4iah_diode" package="SOD80C" value="CRS08" x="83.82" y="29.21" rot="R270"/>
 </elements>
 <signals>
 <signal name="GND">
@@ -4762,17 +4763,40 @@ Subminiature Tact Switch for SMT</description>
 <via x="13.97" y="31.75" extent="1-16" drill="0.3048"/>
 <via x="10.16" y="33.02" extent="1-16" drill="0.3048"/>
 <via x="17.62125" y="26.51125" extent="1-16" drill="0.3048"/>
+<wire x1="65.745" y1="56.72" x2="68.58" y2="58.42" width="0" layer="19" extent="1-1"/>
+<wire x1="15.3875" y1="53.295" x2="14.2875" y2="53.295" width="0" layer="19" extent="1-1"/>
+<wire x1="13.1875" y1="53.295" x2="14.2875" y2="53.295" width="0" layer="19" extent="1-1"/>
+<wire x1="15.3875" y1="54.595" x2="15.3875" y2="53.295" width="0" layer="19" extent="1-1"/>
+<wire x1="14.2875" y1="54.595" x2="15.3875" y2="54.595" width="0" layer="19" extent="1-1"/>
+<wire x1="14.2875" y1="55.245" x2="14.2875" y2="54.595" width="0" layer="19" extent="1-1"/>
+<wire x1="14.2875" y1="55.245" x2="14.2875" y2="55.245" width="0" layer="19" extent="1-16"/>
+<wire x1="14.2875" y1="55.895" x2="14.2875" y2="55.245" width="0" layer="19" extent="1-1"/>
+<wire x1="15.3875" y1="55.895" x2="14.2875" y2="55.895" width="0" layer="19" extent="1-1"/>
+<wire x1="13.1875" y1="55.895" x2="14.2875" y2="55.895" width="0" layer="19" extent="1-1"/>
+<wire x1="13.1875" y1="54.595" x2="14.2875" y2="54.595" width="0" layer="19" extent="1-1"/>
+<wire x1="15.3875" y1="57.195" x2="15.3875" y2="55.895" width="0" layer="19" extent="1-1"/>
+<wire x1="14.2875" y1="57.195" x2="15.3875" y2="57.195" width="0" layer="19" extent="1-1"/>
+<wire x1="13.1875" y1="57.195" x2="14.2875" y2="57.195" width="0" layer="19" extent="1-1"/>
+<wire x1="55.88" y1="20.32" x2="57.62625" y2="18.0825" width="0" layer="19" extent="1-1"/>
+<wire x1="17.62125" y1="26.51125" x2="14.605" y2="28.2575" width="0" layer="19" extent="1-1"/>
+<wire x1="68.8975" y1="26.51125" x2="65.3375" y2="27.21375" width="0" layer="19" extent="1-1"/>
+<wire x1="10.16" y1="33.02" x2="13.97" y2="31.75" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="VDDUSB">
 <contactref element="PF1411" pad="2"/>
 <contactref element="U0101" pad="48"/>
-<wire x1="74.355" y1="22.8" x2="84.8825" y2="22.8" width="0.1524" layer="1"/>
+<wire x1="74.355" y1="22.8" x2="81.5975" y2="22.8" width="0.1524" layer="1"/>
+<wire x1="81.5975" y1="22.8" x2="84.8825" y2="22.8" width="0.3048" layer="1"/>
 <wire x1="84.8825" y1="22.8" x2="85.09" y2="22.5425" width="0.1524" layer="1"/>
 <via x="85.09" y="22.5425" extent="1-16" drill="0.3048"/>
-<wire x1="85.09" y1="22.5425" x2="85.09" y2="18.7325" width="0.1524" layer="16"/>
+<wire x1="85.09" y1="22.5425" x2="85.09" y2="18.7325" width="0.3048" layer="16"/>
 <via x="85.09" y="18.7325" extent="1-16" drill="0.3048"/>
 <wire x1="85.09" y1="18.7325" x2="85.09" y2="18.92" width="0.1524" layer="1"/>
 <wire x1="85.09" y1="18.92" x2="85.2775" y2="18.7325" width="0.1524" layer="1"/>
+<contactref element="D1221" pad="A"/>
+<wire x1="83.82" y1="27.51" x2="83.7075" y2="27.51" width="0.3048" layer="1"/>
+<wire x1="83.7075" y1="27.51" x2="81.5975" y2="25.4" width="0.3048" layer="1"/>
+<wire x1="81.5975" y1="25.4" x2="81.5975" y2="22.8" width="0.3048" layer="1"/>
 </signal>
 <signal name="MCU_VREF_M">
 <contactref element="R0441" pad="2"/>
@@ -5694,6 +5718,8 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="94.615" y1="51.435" x2="86.375" y2="51.435" width="0.3048" layer="1"/>
 <wire x1="86.0575" y1="51.1175" x2="86.375" y2="51.435" width="0.3048" layer="1"/>
 <wire x1="11.7475" y1="47.625" x2="12.0375" y2="47.625" width="0.1524" layer="1"/>
+<contactref element="D1221" pad="C"/>
+<wire x1="82.55" y1="30.48" x2="83.82" y2="30.91" width="0.3048" layer="1" curve="60"/>
 </signal>
 <signal name="MP_CAT_RXD_R">
 <contactref element="U1101" pad="11"/>
@@ -6675,8 +6701,9 @@ Subminiature Tact Switch for SMT</description>
 <wire x1="77.1525" y1="39.0525" x2="77.47" y2="38.735" width="0.1524" layer="16"/>
 <wire x1="77.47" y1="38.735" x2="77.47" y2="38.1" width="0.1524" layer="16"/>
 <via x="77.47" y="38.1" extent="1-16" drill="0.3048"/>
-<wire x1="77.47" y1="38.1" x2="83.5025" y2="32.0675" width="0.1524" layer="1"/>
-<via x="83.5025" y="32.0675" extent="1-16" drill="0.3048"/>
+<wire x1="77.47" y1="38.1" x2="80.9625" y2="34.6075" width="0.1524" layer="1"/>
+<via x="80.9625" y="34.6075" extent="1-16" drill="0.3048"/>
+<wire x1="80.9625" y1="34.6075" x2="83.5025" y2="32.0675" width="0.1524" layer="16"/>
 <wire x1="83.5025" y1="32.0675" x2="86.0425" y2="32.0675" width="0.1524" layer="16"/>
 <wire x1="86.0425" y1="32.0675" x2="88.9" y2="29.21" width="0.1524" layer="16"/>
 <via x="88.9" y="29.21" extent="1-16" drill="0.3048"/>
@@ -7070,14 +7097,14 @@ Subminiature Tact Switch for SMT</description>
 <approved hash="5,1,efa4392f477b9159"/>
 <approved hash="5,1,efa438f7c6c21159"/>
 <approved hash="5,1,1159c6ab38f7ef0d"/>
-<approved hash="5,1,0527203c56b6d68d"/>
 <approved hash="5,1,380d29048e5416f4"/>
+<approved hash="5,1,0527203c56b6d68d"/>
 <approved hash="5,1,324a2a0d029b0630"/>
 <approved hash="5,1,d72a13233d2dd523"/>
 <approved hash="5,1,f1b6da0dd34546a3"/>
 <approved hash="5,1,768b4847b06e0874"/>
-<approved hash="5,1,c7de4b874c5412a4"/>
 <approved hash="5,1,faf786bd94b712dd"/>
+<approved hash="5,1,c7de4b874c5412a4"/>
 <approved hash="5,1,5799488e859ac761"/>
 <approved hash="5,1,2ff6a38f2ec03678"/>
 <approved hash="5,1,3aabae12235e2326"/>
@@ -7089,13 +7116,13 @@ Subminiature Tact Switch for SMT</description>
 <approved hash="5,1,de173e48b45ef631"/>
 <approved hash="5,1,de173e48b45ef631"/>
 <approved hash="5,1,ad0aa05b3023398c"/>
-<approved hash="5,1,55625875f90a577b"/>
 <approved hash="5,1,575358f3f9ee5528"/>
+<approved hash="5,1,d439cef1ceabe1b0"/>
+<approved hash="5,1,b451eb30f462b50b"/>
+<approved hash="5,1,55625875f90a577b"/>
 <approved hash="5,1,1c10e67f33a8be92"/>
 <approved hash="5,1,53f55973f82a51ca"/>
 <approved hash="5,1,e795b13428a27d65"/>
-<approved hash="5,1,d439cef1ceabe1b0"/>
-<approved hash="5,1,b451eb30f462b50b"/>
 <approved hash="5,1,50845871f90e529d"/>
 <approved hash="5,1,9852ec25e82dcc49"/>
 <approved hash="5,1,e97e6277a1641593"/>
@@ -7103,9 +7130,9 @@ Subminiature Tact Switch for SMT</description>
 <approved hash="5,1,78d73d8543b1072b"/>
 <approved hash="5,1,57de2c580540cfee"/>
 <approved hash="5,1,86389637e5d030c1"/>
+<approved hash="5,1,e0fa11b2395d02fa"/>
 <approved hash="5,1,6423859f2352e282"/>
 <approved hash="5,1,4677a9cca8f87a5e"/>
-<approved hash="5,1,e0fa11b2395d02fa"/>
 <approved hash="5,1,198feb4845be7282"/>
 <approved hash="5,1,64eeec0630569515"/>
 <approved hash="5,1,59c6fb3cd4b6576c"/>
@@ -7122,9 +7149,9 @@ Subminiature Tact Switch for SMT</description>
 <approved hash="5,1,d1ba4d38ea0b180b"/>
 <approved hash="5,1,c7fa1768e2d1bbba"/>
 <approved hash="5,1,be35e76112d7c27a"/>
+<approved hash="5,1,9e1fbef4bcd64348"/>
 <approved hash="5,1,9cd4b9eebb0e4141"/>
 <approved hash="5,1,6add86013d4b91dd"/>
-<approved hash="5,1,9e1fbef4bcd64348"/>
 <approved hash="5,16,651006591d512595"/>
 <approved hash="5,16,192b023455ee9101"/>
 <approved hash="5,16,11dc3a3628e042d0"/>

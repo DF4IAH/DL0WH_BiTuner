@@ -14787,7 +14787,7 @@ Anode left, Kathode right</description>
 <part name="GND0451" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="FRAME_03" library="df4iah_frame" deviceset="A4L-LOC" device="" value="I2C connector"/>
 <part name="Q0321" library="df4iah_crystal" deviceset="ABS07-32.768KHZ" device=""/>
-<part name="C0311" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="18pF"/>
+<part name="C0311" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="22pF"/>
 <part name="GND0311" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="GND0331" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="FRAME_33" library="df4iah_frame" deviceset="A4L-LOC" device="" value="I2C connector"/>
@@ -14808,7 +14808,7 @@ Anode left, Kathode right</description>
 <part name="C0413" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="1uF"/>
 <part name="R0231" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="220kR"/>
 <part name="R0232" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="220kR"/>
-<part name="C0332" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="8.2pF"/>
+<part name="C0332" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="18pF"/>
 <part name="GND0332" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="R0511" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1kR"/>
 <part name="R0512" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1kR"/>
@@ -14981,6 +14981,7 @@ Anode left, Kathode right</description>
 <part name="GND0005" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="GND0006" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="X0201" library="df4iah_connector" deviceset="2X05_1MM27_SHROUDED_CORTEX_JTAG_SWD" device="&quot;" value="FTSH-105-01-F-D-K"/>
+<part name="D1221" library="df4iah_diode" deviceset="CRS08" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -17790,6 +17791,7 @@ extra</text>
 <instance part="C1222" gate="G$1" x="195.58" y="116.84"/>
 <instance part="C1223" gate="G$1" x="208.28" y="116.84"/>
 <instance part="X1211" gate="G$1" x="12.7" y="106.68" rot="R180"/>
+<instance part="D1221" gate="G$1" x="208.28" y="142.24" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -17820,6 +17822,8 @@ extra</text>
 <pinref part="C1223" gate="G$1" pin="1"/>
 <wire x1="208.28" y1="124.46" x2="208.28" y2="119.38" width="0.1524" layer="91"/>
 <junction x="208.28" y="124.46"/>
+<pinref part="D1221" gate="G$1" pin="C"/>
+<wire x1="208.28" y1="124.46" x2="208.28" y2="139.7" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="+12V" class="0">
@@ -17974,6 +17978,13 @@ extra</text>
 <wire x1="160.02" y1="101.6" x2="165.1" y2="101.6" width="0.1524" layer="91"/>
 <wire x1="160.02" y1="101.6" x2="160.02" y2="93.98" width="0.1524" layer="91"/>
 <junction x="160.02" y="101.6"/>
+</segment>
+</net>
+<net name="VDDUSB" class="0">
+<segment>
+<pinref part="D1221" gate="G$1" pin="A"/>
+<wire x1="208.28" y1="144.78" x2="208.28" y2="149.86" width="0.1524" layer="91"/>
+<label x="208.28" y="149.86" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 </net>
 </nets>
