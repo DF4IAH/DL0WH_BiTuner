@@ -56,6 +56,18 @@ static uint32_t             s_interpreterLineBufLen           = 0UL;
 /* Private function prototypes -----------------------------------------------*/
 
 /* Private functions ---------------------------------------------------------*/
+static uint32_t interpreterCalcLineLen(const uint8_t* buf, uint32_t len)
+{
+  const uint8_t* bufPtr = buf;
+
+  for (uint32_t idx = 0UL; idx < len; idx++, bufPtr++) {
+    if (*bufPtr == 0x0aU || *bufPtr == 0x0dU) {
+      return idx;
+    }
+  }
+  return len;
+}
+
 static void interpreterUnknownCommand(void)
 {
   const char* unknownStr = "\r\n?? unknown command - please try 'help' ??\r\n\r\n";
@@ -159,16 +171,32 @@ static void interpreterDoInterprete__HexString(const char* buf, uint16_t len)
 
 static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 {
-  const char *cb = (const char*) s_interpreterLineBuf;
+  const char*     cb          = (const char*) s_interpreterLineBuf;
+  uint8_t*        bufOutPtr   = s_interpreterLineBuf + s_interpreterLineBufLen;
+  const uint8_t*  bufInPtr    = buf;
+  uint8_t         c;
 
-  for (uint32_t idx = 0; idx < len; idx++) {
-    if (idx + s_interpreterLineBufLen < 254) {
-      s_interpreterLineBuf[s_interpreterLineBufLen++] = buf[idx];
+  return; // TODO: remove me!
+  for (uint32_t idx = 0UL; idx < len; idx++) {
+    if ((idx + s_interpreterLineBufLen) < 254UL) {
+      *(bufOutPtr++) = c = *(bufInPtr++);
+      ++s_interpreterLineBufLen;
     }
+  }
+  if (c != 0x0aU && c != 0x0dU) {
+    /* Line not complete */
+    return;
+  }
+
+  /* Count length w/o CR LF */
+  len = interpreterCalcLineLen(s_interpreterLineBuf, s_interpreterLineBufLen);
+  if (!len) {
+    s_interpreterLineBufLen = 0UL;
+    memset(s_interpreterLineBuf, 0, sizeof(s_interpreterLineBuf));
+    return;
   }
 
   if (false) {
-
 #if 0
   } else if (!strncmp("adr ", cb, 4) && (4 < len)) {
     const long    adrEnable   = strtol(cb + 4, NULL, 10);
@@ -197,6 +225,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 
 #endif
   } else if (!strncmp("help", cb, 4) && (4 == len)) {
+    interpreterClearScreen();
     interpreterPrintHelp();
 
   } else if (!strncmp("C", cb, 1) && (3 == len)) {
@@ -283,14 +312,18 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     interpreterUnknownCommand();
   }
 
-  /* Slice out until next line follows */
+  /* Find next line */
   uint32_t newIdx = 0UL;
-  for (uint32_t idx = 0; idx < s_interpreterLineBufLen; idx++) {
-    const uint8_t c0 = s_interpreterLineBuf[idx];
-    const uint8_t c1 = s_interpreterLineBuf[idx];
+  uint8_t* bufPtr = s_interpreterLineBuf;
+  for (uint32_t idx = 0UL; idx < s_interpreterLineBufLen; idx++) {
+    const uint8_t c0 = *(bufPtr++);
+    const uint8_t c1 = *bufPtr;
 
-    if (c0 == 0x0a || c0 == 0x0d) {
-      newIdx = (c1 == 0x0a || c1 == 0x0d) ?  (idx + 1) : idx;
+    if (c0 == 0x0aU || c0 == 0x0dU) {
+      newIdx = (c1 == 0x0aU || c1 == 0x0dU) ?  (idx + 1) : idx;
+
+      /* Point to first character of next line */
+      ++newIdx;
       break;
     }
   }
@@ -305,7 +338,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     /* Old single line clear */
     s_interpreterLineBufLen = 0UL;
   }
-  memset(s_interpreterLineBuf + (sizeof(s_interpreterLineBuf) - s_interpreterLineBufLen), 0, sizeof(s_interpreterLineBuf) - s_interpreterLineBufLen);
+  memset(s_interpreterLineBuf + s_interpreterLineBufLen, 0, sizeof(s_interpreterLineBuf) - s_interpreterLineBufLen);
 }
 
 
@@ -378,32 +411,15 @@ void interpreterGetterTask(void const * argument)
 {
   /* Handle serial console on input streams USB and UART */
   for (;;) {
-    uint8_t inBuf[256]  = { 0U };
-    uint8_t inBufLen    = 0U;
+    uint8_t inBuf[64]  = { 0U };
+    uint32_t inBufLen;
 
     /* Transfer USB input*/
-    osEvent ev = osMessageGet(usbFromHostQueueHandle, 1UL);
-    uint8_t* inBufPtr = inBuf;
-    while (ev.status == osEventMessage) {
-      if (inBufLen++ >= sizeof(inBuf) - 1) {
-        break;
-      }
-
-      *(inBufPtr++) = (uint8_t)ev.value.v;
-      ev = osMessageGet(usbFromHostQueueHandle, 1UL);
-    }
+    inBufLen = usbPullFromOutQueue(inBuf, 1UL);
 
     /* Transfer UART input*/
-    if (inBufLen < sizeof(inBuf) - 1) {
-      ev = osMessageGet(uartRxQueueHandle, 1UL);
-      while (ev.status == osEventMessage) {
-        if (inBufLen++ >= sizeof(inBuf) - 1) {
-          break;
-        }
-
-        *(inBufPtr++) = (uint8_t)ev.value.v;
-        ev = osMessageGet(uartRxQueueHandle, 1UL);
-      }
+    if (!inBufLen) {
+      inBufLen = uartRxPullFromQueue(inBuf, 1UL);
     }
 
     if (inBufLen) {
@@ -414,14 +430,19 @@ void interpreterGetterTask(void const * argument)
 
       /* Lets do the interpreter */
       interpreterDoInterprete(inBuf, inBufLen);
+
+    } else {
+      osDelay(25UL);
     }
   }
 }
 
 static void interpreterInit(void)
 {
+  /* Wait until init message is done */
+  osDelay(4000UL);
+
   /* Prepare console output */
-  interpreterClearScreen();
   interpreterPrintHelp();
 
   /* Start console input thread */

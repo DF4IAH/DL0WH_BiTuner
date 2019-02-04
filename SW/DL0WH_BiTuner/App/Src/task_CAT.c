@@ -135,6 +135,39 @@ static void catUartHalInit(void)
 }
 
 
+/* Messaging */
+
+uint32_t catRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs)
+{
+  uint32_t len = 0UL;
+
+  /* Get semaphore to queue out */
+  osSemaphoreWait(cat_BSemHandle, waitMs);
+
+  do {
+    osEvent ev = osMessageGet(catRxQueueHandle, waitMs);
+    if (ev.status == osEventMessage) {
+      msgAry[len++] = ev.value.v;
+
+    } else if (len) {
+      if (!msgAry[len - 1]) {
+        /* Strip off last NULL character */
+        --len;
+      }
+      break;
+
+    } else {
+      break;
+    }
+  } while (1);
+
+  /* Return semaphore */
+  osSemaphoreRelease(cat_BSemHandle);
+
+  return len;
+}
+
+
 /* UART TX */
 
 static void catTxStartDma(const uint8_t* cmdBuf, uint8_t cmdLen)
@@ -303,13 +336,14 @@ void catRxGetterTask(void const * argument)
 
   /* TaskLoop */
   for (;;) {
-    taskDISABLE_INTERRUPTS();
-
     /* Find last written byte */
     g_catRxDmaBufIdx = g_catRxDmaBufLast + strnlen((char*)g_catRxDmaBuf + g_catRxDmaBufLast, sizeof(g_catRxDmaBuf) - g_catRxDmaBufLast);
 
     /* Send new character in RX buffer to the queue */
     if (g_catRxDmaBufIdx > g_catRxDmaBufLast) {
+      /* Disabled IRQ section */
+      taskDISABLE_INTERRUPTS();
+
       /* USB OUT EP from host put data into the buffer */
       volatile uint8_t* bufPtr = g_catRxDmaBuf + g_catRxDmaBufLast;
 

@@ -150,6 +150,8 @@ static void controllerUsbGreet(void)
 {
   char verBuf[128];
 
+  interpreterClearScreen();
+
   sprintf(verBuf, controllerGreetMsg11, BITUNER_CTRL_VERSION);
 
   /* usbToHost block */
@@ -333,12 +335,17 @@ static void controllerCalcMatcherLcRatio(void)
 
 /* Messaging functions */
 
-uint32_t controllerMsgPushToInQueue(uint8_t msgLen, uint32_t* msgAry, uint32_t waitMs)
+uint32_t controllerMsgPushToInQueue(uint32_t msgLen, uint32_t* msgAry, uint32_t waitMs)
 {
-  uint8_t idx = 0U;
+  uint32_t idx = 0UL;
 
   /* Sanity checks */
   if (!msgLen || (msgLen > CONTROLLER_MSG_Q_LEN) || !msgAry) {
+    return 0UL;
+  }
+
+  if (!(EG_GLOBAL__Controller_CTRL_IS_RUNNING & xEventGroupGetBits(globalEventGroupHandle))) {
+    /* Do not enter as long as Controller is not up */
     return 0UL;
   }
 
@@ -359,7 +366,7 @@ uint32_t controllerMsgPushToInQueue(uint8_t msgLen, uint32_t* msgAry, uint32_t w
   return idx;
 }
 
-void controllerMsgPushToOutQueue(uint8_t msgLen, uint32_t* msgAry, uint32_t waitMs)
+void controllerMsgPushToOutQueue(uint32_t msgLen, uint32_t* msgAry, uint32_t waitMs)
 {
   osSemaphoreId semId = 0;
 
@@ -378,6 +385,10 @@ void controllerMsgPushToOutQueue(uint8_t msgLen, uint32_t* msgAry, uint32_t wait
   switch ((ControllerMsgDestinations_t) (msgAry[0] >> 24)) {
   case Destinations__Rtos_Default:
     semId = c2default_BSemHandle;
+    break;
+
+  case Destinations__Interpreter:
+    semId = c2interpreter_BSemHandle;
     break;
 
   case Destinations__Network_USBtoHost:
@@ -429,7 +440,7 @@ static uint32_t controllerMsgPullFromInQueue(void)
 
   /* Process each message token */
   do {
-    const osEvent evt = osMessageGet(controllerInQueueHandle, osWaitForever);
+    const osEvent evt = osMessageGet(controllerInQueueHandle, 25UL);
     if (osEventMessage == evt.status) {
       const uint32_t token = evt.value.v;
 
@@ -623,7 +634,6 @@ static void controllerFSM_GetGlobalVars(void)
 {
   /* Disabled IRQ section */
   {
-    //__disable_irq();
     taskDISABLE_INTERRUPTS();
 
     s_controller_adc_fwd_mv     = g_adc_fwd_mv;
@@ -650,15 +660,20 @@ static void controllerFSM_GetGlobalVars(void)
         s_controller_opti_swr_2nd_C = s_controller_opti_C;
       }
     }
+
     taskENABLE_INTERRUPTS();
-    //__enable_irq();
   }
 
   const float fwdMv = mainCalc_mV_to_mW(s_controller_adc_fwd_mv);
 
+  /* Disabled IRQ section */
+  {
   taskDISABLE_INTERRUPTS();
+
   s_controller_adc_fwd_mw = fwdMv;
+
   taskENABLE_INTERRUPTS();
+  }
 }
 
 static void controllerFSM_PushOptiVars(void)
@@ -667,20 +682,26 @@ static void controllerFSM_PushOptiVars(void)
   uint8_t controller_opti_CH;
   uint32_t msgAry[2];
 
-  /* Calculate current L and C counter setings */
-  taskDISABLE_INTERRUPTS();
-  const float               valL      = s_controller_opti_L;
-  const float               valC      = s_controller_opti_C;
-  const ControllerOptiCVH_t configLC  = s_controller_FSM_optiCVH;
-  taskENABLE_INTERRUPTS();
+  /* Calculate current L and C counter settings */
+  /* Disabled IRQ section */
+  /* { */
+    taskDISABLE_INTERRUPTS();
+    const float               valL      = s_controller_opti_L;
+    const float               valC      = s_controller_opti_C;
+    const ControllerOptiCVH_t configLC  = s_controller_FSM_optiCVH;
+    taskENABLE_INTERRUPTS();
+  /* } */
 
   const uint8_t relL = controllerCalcMatcherNH2L(valL);
   const uint8_t relC = controllerCalcMatcherPF2C(valC);
 
-  taskDISABLE_INTERRUPTS();
-  s_controller_opti_L_relays = relL;
-  s_controller_opti_C_relays = relC;
-  taskENABLE_INTERRUPTS();
+  /* Disabled IRQ section */
+  {
+    taskDISABLE_INTERRUPTS();
+    s_controller_opti_L_relays = relL;
+    s_controller_opti_C_relays = relC;
+    taskENABLE_INTERRUPTS();
+  }
 
   /* Update CV/CH state */
   if (configLC == ControllerOptiCVH__CH) {
@@ -1272,9 +1293,16 @@ static void controllerFSM(void)
 
 static void controllerSetL(uint8_t relLnum, uint8_t relEnable)
 {
-  taskDISABLE_INTERRUPTS();
-  float valL = s_controller_opti_L;
-  taskENABLE_INTERRUPTS();
+  float valL;
+
+  /* Disabled IRQ section */
+  {
+    taskDISABLE_INTERRUPTS();
+
+    valL = s_controller_opti_L;
+
+    taskENABLE_INTERRUPTS();
+  }
 
   uint8_t relay = controllerCalcMatcherNH2L(s_controller_opti_L);
   if (relEnable) {
@@ -1285,18 +1313,30 @@ static void controllerSetL(uint8_t relLnum, uint8_t relEnable)
   }
   valL = controllerCalcMatcherL2nH(relay);
 
-  taskDISABLE_INTERRUPTS();
-  s_controller_opti_L = valL;
-  taskENABLE_INTERRUPTS();
+  /* Disabled IRQ section */
+  {
+    taskDISABLE_INTERRUPTS();
+
+    s_controller_opti_L = valL;
+
+    taskENABLE_INTERRUPTS();
+  }
 
   controllerFSM_PushOptiVars();
 }
 
 static void controllerSetC(uint8_t relLnum, uint8_t relEnable)
 {
-  taskDISABLE_INTERRUPTS();
-  float valC = s_controller_opti_C;
-  taskENABLE_INTERRUPTS();
+  float valC;
+
+  /* Disabled IRQ section */
+  {
+    taskDISABLE_INTERRUPTS();
+
+    valC = s_controller_opti_C;
+
+    taskENABLE_INTERRUPTS();
+  }
 
   uint8_t relay = controllerCalcMatcherPF2C(valC);
   if (relEnable) {
@@ -1307,27 +1347,38 @@ static void controllerSetC(uint8_t relLnum, uint8_t relEnable)
   }
   valC = controllerCalcMatcherC2pF(relay);
 
-  taskDISABLE_INTERRUPTS();
-  s_controller_opti_C = valC;
-  taskENABLE_INTERRUPTS();
+  /* Disabled IRQ section */
+  {
+    taskDISABLE_INTERRUPTS();
+
+    s_controller_opti_C = valC;
+
+    taskENABLE_INTERRUPTS();
+  }
 
   controllerFSM_PushOptiVars();
 }
 
 static void controllerSetConfigLC(bool isLC)
 {
+  /* Disabled IRQ section */
   taskDISABLE_INTERRUPTS();
+
   s_controller_FSM_optiCVH = isLC ?  ControllerOptiCVH__CH : ControllerOptiCVH__CV;
+
   taskENABLE_INTERRUPTS();
 }
 
 static void controllerPrintLC(void)
 {
-  taskDISABLE_INTERRUPTS();
-  const float valL                          = s_controller_opti_L;
-  const float valC                          = s_controller_opti_C;
-  const       ControllerOptiCVH_t configLC  = s_controller_FSM_optiCVH;
-  taskENABLE_INTERRUPTS();
+  /* Disabled IRQ section */
+  /* { */
+    taskDISABLE_INTERRUPTS();
+    const float valL                          = s_controller_opti_L;
+    const float valC                          = s_controller_opti_C;
+    const       ControllerOptiCVH_t configLC  = s_controller_FSM_optiCVH;
+    taskENABLE_INTERRUPTS();
+  /* } */
 
   /* Print relay settings */
   {
@@ -1368,7 +1419,19 @@ static void controllerPrintLC(void)
 
 static void controllerCyclicTimerEvent(void)
 {
-  /* Cyclic job to do */
+  /* Cyclic jobs to do */
+  static bool isUsbRdy = false;
+
+  /* USB initial setup */
+  if (!isUsbRdy && (osKernelSysTick() > 3500UL)) {
+    isUsbRdy = true;
+
+    /* Greetings to the USB CDC */
+    controllerUsbGreet();
+
+    /* Inits to be done after USB/DCD connection is established */
+    controllerInitAfterGreet();
+  }
 
   /* FSM logic */
   controllerFSM();
@@ -1425,6 +1488,10 @@ static void controllerMsgProcessor(void)
 {
   uint32_t msgAry[CONTROLLER_MSG_Q_LEN] = { 0 };
 
+  if (!s_msg_in.rawLen) {
+    return;
+  }
+
   if (s_msg_in.msgDst > Destinations__Controller) {
     /* Forward message to the destination via the ctrlQout */
     const uint8_t cnt                     = s_msg_in.rawLen;
@@ -1459,6 +1526,10 @@ static void controllerMsgProcessor(void)
           }
           break;
 
+        case Destinations__Interpreter:
+          s_mod_rdy.Interpreter = 1U;
+          break;
+
         case Destinations__Network_USBtoHost:
           s_mod_rdy.network_USBtoHost = 1U;
           break;
@@ -1491,9 +1562,8 @@ static void controllerMsgProcessor(void)
 
     /* Process own command */
     case MsgController__CallFunc01_CyclicTimerEvent:
-    {
       controllerCyclicTimerEvent();
-    }
+      break;
 
     default:
     {
@@ -1584,9 +1654,9 @@ static void controllerInit(void)
     s_controller_doCycle                                      = 1U;
 
     s_mod_start.rtos_Default                                  = 1U;
-    s_mod_start.Interpreter                                   = 0U;
+    s_mod_start.Interpreter                                   = 1U;
     s_mod_start.network_USBtoHost                             = 1U;
-    s_mod_start.network_USBfromHost                           = 0U;
+    s_mod_start.network_USBfromHost                           = 1U;
     s_mod_start.network_UartTx                                = 0U;
     s_mod_start.network_UartRx                                = 0U;
     s_mod_start.network_CatTx                                 = 0U;
@@ -1692,39 +1762,22 @@ static void controllerInit(void)
 
 void controllerTaskInit(void)
 {
-  uint32_t prevWakeTime = 0;
-
   controllerInit();
-
-  /* Inits to be done before the USB CDC messaging is ready */
-  //prvControllerInitBeforeGreet();
-
-  /* Delay until the USB CDC init phase is over */
-  osDelayUntil(&prevWakeTime, 3500);
-
-  /* Greetings to the USB CDC */
-  controllerUsbGreet();
-
-  /* Inits to be done after USB/DCD connection is established */
-  controllerInitAfterGreet();
-
 }
 
 void controllerTaskLoop(void)
 {
-  const EventBits_t eb = xEventGroupWaitBits(globalEventGroupHandle,
+  (void) xEventGroupWaitBits(globalEventGroupHandle,
       EG_GLOBAL__Controller_QUEUE_IN,
       EG_GLOBAL__Controller_QUEUE_IN,
-      0, HAL_MAX_DELAY);
+      0, 250UL);
 
-  if (EG_GLOBAL__Controller_QUEUE_IN & eb) {
-    /* Get next complete messages */
-    if (osOK != controllerMsgPullFromInQueue()) {
-      /* Message Queue corrupt */
-      Error_Handler();
-    }
-
-    /* Process message */
-    controllerMsgProcessor();
+  /* Get next complete messages */
+  if (osOK != controllerMsgPullFromInQueue()) {
+    /* Message Queue corrupt */
+    Error_Handler();
   }
+
+  /* Process message */
+  controllerMsgProcessor();
 }

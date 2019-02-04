@@ -152,6 +152,32 @@ static void uartHalInit(void)
 }
 
 
+/* Messaging */
+
+uint32_t uartRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs)
+{
+  uint32_t len = 0UL;
+
+  /* Get semaphore to queue out */
+  osSemaphoreWait(uart_BSemHandle, waitMs);
+
+  do {
+    osEvent ev = osMessageGet(uartRxQueueHandle, waitMs);
+    if (ev.status == osEventMessage) {
+      msgAry[len++] = ev.value.v;
+
+    } else {
+      break;
+    }
+  } while (1);
+
+  /* Return semaphore */
+  osSemaphoreRelease(uart_BSemHandle);
+
+  return len;
+}
+
+
 /* UART TX */
 
 const uint8_t uartTx_MaxWaitQueueMs = 100U;
@@ -368,13 +394,14 @@ void uartRxGetterTask(void const * argument)
 
   /* TaskLoop */
   for (;;) {
-    taskDISABLE_INTERRUPTS();
-
     /* Find last written byte */
     g_uartRxDmaBufIdx = g_uartRxDmaBufLast + strnlen((char*)g_uartRxDmaBuf + g_uartRxDmaBufLast, sizeof(g_uartRxDmaBuf) - g_uartRxDmaBufLast);
 
     /* Send new character in RX buffer to the queue */
     if (g_uartRxDmaBufIdx > g_uartRxDmaBufLast) {
+      /* Disabled IRQ section */
+      taskDISABLE_INTERRUPTS();
+
       /* USB OUT EP from host put data into the buffer */
       volatile uint8_t* bufPtr = g_uartRxDmaBuf + g_uartRxDmaBufLast;
 

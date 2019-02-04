@@ -803,35 +803,35 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of controllerTask */
-  osThreadDef(controllerTask, StartControllerTask, osPriorityBelowNormal, 0, 256);
+  osThreadDef(controllerTask, StartControllerTask, osPriorityHigh, 0, 256);
   controllerTaskHandle = osThreadCreate(osThread(controllerTask), NULL);
 
   /* definition and creation of usbToHostTask */
-  osThreadDef(usbToHostTask, StartUsbToHostTask, osPriorityAboveNormal, 0, 128);
+  osThreadDef(usbToHostTask, StartUsbToHostTask, osPriorityNormal, 0, 256);
   usbToHostTaskHandle = osThreadCreate(osThread(usbToHostTask), NULL);
 
   /* definition and creation of usbFromHostTask */
-  osThreadDef(usbFromHostTask, StartUsbFromHostTask, osPriorityAboveNormal, 0, 128);
+  osThreadDef(usbFromHostTask, StartUsbFromHostTask, osPriorityAboveNormal, 0, 256);
   usbFromHostTaskHandle = osThreadCreate(osThread(usbFromHostTask), NULL);
 
   /* definition and creation of interpreterTask */
-  osThreadDef(interpreterTask, StartInterpreterTask, osPriorityNormal, 0, 256);
+  osThreadDef(interpreterTask, StartInterpreterTask, osPriorityBelowNormal, 0, 512);
   interpreterTaskHandle = osThreadCreate(osThread(interpreterTask), NULL);
 
   /* definition and creation of uartTxTask */
-  osThreadDef(uartTxTask, StartUartTxTask, osPriorityAboveNormal, 0, 128);
+  osThreadDef(uartTxTask, StartUartTxTask, osPriorityNormal, 0, 256);
   uartTxTaskHandle = osThreadCreate(osThread(uartTxTask), NULL);
 
   /* definition and creation of uartRxTask */
-  osThreadDef(uartRxTask, StartUartRxTask, osPriorityAboveNormal, 0, 128);
+  osThreadDef(uartRxTask, StartUartRxTask, osPriorityAboveNormal, 0, 256);
   uartRxTaskHandle = osThreadCreate(osThread(uartRxTask), NULL);
 
   /* definition and creation of catTxTask */
-  osThreadDef(catTxTask, StartCatTxTask, osPriorityIdle, 0, 128);
+  osThreadDef(catTxTask, StartCatTxTask, osPriorityNormal, 0, 256);
   catTxTaskHandle = osThreadCreate(osThread(catTxTask), NULL);
 
   /* definition and creation of catRxTask */
-  osThreadDef(catRxTask, StartCatRxTask, osPriorityIdle, 0, 128);
+  osThreadDef(catRxTask, StartCatRxTask, osPriorityAboveNormal, 0, 256);
   catRxTaskHandle = osThreadCreate(osThread(catRxTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -851,7 +851,7 @@ void MX_FREERTOS_Init(void) {
 
   /* definition and creation of controllerInQueue */
 /* what about the sizeof here??? cd native code */
-  osMessageQDef(controllerInQueue, 8, uint32_t);
+  osMessageQDef(controllerInQueue, 32, uint32_t);
   controllerInQueueHandle = osMessageCreate(osMessageQ(controllerInQueue), NULL);
 
   /* definition and creation of controllerOutQueue */
@@ -901,26 +901,26 @@ void MX_FREERTOS_Init(void) {
   vQueueAddToRegistry(catTxQueueHandle,           "Q catTx");
   vQueueAddToRegistry(catRxQueueHandle,           "Q catRx");
 
-  vQueueAddToRegistry(i2c1_BSemHandle,            "Res I2C1 BS");
-  vQueueAddToRegistry(spi1_BSemHandle,            "Res SPI1 BS");
-  vQueueAddToRegistry(cQin_BSemHandle,            "Res cQin BS");
-  vQueueAddToRegistry(cQout_BSemHandle,           "Res cQout BS");
-  vQueueAddToRegistry(usb_BSemHandle,             "Res USB BS");
-  vQueueAddToRegistry(uart_BSemHandle,            "Res UART BS");
-  vQueueAddToRegistry(cat_BSemHandle,             "Res CAT BS");
+  vQueueAddToRegistry(cQin_BSemHandle,            "Rs cQin");
+  vQueueAddToRegistry(cQout_BSemHandle,           "Rs cQout");
+  vQueueAddToRegistry(spi1_BSemHandle,            "Rs SPI1");
+  vQueueAddToRegistry(usb_BSemHandle,             "Rs USB");
+  vQueueAddToRegistry(uart_BSemHandle,            "Rs UART");
+  vQueueAddToRegistry(cat_BSemHandle,             "Rs CAT");
+  vQueueAddToRegistry(i2c1_BSemHandle,            "Rs I2C1");
 
-  vQueueAddToRegistry(c2default_BSemHandle,       "Wk c2dflt BS");
-  vQueueAddToRegistry(c2interpreter_BSemHandle,   "Wk c2intr BS");
-  vQueueAddToRegistry(c2usbFromHost_BSemHandle,   "Wk c2uFrH BS");
-  vQueueAddToRegistry(c2usbToHost_BSemHandle,     "Wk c2uToH BS");
-  vQueueAddToRegistry(c2uartTx_BSemHandle,        "Wk c2uarTx BS");
-  vQueueAddToRegistry(c2uartRx_BSemHandle,        "Wk c2uarRx BS");
-  vQueueAddToRegistry(c2catTx_BSemHandle,         "Wk c2catTx BS");
-  vQueueAddToRegistry(c2catRx_BSemHandle,         "Wk c2catRx BS");
+  vQueueAddToRegistry(c2default_BSemHandle,       "Wk c2dflt");
+  vQueueAddToRegistry(c2interpreter_BSemHandle,   "Wk c2intr");
+  vQueueAddToRegistry(c2usbFromHost_BSemHandle,   "Wk c2uFrH");
+  vQueueAddToRegistry(c2usbToHost_BSemHandle,     "Wk c2uToH");
+  vQueueAddToRegistry(c2uartTx_BSemHandle,        "Wk c2uarT");
+  vQueueAddToRegistry(c2uartRx_BSemHandle,        "Wk c2uarR");
+  vQueueAddToRegistry(c2catTx_BSemHandle,         "Wk c2catT");
+  vQueueAddToRegistry(c2catRx_BSemHandle,         "Wk c2catR");
 
-  vQueueAddToRegistry(usbFromHost_BSemHandle,     "Wk uFrH BS");
-  vQueueAddToRegistry(uartRx_BSemHandle,          "Wk uarRx BS");
-  vQueueAddToRegistry(catRx_BSemHandle,           "Wk catRx BS");
+  vQueueAddToRegistry(usbFromHost_BSemHandle,     "Wk uFrH");
+  vQueueAddToRegistry(uartRx_BSemHandle,          "Wk uarRx");
+  vQueueAddToRegistry(catRx_BSemHandle,           "Wk catRx");
 
   /* USER CODE END RTOS_QUEUES */
 }

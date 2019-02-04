@@ -54,21 +54,49 @@ volatile uint32_t           v_usbUsbFromHostISRBufLen               = 0UL;
 
 
 
+/* IRQ */
+
+void usbFromHostFromIRQ(const uint8_t* buf, uint32_t len)
+{
+  if (buf && len && !v_usbUsbFromHostISRBufLen) {
+    BaseType_t  lMaxLen = sizeof(v_usbUsbFromHostISRBuf) - 1;
+    BaseType_t  lLen = len;
+
+    if (lLen > lMaxLen) {
+      lLen = lMaxLen;
+    }
+    memcpy((void*)v_usbUsbFromHostISRBuf, (const void*)buf, lLen);
+    v_usbUsbFromHostISRBuf[lLen] = 0U;
+    __ISB();
+    v_usbUsbFromHostISRBufLen = lLen;
+  }
+}
+
+
 const uint8_t usbToHost_MaxWaitQueueMs = 100U;
 static void usbToHost(const uint8_t* buf, uint32_t len)
 {
 	if (buf && len) {
 		while (len--) {
-			osMessagePut(usbToHostQueueHandle, *(buf++), usbToHost_MaxWaitQueueMs);
+			osMessagePut(usbToHostQueueHandle, (uint32_t) *(buf++), usbToHost_MaxWaitQueueMs);
 		}
-		osMessagePut(usbToHostQueueHandle, 0, usbToHost_MaxWaitQueueMs);
+		osMessagePut(usbToHostQueueHandle, 0UL, usbToHost_MaxWaitQueueMs);
 	}
 }
 
 const uint16_t usbToHostWait_MaxWaitSemMs = 500U;
 static void usbToHostWait(const uint8_t* buf, uint32_t len)
 {
-  EventBits_t eb = xEventGroupWaitBits(usbToHostEventGroupHandle, USB_TO_HOST_EG__BUF_EMPTY, 0UL, 0, usbToHostWait_MaxWaitSemMs);
+  /* Sanity checks */
+  if (!buf || !len) {
+    return;
+  }
+
+  EventBits_t eb = xEventGroupWaitBits(usbToHostEventGroupHandle,
+      USB_TO_HOST_EG__BUF_EMPTY,
+      USB_TO_HOST_EG__BUF_EMPTY,
+      0,
+      usbToHostWait_MaxWaitSemMs);
   if (eb & USB_TO_HOST_EG__BUF_EMPTY) {
     usbToHost(buf, len);
   }
@@ -76,6 +104,11 @@ static void usbToHostWait(const uint8_t* buf, uint32_t len)
 
 void usbLogLen(const char* str, int len)
 {
+  /* Sanity checks */
+  if (!str || !len) {
+    return;
+  }
+
   if (s_usbUsbToHost_enable) {
     osSemaphoreWait(usb_BSemHandle, 0UL);
     usbToHostWait((uint8_t*)str, len);
@@ -90,58 +123,15 @@ void usbLog(const char* str)
 }
 
 
-void usbFromHostFromIRQ(const uint8_t* buf, uint32_t len)
-{
-	if (buf && len && !v_usbUsbFromHostISRBufLen) {
-		BaseType_t	lMaxLen = sizeof(v_usbUsbFromHostISRBuf) - 1;
-		BaseType_t	lLen = len;
-
-		if (lLen > lMaxLen) {
-			lLen = lMaxLen;
-		}
-		memcpy((void*)v_usbUsbFromHostISRBuf, (const void*)buf, lLen);
-		v_usbUsbFromHostISRBuf[lLen] = 0U;
-		__ISB();
-		v_usbUsbFromHostISRBufLen = lLen;
-	}
-}
-
-
 const char usbClrScrBuf[4] = { 0x0c, 0x0d, 0x0a, 0 };
-
-/* Messaging */
-
-uint32_t usbPullFromOutQueue(uint8_t* msgAry, uint32_t waitMs)
-{
-  uint32_t len = 0UL;
-
-  /* Get semaphore to queue out */
-  osSemaphoreWait(usbFromHost_BSemHandle, waitMs);
-
-  do {
-    osEvent ev = osMessageGet(usbFromHostQueueHandle, waitMs);
-    if (ev.status == osEventMessage) {
-      msgAry[len++] = ev.value.v;
-
-    } else {
-      break;
-    }
-  } while (1);
-
-  /* Return semaphore */
-  osSemaphoreRelease(usbFromHost_BSemHandle);
-
-  return len;
-}
-
 
 /* USB-to-Host */
 
 void usbStartUsbToHostTask(void const * argument)
 {
-  static uint8_t buf[32]  = { 0U };
-  static uint8_t bufCtr   = 0U;
-  uint8_t inChr = 0U;
+  static uint8_t  buf[64] = { 0U };
+  static uint32_t bufCtr  = 0UL;
+  uint8_t         inChr   = 0U;
 
   /* Clear queue */
   while (xQueueReceive(usbToHostQueueHandle, &inChr, 0) == pdPASS) {
@@ -162,44 +152,42 @@ void usbStartUsbToHostTask(void const * argument)
   }
   osDelay(250UL);
 
+
   /* TaskLoop */
   for (;;) {
     BaseType_t xStatus;
 
     do {
       /* Take next character from the queue - at least update each 100ms */
-      inChr = 0;
-      xStatus = xQueueReceive(usbToHostQueueHandle, &inChr, 100 / portTICK_PERIOD_MS);
+      inChr = 0U;
+      xStatus = xQueueReceive(usbToHostQueueHandle, &inChr, 25UL / portTICK_PERIOD_MS);
       if ((pdPASS == xStatus) && inChr) {
         /* Group-Bit for empty queue cleared */
         xEventGroupClearBits(usbToHostEventGroupHandle, USB_TO_HOST_EG__BUF_EMPTY);
 
         buf[bufCtr++] = inChr;
-
-      } else {
-        if (pdPASS != xStatus) {
-          /* Group-Bit for empty queue set */
-          xEventGroupSetBits(usbToHostEventGroupHandle, USB_TO_HOST_EG__BUF_EMPTY);
-        }
       }
 
       /* Flush when 0 or when buffer is full */
       if (!inChr || (bufCtr >= (sizeof(buf) - 1))) {
-        uint32_t retryCnt;
+        uint32_t retryCnt = 0UL;
 
         /* Do not send empty buffer */
         if (!bufCtr) {
           break;
         }
 
-        buf[bufCtr] = 0;
-        for (retryCnt = 25; retryCnt; --retryCnt) {
+        buf[bufCtr] = 0U;
+        for (retryCnt = 25UL; retryCnt; --retryCnt) {
           /* Transmit to USB host */
           uint8_t ucRetVal = CDC_Transmit_FS(buf, bufCtr);
           if (USBD_BUSY != ucRetVal) {
+            /* Let the backend transport the DCD data */
+            osDelay(5UL);
+
             /* Data accepted for transmission */
-            bufCtr = 0;
-            buf[0] = 0;
+            bufCtr = 0UL;
+            buf[0] = 0U;
 
             /* Group-Bit for empty queue set */
             xEventGroupSetBits(usbToHostEventGroupHandle, USB_TO_HOST_EG__BUF_EMPTY);
@@ -215,7 +203,7 @@ void usbStartUsbToHostTask(void const * argument)
 
         if (!retryCnt) {
           /* USB EP still busy - drop whole buffer content */
-          bufCtr = 0;
+          bufCtr = 0UL;
         }
       }
     } while (!xQueueIsQueueEmptyFromISR(usbToHostQueueHandle));
@@ -322,24 +310,63 @@ void usbUsbToHostTaskLoop(void)
 
 /* USB-from-Host */
 
+uint32_t usbPullFromOutQueue(uint8_t* msgAry, uint32_t waitMs)
+{
+  uint32_t len = 0UL;
+
+  /* Get semaphore to queue out */
+  osSemaphoreWait(usbFromHost_BSemHandle, waitMs);
+
+  do {
+    osEvent ev = osMessageGet(usbFromHostQueueHandle, waitMs);
+    if (ev.status == osEventMessage) {
+      msgAry[len++] = ev.value.v;
+
+    } else if (len) {
+      if (!msgAry[len - 1]) {
+        /* Strip off last NULL character */
+        --len;
+      }
+      break;
+
+    } else {
+      break;
+    }
+  } while (1);
+
+  /* Return semaphore */
+  osSemaphoreRelease(usbFromHost_BSemHandle);
+
+  return len;
+}
+
+
 void usbStartUsbFromHostTask(void const * argument)
 {
   const uint8_t nulBuf[1]   = { 0U };
-  const uint8_t maxWaitMs   = 25U;
 
   /* TaskLoop */
   for (;;) {
     if (v_usbUsbFromHostISRBufLen) {
-      /* USB OUT EP from host put data into the buffer */
-      volatile uint8_t* bufPtr = v_usbUsbFromHostISRBuf;
-      for (BaseType_t idx = 0; idx < v_usbUsbFromHostISRBufLen; ++idx, ++bufPtr) {
-        xQueueSendToBack(usbFromHostQueueHandle, (uint8_t*)bufPtr, maxWaitMs);
-      }
-      xQueueSendToBack(usbFromHostQueueHandle, nulBuf, maxWaitMs);
+      BaseType_t higherPriorityTaskWoken = pdFALSE;
 
-      memset((char*) v_usbUsbFromHostISRBufLen, 0, sizeof(v_usbUsbFromHostISRBufLen));
-      __DMB();
-      v_usbUsbFromHostISRBufLen = 0UL;
+      /* Interrupt disabled section */
+      {
+        taskDISABLE_INTERRUPTS();
+
+        /* USB OUT EP from host put data into the buffer */
+        volatile uint8_t* bufPtr = v_usbUsbFromHostISRBuf;
+        for (uint32_t idx = 0UL; idx < v_usbUsbFromHostISRBufLen; ++idx, ++bufPtr) {
+          xQueueSendToBackFromISR(usbFromHostQueueHandle, (uint8_t*)bufPtr, &higherPriorityTaskWoken);
+        }
+        xQueueSendToBackFromISR(usbFromHostQueueHandle, nulBuf, &higherPriorityTaskWoken);
+
+        v_usbUsbFromHostISRBufLen = 0UL;
+        __DMB();
+        memset((char*) v_usbUsbFromHostISRBuf, 0, sizeof(v_usbUsbFromHostISRBuf));
+
+        taskENABLE_INTERRUPTS();
+      }
 
     } else {
       /* Delay for the next attempt */

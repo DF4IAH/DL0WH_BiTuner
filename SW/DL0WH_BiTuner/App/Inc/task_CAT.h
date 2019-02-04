@@ -43,6 +43,8 @@ void HAL_CAT_TxCpltCallback(UART_HandleTypeDef *UartHandle);
 void HAL_CAT_RxCpltCallback(UART_HandleTypeDef *UartHandle);
 void HAL_CAT_ErrorCallback(UART_HandleTypeDef *UartHandle);
 
+uint32_t catRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs);
+
 void catTxPutterTask(void const * argument);
 void catTxTaskInit(void);
 void catTxTaskLoop(void);
