@@ -397,7 +397,7 @@ void SystemClock_Config(void)
     */
   HAL_PWR_EnableBkUpAccess();
 
-  __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_HIGH);
+  __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_MEDIUMLOW);
 
     /**Initializes the CPU, AHB and APB busses clocks 
     */
@@ -442,8 +442,6 @@ void SystemClock_Config(void)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
-
-  HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_LSE, RCC_MCODIV_1);
 
     /**Configure the main internal regulator output voltage 
     */
