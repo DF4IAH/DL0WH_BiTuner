@@ -94,6 +94,7 @@ typedef enum ControllerOptiUpDn_ENUM {
 typedef struct ControllerMods {
 
   uint8_t                             rtos_Default;
+  uint8_t                             Interpreter;
   uint8_t                             network_USBtoHost;
   uint8_t                             network_USBfromHost;
   uint8_t                             network_UartTx;

@@ -38,6 +38,7 @@ extern osSemaphoreId        cQin_BSemHandle;
 extern osSemaphoreId        cQout_BSemHandle;
 
 extern osSemaphoreId        c2default_BSemHandle;
+extern osSemaphoreId        c2interpreter_BSemHandle;
 extern osSemaphoreId        c2usbToHost_BSemHandle;
 extern osSemaphoreId        c2usbFromHost_BSemHandle;
 extern osSemaphoreId        c2uartTx_BSemHandle;
@@ -135,9 +136,9 @@ static DefaultMcuClocking_t s_controller_McuClocking          = DefaultMcuClocki
 /* Controller's welcome */
 
 const char controllerGreetMsg01[] = "\r\n";
-const char controllerGreetMsg02[] = "+===========================================+\r\n";
-const char controllerGreetMsg03[] = "*                                           *\r\n";
-const char controllerGreetMsg04[] = "*  DL0WH BiTuner - ARM powered by STM32L476 *\r\n";
+const char controllerGreetMsg02[] = "+============================================+\r\n";
+const char controllerGreetMsg03[] = "*                                            *\r\n";
+const char controllerGreetMsg04[] = "*  DL0WH BiTuner - ARM powered by STM32L476  *\r\n";
 
 const char controllerGreetMsg11[] =
     "\tDL0WH BiTuner version:\r\n"
@@ -1559,6 +1560,7 @@ static void controllerInit(void)
   /* Prepare all semaphores */
   {
     osSemaphoreWait(c2default_BSemHandle,     osWaitForever);
+    osSemaphoreWait(c2interpreter_BSemHandle, osWaitForever);
     osSemaphoreWait(c2usbToHost_BSemHandle,   osWaitForever);
     osSemaphoreWait(c2usbFromHost_BSemHandle, osWaitForever);
     osSemaphoreWait(c2uartTx_BSemHandle,      osWaitForever);
@@ -1582,12 +1584,13 @@ static void controllerInit(void)
     s_controller_doCycle                                      = 1U;
 
     s_mod_start.rtos_Default                                  = 1U;
+    s_mod_start.Interpreter                                   = 0U;
     s_mod_start.network_USBtoHost                             = 1U;
-    s_mod_start.network_USBfromHost                           = 1U;
-    s_mod_start.network_UartTx                                = 1U;
-    s_mod_start.network_UartRx                                = 1U;
-    s_mod_start.network_CatTx                                 = 1U;
-    s_mod_start.network_CatRx                                 = 1U;
+    s_mod_start.network_USBfromHost                           = 0U;
+    s_mod_start.network_UartTx                                = 0U;
+    s_mod_start.network_UartRx                                = 0U;
+    s_mod_start.network_CatTx                                 = 0U;
+    s_mod_start.network_CatRx                                 = 0U;
   }
 
   /* Signaling controller is up and running */
@@ -1603,6 +1606,14 @@ static void controllerInit(void)
       const uint32_t msgLen = controllerCalcMsgInit(msgAry,
           Destinations__Rtos_Default,
           0UL);
+      controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
+    }
+
+    /* Interpreter */
+    if (s_mod_start.Interpreter) {
+      const uint32_t msgLen = controllerCalcMsgInit(msgAry,
+          Destinations__Interpreter,
+          25UL);
       controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
     }
 

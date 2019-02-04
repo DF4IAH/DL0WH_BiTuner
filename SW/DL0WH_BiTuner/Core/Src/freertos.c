@@ -266,7 +266,7 @@ static void rtosDefaultCheckSpiDrvError(uint8_t variant)
 static void rtosDefaultSpiRelays(uint64_t relaySettings)
 {
   const uint16_t relayC   = 0xffffU &  relaySettings;
-    uint16_t relayL   = 0xffffU & (relaySettings >> 16);
+  const uint16_t relayL   = 0xffffU & (relaySettings >> 16);
   const uint16_t relayExt = 0xffffU & (relaySettings >> 32);
 
   /* GPIO Ports Clock Enable */
@@ -314,7 +314,7 @@ static void rtosDefaultSpiRelays(uint64_t relaySettings)
   }
 
   /* Relays for L */
-  { relayL = 0xffffU;
+  {
     /* Open Load Current Enable */
     spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
 
@@ -892,26 +892,36 @@ void MX_FREERTOS_Init(void) {
   catEventGroupHandle = xEventGroupCreate();
 
   /* add to registry */
-  vQueueAddToRegistry(i2c1_BSemHandle,          "Resc I2C1 BSem");
-  vQueueAddToRegistry(spi1_BSemHandle,          "Resc SPI1 BSem");
-  vQueueAddToRegistry(cQin_BSemHandle,          "Resc cQin BSem");
-  vQueueAddToRegistry(cQout_BSemHandle,         "Resc cQout BSem");
-  vQueueAddToRegistry(usb_BSemHandle,           "Resc USB BSem");
-  vQueueAddToRegistry(uart_BSemHandle,          "Resc UART BSem");
-  vQueueAddToRegistry(cat_BSemHandle,           "Resc CAT BSem");
+  vQueueAddToRegistry(controllerInQueueHandle,    "Q ctrlIn");
+  vQueueAddToRegistry(controllerOutQueueHandle,   "Q ctrlOut");
+  vQueueAddToRegistry(usbToHostQueueHandle,       "Q uToH");
+  vQueueAddToRegistry(usbFromHostQueueHandle,     "Q uFrH");
+  vQueueAddToRegistry(uartTxQueueHandle,          "Q uarTx");
+  vQueueAddToRegistry(uartRxQueueHandle,          "Q uarRx");
+  vQueueAddToRegistry(catTxQueueHandle,           "Q catTx");
+  vQueueAddToRegistry(catRxQueueHandle,           "Q catRx");
 
-  vQueueAddToRegistry(c2default_BSemHandle,     "Wake c2default BSem");
-  vQueueAddToRegistry(c2interpreter_BSemHandle, "Wake c2interpreter BSem");
-  vQueueAddToRegistry(c2usbFromHost_BSemHandle, "Wake c2usbFromHost BSem");
-  vQueueAddToRegistry(c2usbToHost_BSemHandle,   "Wake c2usbToHost BSem");
-  vQueueAddToRegistry(c2uartTx_BSemHandle,      "Wake c2uartTx BSem");
-  vQueueAddToRegistry(c2uartRx_BSemHandle,      "Wake c2uartRx BSem");
-  vQueueAddToRegistry(c2catTx_BSemHandle,       "Wake c2catTx BSem");
-  vQueueAddToRegistry(c2catRx_BSemHandle,       "Wake c2catRx BSem");
+  vQueueAddToRegistry(i2c1_BSemHandle,            "Res I2C1 BS");
+  vQueueAddToRegistry(spi1_BSemHandle,            "Res SPI1 BS");
+  vQueueAddToRegistry(cQin_BSemHandle,            "Res cQin BS");
+  vQueueAddToRegistry(cQout_BSemHandle,           "Res cQout BS");
+  vQueueAddToRegistry(usb_BSemHandle,             "Res USB BS");
+  vQueueAddToRegistry(uart_BSemHandle,            "Res UART BS");
+  vQueueAddToRegistry(cat_BSemHandle,             "Res CAT BS");
 
-  vQueueAddToRegistry(usbFromHost_BSemHandle,   "Wake usbFromHost BSem");
-  vQueueAddToRegistry(uartRx_BSemHandle,        "Wake uartRx BSem");
-  vQueueAddToRegistry(catRx_BSemHandle,         "Wake catRx BSem");
+  vQueueAddToRegistry(c2default_BSemHandle,       "Wk c2dflt BS");
+  vQueueAddToRegistry(c2interpreter_BSemHandle,   "Wk c2intr BS");
+  vQueueAddToRegistry(c2usbFromHost_BSemHandle,   "Wk c2uFrH BS");
+  vQueueAddToRegistry(c2usbToHost_BSemHandle,     "Wk c2uToH BS");
+  vQueueAddToRegistry(c2uartTx_BSemHandle,        "Wk c2uarTx BS");
+  vQueueAddToRegistry(c2uartRx_BSemHandle,        "Wk c2uarRx BS");
+  vQueueAddToRegistry(c2catTx_BSemHandle,         "Wk c2catTx BS");
+  vQueueAddToRegistry(c2catRx_BSemHandle,         "Wk c2catRx BS");
+
+  vQueueAddToRegistry(usbFromHost_BSemHandle,     "Wk uFrH BS");
+  vQueueAddToRegistry(uartRx_BSemHandle,          "Wk uarRx BS");
+  vQueueAddToRegistry(catRx_BSemHandle,           "Wk catRx BS");
+
   /* USER CODE END RTOS_QUEUES */
 }
 
@@ -994,7 +1004,6 @@ void StartControllerTask(void const * argument)
 void StartUsbToHostTask(void const * argument)
 {
   /* USER CODE BEGIN StartUsbToHostTask */
-  for (;;) { osDelay(1000); } // TODO: remove me!
   usbUsbToHostTaskInit();
 
   /* Infinite loop */
@@ -1014,7 +1023,6 @@ void StartUsbToHostTask(void const * argument)
 void StartUsbFromHostTask(void const * argument)
 {
   /* USER CODE BEGIN StartUsbFromHostTask */
-  for (;;) { osDelay(1000); } // TODO: remove me!
   usbUsbFromHostTaskInit();
 
   /* Infinite loop */
@@ -1034,7 +1042,6 @@ void StartUsbFromHostTask(void const * argument)
 void StartInterpreterTask(void const * argument)
 {
   /* USER CODE BEGIN StartInterpreterTask */
-  for (;;) { osDelay(1000); } // TODO: remove me!
   interpreterTaskInit();
 
   /* Infinite loop */
@@ -1054,7 +1061,6 @@ void StartInterpreterTask(void const * argument)
 void StartUartTxTask(void const * argument)
 {
   /* USER CODE BEGIN StartUartTxTask */
-  for (;;) { osDelay(1000); } // TODO: remove me!
   uartTxTaskInit();
 
   /* Infinite loop */
@@ -1074,7 +1080,6 @@ void StartUartTxTask(void const * argument)
 void StartUartRxTask(void const * argument)
 {
   /* USER CODE BEGIN StartUartRxTask */
-  for (;;) { osDelay(1000); } // TODO: remove me!
   uartRxTaskInit();
 
   /* Infinite loop */
@@ -1094,7 +1099,6 @@ void StartUartRxTask(void const * argument)
 void StartCatTxTask(void const * argument)
 {
   /* USER CODE BEGIN StartCatTxTask */
-  for (;;) { osDelay(1000); } // TODO: remove me!
   catTxTaskInit();
 
   /* Infinite loop */
@@ -1114,7 +1118,6 @@ void StartCatTxTask(void const * argument)
 void StartCatRxTask(void const * argument)
 {
   /* USER CODE BEGIN StartCatRxTask */
-  for (;;) { osDelay(1000); } // TODO: remove me!
   catRxTaskInit();
 
   /* Infinite loop */

@@ -487,7 +487,7 @@ void interpreterTaskLoop(void)
 
   /* Wait for door bell and hand-over controller out queue */
   {
-    osSemaphoreWait(c2interpreter_BSemHandle, 100UL);
+    osSemaphoreWait(c2interpreter_BSemHandle, osWaitForever);
     msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Interpreter, 1UL);                   // Special case of callbacks need to limit blocking time
   }
 

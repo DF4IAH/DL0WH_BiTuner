@@ -148,30 +148,19 @@ void usbStartUsbToHostTask(void const * argument)
   }
   xEventGroupSetBits(usbToHostEventGroupHandle, USB_TO_HOST_EG__BUF_EMPTY);
 
-  osDelay(3500UL);
-
   /* Init connection with dummy data */
-  for (uint8_t cnt = 30U; cnt; cnt--) {
-    CDC_Transmit_FS((uint8_t*) usbClrScrBuf, 3);
-    osDelay(10UL);
+  const uint8_t MaxCnt = 30U;
+  for (uint8_t cnt = MaxCnt; cnt; cnt--) {
+    uint8_t res = CDC_Transmit_FS((uint8_t*) usbClrScrBuf, 3);
+    if (res == USBD_BUSY) {
+      cnt = MaxCnt;
+      osDelay(500UL);
+
+    } else {
+      osDelay(10UL);
+    }
   }
   osDelay(250UL);
-
-  /* To be moved to the controller.c module */
-  {
-    const char usb_Greeting_T01[]   = "+===============+\r\n";
-    const char usb_Greeting_Name[]  = "* DL0WH BiTuner *\r\n";
-    const char usb_Greeting_CRLF[]  = "\r\n";
-
-    CDC_Transmit_FS((uint8_t*) usb_Greeting_T01, strlen(usb_Greeting_T01));
-    osDelay(10UL);
-    CDC_Transmit_FS((uint8_t*) usb_Greeting_Name, strlen(usb_Greeting_Name));
-    osDelay(10UL);
-    CDC_Transmit_FS((uint8_t*) usb_Greeting_T01, strlen(usb_Greeting_T01));
-    osDelay(10UL);
-    CDC_Transmit_FS((uint8_t*) usb_Greeting_CRLF, 2);
-    osDelay(500UL);
-  }
 
   /* TaskLoop */
   for (;;) {
