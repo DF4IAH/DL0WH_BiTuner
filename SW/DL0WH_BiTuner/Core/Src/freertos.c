@@ -815,7 +815,7 @@ void MX_FREERTOS_Init(void) {
   usbFromHostTaskHandle = osThreadCreate(osThread(usbFromHostTask), NULL);
 
   /* definition and creation of interpreterTask */
-  osThreadDef(interpreterTask, StartInterpreterTask, osPriorityBelowNormal, 0, 512);
+  osThreadDef(interpreterTask, StartInterpreterTask, osPriorityNormal, 0, 512);
   interpreterTaskHandle = osThreadCreate(osThread(interpreterTask), NULL);
 
   /* definition and creation of uartTxTask */
@@ -851,7 +851,7 @@ void MX_FREERTOS_Init(void) {
 
   /* definition and creation of controllerInQueue */
 /* what about the sizeof here??? cd native code */
-  osMessageQDef(controllerInQueue, 32, uint32_t);
+  osMessageQDef(controllerInQueue, 64, uint32_t);
   controllerInQueueHandle = osMessageCreate(osMessageQ(controllerInQueue), NULL);
 
   /* definition and creation of controllerOutQueue */
@@ -953,21 +953,20 @@ void StartDefaultTask(void const * argument)
   /* Give other tasks time to do the same */
   osDelay(10UL);
 
+
   /* defaultTaskLoop() section */
   do {
     uint32_t msgLen                       = 0UL;
     uint32_t msgAry[CONTROLLER_MSG_Q_LEN];
 
     /* Wait for door bell and hand-over controller out queue */
-    {
-      osSemaphoreWait(c2default_BSemHandle, osWaitForever);
-      msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Rtos_Default, 1UL);                // Special case of callbacks need to limit blocking time
-    }
+    osSemaphoreWait(c2default_BSemHandle, 250UL);
 
-    /* Decode and execute the commands when a message exists
-     * (in case of callbacks the loop catches its wakeup semaphore
-     * before ctrlQout is released results to request on an empty queue) */
-    if (msgLen) {
+    /* Work the next complete messages */
+    while (0UL < (msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Rtos_Default, 1UL))) {         // Special case of callbacks need to limit blocking time) {
+      /* Decode and execute the commands when a message exists
+       * (in case of callbacks the loop catches its wakeup semaphore
+       * before ctrlQout is released results to request on an empty queue) */
       rtosDefaultMsgProcess(msgLen, msgAry);
     }
   } while (1);

@@ -266,7 +266,7 @@ static void catTxMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
       /* Return Init confirmation */
       uint32_t cmdBack[1];
       cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_CatTx, 0U, MsgCatTx__InitDone);
-      controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, osWaitForever);
+      controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
     }
     break;
 
@@ -414,7 +414,7 @@ static void catRxMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
       /* Return Init confirmation */
       uint32_t cmdBack[1];
       cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_CatRx, 0U, MsgCatRx__InitDone);
-      controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, osWaitForever);
+      controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
     }
     break;
 

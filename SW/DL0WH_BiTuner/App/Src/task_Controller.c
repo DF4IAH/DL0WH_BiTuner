@@ -350,18 +350,18 @@ uint32_t controllerMsgPushToInQueue(uint32_t msgLen, uint32_t* msgAry, uint32_t 
   }
 
   /* Get semaphore to queue in */
-  osSemaphoreWait(cQin_BSemHandle, waitMs);
+  if (osOK == osSemaphoreWait(cQin_BSemHandle, waitMs)) {
+    /* Push to the queue */
+    while (idx < msgLen) {
+      osMessagePut(controllerInQueueHandle, msgAry[idx++], 1UL);
+    }
 
-  /* Push to the queue */
-  while (idx < msgLen) {
-    osMessagePut(controllerInQueueHandle, msgAry[idx++], osWaitForever);
+    /* Return semaphore */
+    osSemaphoreRelease(cQin_BSemHandle);
+
+    /* Door bell */
+    xEventGroupSetBits(globalEventGroupHandle, EG_GLOBAL__Controller_QUEUE_IN);
   }
-
-  /* Return semaphore */
-  osSemaphoreRelease(cQin_BSemHandle);
-
-  /* Door bell */
-  xEventGroupSetBits(globalEventGroupHandle, EG_GLOBAL__Controller_QUEUE_IN);
 
   return idx;
 }
@@ -375,62 +375,80 @@ void controllerMsgPushToOutQueue(uint32_t msgLen, uint32_t* msgAry, uint32_t wai
     return;
   }
 
-  /* Push to the queue */
-  uint8_t idx = 0U;
-  while (idx < msgLen) {
-    osMessagePut(controllerOutQueueHandle, msgAry[idx++], osWaitForever);
-  }
-
-  /* Ring bell at the destination */
+  /* Find active semaphores */
   switch ((ControllerMsgDestinations_t) (msgAry[0] >> 24)) {
   case Destinations__Rtos_Default:
-    semId = c2default_BSemHandle;
+    if (s_mod_start.rtos_Default) {
+      semId = c2default_BSemHandle;
+    }
     break;
 
   case Destinations__Interpreter:
-    semId = c2interpreter_BSemHandle;
+    if (s_mod_start.Interpreter) {
+      semId = c2interpreter_BSemHandle;
+    }
     break;
 
   case Destinations__Network_USBtoHost:
-    semId = c2usbToHost_BSemHandle;
+    if (s_mod_start.network_USBtoHost) {
+      semId = c2usbToHost_BSemHandle;
+    }
     break;
 
   case Destinations__Network_USBfromHost:
-    semId = c2usbFromHost_BSemHandle;
+    if (s_mod_start.network_USBfromHost) {
+      semId = c2usbFromHost_BSemHandle;
+    }
     break;
 
   case Destinations__Network_UartTx:
-    semId = c2uartTx_BSemHandle;
+    if (s_mod_start.network_UartTx) {
+      semId = c2uartTx_BSemHandle;
+    }
     break;
 
   case Destinations__Network_UartRx:
-    semId = c2uartRx_BSemHandle;
+    if (s_mod_start.network_UartRx) {
+      semId = c2uartRx_BSemHandle;
+    }
     break;
 
   case Destinations__Network_CatTx:
-    semId = c2catTx_BSemHandle;
+    if (s_mod_start.network_CatTx) {
+      semId = c2catTx_BSemHandle;
+    }
     break;
 
   case Destinations__Network_CatRx:
-    semId = c2catRx_BSemHandle;
+    if (s_mod_start.network_CatRx) {
+      semId = c2catRx_BSemHandle;
+    }
     break;
 
   default:
     semId = 0;
   }  // switch ()
 
-  /* Wakeup of module */
+  /* Message only for active modules/semaphores */
   if (semId) {
+    /* Push to the queue */
+    uint8_t idx = 0U;
+    while (idx < msgLen) {
+      osMessagePut(controllerOutQueueHandle, msgAry[idx++], osWaitForever);
+    }
+
+    /* Wakeup of module */
     /* Grant blocked module to request the queue */
     osSemaphoreRelease(semId);                                                                        // Give semaphore token to launch module
+
+    /* Big Ben for the public */
+    xEventGroupSetBits(  globalEventGroupHandle, EG_GLOBAL__Controller_QUEUE_OUT);
+    osDelay(5UL);
+    xEventGroupClearBits(globalEventGroupHandle, EG_GLOBAL__Controller_QUEUE_OUT);
+
+    /* Hand over ctrlQout */
+    osSemaphoreRelease(cQout_BSemHandle);
   }
-
-  /* Big Ben for the public */
-  xEventGroupSetBits(  globalEventGroupHandle, EG_GLOBAL__Controller_QUEUE_OUT);
-  xEventGroupClearBits(globalEventGroupHandle, EG_GLOBAL__Controller_QUEUE_OUT);
-
-  /* Hand over ctrlQout */
-  osSemaphoreRelease(cQout_BSemHandle);
 }
 
 static uint32_t controllerMsgPullFromInQueue(void)
@@ -440,7 +458,7 @@ static uint32_t controllerMsgPullFromInQueue(void)
 
   /* Process each message token */
   do {
-    const osEvent evt = osMessageGet(controllerInQueueHandle, 25UL);
+    const osEvent evt = osMessageGet(controllerInQueueHandle, 1UL);
     if (osEventMessage == evt.status) {
       const uint32_t token = evt.value.v;
 
@@ -526,10 +544,13 @@ uint32_t controllerMsgPullFromOutQueue(uint32_t* msgAry, ControllerMsgDestinatio
         for (uint8_t idx = 0; idx < cnt; idx++) {
           (void) osMessageGet(controllerOutQueueHandle, 1UL);
         }
-        break;
       }
+
+    } else {
+      /* No more messages available */
+      break;
     }
-  } while (1);
+  } while (true);
 
   /* Return semaphore */
   osSemaphoreRelease(cQout_BSemHandle);
@@ -732,6 +753,7 @@ static void controllerFSM_StartAdc(void)
 static _Bool controllerFSM_CheckPower(void)
 {
   if ((Controller_AutoSWR_P_mW_Min > s_controller_adc_fwd_mw) || (s_controller_adc_fwd_mw > Controller_AutoSWR_P_mW_Max)) {
+#if 0
     /* Logging */
     {
       char      buf[128];
@@ -745,6 +767,7 @@ static _Bool controllerFSM_CheckPower(void)
                               (uint16_t)Controller_AutoSWR_P_mW_Min, (uint16_t)Controller_AutoSWR_P_mW_Max);
       interpreterConsolePush(buf, len);
     }
+#endif
 
     /* Reset SWR start timer */
     s_controller_swr_tmr = osKernelSysTick();
@@ -1448,7 +1471,7 @@ static void controllerCyclicTimerEvent(void)
     msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc04_MCU_ADC2_REV);
 
     /* Push to queue */
-    controllerMsgPushToInQueue(msgLen, msgAry, 1UL);
+    controllerMsgPushToOutQueue(msgLen, msgAry, 10UL);
   }
 
   /* Handle serial CAT interface packets */
@@ -1503,7 +1526,7 @@ static void controllerMsgProcessor(void)
     }
 
     /* Push message out */
-    controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
+    controllerMsgPushToOutQueue(msgLen, msgAry, 10UL);
 
   } else {
     /* Message is for us */
@@ -1742,7 +1765,8 @@ static void controllerInit(void)
   /* Enable service cycle */
   if (s_controller_doCycle) {
     /* Latching relays do need 30ms to change state */
-    controllerCyclicStart(30UL);
+    //controllerCyclicStart(30UL);  // TODO: enable me!
+    controllerCyclicStart(500UL);  // TODO: remove me!
 
   } else {
     controllerCyclicStop();
@@ -1772,12 +1796,9 @@ void controllerTaskLoop(void)
       EG_GLOBAL__Controller_QUEUE_IN,
       0, 250UL);
 
-  /* Get next complete messages */
-  if (osOK != controllerMsgPullFromInQueue()) {
-    /* Message Queue corrupt */
-    Error_Handler();
+  /* Work the next complete messages */
+  while (osOK == controllerMsgPullFromInQueue()) {
+    /* Process message */
+    controllerMsgProcessor();
   }
-
-  /* Process message */
-  controllerMsgProcessor();
 }
