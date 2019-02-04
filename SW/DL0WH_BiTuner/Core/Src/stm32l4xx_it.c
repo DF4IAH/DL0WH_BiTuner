@@ -42,9 +42,16 @@
 
 /* External variables --------------------------------------------------------*/
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
+extern DMA_HandleTypeDef hdma_adc1;
 extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
 extern ADC_HandleTypeDef hadc3;
+extern DMA_HandleTypeDef hdma_i2c1_rx;
+extern DMA_HandleTypeDef hdma_i2c1_tx;
+extern DMA_HandleTypeDef hdma_lpuart_rx;
+extern DMA_HandleTypeDef hdma_lpuart_tx;
+extern DMA_HandleTypeDef hdma_uart4_rx;
+extern DMA_HandleTypeDef hdma_uart4_tx;
 extern UART_HandleTypeDef hlpuart1;
 extern UART_HandleTypeDef huart4;
 extern DMA_HandleTypeDef hdma_spi1_tx;
@@ -178,6 +185,20 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+* @brief This function handles DMA1 channel1 global interrupt.
+*/
+void DMA1_Channel1_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel1_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_adc1);
+  /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel1_IRQn 1 */
+}
+
+/**
 * @brief This function handles DMA1 channel2 global interrupt.
 */
 void DMA1_Channel2_IRQHandler(void)
@@ -203,6 +224,34 @@ void DMA1_Channel3_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Channel3_IRQn 1 */
 
   /* USER CODE END DMA1_Channel3_IRQn 1 */
+}
+
+/**
+* @brief This function handles DMA1 channel6 global interrupt.
+*/
+void DMA1_Channel6_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel6_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel6_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_i2c1_tx);
+  /* USER CODE BEGIN DMA1_Channel6_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel6_IRQn 1 */
+}
+
+/**
+* @brief This function handles DMA1 channel7 global interrupt.
+*/
+void DMA1_Channel7_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel7_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel7_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_i2c1_rx);
+  /* USER CODE BEGIN DMA1_Channel7_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel7_IRQn 1 */
 }
 
 /**
@@ -291,6 +340,34 @@ void UART4_IRQHandler(void)
 }
 
 /**
+* @brief This function handles DMA2 channel3 global interrupt.
+*/
+void DMA2_Channel3_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Channel3_IRQn 0 */
+
+  /* USER CODE END DMA2_Channel3_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_uart4_tx);
+  /* USER CODE BEGIN DMA2_Channel3_IRQn 1 */
+
+  /* USER CODE END DMA2_Channel3_IRQn 1 */
+}
+
+/**
+* @brief This function handles DMA2 channel5 global interrupt.
+*/
+void DMA2_Channel5_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Channel5_IRQn 0 */
+
+  /* USER CODE END DMA2_Channel5_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_uart4_rx);
+  /* USER CODE BEGIN DMA2_Channel5_IRQn 1 */
+
+  /* USER CODE END DMA2_Channel5_IRQn 1 */
+}
+
+/**
 * @brief This function handles USB OTG FS global interrupt.
 */
 void OTG_FS_IRQHandler(void)
@@ -302,6 +379,34 @@ void OTG_FS_IRQHandler(void)
   /* USER CODE BEGIN OTG_FS_IRQn 1 */
 
   /* USER CODE END OTG_FS_IRQn 1 */
+}
+
+/**
+* @brief This function handles DMA2 channel6 global interrupt.
+*/
+void DMA2_Channel6_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Channel6_IRQn 0 */
+
+  /* USER CODE END DMA2_Channel6_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_lpuart_tx);
+  /* USER CODE BEGIN DMA2_Channel6_IRQn 1 */
+
+  /* USER CODE END DMA2_Channel6_IRQn 1 */
+}
+
+/**
+* @brief This function handles DMA2 channel7 global interrupt.
+*/
+void DMA2_Channel7_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Channel7_IRQn 0 */
+
+  /* USER CODE END DMA2_Channel7_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_lpuart_rx);
+  /* USER CODE BEGIN DMA2_Channel7_IRQn 1 */
+
+  /* USER CODE END DMA2_Channel7_IRQn 1 */
 }
 
 /**

@@ -54,15 +54,22 @@ void BusFault_Handler(void);
 void UsageFault_Handler(void);
 void DebugMon_Handler(void);
 void SysTick_Handler(void);
+void DMA1_Channel1_IRQHandler(void);
 void DMA1_Channel2_IRQHandler(void);
 void DMA1_Channel3_IRQHandler(void);
+void DMA1_Channel6_IRQHandler(void);
+void DMA1_Channel7_IRQHandler(void);
 void ADC1_2_IRQHandler(void);
 void TIM2_IRQHandler(void);
 void SPI1_IRQHandler(void);
 void ADC3_IRQHandler(void);
 void TIM5_IRQHandler(void);
 void UART4_IRQHandler(void);
+void DMA2_Channel3_IRQHandler(void);
+void DMA2_Channel5_IRQHandler(void);
 void OTG_FS_IRQHandler(void);
+void DMA2_Channel6_IRQHandler(void);
+void DMA2_Channel7_IRQHandler(void);
 void LPUART1_IRQHandler(void);
 
 #ifdef __cplusplus

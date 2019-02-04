@@ -443,6 +443,8 @@ void SystemClock_Config(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
+  HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_LSE, RCC_MCODIV_1);
+
     /**Configure the main internal regulator output voltage 
     */
   if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE2) != HAL_OK)
