@@ -52,8 +52,8 @@ extern float                g_adc_fwd_mv;
 extern float                g_adc_swr;
 
 
-static const float Controller_L0_nH                           = 50.0f;
-static const float Controller_Ls_nH[8]                        = {
+#define Controller_L0_nH                                      50.0f
+volatile const float Controller_Ls_nH[8]                      = {
     187.5f,
     375.0f,
     750.0f,
@@ -64,8 +64,8 @@ static const float Controller_Ls_nH[8]                        = {
     24.0e+3f
 };
 
-static const float Controller_C0_pF                           = 25.0f;
-static float Controller_Cp_pF[8]                              = {
+#define Controller_C0_pF                                      25.0f
+volatile const float Controller_Cp_pF[8]                      = {
     25.0f,
     //33.0f,
     50.0f,
@@ -103,8 +103,8 @@ static uint8_t                s_controller_opti_CVHpongCtr      = 0U;
 static uint8_t                s_controller_opti_LCpongCtr       = 0U;
 static uint8_t                s_controller_opti_L_relays        = 0U;
 static uint8_t                s_controller_opti_C_relays        = 0U;
-static float                  s_controller_opti_L               = 0U;
-static float                  s_controller_opti_C               = 0U;
+static float                  s_controller_opti_L               = Controller_L0_nH;
+static float                  s_controller_opti_C               = Controller_C0_pF;
 static float                  s_controller_opti_swr_1st         = 0.0f;
 static float                  s_controller_opti_swr_1st_L       = 0.0f;
 static float                  s_controller_opti_swr_1st_C       = 0.0f;
@@ -1407,14 +1407,14 @@ static void controllerPrintLC(void)
   {
     const uint8_t relL = controllerCalcMatcherNH2L(valL);
     const uint8_t relC = controllerCalcMatcherPF2C(valC);
-    uint32_t relays = 0UL;
     char buf[4] = { ' ', ' ', '?' };
+    uint32_t relays;
 
-    relays |= ((uint32_t)relC <<  0);
+    relays  = ((uint32_t)relC <<  0);
     relays |= ((uint32_t)relL <<  8);
-    relays |= s_controller_FSM_optiCVH == ControllerOptiCVH__CV ?  0x100UL : 0x200UL;
+    relays |= configLC == ControllerOptiCVH__CV ?  0x10000UL : 0x20000UL;
 
-    const char* bufStr = "\r\n## C1 C2 C3 C4 C5 C6 C7 C8  L1 L2 L3 L4 L5 L6 L7 L8  CV CH\r\n ";
+    const char* bufStr = "\r\n\r\n## C1 C2 C3 C4 C5 C6 C7 C8  L1 L2 L3 L4 L5 L6 L7 L8  CV CH\r\n ";
     interpreterConsolePush(bufStr, strlen(bufStr));
 
     for (uint8_t idx = 0U; idx < 18U; idx++) {
@@ -1424,7 +1424,7 @@ static void controllerPrintLC(void)
       buf[2] = (relays & (1UL << idx)) != 0UL ?  '1' : '0';
       interpreterConsolePush(buf, 3);
     }
-    interpreterConsolePush("\r\n", 2);
+    interpreterConsolePush("\r\n\r\n", 4);
   }
 
   /* Print L/C configuration and L, C values */
@@ -1432,7 +1432,7 @@ static void controllerPrintLC(void)
     const char*    sConfig      = configLC == ControllerOptiCVH__CV ?  "C-L   normal Gamma" : "L-C reverted Gamma";
     char           strbuf[128]  = { 0 };
 
-    const int len = snprintf(strbuf, (sizeof(strbuf) - 1), "Configuration: %s\t L= %6ld nH\t C= %6ld uF\r\n", sConfig, (uint32_t)valL, (uint32_t)valC);
+    const int len = snprintf(strbuf, (sizeof(strbuf) - 1), "Configuration: %s\t L= %6ld nH\t C= %6ld pF\r\n", sConfig, (uint32_t)valL, (uint32_t)valC);
     interpreterConsolePush(strbuf, len);
   }
 }
@@ -1588,54 +1588,44 @@ static void controllerMsgProcessor(void)
       controllerCyclicTimerEvent();
       break;
 
+    case MsgController__CallFunc04_Restart:
+      SystemResetbyARMcore();
+      break;
+
+    case MsgController__CallFunc05_PrintLC:
+      controllerPrintLC();
+      break;
+
+    case MsgController__SetVar01_L:
+    {
+      const uint8_t relNum    = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 24U));
+      const uint8_t relEnable = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 16U));
+      controllerSetL(relNum, relEnable);
+    }
+      break;
+
+    case MsgController__SetVar02_C:
+    {
+      const uint8_t relNum    = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 24U));
+      const uint8_t relEnable = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 16U));
+      controllerSetC(relNum, relEnable);
+    }
+      break;
+
+    case MsgController__SetVar03_CL:
+    {
+      controllerSetConfigLC(false);
+    }
+      break;
+
+    case MsgController__SetVar04_LC:
+    {
+      controllerSetConfigLC(true);
+    }
+      break;
+
     default:
     {
-      if (s_msg_in.msgSrc == Destinations__Interpreter) {
-        switch ((InterpreterCmds_t) s_msg_in.msgCmd)
-        {
-        case MsgInterpreter__CallFunc01_Restart:
-          SystemResetbyARMcore();
-          break;
-
-        case MsgInterpreter__CallFunc02_PrintLC:
-          controllerPrintLC();
-          break;
-
-        case MsgInterpreter__SetVar01_L:
-        {
-          const uint8_t relNum    = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 24U));
-          const uint8_t relEnable = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 16U));
-          controllerSetL(relNum, relEnable);
-        }
-          break;
-
-        case MsgInterpreter__SetVar02_C:
-        {
-          const uint8_t relNum    = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 24U));
-          const uint8_t relEnable = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 16U));
-          controllerSetC(relNum, relEnable);
-        }
-          break;
-
-        case MsgInterpreter__SetVar03_CL:
-        {
-          controllerSetConfigLC(false);
-        }
-          break;
-
-        case MsgInterpreter__SetVar04_LC:
-        {
-          controllerSetConfigLC(true);
-        }
-          break;
-
-        default:
-          Error_Handler();
-        }  // switch ((interpreterCmds_t) s_msg_in.msgCmd)
-
-        break;
-      }  // if (msgSrc == Interpreter)
-
       Error_Handler();
     }  // default:
     }  // switch ((controllerCmds_t) s_msg_in.msgCmd)

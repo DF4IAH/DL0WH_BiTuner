@@ -40,13 +40,18 @@ typedef enum ControllerCmds_ENUM {
 
   MsgController__DeInitDo                                     = 0x05U,
 
-//MsgController__SetVar01                                     = 0x41U,
+  MsgController__SetVar01_L                                   = 0x41U,
+  MsgController__SetVar02_C,
+  MsgController__SetVar03_CL,
+  MsgController__SetVar04_LC,
 
 //MsgController__GetVar01                                     = 0x81U,
 
   MsgController__CallFunc01_CyclicTimerEvent                  = 0xc1U,
   MsgController__CallFunc02_CyclicTimerStart,
   MsgController__CallFunc03_CyclicTimerStop,
+  MsgController__CallFunc04_Restart,
+  MsgController__CallFunc05_PrintLC,
 
 } ControllerCmds_t;
 

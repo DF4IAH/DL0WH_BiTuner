@@ -229,38 +229,52 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 
   } else if (!strncmp("C", cb, 1) && (3 == len)) {
     /* Set capacitance */
-    const uint32_t valLsw      = *(cb + 1) > '0' ?  *(cb + 1) - '0' : 0;
+    uint32_t valCsw = *(cb + 1) > '0' ?  *(cb + 1) - '0' : 0;
     const uint32_t valLenable  = *(cb + 2) == '1' ?  1UL : 0UL;
-    if (valLsw < 8) {
+    if (0 < valCsw && valCsw <= 8) {
+      --valCsw;
       uint32_t cmd[2];
-      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 2U, MsgInterpreter__SetVar02_C);
-      cmd[1] = (valLsw      << 24U) |
+      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 2U, MsgController__SetVar02_C);
+      cmd[1] = (valCsw      << 24U) |
                (valLenable  << 16U) ;
       controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+
+      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
+      controllerMsgPushToInQueue(1, cmd, 10UL);
     }
 
   } else if (!strncmp("L", cb, 1) && (3 == len)) {
     /* Set inductance */
-    const uint8_t valLsw      = *(cb + 1) > '0' ?  *(cb + 1) - '0' : 0;
+    uint8_t valLsw = *(cb + 1) > '0' ?  *(cb + 1) - '0' : 0;
     const uint8_t valLenable  = *(cb + 2) == '1' ?  1U : 0U;
-    if (valLsw < 8) {
+    if (0 < valLsw && valLsw <= 8) {
+      --valLsw;
       uint32_t cmd[2];
-      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 2U, MsgInterpreter__SetVar01_L);
+      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 2U, MsgController__SetVar01_L);
       cmd[1] = (valLsw      << 24U) |
                (valLenable  << 16U) ;
       controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+
+      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
+      controllerMsgPushToInQueue(1, cmd, 10UL);
     }
 
   } else if (!strncmp("CL", cb, 2) && (2 == len)) {
     /* Set configuration to Gamma (CV) */
     uint32_t cmd[1];
-    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgInterpreter__SetVar03_CL);
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__SetVar03_CL);
+    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
   } else if (!strncmp("LC", cb, 2) && (2 == len)) {
     /* Set configuration to reverted Gamma (CH) */
     uint32_t cmd[1];
-    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgInterpreter__SetVar04_LC);
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__SetVar04_LC);
+    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
 #if 0
@@ -285,7 +299,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 #endif
   } else if (!strncmp("restart", cb, 7) && (7 == len)) {
     uint32_t cmd[1];
-    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgInterpreter__CallFunc01_Restart);
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc04_Restart);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
 #if 0
@@ -304,7 +318,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 
   } else if (!strncmp("?", cb, 1) && (1 == len)) {
     uint32_t cmd[1];
-    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgInterpreter__CallFunc02_PrintLC);
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
   } else {
@@ -351,8 +365,8 @@ const char                  interpreterHelpMsg003[]            = "\t============
 
 const char                  interpreterHelpMsg111[]            =     "\t\t> Main commands\r\n";
 const char                  interpreterHelpMsg112[]            =     "\t\t--------------------------------------------------------------------------\r\n";
-const char                  interpreterHelpMsg121[]            = "\t\tCxy\t\tC relay x 0..7  if y=1 SET  or if y=0 RESET.\r\n";
-const char                  interpreterHelpMsg122[]            = "\t\tLxy\t\tL relay x 0..7  if y=1 SET  or if y=0 RESET.\r\n";
+const char                  interpreterHelpMsg121[]            = "\t\tCxy\t\tC relay x 1..8  if y=1 SET  or if y=0 RESET.\r\n";
+const char                  interpreterHelpMsg122[]            = "\t\tLxy\t\tL relay x 1..8  if y=1 SET  or if y=0 RESET.\r\n";
 const char                  interpreterHelpMsg123[]            = "\t\tCL\t\tSet C at the TRX-side and the L to the antenna side (Gamma).\r\n";
 const char                  interpreterHelpMsg124[]            = "\t\tLC\t\tSet L at the TRX-side and the C to the antenna side (reverted Gamma).\r\n";
 const char                  interpreterHelpMsg125[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";

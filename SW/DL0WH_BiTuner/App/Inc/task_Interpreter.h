@@ -16,15 +16,11 @@ typedef enum InterpreterCmds_ENUM {
   MsgInterpreter__InitDo                                      = 0x01U,
   MsgInterpreter__InitDone,
 
-  MsgInterpreter__SetVar01_L                                  = 0x41U,
-  MsgInterpreter__SetVar02_C,
-  MsgInterpreter__SetVar03_CL,
-  MsgInterpreter__SetVar04_LC,
+//MsgInterpreter__SetVar01_x                                  = 0x41U,
 
 //MsgInterpreter__GetVar01_y                                  = 0x81U,
 
-  MsgInterpreter__CallFunc01_Restart                          = 0xc1U,
-  MsgInterpreter__CallFunc02_PrintLC,
+//MsgInterpreter__CallFunc01_z                                = 0xc1U,
 
 } InterpreterCmds_t;
 
