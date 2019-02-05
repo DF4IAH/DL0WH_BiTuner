@@ -84,7 +84,6 @@ static void usbToHost(const uint8_t* buf, uint32_t len)
 	}
 }
 
-const uint16_t usbToHostWait_MaxWaitSemMs = 500U;
 static void usbToHostWait(const uint8_t* buf, uint32_t len)
 {
   /* Sanity checks */
@@ -95,8 +94,7 @@ static void usbToHostWait(const uint8_t* buf, uint32_t len)
   EventBits_t eb = xEventGroupWaitBits(usbToHostEventGroupHandle,
       USB_TO_HOST_EG__BUF_EMPTY,
       USB_TO_HOST_EG__BUF_EMPTY,
-      0,
-      usbToHostWait_MaxWaitSemMs);
+      0, portMAX_DELAY);
   if (eb & USB_TO_HOST_EG__BUF_EMPTY) {
     usbToHost(buf, len);
   }
@@ -119,6 +117,11 @@ void usbLogLen(const char* str, int len)
 inline
 void usbLog(const char* str)
 {
+  /* Sanity check */
+  if (!str) {
+    return;
+  }
+
   usbLogLen(str, strlen(str));
 }
 
@@ -129,7 +132,7 @@ const char usbClrScrBuf[4] = { 0x0c, 0x0d, 0x0a, 0 };
 
 void usbStartUsbToHostTask(void const * argument)
 {
-  static uint8_t  buf[64] = { 0U };
+  static uint8_t  buf[48] = { 0U };
   static uint32_t bufCtr  = 0UL;
   uint8_t         inChr   = 0U;
 

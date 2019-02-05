@@ -359,7 +359,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 
 const char                  interpreterHelpMsg001[]            = "\r\n";
 const char                  interpreterHelpMsg002[]            = "\tHELP - list of commands:\r\n";
-const char                  interpreterHelpMsg003[]            = "\t========================\r\n";
+const char                  interpreterHelpMsg003[]            = "\t=======================\r\n";
 //const char                interpreterHelpMsg011[]            = "\t\tCommand\t\tRemarks\r\n";
 //const char                interpreterHelpMsg012[]            = "\t\t-------\t\t-------\r\n";
 
@@ -453,7 +453,7 @@ void interpreterGetterTask(void const * argument)
 static void interpreterInit(void)
 {
   /* Wait until init message is done */
-  osDelay(4000UL);
+  osDelay(4500UL);
 
   /* Prepare console output */
   interpreterPrintHelp();

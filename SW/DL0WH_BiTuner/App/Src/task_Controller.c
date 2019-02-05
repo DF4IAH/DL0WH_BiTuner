@@ -136,15 +136,16 @@ static DefaultMcuClocking_t s_controller_McuClocking          = DefaultMcuClocki
 /* Controller's welcome */
 
 const char controllerGreetMsg01[] = "\r\n";
-const char controllerGreetMsg02[] = "+============================================+\r\n";
-const char controllerGreetMsg03[] = "*                                            *\r\n";
-const char controllerGreetMsg04[] = "*  DL0WH BiTuner - ARM powered by STM32L476  *\r\n";
+const char controllerGreetMsg02[] = "+=======================================================+\r\n";
+const char controllerGreetMsg03[] = "*                                                       *\r\n";
+const char controllerGreetMsg04[] = "*  DL0WH BiTuner - ARM Cortex M4  powered by STM32L476  *\r\n";
 
 const char controllerGreetMsg11[] =
     "\tDL0WH BiTuner version:\r\n"
-    "\t======================\r\n"
+    "\t=====================\r\n"
     "\r\n"
-    "\t\tSoftware date\t%08lu\r\n";
+    "\t\tFirmware date\t%08lu\r\n"
+    "\t\tDeveloppped by\tDF4IAH\r\n";
 
 static void controllerUsbGreet(void)
 {
@@ -225,7 +226,7 @@ static void controllerPrintMCU(void)
   int len = sprintf(buf,
       "\r\n" \
       "\tMCU Info:\r\n" \
-      "\t=========\r\n" \
+      "\t========\r\n" \
       "\r\n" \
       "\t\tLot-ID\t\t%s\r\n" \
       "\t\tWafer\t\t%lu\r\n" \
@@ -1670,7 +1671,7 @@ static void controllerInit(void)
     s_mod_start.Interpreter                                   = 1U;
     s_mod_start.network_USBtoHost                             = 1U;
     s_mod_start.network_USBfromHost                           = 1U;
-    s_mod_start.network_UartTx                                = 0U;
+    s_mod_start.network_UartTx                                = 1U;
     s_mod_start.network_UartRx                                = 0U;
     s_mod_start.network_CatTx                                 = 0U;
     s_mod_start.network_CatRx                                 = 0U;

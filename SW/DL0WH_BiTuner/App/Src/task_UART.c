@@ -63,14 +63,19 @@ static osThreadId           s_uartRxGetterTaskHandle                = 0;
   */
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
   if (UartHandle == &huart4) {
     HAL_CAT_TxCpltCallback(UartHandle);
     return;
   }
 
   /* Set flags: DMA complete */
-  xEventGroupSetBits(  uartEventGroupHandle, UART_EG__DMA_TX_END);
-  xEventGroupClearBits(uartEventGroupHandle, UART_EG__DMA_TX_RUN);
+  xEventGroupSetBitsFromISR(  uartEventGroupHandle, UART_EG__DMA_TX_END, &xHigherPriorityTaskWoken);
+  xEventGroupClearBitsFromISR(uartEventGroupHandle, UART_EG__DMA_TX_RUN);
+
+  /* Set flag: buffer empty */
+  xEventGroupSetBitsFromISR(  uartEventGroupHandle, UART_EG__TX_BUF_EMPTY, &xHigherPriorityTaskWoken);
 }
 
 /**
@@ -82,14 +87,16 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle)
   */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
   if (UartHandle == &huart4) {
     HAL_CAT_RxCpltCallback(UartHandle);
     return;
   }
 
   /* Set flags: DMA complete */
-  xEventGroupClearBits(uartEventGroupHandle, UART_EG__DMA_RX_RUN);
-  xEventGroupSetBits(  uartEventGroupHandle, UART_EG__DMA_RX_END);
+  xEventGroupClearBitsFromISR(uartEventGroupHandle, UART_EG__DMA_RX_RUN);
+  xEventGroupSetBitsFromISR(  uartEventGroupHandle, UART_EG__DMA_RX_END, &xHigherPriorityTaskWoken);
 }
 
 /**
@@ -180,21 +187,23 @@ uint32_t uartRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs)
 
 /* UART TX */
 
-const uint8_t uartTx_MaxWaitQueueMs = 100U;
 static void uartTxPush(const uint8_t* buf, uint32_t len)
 {
-  if (buf && len) {
-    while (len--) {
-      osMessagePut(uartTxQueueHandle, *(buf++), uartTx_MaxWaitQueueMs);
-    }
-    osMessagePut(uartTxQueueHandle, 0, uartTx_MaxWaitQueueMs);
+  while (len--) {
+    /* Block on TX queue */
+    osMessagePut(uartTxQueueHandle, *(buf++), 0UL);
   }
+  osMessagePut(uartTxQueueHandle, 0, 0UL);
 }
 
-const uint16_t uartTxWait_MaxWaitSemMs = 500U;
 static void uartTxPushWait(const uint8_t* buf, uint32_t len)
 {
-  EventBits_t eb = xEventGroupWaitBits(uartEventGroupHandle, UART_EG__TX_BUF_EMPTY, 0UL, 0, uartTxWait_MaxWaitSemMs);
+  /* Buffer is going to be filled */
+  EventBits_t eb = xEventGroupWaitBits(uartEventGroupHandle,
+      UART_EG__TX_BUF_EMPTY,
+      UART_EG__TX_BUF_EMPTY,
+      0, portMAX_DELAY);
+
   if (eb & UART_EG__TX_BUF_EMPTY) {
     uartTxPush(buf, len);
   }
@@ -202,6 +211,11 @@ static void uartTxPushWait(const uint8_t* buf, uint32_t len)
 
 void uartLogLen(const char* str, int len)
 {
+  /* Sanity checks */
+  if (!str || !len) {
+    return;
+  }
+
   if (s_uartTx_enable) {
     osSemaphoreWait(uart_BSemHandle, 0UL);
     uartTxPushWait((uint8_t*)str, len);
@@ -212,6 +226,11 @@ void uartLogLen(const char* str, int len)
 inline
 void uartLog(const char* str)
 {
+  /* Sanity check */
+  if (!str) {
+    return;
+  }
+
   uartLogLen(str, strlen(str));
 }
 
@@ -227,9 +246,15 @@ static void uartTxStartDma(const uint8_t* cmdBuf, uint8_t cmdLen)
         0, 1000 / portTICK_PERIOD_MS);
   }
 
-  /* Copy to DMA TX buffer */
-  memcpy((uint8_t*)g_uartTxDmaBuf, cmdBuf, cmdLen);
-  memset((uint8_t*)g_uartTxDmaBuf + cmdLen, 0, sizeof(g_uartTxDmaBuf) - cmdLen);
+  {
+    taskDISABLE_INTERRUPTS();
+
+    /* Copy to DMA TX buffer */
+    memcpy((uint8_t*)g_uartTxDmaBuf, cmdBuf, cmdLen);
+    memset((uint8_t*)g_uartTxDmaBuf + cmdLen, 0, sizeof(g_uartTxDmaBuf) - cmdLen);
+
+    taskENABLE_INTERRUPTS();
+  }
 
   /* Re-set flag for TX */
   xEventGroupSetBits(uartEventGroupHandle, UART_EG__DMA_TX_RUN);
@@ -243,7 +268,7 @@ static void uartTxStartDma(const uint8_t* cmdBuf, uint8_t cmdLen)
 
 void uartTxPutterTask(void const * argument)
 {
-  const uint8_t   maxWaitMs   = 25U;
+  const uint32_t  maxWaitMs   = 25UL;
   uint8_t         buf[256];
 
   const uint32_t  lastBuf     = sizeof(buf) - 1;
@@ -253,34 +278,29 @@ void uartTxPutterTask(void const * argument)
   }
   xEventGroupSetBits(uartEventGroupHandle, UART_EG__TX_BUF_EMPTY);
 
+
   /* TaskLoop */
   for (;;) {
     uint8_t len = 0U;
 
     uint8_t* bufPtr = buf;
-    for (uint32_t idx = 0UL; idx < lastBuf; idx++, bufPtr++) {
+    for (uint32_t idx = 0UL; idx < lastBuf; idx++) {
       osEvent ev = osMessageGet(uartTxQueueHandle, maxWaitMs);
       if (ev.status == osEventMessage) {
-        /* Group-Bit for empty queue cleared */
-        xEventGroupClearBits(uartEventGroupHandle, UART_EG__TX_BUF_EMPTY);
-
-        *bufPtr = (uint8_t) ev.value.v;
+        if (ev.value.v) {
+          *(bufPtr++) = (uint8_t) ev.value.v;
+        }
 
       } else {
-        *(++bufPtr) = 0U;
-        len = idx;
-
+        len = bufPtr - buf;
         break;
       }
     }
-    buf[lastBuf] = 0U;
+    buf[len] = 0U;
 
     /* Start DMA TX engine */
     if (len) {
       uartTxStartDma(buf, len);
-
-      /* Group-Bit for empty queue set */
-      xEventGroupSetBits(uartEventGroupHandle, UART_EG__TX_BUF_EMPTY);
 
     } else {
       /* Delay for the next attempt */
