@@ -134,6 +134,7 @@ typedef enum SYSCLK_CONFIG_ENUM {
 uint32_t crcCalc(const uint32_t* ptr, uint32_t len);
 
 
+void calcStrToUpper(char* inBuf, uint32_t inBufLen);
 uint8_t sel_u8_from_u32(uint32_t in_u32, uint8_t sel);
 void mainCalcFloat2IntFrac(float val, uint8_t fracCnt, int32_t* outInt, uint32_t* outFrac);
 float mainCalc_fwdRev_mV(float adc_mv, float vdiode_mv);

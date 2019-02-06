@@ -65,6 +65,7 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <math.h>
 
 #include "device_adc.h"
@@ -151,6 +152,15 @@ uint32_t crcCalc(const uint32_t* ptr, uint32_t len)
 #endif
 }
 
+
+void calcStrToUpper(char* inBuf, uint32_t inBufLen)
+{
+  char* ptr = inBuf;
+
+  for (uint32_t idx = 0; idx < inBufLen; idx++, ptr++) {
+    *ptr = toupper(*ptr);
+  }
+}
 
 uint8_t sel_u8_from_u32(uint32_t in_u32, uint8_t sel)
 {

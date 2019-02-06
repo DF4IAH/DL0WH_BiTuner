@@ -259,7 +259,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
       controllerMsgPushToInQueue(1, cmd, 10UL);
     }
 
-  } else if (!strncmp("CL", cb, 2) && (2 == len)) {
+  } else if ((!strncmp("CL", cb, 2) || !strncmp("V1", cb, 2) || !strncmp("H0", cb, 2)) && (2 == len)) {
     /* Set configuration to Gamma (CV) */
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__SetVar03_CL);
@@ -268,7 +268,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
-  } else if (!strncmp("LC", cb, 2) && (2 == len)) {
+  } else if ((!strncmp("LC", cb, 2) || !strncmp("H1", cb, 2) || !strncmp("V0", cb, 2)) && (2 == len)) {
     /* Set configuration to reverted Gamma (CH) */
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__SetVar04_LC);
@@ -276,6 +276,22 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+
+  } else if (!strncmp("K", cb, 1) && (4 == len)) {
+    /* Set relays */
+    const uint8_t relayC    = *(cb + 1);
+    const uint8_t relayL    = *(cb + 2);
+    uint8_t       relayExt  = *(cb + 3) & 0x01U;
+    relayExt               |= (relayExt ^ 0x01U) << 1U;
+    const uint32_t relays   = ((uint32_t)relayExt << 16) | ((uint32_t)relayL << 8) | (uint32_t)relayC;
+
+    uint32_t cmd[2];
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 2U, MsgController__SetVar05_K);
+    cmd[1] = relays;
+    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
+    controllerMsgPushToInQueue(1, cmd, 10UL);
 
 #if 0
   } else if (!strncmp("mon ", cb, 4) && (4 < len)) {
@@ -369,7 +385,10 @@ const char                  interpreterHelpMsg121[]            = "\t\tCxy\t\tC r
 const char                  interpreterHelpMsg122[]            = "\t\tLxy\t\tL relay x 1..8  if y=1 SET  or if y=0 RESET.\r\n";
 const char                  interpreterHelpMsg123[]            = "\t\tCL\t\tSet C at the TRX-side and the L to the antenna side (Gamma).\r\n";
 const char                  interpreterHelpMsg124[]            = "\t\tLC\t\tSet L at the TRX-side and the C to the antenna side (reverted Gamma).\r\n";
-const char                  interpreterHelpMsg125[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";
+const char                  interpreterHelpMsg125[]            = "\t\tHx\t\t1: LC mode, 0: CL mode.\r\n";
+const char                  interpreterHelpMsg126[]            = "\t\tVx\t\t1: CL mode, 0: LC mode.\r\n";
+const char                  interpreterHelpMsg127[]            = "\t\tKxyz\t\tShort form for setting the L, C, CV and CH relays.\r\n";
+const char                  interpreterHelpMsg128[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";
 const char                  interpreterHelpMsg131[]            = "\t\thelp\t\tPrint this list of commands.\r\n";
 const char                  interpreterHelpMsg151[]            = "\t\trestart\t\tRestart this device.\r\n\r\n";
 
@@ -405,6 +424,9 @@ void interpreterPrintHelp(void)
   interpreterConsolePush(interpreterHelpMsg123, strlen(interpreterHelpMsg123));
   interpreterConsolePush(interpreterHelpMsg124, strlen(interpreterHelpMsg124));
   interpreterConsolePush(interpreterHelpMsg125, strlen(interpreterHelpMsg125));
+  interpreterConsolePush(interpreterHelpMsg126, strlen(interpreterHelpMsg126));
+  interpreterConsolePush(interpreterHelpMsg127, strlen(interpreterHelpMsg127));
+  interpreterConsolePush(interpreterHelpMsg128, strlen(interpreterHelpMsg128));
   interpreterConsolePush(interpreterHelpMsg131, strlen(interpreterHelpMsg131));
   interpreterConsolePush(interpreterHelpMsg151, strlen(interpreterHelpMsg151));
 }
@@ -434,6 +456,9 @@ void interpreterGetterTask(void const * argument)
     if (!inBufLen) {
       inBufLen = uartRxPullFromQueue(inBuf, 1UL);
     }
+
+    /* Do upper case */
+    calcStrToUpper((char*)inBuf, inBufLen);
 
     if (inBufLen) {
       /* Echo */

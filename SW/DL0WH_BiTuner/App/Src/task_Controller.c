@@ -1393,6 +1393,27 @@ static void controllerSetConfigLC(bool isLC)
   taskENABLE_INTERRUPTS();
 }
 
+static void controllerSetCLExt(uint32_t relays)
+{
+  s_controller_opti_C_relays  = ( relays        &    0xffUL);
+  s_controller_opti_L_relays  = ((relays >> 8U) &    0xffUL);
+  s_controller_FSM_optiCVH    = ( relays        & 0x10000UL) ?  ControllerOptiCVH__CV : ControllerOptiCVH__CH;
+
+  /* Calculate corresponding C and L values */
+  float valC = controllerCalcMatcherC2pF(s_controller_opti_C_relays);
+  float valL = controllerCalcMatcherL2nH(s_controller_opti_L_relays);
+
+  /* Disabled IRQ section */
+  {
+    taskDISABLE_INTERRUPTS();
+
+    s_controller_opti_C = valC;
+    s_controller_opti_L = valL;
+
+    taskENABLE_INTERRUPTS();
+  }
+}
+
 static void controllerPrintLC(void)
 {
   /* Disabled IRQ section */
@@ -1622,6 +1643,13 @@ static void controllerMsgProcessor(void)
     case MsgController__SetVar04_LC:
     {
       controllerSetConfigLC(true);
+    }
+      break;
+
+    case MsgController__SetVar05_K:
+    {
+      const uint32_t relays = s_msg_in.rawAry[1] & 0x03ffffUL;
+      controllerSetCLExt(relays);
     }
       break;
 
