@@ -1395,20 +1395,23 @@ static void controllerSetConfigLC(bool isLC)
 
 static void controllerSetCLExt(uint32_t relays)
 {
-  s_controller_opti_C_relays  = ( relays        &    0xffUL);
-  s_controller_opti_L_relays  = ((relays >> 8U) &    0xffUL);
-  s_controller_FSM_optiCVH    = ( relays        & 0x10000UL) ?  ControllerOptiCVH__CV : ControllerOptiCVH__CH;
+  const uint8_t l_C_relays        = ( relays        &    0xffUL);
+  const uint8_t l_L_relays        = ((relays >> 8U) &    0xffUL);
+  const ControllerOptiCVH_t l_CVH = ( relays        & 0x10000UL) ?  ControllerOptiCVH__CV : ControllerOptiCVH__CH;
 
   /* Calculate corresponding C and L values */
-  float valC = controllerCalcMatcherC2pF(s_controller_opti_C_relays);
-  float valL = controllerCalcMatcherL2nH(s_controller_opti_L_relays);
+  const float valC = controllerCalcMatcherC2pF(s_controller_opti_C_relays);
+  const float valL = controllerCalcMatcherL2nH(s_controller_opti_L_relays);
 
   /* Disabled IRQ section */
   {
     taskDISABLE_INTERRUPTS();
 
-    s_controller_opti_C = valC;
-    s_controller_opti_L = valL;
+    s_controller_opti_C_relays  = l_C_relays;
+    s_controller_opti_L_relays  = l_L_relays;
+    s_controller_FSM_optiCVH    = l_CVH;
+    s_controller_opti_C         = valC;
+    s_controller_opti_L         = valL;
 
     taskENABLE_INTERRUPTS();
   }
