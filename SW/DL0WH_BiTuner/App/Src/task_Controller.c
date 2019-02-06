@@ -1407,11 +1407,11 @@ static void controllerSetCLExt(uint32_t relays)
   {
     taskDISABLE_INTERRUPTS();
 
-    s_controller_opti_C_relays  = l_C_relays;
     s_controller_opti_L_relays  = l_L_relays;
+    s_controller_opti_C_relays  = l_C_relays;
     s_controller_FSM_optiCVH    = l_CVH;
-    s_controller_opti_C         = valC;
     s_controller_opti_L         = valL;
+    s_controller_opti_C         = valC;
 
     taskENABLE_INTERRUPTS();
   }
@@ -1435,15 +1435,15 @@ static void controllerPrintLC(void)
     char buf[4] = { ' ', ' ', '?' };
     uint32_t relays;
 
-    relays  = ((uint32_t)relC <<  0);
-    relays |= ((uint32_t)relL <<  8);
+    relays  = ((uint32_t)relC <<  0U);
+    relays |= ((uint32_t)relL <<  8U);
     relays |= configLC == ControllerOptiCVH__CV ?  0x10000UL : 0x20000UL;
 
     const char* bufStr = "\r\n\r\n## C1 C2 C3 C4 C5 C6 C7 C8  L1 L2 L3 L4 L5 L6 L7 L8  CV CH\r\n ";
     interpreterConsolePush(bufStr, strlen(bufStr));
 
     for (uint8_t idx = 0U; idx < 18U; idx++) {
-      if (idx == 8 || idx == 16) {
+      if (idx == 8U || idx == 16U) {
         interpreterConsolePush(" ", 1);
       }
       buf[2] = (relays & (1UL << idx)) != 0UL ?  '1' : '0';
@@ -1457,7 +1457,7 @@ static void controllerPrintLC(void)
     const char*    sConfig      = configLC == ControllerOptiCVH__CV ?  "C-L   normal Gamma" : "L-C reverted Gamma";
     char           strbuf[128]  = { 0 };
 
-    const int len = snprintf(strbuf, (sizeof(strbuf) - 1), "Configuration: %s\t L= %6ld nH\t C= %6ld pF\r\n", sConfig, (uint32_t)valL, (uint32_t)valC);
+    const int len = snprintf(strbuf, (sizeof(strbuf) - 1), "## Config: %s\t L= %6ld nH\t C= %6ld pF\r\n\r\n", sConfig, (uint32_t)valL, (uint32_t)valC);
     interpreterConsolePush(strbuf, len);
   }
 }

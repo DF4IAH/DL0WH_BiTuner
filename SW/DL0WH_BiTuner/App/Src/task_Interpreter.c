@@ -70,7 +70,7 @@ static uint32_t interpreterCalcLineLen(const uint8_t* buf, uint32_t len)
 
 static void interpreterUnknownCommand(void)
 {
-  const char* unknownStr = "\r\n?? unknown command - please try 'help' ??\r\n\r\n";
+  const char* unknownStr = "\r\n?? unknown command - please try 'HELP' ??\r\n\r\n";
   interpreterConsolePush(unknownStr, strlen(unknownStr));
 }
 
@@ -195,35 +195,27 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     return;
   }
 
-  if (false) {
-#if 0
-  } else if (!strncmp("adr ", cb, 4) && (4 < len)) {
-    const long    adrEnable   = strtol(cb + 4, NULL, 10);
-    const uint8_t pushAry[3]  = { 2, InterOutQueueCmds__ADRset, (adrEnable ?  1U : 0U) };
+  /* To upper for non-binaries only */
+  if (toupper(s_interpreterLineBuf[0]) != 'K') {
+    /* Do upper case */
+    calcStrToUpper((char*)s_interpreterLineBuf, s_interpreterLineBufLen);
 
-  } else if (!strncmp("c", cb, 1) && (1 == len)) {
+  } else {
+    /* Uppercase the 'K', only */
+    s_interpreterLineBuf[0] = 'K';
+  }
+
+  /* List of string patterns to compare */
+  if (!strncmp("C", cb, 1) && (1 == len)) {
     interpreterClearScreen();
 
-  } else if (!strncmp("conf ", cb, 5) && (5 < len)) {
+#if 0
+  } else if (!strncmp("CONF ", cb, 5) && (5 < len)) {
     const long    confEnable  = strtol(cb + 5, NULL, 10);
     const uint8_t pushAry[3]  = { 2, InterOutQueueCmds__ConfirmedPackets, (confEnable ?  1U : 0U) };
 
-  } else if (!strncmp("dr ", cb, 3) && (3 < len)) {
-    const long    val         = strtol(cb + 3, NULL, 10);
-    const uint8_t drSet = (uint8_t) val;
-    const uint8_t pushAry[3]  = { 2, InterOutQueueCmds__DRset, drSet };
-
-  } else if (!strncmp("f ", cb, 2) && (2 < len)) {
-    /* LoRaBare frequency setting [f]=Hz */
-    const long    f            = strtol(cb + 2, NULL, 10);
-    const uint8_t frequencyHz0 = (uint8_t) (f       ) & 0xffUL;
-    const uint8_t frequencyHz1 = (uint8_t) (f >>  8U) & 0xffUL;
-    const uint8_t frequencyHz2 = (uint8_t) (f >> 16U) & 0xffUL;
-    const uint8_t frequencyHz3 = (uint8_t) (f >> 24U) & 0xffUL;
-    const uint8_t pushAry[6]   = { 5, InterOutQueueCmds__LoRaBareFrequency, frequencyHz0, frequencyHz1, frequencyHz2, frequencyHz3 };
-
 #endif
-  } else if (!strncmp("help", cb, 4) && (4 == len)) {
+  } else if (!strncmp("HELP", cb, 4) && (4 == len)) {
     interpreterClearScreen();
     interpreterPrintHelp();
 
@@ -286,51 +278,27 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     const uint32_t relays   = ((uint32_t)relayExt << 16) | ((uint32_t)relayL << 8) | (uint32_t)relayC;
 
     uint32_t cmd[2];
-    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 2U, MsgController__SetVar05_K);
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 4U, MsgController__SetVar05_K);
     cmd[1] = relays;
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
+    //__ISB();
+    //__DSB();
+    //__DMB();
+    //taskYIELD();
+    //osDelay(10);  // TODO: find a solution
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
     controllerMsgPushToInQueue(1, cmd, 10UL);
 
 #if 0
-  } else if (!strncmp("mon ", cb, 4) && (4 < len)) {
+  } else if (!strncmp("MON ", cb, 4) && (4 < len)) {
     const long    val         = strtol(cb + 4, NULL, 10);
     g_monMsk                  = (uint32_t) val;
-
-  } else if (!strncmp("pwrred ", cb, 7) && (7 < len)) {
-    /* LoRaWAN power reduction setting [pwrred]=dB */
-    const long    val         = strtol(cb + 7, NULL, 10);
-    const uint8_t pwrRed      = (uint8_t) val;
-    const uint8_t pushAry[3]  = { 2, InterOutQueueCmds__PwrRedDb, pwrRed };
-
-  } else if (!strncmp("reqcheck", cb, 8) && (8 == len)) {
-    /* LoRaWAN link check message */
-    const uint8_t pushAry[2]  = { 1, InterOutQueueCmds__LinkCheckReq };
-
-  } else if (!strncmp("reqtime", cb, 7) && (7 == len)) {
-    /* LoRaWAN device time message */
-    const uint8_t pushAry[2]  = { 1, InterOutQueueCmds__DeviceTimeReq };
-
 #endif
-  } else if (!strncmp("restart", cb, 7) && (7 == len)) {
+  } else if (!strncmp("RESTART", cb, 7) && (7 == len)) {
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc04_Restart);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
-
-#if 0
-  } else if (!strncmp("rx ", cb, 3) && (3 < len)) {
-    /* LoRaBare frequency setting [f]=Hz */
-    const long    rxEnable     = strtol(cb + 3, NULL, 10);
-    const uint8_t pushAry[3]   = { 2, InterOutQueueCmds__LoRaBareRxEnable, (rxEnable ?  1U : 0U) };
-
-  } else if (!strncmp("timer ", cb, 6) && (6 < len)) {
-    /* LoRaWAN timer setting [timer]=s */
-    const long    val         = strtol(cb + 6, NULL, 10);
-    const uint8_t repeatTimer0 = (uint8_t) (val     ) & 0xffUL;
-    const uint8_t repeatTimer1 = (uint8_t) (val >> 8) & 0xffUL;
-    const uint8_t pushAry[4]  = { 3, InterOutQueueCmds__Timer, repeatTimer0, repeatTimer1 };
-#endif
 
   } else if (!strncmp("?", cb, 1) && (1 == len)) {
     uint32_t cmd[1];
@@ -376,21 +344,22 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 const char                  interpreterHelpMsg001[]            = "\r\n";
 const char                  interpreterHelpMsg002[]            = "\tHELP - list of commands:\r\n";
 const char                  interpreterHelpMsg003[]            = "\t=======================\r\n";
-//const char                interpreterHelpMsg011[]            = "\t\tCommand\t\tRemarks\r\n";
-//const char                interpreterHelpMsg012[]            = "\t\t-------\t\t-------\r\n";
 
 const char                  interpreterHelpMsg111[]            =     "\t\t> Main commands\r\n";
 const char                  interpreterHelpMsg112[]            =     "\t\t--------------------------------------------------------------------------\r\n";
-const char                  interpreterHelpMsg121[]            = "\t\tCxy\t\tC relay x 1..8  if y=1 SET  or if y=0 RESET.\r\n";
-const char                  interpreterHelpMsg122[]            = "\t\tLxy\t\tL relay x 1..8  if y=1 SET  or if y=0 RESET.\r\n";
+
+const char                  interpreterHelpMsg121[]            = "\t\tCxy\t\tC relay x: 1..8, y: 1=SET 0=RESET.\r\n";
+const char                  interpreterHelpMsg122[]            = "\t\tLxy\t\tL relay x: 1..8, y: 1=SET 0=RESET.\r\n";
 const char                  interpreterHelpMsg123[]            = "\t\tCL\t\tSet C at the TRX-side and the L to the antenna side (Gamma).\r\n";
 const char                  interpreterHelpMsg124[]            = "\t\tLC\t\tSet L at the TRX-side and the C to the antenna side (reverted Gamma).\r\n";
 const char                  interpreterHelpMsg125[]            = "\t\tHx\t\t1: LC mode, 0: CL mode.\r\n";
 const char                  interpreterHelpMsg126[]            = "\t\tVx\t\t1: CL mode, 0: LC mode.\r\n";
-const char                  interpreterHelpMsg127[]            = "\t\tKxyz\t\tShort form for setting the L, C, CV and CH relays.\r\n";
+const char                  interpreterHelpMsg127[]            = "\t\tKxyz\t\tShort form for setting the C, L, CV and CH relays.\r\n";
 const char                  interpreterHelpMsg128[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";
-const char                  interpreterHelpMsg131[]            = "\t\thelp\t\tPrint this list of commands.\r\n";
-const char                  interpreterHelpMsg151[]            = "\t\trestart\t\tRestart this device.\r\n\r\n";
+
+const char                  interpreterHelpMsg131[]            = "\t\tC\t\tClear screen.\r\n";
+const char                  interpreterHelpMsg132[]            = "\t\tHELP\t\tPrint this list of commands.\r\n";
+const char                  interpreterHelpMsg133[]            = "\t\tRESTART\t\tRestart this device.\r\n";
 
 
 void interpreterConsolePush(const char* buf, int bufLen)
@@ -413,10 +382,6 @@ void interpreterPrintHelp(void)
   interpreterConsolePush(interpreterHelpMsg003, strlen(interpreterHelpMsg003));
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
 
-  //interpreterConsolePush(interpreterHelpMsg011, strlen(interpreterHelpMsg011));
-  //interpreterConsolePush(interpreterHelpMsg012, strlen(interpreterHelpMsg012));
-  //interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
-
   interpreterConsolePush(interpreterHelpMsg111, strlen(interpreterHelpMsg111));
   interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
   interpreterConsolePush(interpreterHelpMsg121, strlen(interpreterHelpMsg121));
@@ -427,8 +392,12 @@ void interpreterPrintHelp(void)
   interpreterConsolePush(interpreterHelpMsg126, strlen(interpreterHelpMsg126));
   interpreterConsolePush(interpreterHelpMsg127, strlen(interpreterHelpMsg127));
   interpreterConsolePush(interpreterHelpMsg128, strlen(interpreterHelpMsg128));
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+
   interpreterConsolePush(interpreterHelpMsg131, strlen(interpreterHelpMsg131));
-  interpreterConsolePush(interpreterHelpMsg151, strlen(interpreterHelpMsg151));
+  interpreterConsolePush(interpreterHelpMsg132, strlen(interpreterHelpMsg132));
+  interpreterConsolePush(interpreterHelpMsg133, strlen(interpreterHelpMsg133));
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
 }
 
 void interpreterShowCursor(void)
@@ -457,9 +426,6 @@ void interpreterGetterTask(void const * argument)
       inBufLen = uartRxPullFromQueue(inBuf, 1UL);
     }
 
-    /* Do upper case */
-    calcStrToUpper((char*)inBuf, inBufLen);
-
     if (inBufLen) {
       /* Echo */
       if (true) {
@@ -478,7 +444,7 @@ void interpreterGetterTask(void const * argument)
 static void interpreterInit(void)
 {
   /* Wait until init message is done */
-  osDelay(4500UL);
+  osDelay(5000UL);
 
   /* Prepare console output */
   interpreterPrintHelp();
