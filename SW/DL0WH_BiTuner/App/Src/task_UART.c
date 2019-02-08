@@ -401,7 +401,6 @@ static void uartRxStartDma(void)
 
   xEventGroupClearBits(uartEventGroupHandle, UART_EG__DMA_RX_END);
 
-
   /* Start RX DMA after aborting the previous one */
   HAL_UART_DMAStop(&hlpuart1);
   if (HAL_UART_Receive_DMA(&hlpuart1, (uint8_t*)g_uartRxDmaBuf, dmaBufSize) != HAL_OK)
@@ -437,15 +436,15 @@ void uartRxGetterTask(void const * argument)
 
       g_uartRxDmaBufLast = l_uartRxDmaBufIdx;
 
+      /* Restart DMA if transfer has finished */
+      if (UART_EG__DMA_RX_END & xEventGroupGetBits(uartEventGroupHandle)) {
+        /* Reactivate UART RX DMA transfer */
+        uartRxStartDma();
+      }
+
     } else {
       /* Delay for the next attempt */
       osDelay(25UL);
-    }
-
-    /* Restart DMA if transfer has finished */
-    if (UART_EG__DMA_RX_END & xEventGroupGetBits(uartEventGroupHandle)) {
-      /* Reactivate UART RX DMA transfer */
-      uartRxStartDma();
     }
   }
 }
