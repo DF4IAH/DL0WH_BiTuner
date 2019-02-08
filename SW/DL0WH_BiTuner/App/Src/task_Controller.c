@@ -1759,7 +1759,7 @@ static void controllerInit(void)
     s_mod_start.network_USBtoHost                             = 1U;
     s_mod_start.network_USBfromHost                           = 1U;
     s_mod_start.network_UartTx                                = 1U;
-    s_mod_start.network_UartRx                                = 0U;
+    s_mod_start.network_UartRx                                = 1U;
     s_mod_start.network_CatTx                                 = 0U;
     s_mod_start.network_CatRx                                 = 0U;
   }

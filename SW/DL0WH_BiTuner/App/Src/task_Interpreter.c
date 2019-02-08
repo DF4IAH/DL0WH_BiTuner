@@ -176,6 +176,11 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
   const uint8_t*  bufInPtr    = buf;
   uint8_t         c;
 
+  /* Strip ending NUL char */
+  if (!buf[len-1]) {
+    --len;
+  }
+
   for (uint32_t idx = 0UL; idx < len; idx++) {
     if ((idx + s_interpreterLineBufLen) < 254UL) {
       *(bufOutPtr++) = c = *(bufInPtr++);
@@ -438,12 +443,12 @@ static void interpreterInit(void)
   /* Wait until init message is done */
   osDelay(5000UL);
 
-  /* Prepare console output */
-  interpreterPrintHelp();
-
   /* Start console input thread */
   osThreadDef(interpreterGetterTask, interpreterGetterTask, osPriorityNormal, 0, 128);
   s_interpreterGetterTaskHandle = osThreadCreate(osThread(interpreterGetterTask), NULL);
+
+  /* Prepare console output */
+  interpreterPrintHelp();
 }
 
 static void interpreterMsgProcess(uint32_t msgLen, const uint32_t* msgAry)

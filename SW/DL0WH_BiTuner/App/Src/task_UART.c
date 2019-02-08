@@ -38,9 +38,9 @@ extern EventGroupHandle_t   uartEventGroupHandle;
 
 volatile uint8_t            g_uartTxDmaBuf[256]                     = { 0U };
 
-volatile uint8_t            g_uartRxDmaBuf[256]                     = { 0U };
-uint32_t                    g_uartRxDmaBufLast                      = 0UL;
-uint32_t                    g_uartRxDmaBufIdx                       = 0UL;
+volatile uint8_t            g_uartRxDmaBuf[16]                      = { 0U };
+volatile uint32_t           g_uartRxDmaBufLast                      = 0UL;
+volatile uint32_t           g_uartRxDmaBufIdx                       = 0UL;
 
 static uint8_t              s_uartTx_enable                         = 0U;
 static uint32_t             s_uartTxStartTime                       = 0UL;
@@ -202,7 +202,7 @@ static void uartTxPushWait(const uint8_t* buf, uint32_t len)
   EventBits_t eb = xEventGroupWaitBits(uartEventGroupHandle,
       UART_EG__TX_BUF_EMPTY,
       UART_EG__TX_BUF_EMPTY,
-      0, portMAX_DELAY);
+      0, 300UL);  // One buffer w/ 256 bytes @ 9.600 baud
 
   if (eb & UART_EG__TX_BUF_EMPTY) {
     uartTxPush(buf, len);
@@ -321,9 +321,9 @@ static void uartTxInit(void)
 
 static void uartTxMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
 {
-  uint32_t                msgIdx  = 0UL;
-  const uint32_t          hdr     = msgAry[msgIdx++];
-  const UartCmds_t        cmd     = (UartCmds_t) (0xffUL & hdr);
+  uint32_t            msgIdx  = 0UL;
+  const uint32_t      hdr     = msgAry[msgIdx++];
+  const UartTxCmds_t  cmd     = (UartTxCmds_t) (0xffUL & hdr);
 
   switch (cmd) {
   case MsgUartTx__InitDo:
@@ -393,13 +393,20 @@ static void uartRxStartDma(void)
 {
   const uint16_t dmaBufSize = sizeof(g_uartRxDmaBuf);
 
-  /* Reset working indexes */
-  g_uartRxDmaBufLast = g_uartRxDmaBufIdx = 0U;
+  /* Clear DMA buffer */
+  memset((char*) g_uartRxDmaBuf, 0, sizeof(g_uartRxDmaBuf));
 
-  /* Start RX DMA */
+  /* Reset working indexes */
+  g_uartRxDmaBufLast = g_uartRxDmaBufIdx = 0UL;
+
+  xEventGroupClearBits(uartEventGroupHandle, UART_EG__DMA_RX_END);
+
+
+  /* Start RX DMA after aborting the previous one */
+  HAL_UART_DMAStop(&hlpuart1);
   if (HAL_UART_Receive_DMA(&hlpuart1, (uint8_t*)g_uartRxDmaBuf, dmaBufSize) != HAL_OK)
   {
-    //Error_Handler();
+    Error_Handler();
   }
 
   /* Set RX running flag */
@@ -419,18 +426,16 @@ void uartRxGetterTask(void const * argument)
 
     /* Send new character in RX buffer to the queue */
     if (g_uartRxDmaBufIdx > g_uartRxDmaBufLast) {
-      /* Disabled IRQ section */
-      taskDISABLE_INTERRUPTS();
+      /* From UART data into the buffer */
+      const uint32_t    l_uartRxDmaBufIdx = g_uartRxDmaBufIdx;
+      volatile uint8_t* bufPtr            = g_uartRxDmaBuf + g_uartRxDmaBufLast;
 
-      /* USB OUT EP from host put data into the buffer */
-      volatile uint8_t* bufPtr = g_uartRxDmaBuf + g_uartRxDmaBufLast;
-
-      for (int32_t idx = g_uartRxDmaBufLast + 1U; idx <= g_uartRxDmaBufIdx; ++idx, ++bufPtr) {
+      for (int32_t idx = g_uartRxDmaBufLast + 1U; idx <= l_uartRxDmaBufIdx; ++idx, ++bufPtr) {
         xQueueSendToBack(uartRxQueueHandle, (uint8_t*)bufPtr, maxWaitMs);
       }
       xQueueSendToBack(uartRxQueueHandle, nulBuf, maxWaitMs);
 
-      taskENABLE_INTERRUPTS();
+      g_uartRxDmaBufLast = l_uartRxDmaBufIdx;
 
     } else {
       /* Delay for the next attempt */
@@ -439,12 +444,6 @@ void uartRxGetterTask(void const * argument)
 
     /* Restart DMA if transfer has finished */
     if (UART_EG__DMA_RX_END & xEventGroupGetBits(uartEventGroupHandle)) {
-      /* Clear DMA buffer */
-      memset((char*) g_uartRxDmaBuf, 0, sizeof(g_uartRxDmaBuf));
-      g_uartRxDmaBufLast = g_uartRxDmaBufIdx = 0UL;
-
-      xEventGroupClearBits(uartEventGroupHandle, UART_EG__DMA_RX_END);
-
       /* Reactivate UART RX DMA transfer */
       uartRxStartDma();
     }
@@ -469,9 +468,9 @@ static void uartRxInit(void)
 
 static void uartRxMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
 {
-  uint32_t                msgIdx  = 0UL;
-  const uint32_t          hdr     = msgAry[msgIdx++];
-  const UartCmds_t        cmd     = (UartCmds_t) (0xffUL & hdr);
+  uint32_t            msgIdx  = 0UL;
+  const uint32_t      hdr     = msgAry[msgIdx++];
+  const UartRxCmds_t  cmd     = (UartRxCmds_t) (0xffUL & hdr);
 
   switch (cmd) {
   case MsgUartRx__InitDo:

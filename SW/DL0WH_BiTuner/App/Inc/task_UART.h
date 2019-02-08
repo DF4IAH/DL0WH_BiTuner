@@ -9,20 +9,31 @@
 #define INC_TASK_UART_H_
 
 
-typedef enum UartCmds_ENUM {
+typedef enum UartTxCmds_ENUM {
 
   MsgUartTx__InitDo                                           = 0x01U,
   MsgUartTx__InitDone,
-  MsgUartRx__InitDo,
+
+//MsgUartTx__SetVar01_x                                       = 0x41U,
+
+//MsgUartTx__GetVar01_y                                       = 0x81U,
+
+//MsgUartTx__CallFunc01_z                                     = 0xc1U,
+
+} UartTxCmds_t;
+
+typedef enum UartRxCmds_ENUM {
+
+  MsgUartRx__InitDo                                           = 0x01U,
   MsgUartRx__InitDone,
 
-//MsgUart__SetVar01_x                                         = 0x41U,
+//MsgUartRx__SetVar01_x                                       = 0x41U,
 
-//MsgUart__GetVar01_y                                         = 0x81U,
+//MsgUartRx__GetVar01_y                                       = 0x81U,
 
-//MsgUart__CallFunc01_z                                       = 0xc1U,
+//MsgUartRx__CallFunc01_z                                     = 0xc1U,
 
-} UartCmds_t;
+} UartRxCmds_t;
 
 
 typedef enum UART_EG_ENUM {

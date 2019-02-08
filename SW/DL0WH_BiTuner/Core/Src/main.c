@@ -290,20 +290,32 @@ void configureTimerForRunTimeStats(void)
 unsigned long getRunTimeCounterValue(void)
 {
   uint64_t l_timerStart_us = 0ULL;
-  uint64_t l_timer_us = HAL_GetTick() & 0x003fffffUL;                                                   // avoid overflows
-
-  /* Add microseconds */
-  l_timer_us *= 1000ULL;
-  l_timer_us += TIM2->CNT % 1000UL;                                                                     // TIM2 counts microseconds
+  uint64_t l_timer_us;
 
   /* Interrupt disabled block */
   {
-    __disable_irq();
+    taskDISABLE_INTERRUPTS();
 
-    s_timerLast_us  = l_timer_us;
+    l_timer_us      = HAL_GetTick();
     l_timerStart_us = s_timerStart_us;
 
-    __enable_irq();
+    taskENABLE_INTERRUPTS();
+  }
+
+  /* Avoid overflows */
+  l_timer_us &= 0x003fffffUL;
+
+  /* Add microseconds */
+  l_timer_us *= 1000ULL;
+  l_timer_us += TIM2->CNT % 1000UL;                                                                   // TIM2 counts microseconds
+
+  /* Interrupt disabled block */
+  {
+    taskDISABLE_INTERRUPTS();
+
+    s_timerLast_us  = l_timer_us;
+
+    taskENABLE_INTERRUPTS();
   }
 
   uint64_t l_timerDiff64 = (l_timer_us >= l_timerStart_us) ?  (l_timer_us - l_timerStart_us) : l_timer_us;

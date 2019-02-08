@@ -94,7 +94,7 @@ static void usbToHostWait(const uint8_t* buf, uint32_t len)
   EventBits_t eb = xEventGroupWaitBits(usbToHostEventGroupHandle,
       USB_TO_HOST_EG__BUF_EMPTY,
       USB_TO_HOST_EG__BUF_EMPTY,
-      0, portMAX_DELAY);
+      0, 25UL);
   if (eb & USB_TO_HOST_EG__BUF_EMPTY) {
     usbToHost(buf, len);
   }
@@ -324,13 +324,6 @@ uint32_t usbPullFromOutQueue(uint8_t* msgAry, uint32_t waitMs)
     osEvent ev = osMessageGet(usbFromHostQueueHandle, waitMs);
     if (ev.status == osEventMessage) {
       msgAry[len++] = ev.value.v;
-
-    } else if (len) {
-      if (!msgAry[len - 1]) {
-        /* Strip off last NULL character */
-        --len;
-      }
-      break;
 
     } else {
       break;
