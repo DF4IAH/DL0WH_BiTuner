@@ -282,14 +282,6 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     cmd[1] = relays;
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
-    //__ISB();
-    //__DSB();
-    //__DMB();
-    //taskYIELD();
-    //osDelay(10);  // TODO: find a solution
-    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-    controllerMsgPushToInQueue(1, cmd, 10UL);
-
 #if 0
   } else if (!strncmp("MON ", cb, 4) && (4 < len)) {
     const long    val         = strtol(cb + 4, NULL, 10);

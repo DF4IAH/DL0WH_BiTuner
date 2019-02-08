@@ -1318,79 +1318,112 @@ static void controllerFSM(void)
 static void controllerSetL(uint8_t relLnum, uint8_t relEnable)
 {
   float valL;
+  float fwd_mw;
 
   /* Disabled IRQ section */
   {
     taskDISABLE_INTERRUPTS();
 
-    valL = s_controller_opti_L;
+    valL    = s_controller_opti_L;
+    fwd_mw  = s_controller_adc_fwd_mw;
 
     taskENABLE_INTERRUPTS();
   }
 
-  uint8_t relay = controllerCalcMatcherNH2L(s_controller_opti_L);
-  if (relEnable) {
-    relay |=   1UL << relLnum;
+  if (fwd_mw <= Controller_AutoSWR_P_mW_Max) {
+    uint8_t relay = controllerCalcMatcherNH2L(s_controller_opti_L);
+    if (relEnable) {
+      relay |=   1UL << relLnum;
+
+    } else {
+      relay &= ~(1UL << relLnum);
+    }
+    valL = controllerCalcMatcherL2nH(relay);
+
+    /* Disabled IRQ section */
+    {
+      taskDISABLE_INTERRUPTS();
+
+      s_controller_opti_L = valL;
+
+      taskENABLE_INTERRUPTS();
+    }
+
+    controllerFSM_PushOptiVars();
 
   } else {
-    relay &= ~(1UL << relLnum);
+    const char errMsg[] = "*** Power to high to set L ***\r\n\r\n";
+    interpreterConsolePush(errMsg, strlen(errMsg));
   }
-  valL = controllerCalcMatcherL2nH(relay);
-
-  /* Disabled IRQ section */
-  {
-    taskDISABLE_INTERRUPTS();
-
-    s_controller_opti_L = valL;
-
-    taskENABLE_INTERRUPTS();
-  }
-
-  controllerFSM_PushOptiVars();
 }
 
 static void controllerSetC(uint8_t relLnum, uint8_t relEnable)
 {
   float valC;
+  float fwd_mw;
 
   /* Disabled IRQ section */
   {
     taskDISABLE_INTERRUPTS();
 
     valC = s_controller_opti_C;
+    fwd_mw  = s_controller_adc_fwd_mw;
 
     taskENABLE_INTERRUPTS();
   }
 
-  uint8_t relay = controllerCalcMatcherPF2C(valC);
-  if (relEnable) {
-    relay |=   1UL << relLnum;
+  if (fwd_mw <= Controller_AutoSWR_P_mW_Max) {
+    uint8_t relay = controllerCalcMatcherPF2C(valC);
+    if (relEnable) {
+      relay |=   1UL << relLnum;
+
+    } else {
+      relay &= ~(1UL << relLnum);
+    }
+    valC = controllerCalcMatcherC2pF(relay);
+
+    /* Disabled IRQ section */
+    {
+      taskDISABLE_INTERRUPTS();
+
+      s_controller_opti_C = valC;
+
+      taskENABLE_INTERRUPTS();
+    }
+
+    controllerFSM_PushOptiVars();
 
   } else {
-    relay &= ~(1UL << relLnum);
+    const char errMsg[] = "*** Power to high to set C ***\r\n\r\n";
+    interpreterConsolePush(errMsg, strlen(errMsg));
   }
-  valC = controllerCalcMatcherC2pF(relay);
+}
+
+static void controllerSetConfigLC(bool isLC)
+{
+  float fwd_mw;
 
   /* Disabled IRQ section */
   {
     taskDISABLE_INTERRUPTS();
 
-    s_controller_opti_C = valC;
+    fwd_mw  = s_controller_adc_fwd_mw;
 
     taskENABLE_INTERRUPTS();
   }
 
-  controllerFSM_PushOptiVars();
-}
+  if (fwd_mw <= Controller_AutoSWR_P_mW_Max) {
+    /* Disabled IRQ section */
+    taskDISABLE_INTERRUPTS();
 
-static void controllerSetConfigLC(bool isLC)
-{
-  /* Disabled IRQ section */
-  taskDISABLE_INTERRUPTS();
+    s_controller_FSM_optiCVH = isLC ?  ControllerOptiCVH__CH : ControllerOptiCVH__CV;
 
-  s_controller_FSM_optiCVH = isLC ?  ControllerOptiCVH__CH : ControllerOptiCVH__CV;
+    taskENABLE_INTERRUPTS();
 
-  taskENABLE_INTERRUPTS();
+  } else {
+    const char errMsg[] = "*** Power to high to set L/C mode ***\r\n\r\n";
+    interpreterConsolePush(errMsg, strlen(errMsg));
+  }
 }
 
 static void controllerSetCLExt(uint32_t relays)
@@ -1402,18 +1435,34 @@ static void controllerSetCLExt(uint32_t relays)
   /* Calculate corresponding C and L values */
   const float valC = controllerCalcMatcherC2pF(s_controller_opti_C_relays);
   const float valL = controllerCalcMatcherL2nH(s_controller_opti_L_relays);
+  float fwd_mw;
 
   /* Disabled IRQ section */
   {
     taskDISABLE_INTERRUPTS();
 
-    s_controller_opti_L_relays  = l_L_relays;
-    s_controller_opti_C_relays  = l_C_relays;
-    s_controller_FSM_optiCVH    = l_CVH;
-    s_controller_opti_L         = valL;
-    s_controller_opti_C         = valC;
+    fwd_mw  = s_controller_adc_fwd_mw;
 
     taskENABLE_INTERRUPTS();
+  }
+
+  if (fwd_mw <= Controller_AutoSWR_P_mW_Max) {
+    /* Disabled IRQ section */
+    {
+      taskDISABLE_INTERRUPTS();
+
+      s_controller_opti_L_relays  = l_L_relays;
+      s_controller_opti_C_relays  = l_C_relays;
+      s_controller_FSM_optiCVH    = l_CVH;
+      s_controller_opti_L         = valL;
+      s_controller_opti_C         = valC;
+
+      taskENABLE_INTERRUPTS();
+    }
+
+  } else {
+    const char errMsg[] = "*** Power to high to set C, L or C/L mode ***\r\n\r\n";
+    interpreterConsolePush(errMsg, strlen(errMsg));
   }
 }
 
@@ -1422,9 +1471,11 @@ static void controllerPrintLC(void)
   /* Disabled IRQ section */
   /* { */
     taskDISABLE_INTERRUPTS();
+
     const float valL                          = s_controller_opti_L;
     const float valC                          = s_controller_opti_C;
     const       ControllerOptiCVH_t configLC  = s_controller_FSM_optiCVH;
+
     taskENABLE_INTERRUPTS();
   /* } */
 
@@ -1626,6 +1677,7 @@ static void controllerMsgProcessor(void)
       const uint8_t relNum    = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 24U));
       const uint8_t relEnable = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 16U));
       controllerSetL(relNum, relEnable);
+      controllerPrintLC();
     }
       break;
 
@@ -1634,18 +1686,21 @@ static void controllerMsgProcessor(void)
       const uint8_t relNum    = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 24U));
       const uint8_t relEnable = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 16U));
       controllerSetC(relNum, relEnable);
+      controllerPrintLC();
     }
       break;
 
     case MsgController__SetVar03_CL:
     {
       controllerSetConfigLC(false);
+      controllerPrintLC();
     }
       break;
 
     case MsgController__SetVar04_LC:
     {
       controllerSetConfigLC(true);
+      controllerPrintLC();
     }
       break;
 
@@ -1653,6 +1708,7 @@ static void controllerMsgProcessor(void)
     {
       const uint32_t relays = s_msg_in.rawAry[1] & 0x03ffffUL;
       controllerSetCLExt(relays);
+      controllerPrintLC();
     }
       break;
 
