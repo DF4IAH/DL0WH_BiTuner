@@ -221,7 +221,6 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 
 #endif
   } else if (!strncmp("HELP", cb, 4) && (4 == len)) {
-    interpreterClearScreen();
     interpreterPrintHelp();
 
   } else if (!strncmp("C", cb, 1) && (3 == len)) {
@@ -235,9 +234,6 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
       cmd[1] = (valCsw      << 24U) |
                (valLenable  << 16U) ;
       controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
-
-      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-      controllerMsgPushToInQueue(1, cmd, 10UL);
     }
 
   } else if (!strncmp("L", cb, 1) && (3 == len)) {
@@ -251,27 +247,18 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
       cmd[1] = (valLsw      << 24U) |
                (valLenable  << 16U) ;
       controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
-
-      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-      controllerMsgPushToInQueue(1, cmd, 10UL);
     }
 
-  } else if ((!strncmp("CL", cb, 2) || !strncmp("V1", cb, 2) || !strncmp("H0", cb, 2)) && (2 == len)) {
+  } else if ((!strncmp("CL", cb, 2) || !strncmp("V1", cb, 2) || !strncmp("H0", cb, 2) || !strncmp("CV", cb, 2)) && (2 == len)) {
     /* Set configuration to Gamma (CV) */
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__SetVar03_CL);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
-    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
-
-  } else if ((!strncmp("LC", cb, 2) || !strncmp("H1", cb, 2) || !strncmp("V0", cb, 2)) && (2 == len)) {
+  } else if ((!strncmp("LC", cb, 2) || !strncmp("H1", cb, 2) || !strncmp("V0", cb, 2) || !strncmp("CH", cb, 2)) && (2 == len)) {
     /* Set configuration to reverted Gamma (CH) */
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__SetVar04_LC);
-    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
-
-    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
   } else if (!strncmp("K", cb, 1) && (4 == len)) {
@@ -293,6 +280,10 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     g_monMsk                  = (uint32_t) val;
 #endif
   } else if (!strncmp("RESTART", cb, 7) && (7 == len)) {
+    const char infoStr[] = "*** Restarting, please wait...\r\n";
+    interpreterConsolePush(infoStr, strlen(infoStr));
+    osDelay(500UL);
+
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc04_Restart);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
@@ -351,12 +342,14 @@ const char                  interpreterHelpMsg123[]            = "\t\tCL\t\tSet 
 const char                  interpreterHelpMsg124[]            = "\t\tLC\t\tSet L at the TRX-side and the C to the antenna side (reverted Gamma).\r\n";
 const char                  interpreterHelpMsg125[]            = "\t\tHx\t\t1: LC mode, 0: CL mode.\r\n";
 const char                  interpreterHelpMsg126[]            = "\t\tVx\t\t1: CL mode, 0: LC mode.\r\n";
-const char                  interpreterHelpMsg127[]            = "\t\tKxyz\t\tShort form for setting the C, L, CV and CH relays.\r\n";
-const char                  interpreterHelpMsg128[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";
+const char                  interpreterHelpMsg127[]            = "\t\tCV\t\t   CL mode.\r\n";
+const char                  interpreterHelpMsg128[]            = "\t\tCH\t\t   LC mode.\r\n";
+const char                  interpreterHelpMsg129[]            = "\t\tKxyz\t\tShort form for setting the C, L, CV and CH relays.\r\n";
+const char                  interpreterHelpMsg130[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";
 
-const char                  interpreterHelpMsg131[]            = "\t\tC\t\tClear screen.\r\n";
-const char                  interpreterHelpMsg132[]            = "\t\tHELP\t\tPrint this list of commands.\r\n";
-const char                  interpreterHelpMsg133[]            = "\t\tRESTART\t\tRestart this device.\r\n";
+const char                  interpreterHelpMsg151[]            = "\t\tC\t\tClear screen.\r\n";
+const char                  interpreterHelpMsg152[]            = "\t\tHELP\t\tPrint this list of commands.\r\n";
+const char                  interpreterHelpMsg153[]            = "\t\tRESTART\t\tRestart this device.\r\n";
 
 
 void interpreterConsolePush(const char* buf, int bufLen)
@@ -389,11 +382,15 @@ void interpreterPrintHelp(void)
   interpreterConsolePush(interpreterHelpMsg126, strlen(interpreterHelpMsg126));
   interpreterConsolePush(interpreterHelpMsg127, strlen(interpreterHelpMsg127));
   interpreterConsolePush(interpreterHelpMsg128, strlen(interpreterHelpMsg128));
+  interpreterConsolePush(interpreterHelpMsg129, strlen(interpreterHelpMsg129));
+  interpreterConsolePush(interpreterHelpMsg130, strlen(interpreterHelpMsg130));
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
 
-  interpreterConsolePush(interpreterHelpMsg131, strlen(interpreterHelpMsg131));
-  interpreterConsolePush(interpreterHelpMsg132, strlen(interpreterHelpMsg132));
-  interpreterConsolePush(interpreterHelpMsg133, strlen(interpreterHelpMsg133));
+  interpreterConsolePush(interpreterHelpMsg151, strlen(interpreterHelpMsg151));
+  interpreterConsolePush(interpreterHelpMsg152, strlen(interpreterHelpMsg152));
+  interpreterConsolePush(interpreterHelpMsg153, strlen(interpreterHelpMsg153));
+
+  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
 }
 
