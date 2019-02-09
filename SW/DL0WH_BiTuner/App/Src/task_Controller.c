@@ -735,14 +735,15 @@ static void controllerFSM_PushOptiVars(void)
     controller_opti_CH  = 0U;
   }
 
+  /* Three extra bytes to take over */
+  msgAry[0] = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 3, MsgDefault__SetVar03_C_L_CV_CH);
+
   /* Compose relay bitmap */
   msgAry[1] = ((uint32_t)controller_opti_CH << 17) |
               ((uint32_t)controller_opti_CV << 16) |
-              ((uint32_t)valL               <<  8) |
-              ((uint32_t)valC                    ) ;
+              ((uint32_t)relL               <<  8) |
+              ((uint32_t)relC                    ) ;
 
-  /* Three extra bytes to take over */
-  msgAry[0] = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 3, MsgDefault__SetVar03_C_L_CV_CH);
   controllerMsgPushToOutQueue(sizeof(msgAry) / sizeof(uint32_t), msgAry, osWaitForever);
 }
 
@@ -1420,6 +1421,8 @@ static void controllerSetConfigLC(bool isLC)
 
     taskENABLE_INTERRUPTS();
 
+    controllerFSM_PushOptiVars();
+
   } else {
     const char errMsg[] = "*** Power to high to set L/C mode ***\r\n\r\n";
     interpreterConsolePush(errMsg, strlen(errMsg));
@@ -1459,6 +1462,8 @@ static void controllerSetCLExt(uint32_t relays)
 
       taskENABLE_INTERRUPTS();
     }
+
+    controllerFSM_PushOptiVars();
 
   } else {
     const char errMsg[] = "*** Power to high to set C, L or C/L mode ***\r\n\r\n";

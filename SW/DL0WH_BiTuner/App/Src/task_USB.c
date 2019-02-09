@@ -72,11 +72,11 @@ void usbFromHostFromIRQ(const uint8_t* buf, uint32_t len)
   }
 }
 
-
-const uint8_t usbToHost_MaxWaitQueueMs = 100U;
 static void usbToHost(const uint8_t* buf, uint32_t len)
 {
-	if (buf && len) {
+  const uint32_t usbToHost_MaxWaitQueueMs = 25UL;
+
+  if (buf && len) {
 		while (len--) {
 			osMessagePut(usbToHostQueueHandle, (uint32_t) *(buf++), usbToHost_MaxWaitQueueMs);
 		}
@@ -86,6 +86,8 @@ static void usbToHost(const uint8_t* buf, uint32_t len)
 
 static void usbToHostWait(const uint8_t* buf, uint32_t len)
 {
+  const uint32_t usbToHost_MaxWaitQueueMs = 25UL;
+
   /* Sanity checks */
   if (!buf || !len) {
     return;
@@ -94,7 +96,8 @@ static void usbToHostWait(const uint8_t* buf, uint32_t len)
   EventBits_t eb = xEventGroupWaitBits(usbToHostEventGroupHandle,
       USB_TO_HOST_EG__BUF_EMPTY,
       USB_TO_HOST_EG__BUF_EMPTY,
-      0, 25UL);
+      0, usbToHost_MaxWaitQueueMs);
+
   if (eb & USB_TO_HOST_EG__BUF_EMPTY) {
     usbToHost(buf, len);
   }
@@ -339,29 +342,25 @@ uint32_t usbPullFromOutQueue(uint8_t* msgAry, uint32_t waitMs)
 
 void usbStartUsbFromHostTask(void const * argument)
 {
+  const uint32_t maxWaitMs  = 25UL;
   const uint8_t nulBuf[1]   = { 0U };
 
   /* TaskLoop */
   for (;;) {
     if (v_usbUsbFromHostISRBufLen) {
-      BaseType_t higherPriorityTaskWoken = pdFALSE;
+      //BaseType_t higherPriorityTaskWoken = pdFALSE;
 
-      /* Interrupt disabled section */
       {
-        taskDISABLE_INTERRUPTS();
-
         /* USB OUT EP from host put data into the buffer */
         volatile uint8_t* bufPtr = v_usbUsbFromHostISRBuf;
         for (uint32_t idx = 0UL; idx < v_usbUsbFromHostISRBufLen; ++idx, ++bufPtr) {
-          xQueueSendToBackFromISR(usbFromHostQueueHandle, (uint8_t*)bufPtr, &higherPriorityTaskWoken);
+          xQueueSendToBack(usbFromHostQueueHandle, (uint8_t*)bufPtr, maxWaitMs);
         }
-        xQueueSendToBackFromISR(usbFromHostQueueHandle, nulBuf, &higherPriorityTaskWoken);
+        xQueueSendToBack(usbFromHostQueueHandle, nulBuf, maxWaitMs);
 
         v_usbUsbFromHostISRBufLen = 0UL;
         __DMB();
         memset((char*) v_usbUsbFromHostISRBuf, 0, sizeof(v_usbUsbFromHostISRBuf));
-
-        taskENABLE_INTERRUPTS();
       }
 
     } else {

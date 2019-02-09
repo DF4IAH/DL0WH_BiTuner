@@ -239,7 +239,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
   } else if (!strncmp("L", cb, 1) && (3 == len)) {
     /* Set inductance */
     uint8_t valLsw = *(cb + 1) > '0' ?  *(cb + 1) - '0' : 0;
-    const uint8_t valLenable  = *(cb + 2) == '1' ?  1U : 0U;
+    const uint8_t valLenable  = *(cb + 2) != '0' ?  1U : 0U;
     if (0 < valLsw && valLsw <= 8) {
       --valLsw;
       uint32_t cmd[2];
@@ -247,6 +247,8 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
       cmd[1] = (valLsw      << 24U) |
                (valLenable  << 16U) ;
       controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+    } else {
+      interpreterUnknownCommand();
     }
 
   } else if ((!strncmp("CL", cb, 2) || !strncmp("V1", cb, 2) || !strncmp("H0", cb, 2) || !strncmp("CV", cb, 2)) && (2 == len)) {

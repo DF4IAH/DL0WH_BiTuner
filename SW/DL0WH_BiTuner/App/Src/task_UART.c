@@ -108,12 +108,15 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
   */
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle)
 {
+  return;
+#if 0
   if (UartHandle == &huart4) {
     HAL_CAT_ErrorCallback(UartHandle);
     return;
   }
 
   Error_Handler();
+#endif
 }
 
 
@@ -402,10 +405,9 @@ static void uartRxStartDma(void)
   xEventGroupClearBits(uartEventGroupHandle, UART_EG__DMA_RX_END);
 
   /* Start RX DMA after aborting the previous one */
-  HAL_UART_DMAStop(&hlpuart1);
   if (HAL_UART_Receive_DMA(&hlpuart1, (uint8_t*)g_uartRxDmaBuf, dmaBufSize) != HAL_OK)
   {
-    Error_Handler();
+    //Error_Handler();
   }
 
   /* Set RX running flag */
@@ -416,7 +418,7 @@ static void uartRxStartDma(void)
 void uartRxGetterTask(void const * argument)
 {
   const uint8_t nulBuf[1]   = { 0U };
-  const uint8_t maxWaitMs   = 25U;
+  const uint32_t maxWaitMs  = 25UL;
 
   /* TaskLoop */
   for (;;) {
@@ -443,6 +445,12 @@ void uartRxGetterTask(void const * argument)
       }
 
     } else {
+      /* Restart DMA if transfer has finished */
+      if (UART_EG__DMA_RX_END & xEventGroupGetBits(uartEventGroupHandle)) {
+        /* Reactivate UART RX DMA transfer */
+        uartRxStartDma();
+      }
+
       /* Delay for the next attempt */
       osDelay(25UL);
     }

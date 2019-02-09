@@ -488,7 +488,7 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
   case MsgDefault__SetVar03_C_L_CV_CH:
     {
       /* L's are shorted when SET - inverted logic */
-      s_rtos_Matcher = 0x3ffUL & (msgAry[1] ^0x00ff00UL);
+      s_rtos_Matcher = 0x03ffffUL & (msgAry[1] ^ 0x00ff00UL);
       rtosDefaultUpdateRelays();
     }
     break;
