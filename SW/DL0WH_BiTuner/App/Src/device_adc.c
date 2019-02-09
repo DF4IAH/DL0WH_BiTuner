@@ -124,7 +124,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 
   } else if (hadc == &hadc2) {
     s_adc2_fwdrev_mv = (s_adc2_dma_buf[0] * s_adc1_vref_mv / 65535.0f) + ADC_V_OFFS_FWDREV_mV;
-    xEventGroupSetBitsFromISR(adcEventGroupHandle, EG_ADC3__CONV_AVAIL_VDIODE, &pxHigherPriorityTaskWoken);
+    xEventGroupSetBitsFromISR(adcEventGroupHandle, EG_ADC2__CONV_AVAIL_FWDREV, &pxHigherPriorityTaskWoken);
 
   } else if (hadc == &hadc3) {
     s_adc3_vdiode_mv = (s_adc3_dma_buf[0] * s_adc1_vref_mv / 65535.0f) + ADC_V_OFFS_VDIODE_mV;

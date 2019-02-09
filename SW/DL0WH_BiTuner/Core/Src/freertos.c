@@ -113,8 +113,10 @@ EventGroupHandle_t                    catEventGroupHandle;
 static uint8_t                        s_rtos_DefaultTask_adc_enable     = 0U;
 static uint32_t                       s_rtos_DefaultTaskStartTime       = 0UL;
 
+#ifdef SPI_DRIVER_CHECK
 static uint32_t                       s_rtos_lastErrorBuf[16]           = { 0UL };
 static uint8_t                        s_rtos_lastErrorCnt               = 0U;
+#endif
 
 static uint32_t                       s_rtos_Matcher                    = 0UL;
 
@@ -249,6 +251,7 @@ __weak void vApplicationMallocFailedHook(void)
 /* Local functions */
 
 /* Store driver error information */
+#ifdef SPI_DRIVER_CHECK
 static void rtosDefaultCheckSpiDrvError(uint8_t variant)
 {
   if (spi1RxBuffer[0]) {
@@ -261,6 +264,7 @@ static void rtosDefaultCheckSpiDrvError(uint8_t variant)
     s_rtos_lastErrorCnt &= 0x0f;
   }
 }
+#endif
 
 /* Set and reset relays accordingly */
 static void rtosDefaultSpiRelays(uint64_t relaySettings)
@@ -268,17 +272,20 @@ static void rtosDefaultSpiRelays(uint64_t relaySettings)
   const uint16_t relayC   = 0xffffU &  relaySettings;
   const uint16_t relayL   = 0xffffU & (relaySettings >> 16);
   const uint16_t relayExt = 0xffffU & (relaySettings >> 32);
+  static _Bool isInit     = false;
 
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
+  if (!isInit) {
+    /* GPIO Ports Clock Enable */
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOC_CLK_ENABLE();
 
-  /* Disable the PWM signal in case it is still on */
-  HAL_GPIO_WritePin(GPIO_SPI_PWM_GPIO_Port, GPIO_SPI_PWM_Pin, GPIO_PIN_RESET);
+    /* Disable the PWM signal in case it is still on */
+    HAL_GPIO_WritePin(GPIO_SPI_PWM_GPIO_Port, GPIO_SPI_PWM_Pin, GPIO_PIN_RESET);
 
-  /* Release reset signal of all SPI drivers */
-  HAL_GPIO_WritePin(GPIO_SPI_RST_GPIO_Port, GPIO_SPI_RST_Pin, GPIO_PIN_SET);
-  osDelay(1);
+    /* Release reset signal of all SPI drivers */
+    HAL_GPIO_WritePin(GPIO_SPI_RST_GPIO_Port, GPIO_SPI_RST_Pin, GPIO_PIN_SET);
+    osDelay(1);
+  }
 
   /* Preparations */
   const uint8_t spiMsgOpenLoadCurrentEnable[]               = { 0x04U, 0x00U, 0x00U };
@@ -289,20 +296,22 @@ static void rtosDefaultSpiRelays(uint64_t relaySettings)
 
   /* Relays for C */
   {
-    /* Open Load Current Enable */
-    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
+    if (!isInit) {
+      /* Open Load Current Enable */
+      spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
 
-    /* Retry on over-voltage, no restart on over temp */
-    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgRetryOnOvervolNoRetryOverTemp), spiMsgRetryOnOvervolNoRetryOverTemp);
+      /* Retry on over-voltage, no restart on over temp */
+      spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgRetryOnOvervolNoRetryOverTemp), spiMsgRetryOnOvervolNoRetryOverTemp);
 
-    /* No SFPD */
-    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgSFPDdisabled), spiMsgSFPDdisabled);
+      /* No SFPD */
+      spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgSFPDdisabled), spiMsgSFPDdisabled);
 
-    /* PWM on all outputs */
-    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgPWMenabled), spiMsgPWMenabled);
+      /* PWM on all outputs */
+      spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgPWMenabled), spiMsgPWMenabled);
 
-    /* PWM signal is AND'ed */
-    spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgPWMand), spiMsgPWMand);
+      /* PWM signal is AND'ed */
+      spiProcessSpi1MsgTemplate(SPI1_C,   sizeof(spiMsgPWMand), spiMsgPWMand);
+    }
 
     /* Relay outputs to be driven ON/OFF */
     uint8_t spiMsgOnOff[3];
@@ -315,20 +324,22 @@ static void rtosDefaultSpiRelays(uint64_t relaySettings)
 
   /* Relays for L */
   {
-    /* Open Load Current Enable */
-    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
+    if (!isInit) {
+      /* Open Load Current Enable */
+      spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
 
-    /* Retry on over-voltage, no restart on over temp */
-    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgRetryOnOvervolNoRetryOverTemp), spiMsgRetryOnOvervolNoRetryOverTemp);
+      /* Retry on over-voltage, no restart on over temp */
+      spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgRetryOnOvervolNoRetryOverTemp), spiMsgRetryOnOvervolNoRetryOverTemp);
 
-    /* No SFPD */
-    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgSFPDdisabled), spiMsgSFPDdisabled);
+      /* No SFPD */
+      spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgSFPDdisabled), spiMsgSFPDdisabled);
 
-    /* PWM on all outputs */
-    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgPWMenabled), spiMsgPWMenabled);
+      /* PWM on all outputs */
+      spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgPWMenabled), spiMsgPWMenabled);
 
-    /* PWM signal is AND'ed */
-    spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgPWMand), spiMsgPWMand);
+      /* PWM signal is AND'ed */
+      spiProcessSpi1MsgTemplate(SPI1_L,   sizeof(spiMsgPWMand), spiMsgPWMand);
+    }
 
     /* Relay outputs to be driven ON/OFF */
     uint8_t spiMsgOnOff[3];
@@ -341,20 +352,22 @@ static void rtosDefaultSpiRelays(uint64_t relaySettings)
 
   /* Relays for Ext */
   {
-    /* Open Load Current Enable */
-    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
+    if (!isInit) {
+      /* Open Load Current Enable */
+      spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgOpenLoadCurrentEnable), spiMsgOpenLoadCurrentEnable);
 
-    /* Retry on over-voltage, no restart on over temp */
-    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgRetryOnOvervolNoRetryOverTemp), spiMsgRetryOnOvervolNoRetryOverTemp);
+      /* Retry on over-voltage, no restart on over temp */
+      spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgRetryOnOvervolNoRetryOverTemp), spiMsgRetryOnOvervolNoRetryOverTemp);
 
-    /* No SFPD */
-    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgSFPDdisabled), spiMsgSFPDdisabled);
+      /* No SFPD */
+      spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgSFPDdisabled), spiMsgSFPDdisabled);
 
-    /* PWM on all outputs */
-    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgPWMenabled), spiMsgPWMenabled);
+      /* PWM on all outputs */
+      spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgPWMenabled), spiMsgPWMenabled);
 
-    /* PWM signal is AND'ed */
-    spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgPWMand), spiMsgPWMand);
+      /* PWM signal is AND'ed */
+      spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgPWMand), spiMsgPWMand);
+    }
 
     /* Relay outputs to be driven ON/OFF */
     uint8_t spiMsgOnOff[3];
@@ -371,7 +384,9 @@ static void rtosDefaultSpiRelays(uint64_t relaySettings)
     osDelay(30UL);
     HAL_GPIO_WritePin(GPIO_SPI_PWM_GPIO_Port, GPIO_SPI_PWM_Pin, GPIO_PIN_RESET);
   }
+  isInit = true;
 
+#ifdef SPI_DRIVER_CHECK
   /* Check output states for any driver errors */
   {
     const uint8_t spiMsgAllOff[] = { 0x00U, 0x00U, 0x00U };
@@ -385,9 +400,7 @@ static void rtosDefaultSpiRelays(uint64_t relaySettings)
     spiProcessSpi1MsgTemplate(SPI1_EXT, sizeof(spiMsgAllOff), spiMsgAllOff);
     rtosDefaultCheckSpiDrvError('X');
   }
-
-  /* Reset all SPI drivers */
-  HAL_GPIO_WritePin(GPIO_SPI_RST_GPIO_Port, GPIO_SPI_RST_Pin, GPIO_PIN_RESET);
+#endif
 }
 
 static void rtosDefaultUpdateRelays(void)
@@ -532,27 +545,31 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
 
           /* Push to global vars */
           {
-            __disable_irq();
+            taskDISABLE_INTERRUPTS();
 
             g_adc_refint_val  = l_adc_refint_val;
             g_adc_vref_mv     = l_adc_vref_mv;
             g_adc_bat_mv      = l_adc_bat_mv;
             g_adc_temp_deg    = l_adc_temp_deg;
 
-            __enable_irq();
+            taskENABLE_INTERRUPTS();
           }
 
-          int32_t   l_adc_temp_deg_i    = 0L;
-          uint32_t  l_adc_temp_deg_f100 = 0UL;
+#if 1
+          {
+            int32_t   l_adc_temp_deg_i    = 0L;
+            uint32_t  l_adc_temp_deg_f100 = 0UL;
 
-          mainCalcFloat2IntFrac(l_adc_temp_deg, 2, &l_adc_temp_deg_i, &l_adc_temp_deg_f100);
+            mainCalcFloat2IntFrac(l_adc_temp_deg, 2, &l_adc_temp_deg_i, &l_adc_temp_deg_f100);
 
-          dbgLen = sprintf(dbgBuf, "ADC1: refint_val = %4d, Vref = %4d mV, Bat = %4d mV, Temp = %+3ld.%02luC\r\n",
-              (int16_t) (l_adc_refint_val + 0.5f),
-              (int16_t) (l_adc_vref_mv    + 0.5f),
-              (int16_t) (l_adc_bat_mv     + 0.5f),
-              l_adc_temp_deg_i, l_adc_temp_deg_f100);
-          usbLogLen(dbgBuf, dbgLen);
+            dbgLen = sprintf(dbgBuf, "ADC1: refint_val = %4d, Vref = %4d mV, Bat = %4d mV, Temp = %+3ld.%02luC\r\n",
+                (int16_t) (l_adc_refint_val + 0.5f),
+                (int16_t) (l_adc_vref_mv    + 0.5f),
+                (int16_t) (l_adc_bat_mv     + 0.5f),
+                l_adc_temp_deg_i, l_adc_temp_deg_f100);
+            usbLogLen(dbgBuf, dbgLen);
+          }
+#endif
         }
       }
     }
@@ -576,13 +593,19 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
 
           /* Push to global var */
           {
-            __disable_irq();
+            taskDISABLE_INTERRUPTS();
+
             g_adc_vdiode_mv = l_adc_vdiode_mv;
-            __enable_irq();
+
+            taskENABLE_INTERRUPTS();
           }
 
-          dbgLen = sprintf(dbgBuf, "ADC3: Vdiode = %4d mV\r\n", (int16_t) (l_adc_vdiode_mv + 0.5f));
-          usbLogLen(dbgBuf, dbgLen);
+#if 1
+          {
+            dbgLen = sprintf(dbgBuf, "ADC3: Vdiode = %4d mV\r\n", (int16_t) (l_adc_vdiode_mv + 0.5f));
+            usbLogLen(dbgBuf, dbgLen);
+          }
+#endif
         }
       }
     }
@@ -610,9 +633,11 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
 
           /* Get global var */
           {
-            __disable_irq();
+            taskDISABLE_INTERRUPTS();
+
             l_adc_vdiode_mv = g_adc_vdiode_mv;
-            __enable_irq();
+
+            taskENABLE_INTERRUPTS();
           }
 
           /* Get the linearized voltage */
@@ -620,13 +645,19 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
 
           /* Push to global var */
           {
-            __disable_irq();
+            taskDISABLE_INTERRUPTS();
+
             g_adc_fwd_mv = l_adc_fwd_mv;
-            __enable_irq();
+
+            taskENABLE_INTERRUPTS();
           }
 
-          dbgLen = sprintf(dbgBuf, "ADC2: FWD = %5d mV\r\n", (int16_t) (l_adc_fwd_mv + 0.5f));
-          usbLogLen(dbgBuf, dbgLen);
+#if 1
+          {
+            dbgLen = sprintf(dbgBuf, "ADC2: FWD = %5d mV\r\n", (int16_t) (l_adc_fwd_mv + 0.5f));
+            usbLogLen(dbgBuf, dbgLen);
+          }
+#endif
         }
       }
     }
@@ -655,10 +686,12 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
 
           /* Get global vars */
           {
-            __disable_irq();
+            taskDISABLE_INTERRUPTS();
+
             l_adc_fwd_mv    = g_adc_fwd_mv;
             l_adc_vdiode_mv = g_adc_vdiode_mv;
-            __enable_irq();
+
+            taskENABLE_INTERRUPTS();
           }
 
           /* Get the linearized voltage and (V)SWR */
@@ -667,10 +700,12 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
 
           /* Push to global vars */
           {
-            __disable_irq();
+            taskDISABLE_INTERRUPTS();
+
             g_adc_rev_mv  = l_adc_rev_mv;
             g_adc_swr     = l_swr;
-            __enable_irq();
+
+            taskENABLE_INTERRUPTS();
           }
 
           int32_t   l_swr_i    = 0L;
@@ -939,7 +974,6 @@ void StartDefaultTask(void const * argument)
 
   /* USER CODE BEGIN StartDefaultTask */
   /* defaultTaskInit() section */
-  //spix_Init(&hspi1, spi1_BSemHandle);
 
   /* Wait until controller is up */
   xEventGroupWaitBits(globalEventGroupHandle,

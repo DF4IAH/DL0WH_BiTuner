@@ -1771,7 +1771,7 @@ static void controllerInit(void)
 
   /* Signaling controller is up and running */
   xEventGroupSetBits(globalEventGroupHandle, EG_GLOBAL__Controller_CTRL_IS_RUNNING);
-  osDelay(10UL);
+  osDelay(100UL);
 
   /* Send INIT message for modules that should be active */
   {
