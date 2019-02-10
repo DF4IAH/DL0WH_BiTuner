@@ -48,7 +48,7 @@ extern osSemaphoreId        c2catRx_BSemHandle;
 
 extern EventGroupHandle_t   globalEventGroupHandle;
 
-extern float                g_adc_fwd_mv;
+extern float                g_adc2_fwd_mv;
 extern float                g_adc_swr;
 
 
@@ -658,7 +658,7 @@ static void controllerFSM_GetGlobalVars(void)
   {
     taskDISABLE_INTERRUPTS();
 
-    s_controller_adc_fwd_mv     = g_adc_fwd_mv;
+    s_controller_adc_fwd_mv     = g_adc2_fwd_mv;
     s_controller_adc_swr        = g_adc_swr;
 
     if (s_controller_adc_swr < Controller_AutoSWR_SWR_Init) {
@@ -696,6 +696,61 @@ static void controllerFSM_GetGlobalVars(void)
 
   taskENABLE_INTERRUPTS();
   }
+
+#if 0
+  /* Logging */
+  {
+    int32_t   l_adc_temp_deg_i    = 0L;
+    uint32_t  l_adc_temp_deg_f100 = 0UL;
+    int       dbgLen;
+    char      dbgBuf[128];
+
+    mainCalcFloat2IntFrac(l_adc_temp_deg, 2, &l_adc_temp_deg_i, &l_adc_temp_deg_f100);
+
+    dbgLen = sprintf(dbgBuf, "ADC1: refint_val = %4d, Vref = %4d mV, Bat = %4d mV, Temp = %+3ld.%02luC\r\n",
+        (int16_t) (l_adc_refint_val + 0.5f),
+        (int16_t) (l_adc_vref_mv    + 0.5f),
+        (int16_t) (l_adc_bat_mv     + 0.5f),
+        l_adc_temp_deg_i, l_adc_temp_deg_f100);
+    usbLogLen(dbgBuf, dbgLen);
+  }
+#endif
+
+#if 0
+            /* Logging */
+            {
+              int   dbgLen;
+              char  dbgBuf[128];
+
+              dbgLen = sprintf(dbgBuf, "ADC2: FWD = %5d mV\r\n", (int16_t) (l_adc_fwd_mv + 0.5f));
+              usbLogLen(dbgBuf, dbgLen);
+            }
+#endif
+
+#if 0
+            /* Logging */
+            {
+              int   dbgLen;
+              char  dbgBuf[128];
+
+              dbgLen = sprintf(dbgBuf, "ADC2: REV = %5d mV, SWR = %+3ld.%03lu\r\n",
+                  (int16_t) (l_adc_rev_mv + 0.5f),
+                  l_swr_i, l_swr_f100);
+              usbLogLen(dbgBuf, dbgLen);
+            }
+#endif
+
+#if 0
+              /* Logging */
+              {
+                int   dbgLen;
+                char  dbgBuf[128];
+
+                dbgLen = sprintf(dbgBuf, "ADC3: Vdiode = %4d mV\r\n", (int16_t) (l_adc_vdiode_mv + 0.5f));
+                usbLogLen(dbgBuf, dbgLen);
+              }
+#endif
+
 }
 
 static void controllerFSM_PushOptiVars(void)
@@ -1540,21 +1595,6 @@ static void controllerCyclicTimerEvent(void)
   /* FSM logic */
   controllerFSM();
 
-  /* Request ADC values for next iteration */
-  if (s_controller_doAdc) {
-    uint32_t  msgAry[4];
-    uint8_t   msgLen = 0U;
-
-    /* Get ADC channels */
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc01_MCU_ADC1);
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc02_MCU_ADC3_VDIODE);
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc03_MCU_ADC2_FWD);
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc04_MCU_ADC2_REV);
-
-    /* Push to queue */
-    controllerMsgPushToOutQueue(msgLen, msgAry, 10UL);
-  }
-
   /* Handle serial CAT interface packets */
   {
     //uint8_t inBuf[256]  = { 0U };
@@ -1626,6 +1666,8 @@ static void controllerMsgProcessor(void)
 
             msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__SetVar02_Clocking);
             msgAry[msgLen++]  = (s_controller_McuClocking << 24U);
+            msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 4U, MsgDefault__CallFunc02_CyclicTimerStart);
+            msgAry[msgLen++]  = 30UL;
             controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
           }
           break;

@@ -93,13 +93,13 @@ extern volatile uint8_t               spi1RxBuffer[SPI1_BUFFERSIZE];
 
 extern SPI_HandleTypeDef              hspi1;
 
-extern float                          g_adc_refint_val;
-extern float                          g_adc_vref_mv;
-extern float                          g_adc_bat_mv;
-extern float                          g_adc_temp_deg;
-extern float                          g_adc_fwd_mv;
-extern float                          g_adc_rev_mv;
-extern float                          g_adc_vdiode_mv;
+extern float                          g_adc1_refint_val;
+extern float                          g_adc1_vref_mv;
+extern float                          g_adc1_bat_mv;
+extern float                          g_adc1_temp_deg;
+extern float                          g_adc2_fwd_mv;
+extern float                          g_adc2_rev_mv;
+extern float                          g_adc3_vdiode_mv;
 extern float                          g_adc_swr;
 
 EventGroupHandle_t                    adcEventGroupHandle;
@@ -443,9 +443,58 @@ static void rtosDefaultUpdateRelays(void)
 }
 
 
+/* Timer functions */
+
+static void defaultCyclicTimerEvent(void)
+{
+  static uint32_t ctr = 0UL;
+
+  /* Start ADC1 conversion chain each 30 ms */
+  {
+    /* Start chain of ADC1 conversions */
+    adcStartConv(ADC_ADC1_TEMP_DEG);
+  }
+
+  /* Start ADC2 double conversion each 30 ms */
+  {
+    adcStartConv(ADC_ADC2_IN1_FWD_MV);
+    EventBits_t eb = xEventGroupWaitBits(adcEventGroupHandle,
+        EG_ADC2__CONV_AVAIL_FWD,
+        EG_ADC2__CONV_AVAIL_FWD,
+        pdFALSE, 2UL);
+
+    if (eb & ADC_ADC2_IN1_FWD_MV) {
+      adcStartConv(ADC_ADC2_IN1_REV_MV);
+    }
+  }
+
+  /* Start ADC3 every 3 s */
+  if (!(ctr % 100)) {
+    adcStartConv(ADC_ADC3_IN3_VDIODE_MV);
+  }
+
+  ctr++;
+}
+
+static void defaultCyclicStart(uint32_t period_ms)
+{
+  osTimerStart(defaultTimerHandle, period_ms);
+}
+
+static void defaultCyclicStop(void)
+{
+  osTimerStop(defaultTimerHandle);
+}
+
 static void defaultTimerCallback(void const * argument)
 {
+  /* Context of RTOS Daemon Task */
+  uint32_t msgAry[1];
 
+  /* Write cyclic timer message to this destination */
+  uint8_t msgLen    = 0U;
+  msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Rtos_Default, 0U, MsgDefault__CallFunc01_CyclicTimerEvent);
+  controllerMsgPushToInQueue(msgLen, msgAry, 1UL);
 }
 
 
@@ -490,19 +539,25 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
     }
     break;
 
+  case MsgDefault__CallFunc01_CyclicTimerEvent:
+    defaultCyclicTimerEvent();
+    break;
+
+  case MsgDefault__CallFunc02_CyclicTimerStart:
+    {
+      const uint32_t timerMs = msgAry[1];
+      defaultCyclicStart(timerMs);
+    }
+    break;
+
+  case MsgDefault__CallFunc03_CyclicTimerStop:
+    defaultCyclicStop();
+    break;
+
   /* MCU GPIO/Alternate-Functions set-up */
   case MsgDefault__SetVar01_IOs:
     {
       // TODO: implementation
-    }
-    break;
-
-  /* Set and reset relays */
-  case MsgDefault__SetVar03_C_L_CV_CH:
-    {
-      /* L's are shorted when SET - inverted logic */
-      s_rtos_Matcher = 0x03ffffUL & (msgAry[1] ^ 0x00ff00UL);
-      rtosDefaultUpdateRelays();
     }
     break;
 
@@ -523,214 +578,14 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
     }
     break;
 
-  /* ADC1 single conversion */
-  case MsgDefault__CallFunc01_MCU_ADC1:
-    {
-      /* Do ADC1 conversion and logging of ADC1 data */
-      if (s_rtos_DefaultTask_adc_enable) {
-
-        /* Start chain of ADC1 conversions */
-        adcStartConv(ADC_ADC1_TEMP_DEG);
-
-        const uint32_t regMask = EG_ADC1__CONV_AVAIL_REFINT | EG_ADC1__CONV_AVAIL_BAT | EG_ADC1__CONV_AVAIL_TEMP;
-        BaseType_t regBits = xEventGroupWaitBits(adcEventGroupHandle, regMask, regMask, pdTRUE, 100 / portTICK_PERIOD_MS);
-        if ((regBits & regMask) == regMask) {
-          /* All channels of ADC1 are complete */
-          float     l_adc_refint_val    = adcGetVal(ADC_ADC1_REFINT_VAL);
-          float     l_adc_vref_mv       = adcGetVal(ADC_ADC1_VREF_MV);
-          float     l_adc_bat_mv        = adcGetVal(ADC_ADC1_BAT_MV);
-          float     l_adc_temp_deg      = adcGetVal(ADC_ADC1_TEMP_DEG);
-
-          /* Push to global vars */
-          {
-            taskDISABLE_INTERRUPTS();
-
-            g_adc_refint_val  = l_adc_refint_val;
-            g_adc_vref_mv     = l_adc_vref_mv;
-            g_adc_bat_mv      = l_adc_bat_mv;
-            g_adc_temp_deg    = l_adc_temp_deg;
-
-            taskENABLE_INTERRUPTS();
-          }
-
-#if 1
-          /* Logging */
-          {
-            int32_t   l_adc_temp_deg_i    = 0L;
-            uint32_t  l_adc_temp_deg_f100 = 0UL;
-            int       dbgLen;
-            char      dbgBuf[128];
-
-            mainCalcFloat2IntFrac(l_adc_temp_deg, 2, &l_adc_temp_deg_i, &l_adc_temp_deg_f100);
-
-            dbgLen = sprintf(dbgBuf, "ADC1: refint_val = %4d, Vref = %4d mV, Bat = %4d mV, Temp = %+3ld.%02luC\r\n",
-                (int16_t) (l_adc_refint_val + 0.5f),
-                (int16_t) (l_adc_vref_mv    + 0.5f),
-                (int16_t) (l_adc_bat_mv     + 0.5f),
-                l_adc_temp_deg_i, l_adc_temp_deg_f100);
-            usbLogLen(dbgBuf, dbgLen);
-          }
-#endif
-        }
-      }
-    }
-    break;
-
-    /* ADC2 FWD single conversion */
-    case MsgDefault__CallFunc03_MCU_ADC2_FWD:
+    /* Set and reset relays */
+    case MsgDefault__SetVar03_C_L_CV_CH:
       {
-        /* Do ADC2 FWD conversion and logging of ADC2 data */
-        if (s_rtos_DefaultTask_adc_enable) {
-
-          /* Switch MUX to FWD input */
-          HAL_GPIO_WritePin(GPIO_SWR_SEL_REV_GPIO_Port, GPIO_SWR_SEL_REV_Pin, GPIO_PIN_RESET);
-          __ISB();
-          HAL_GPIO_WritePin(GPIO_SWR_SEL_FWD_GPIO_Port, GPIO_SWR_SEL_FWD_Pin, GPIO_PIN_SET);
-
-          adcStartConv(ADC_ADC2_IN1_FWDREV_MV);
-
-          const uint32_t regMask = EG_ADC2__CONV_AVAIL_FWDREV;
-          BaseType_t regBits = xEventGroupWaitBits(adcEventGroupHandle, regMask, regMask, pdTRUE, 100 / portTICK_PERIOD_MS);
-          if ((regBits & regMask) == regMask) {
-            float l_adc_vdiode_mv;
-
-            /* Get global var */
-            {
-              taskDISABLE_INTERRUPTS();
-
-              l_adc_vdiode_mv = g_adc_vdiode_mv;
-
-              taskENABLE_INTERRUPTS();
-            }
-
-            /* Get the linearized voltage */
-            float l_adc_fwd_mv = mainCalc_fwdRev_mV(adcGetVal(ADC_ADC2_IN1_FWDREV_MV), l_adc_vdiode_mv);
-
-            /* Push to global var */
-            {
-              taskDISABLE_INTERRUPTS();
-
-              g_adc_fwd_mv = l_adc_fwd_mv;
-
-              taskENABLE_INTERRUPTS();
-            }
-
-#if 1
-            /* Logging */
-            {
-              int   dbgLen;
-              char  dbgBuf[128];
-
-              dbgLen = sprintf(dbgBuf, "ADC2: FWD = %5d mV\r\n", (int16_t) (l_adc_fwd_mv + 0.5f));
-              usbLogLen(dbgBuf, dbgLen);
-            }
-#endif
-          }
-        }
+        /* L's are shorted when SET - inverted logic */
+        s_rtos_Matcher = 0x03ffffUL & (msgAry[1] ^ 0x00ff00UL);
+        rtosDefaultUpdateRelays();
       }
       break;
-
-    /* ADC2 REV single conversion */
-    case MsgDefault__CallFunc04_MCU_ADC2_REV:
-      {
-        /* Do ADC2 REV conversion and logging of ADC2 data */
-        if (s_rtos_DefaultTask_adc_enable) {
-
-          /* Switch MUX to FWD input */
-          HAL_GPIO_WritePin(GPIO_SWR_SEL_FWD_GPIO_Port, GPIO_SWR_SEL_FWD_Pin, GPIO_PIN_RESET);
-          __DMB();
-          HAL_GPIO_WritePin(GPIO_SWR_SEL_REV_GPIO_Port, GPIO_SWR_SEL_REV_Pin, GPIO_PIN_SET);
-
-          adcStartConv(ADC_ADC2_IN1_FWDREV_MV);
-
-          const uint32_t regMask = EG_ADC2__CONV_AVAIL_FWDREV;
-          BaseType_t regBits = xEventGroupWaitBits(adcEventGroupHandle, regMask, regMask, pdTRUE, 100 / portTICK_PERIOD_MS);
-          if ((regBits & regMask) == regMask) {
-            float l_adc_fwd_mv;
-            float l_adc_vdiode_mv;
-
-            /* Get global vars */
-            {
-              taskDISABLE_INTERRUPTS();
-
-              l_adc_fwd_mv    = g_adc_fwd_mv;
-              l_adc_vdiode_mv = g_adc_vdiode_mv;
-
-              taskENABLE_INTERRUPTS();
-            }
-
-            /* Get the linearized voltage and (V)SWR */
-            float l_adc_rev_mv = mainCalc_fwdRev_mV(adcGetVal(ADC_ADC2_IN1_FWDREV_MV), l_adc_vdiode_mv);
-            float l_swr        = mainCalc_VSWR(l_adc_fwd_mv, l_adc_rev_mv);
-
-            /* Push to global vars */
-            {
-              taskDISABLE_INTERRUPTS();
-
-              g_adc_rev_mv  = l_adc_rev_mv;
-              g_adc_swr     = l_swr;
-
-              taskENABLE_INTERRUPTS();
-            }
-
-            int32_t   l_swr_i    = 0L;
-            uint32_t  l_swr_f100 = 0UL;
-
-            mainCalcFloat2IntFrac(l_swr, 3, &l_swr_i, &l_swr_f100);
-
-#if 1
-            /* Logging */
-            {
-              int   dbgLen;
-              char  dbgBuf[128];
-
-              dbgLen = sprintf(dbgBuf, "ADC2: REV = %5d mV, SWR = %+3ld.%03lu\r\n",
-                  (int16_t) (l_adc_rev_mv + 0.5f),
-                  l_swr_i, l_swr_f100);
-              usbLogLen(dbgBuf, dbgLen);
-            }
-#endif
-          }
-        }
-      }
-      break;
-
-      /* ADC3 Vdiode single conversion */
-      case MsgDefault__CallFunc02_MCU_ADC3_VDIODE:
-        {
-          /* Do ADC3 Vdiode conversion and logging of ADC3 data */
-          if (s_rtos_DefaultTask_adc_enable) {
-            adcStartConv(ADC_ADC3_IN3_VDIODE_MV);
-
-            const uint32_t regMask = EG_ADC3__CONV_AVAIL_VDIODE;
-            BaseType_t regBits = xEventGroupWaitBits(adcEventGroupHandle, regMask, regMask, pdTRUE, 100 / portTICK_PERIOD_MS);
-            if ((regBits & regMask) == regMask) {
-              /* All channels of ADC3 are complete */
-              float l_adc_vdiode_mv = adcGetVal(ADC_ADC3_IN3_VDIODE_MV);
-
-              /* Push to global var */
-              {
-                taskDISABLE_INTERRUPTS();
-
-                g_adc_vdiode_mv = l_adc_vdiode_mv;
-
-                taskENABLE_INTERRUPTS();
-              }
-
-#if 1
-              /* Logging */
-              {
-                int   dbgLen;
-                char  dbgBuf[128];
-
-                dbgLen = sprintf(dbgBuf, "ADC3: Vdiode = %4d mV\r\n", (int16_t) (l_adc_vdiode_mv + 0.5f));
-                usbLogLen(dbgBuf, dbgLen);
-              }
-#endif
-            }
-          }
-        }
-        break;
 
     default: { }
     }  // switch (cmd)

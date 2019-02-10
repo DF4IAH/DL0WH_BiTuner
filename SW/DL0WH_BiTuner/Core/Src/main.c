@@ -96,13 +96,13 @@ extern uint8_t                        i2c1TxBuffer[I2C_TXBUFSIZE];
 extern uint8_t                        i2c1RxBuffer[I2C_RXBUFSIZE];
 
 
-float                                 g_adc_refint_val        = 0.0f;
-float                                 g_adc_vref_mv           = 0.0f;
-float                                 g_adc_bat_mv            = 0.0f;
-float                                 g_adc_temp_deg          = 0.0f;
-float                                 g_adc_fwd_mv            = 0.0f;
-float                                 g_adc_rev_mv            = 0.0f;
-float                                 g_adc_vdiode_mv         = 0.0f;
+float                                 g_adc1_refint_val       = 0.0f;
+float                                 g_adc1_vref_mv          = 0.0f;
+float                                 g_adc1_bat_mv           = 0.0f;
+float                                 g_adc1_temp_deg         = 0.0f;
+float                                 g_adc2_fwd_mv           = 0.0f;
+float                                 g_adc2_rev_mv           = 0.0f;
+float                                 g_adc3_vdiode_mv        = 0.0f;
 float                                 g_adc_swr               = 1e+3f;
 
 /* Typical values for 48 MHz MSI configuration */
