@@ -108,6 +108,10 @@ void adcStopConv(ADC_ENUM_t adc)
   case ADC_ADC2_IN1_FWD_MV:
   case ADC_ADC2_IN1_REV_MV:
     HAL_ADC_Stop_DMA(&hadc2);
+
+    /* Disconnect FWD and REV path */
+    HAL_GPIO_WritePin(GPIO_SWR_SEL_FWD_GPIO_Port, GPIO_SWR_SEL_FWD_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIO_SWR_SEL_REV_GPIO_Port, GPIO_SWR_SEL_REV_Pin, GPIO_PIN_RESET);
     break;
 
   case ADC_ADC3_IN3_VDIODE_MV:

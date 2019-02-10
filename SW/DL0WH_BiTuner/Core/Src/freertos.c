@@ -479,6 +479,9 @@ static void defaultCyclicTimerEvent(void)
       if (eb & ADC_ADC2_IN1_REV_MV) {
         g_adc_swr = mainCalc_VSWR(g_adc2_fwd_mv, g_adc2_rev_mv);
       }
+
+      /* Shut FWD and REV path */
+      adcStopConv(ADC_ADC2_IN1_REV_MV);
     }
   }
 
