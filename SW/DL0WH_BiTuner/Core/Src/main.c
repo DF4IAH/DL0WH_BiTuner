@@ -369,13 +369,6 @@ int main(void)
     SystemResetbyARMcore();
   }
   __HAL_RCC_CLEAR_RESET_FLAGS();
-
-  const float val = 1.00f;
-  const       uint8_t fracCnt = 2;
-  int32_t     outInt = 0L;
-  uint32_t    outFrac = 0UL;
-  mainCalcFloat2IntFrac(val, fracCnt, &outInt, &outFrac);
-
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
