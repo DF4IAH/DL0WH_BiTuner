@@ -48,7 +48,13 @@ extern osSemaphoreId        c2catRx_BSemHandle;
 
 extern EventGroupHandle_t   globalEventGroupHandle;
 
+extern float                g_adc1_refint_val;
+extern float                g_adc1_vref_mv;
+extern float                g_adc1_bat_mv;
+extern float                g_adc1_temp_deg;
 extern float                g_adc2_fwd_mv;
+extern float                g_adc2_rev_mv;
+extern float                g_adc3_vdiode_mv;
 extern float                g_adc_swr;
 
 
@@ -697,60 +703,64 @@ static void controllerFSM_GetGlobalVars(void)
   taskENABLE_INTERRUPTS();
   }
 
-#if 0
+
+#if 1
   /* Logging */
   {
-    int32_t   l_adc_temp_deg_i    = 0L;
-    uint32_t  l_adc_temp_deg_f100 = 0UL;
+    int32_t   l_adc1_temp_deg_i    = 0L;
+    uint32_t  l_adc1_temp_deg_f100 = 0UL;
     int       dbgLen;
     char      dbgBuf[128];
 
-    mainCalcFloat2IntFrac(l_adc_temp_deg, 2, &l_adc_temp_deg_i, &l_adc_temp_deg_f100);
+    mainCalcFloat2IntFrac(g_adc1_temp_deg, 2, &l_adc1_temp_deg_i, &l_adc1_temp_deg_f100);
 
     dbgLen = sprintf(dbgBuf, "ADC1: refint_val = %4d, Vref = %4d mV, Bat = %4d mV, Temp = %+3ld.%02luC\r\n",
-        (int16_t) (l_adc_refint_val + 0.5f),
-        (int16_t) (l_adc_vref_mv    + 0.5f),
-        (int16_t) (l_adc_bat_mv     + 0.5f),
-        l_adc_temp_deg_i, l_adc_temp_deg_f100);
+        (int16_t) (g_adc1_refint_val + 0.5f),
+        (int16_t) (g_adc1_vref_mv    + 0.5f),
+        (int16_t) (g_adc1_bat_mv     + 0.5f),
+        l_adc1_temp_deg_i, l_adc1_temp_deg_f100);
     usbLogLen(dbgBuf, dbgLen);
   }
 #endif
 
-#if 0
+#if 1
             /* Logging */
             {
               int   dbgLen;
               char  dbgBuf[128];
 
-              dbgLen = sprintf(dbgBuf, "ADC2: FWD = %5d mV\r\n", (int16_t) (l_adc_fwd_mv + 0.5f));
+              dbgLen = sprintf(dbgBuf, "ADC2: FWD = %5d mV\r\n", (int16_t) (g_adc2_fwd_mv + 0.5f));
               usbLogLen(dbgBuf, dbgLen);
             }
 #endif
 
-#if 0
+#if 1
             /* Logging */
             {
+              int32_t   l_swr_i    = 0L;
+              uint32_t  l_swr_f100 = 0UL;
               int   dbgLen;
               char  dbgBuf[128];
 
+              mainCalcFloat2IntFrac(g_adc_swr, 2, &l_swr_i, &l_swr_f100);
+
               dbgLen = sprintf(dbgBuf, "ADC2: REV = %5d mV, SWR = %+3ld.%03lu\r\n",
-                  (int16_t) (l_adc_rev_mv + 0.5f),
+                  (int16_t) (g_adc2_rev_mv + 0.5f),
                   l_swr_i, l_swr_f100);
               usbLogLen(dbgBuf, dbgLen);
             }
 #endif
 
-#if 0
+#if 1
               /* Logging */
               {
                 int   dbgLen;
                 char  dbgBuf[128];
 
-                dbgLen = sprintf(dbgBuf, "ADC3: Vdiode = %4d mV\r\n", (int16_t) (l_adc_vdiode_mv + 0.5f));
+                dbgLen = sprintf(dbgBuf, "ADC3: Vdiode = %4d mV\r\n", (int16_t) (g_adc3_vdiode_mv + 0.5f));
                 usbLogLen(dbgBuf, dbgLen);
               }
 #endif
-
 }
 
 static void controllerFSM_PushOptiVars(void)

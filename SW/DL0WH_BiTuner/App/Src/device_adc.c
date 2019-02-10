@@ -121,7 +121,7 @@ void adcStopConv(ADC_ENUM_t adc)
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
-  const float c_infiniteResponseWeight  = 0.00f;
+  const float c_infiniteResponseWeight  = 0.98f;
   static float s_refintVal              = 23600.0f;    // Thumb value to start with
   static float s_batVal                 = 15310.0f;    // Thumb value to start with
   static float s_tempVal                = 14090.0f;    // Thumb value to start with

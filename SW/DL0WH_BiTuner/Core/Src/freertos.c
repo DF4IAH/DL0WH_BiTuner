@@ -455,22 +455,31 @@ static void defaultCyclicTimerEvent(void)
     adcStartConv(ADC_ADC1_TEMP_DEG);
   }
 
+  /* Start ADC3 every 3 s */
+  if (!(ctr % 100)) {
+    adcStartConv(ADC_ADC3_IN3_VDIODE_MV);
+  }
+
   /* Start ADC2 double conversion each 30 ms */
   {
     adcStartConv(ADC_ADC2_IN1_FWD_MV);
     EventBits_t eb = xEventGroupWaitBits(adcEventGroupHandle,
         EG_ADC2__CONV_AVAIL_FWD,
         EG_ADC2__CONV_AVAIL_FWD,
-        pdFALSE, 2UL);
+        pdFALSE, 5UL);
 
     if (eb & ADC_ADC2_IN1_FWD_MV) {
       adcStartConv(ADC_ADC2_IN1_REV_MV);
-    }
-  }
 
-  /* Start ADC3 every 3 s */
-  if (!(ctr % 100)) {
-    adcStartConv(ADC_ADC3_IN3_VDIODE_MV);
+      eb = xEventGroupWaitBits(adcEventGroupHandle,
+          EG_ADC2__CONV_AVAIL_REV,
+          EG_ADC2__CONV_AVAIL_REV,
+          pdFALSE, 5UL);
+
+      if (eb & ADC_ADC2_IN1_REV_MV) {
+        g_adc_swr = mainCalc_VSWR(g_adc2_fwd_mv, g_adc2_rev_mv);
+      }
+    }
   }
 
   ctr++;
