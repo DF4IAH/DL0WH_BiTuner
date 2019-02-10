@@ -21,9 +21,8 @@ extern ADC_HandleTypeDef    hadc3;
 extern EventGroupHandle_t   adcEventGroupHandle;
 
 
-static uint16_t             s_adc1_dma_buf[ADC1_CHANNELS]     = { 0U };
-static uint16_t             s_adc2_dma_buf[ADC2_CHANNELS]     = { 0U };
-static uint16_t             s_adc3_dma_buf[ADC3_CHANNELS]     = { 0U };
+static uint16_t             s_adc1_dma_buf[ADC1_DMA_CHANNELS] = { 0U };
+static uint16_t             s_adc2_dma_buf[ADC2_DMA_CHANNELS] = { 0U };
 
 static float                s_adc1_refint_val                 = 0.f;
 static float                s_adc1_vref_mv                    = 0.f;
@@ -77,7 +76,9 @@ void adcStartConv(ADC_ENUM_t adc)
 
   case ADC_ADC3_IN3_VDIODE_MV:
     xEventGroupClearBits(adcEventGroupHandle, EG_ADC3__CONV_AVAIL_VDIODE);
-    HAL_ADC_Start_DMA(&hadc3, (uint32_t*) s_adc3_dma_buf, (sizeof(s_adc3_dma_buf) / sizeof(uint16_t)));
+    __HAL_ADC_CLEAR_FLAG(&hadc3, ADC_FLAG_EOSMP);
+    __HAL_ADC_ENABLE_IT(&hadc3, ADC_IT_EOSMP);
+    HAL_ADC_Start_IT(&hadc3);
     break;
 
   default:
@@ -99,7 +100,7 @@ void adcStopConv(ADC_ENUM_t adc)
     break;
 
   case ADC_ADC3_IN3_VDIODE_MV:
-    HAL_ADC_Stop_DMA(&hadc3);
+    HAL_ADC_Stop_IT(&hadc3);
     break;
 
   default:
@@ -116,18 +117,21 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     const uint16_t* TS_CAL2_ADDR = (const uint16_t*) 0x1FFF75CA;
 
     s_adc1_refint_val = s_adc1_dma_buf[0] / 16.0f;
-    s_adc1_vref_mv   = (((float)VREFINT_CAL_VREF * (*VREFINT_CAL_ADDR)) / s_adc1_refint_val) - ADC_V_OFFS_VREF_mV;
-    s_adc1_bat_mv    = ADC_MUL_BAT * ((s_adc1_dma_buf[2] * s_adc1_vref_mv / 65535.0f) + ADC_V_OFFS_BAT_mV);
+    s_adc1_vref_mv    = (((float)VREFINT_CAL_VREF * (*VREFINT_CAL_ADDR)) / s_adc1_refint_val) + ADC_V_OFFS_VREF_mV;
+    s_adc1_bat_mv     = ((ADC_MUL_BAT * s_adc1_dma_buf[2] * s_adc1_vref_mv) / 65535.0f)       + ADC_V_OFFS_BAT_mV;
     s_adc1_temp_deg   = ((float)(110 - 30) / (*TS_CAL2_ADDR - *TS_CAL1_ADDR)) * ((s_adc1_dma_buf[3] *ADC_MUL_TEMP / 16.f) - *TS_CAL1_ADDR) + 30.f;
 
     xEventGroupSetBitsFromISR(adcEventGroupHandle, EG_ADC1__CONV_AVAIL_REFINT | EG_ADC1__CONV_AVAIL_BAT | EG_ADC1__CONV_AVAIL_TEMP, &pxHigherPriorityTaskWoken);
 
   } else if (hadc == &hadc2) {
-    s_adc2_fwdrev_mv = (s_adc2_dma_buf[0] * s_adc1_vref_mv / 65535.0f) + ADC_V_OFFS_FWDREV_mV;
+    s_adc2_fwdrev_mv = (s_adc2_dma_buf[0] * s_adc1_vref_mv / 65535.0f)                        + ADC_V_OFFS_FWDREV_mV;
     xEventGroupSetBitsFromISR(adcEventGroupHandle, EG_ADC2__CONV_AVAIL_FWDREV, &pxHigherPriorityTaskWoken);
 
   } else if (hadc == &hadc3) {
-    s_adc3_vdiode_mv = (s_adc3_dma_buf[0] * s_adc1_vref_mv / 65535.0f) + ADC_V_OFFS_VDIODE_mV;
+    HAL_ADC_Stop_IT(&hadc3);
+
+    const uint32_t val = HAL_ADC_GetValue(&hadc3);
+    s_adc3_vdiode_mv = (val * s_adc1_vref_mv / 65535.0f)                                      + ADC_V_OFFS_VDIODE_mV;
     xEventGroupSetBitsFromISR(adcEventGroupHandle, EG_ADC3__CONV_AVAIL_VDIODE, &pxHigherPriorityTaskWoken);
   }
 }
