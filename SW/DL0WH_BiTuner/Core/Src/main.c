@@ -171,18 +171,39 @@ void mainCalcFloat2IntFrac(float val, uint8_t fracCnt, int32_t* outInt, uint32_t
 {
   const uint8_t isNeg = val >= 0 ?  0U : 1U;
 
+  /* Sanity checks */
   if (!outInt || !outFrac) {
     return;
   }
 
+  /* Integer value */
   *outInt    = (int32_t) val;
   val       -= *outInt;
 
+  /* Fraction part is always positive */
   if (isNeg) {
     val = -val;
   }
-  val       *= powf(10, fracCnt);
+
+  /* Fraction within fraction decade count */
+  const float decade = powf(10, fracCnt);
+  val       *= decade;
   *outFrac   = (uint32_t) (val + 0.5f);
+
+  /* Check for overflow after rounding */
+  uint32_t testFrac = (*outFrac) % (uint32_t)decade;
+  if (testFrac != *outFrac) {
+    /* Integer part */
+    if (isNeg) {
+      (*outInt)--;
+
+    } else {
+      (*outInt)++;
+    }
+
+    /* Overflow to next zero */
+    *outFrac = 0UL;
+  }
 }
 
 float mainCalc_fwdRev_mV(float adc_mv, float vdiode_mv)
@@ -348,6 +369,13 @@ int main(void)
     SystemResetbyARMcore();
   }
   __HAL_RCC_CLEAR_RESET_FLAGS();
+
+  const float val = 1.00f;
+  const       uint8_t fracCnt = 2;
+  int32_t     outInt = 0L;
+  uint32_t    outFrac = 0UL;
+  mainCalcFloat2IntFrac(val, fracCnt, &outInt, &outFrac);
+
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
