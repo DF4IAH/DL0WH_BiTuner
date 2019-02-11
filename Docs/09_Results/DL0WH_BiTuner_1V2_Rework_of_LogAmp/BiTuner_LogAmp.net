@@ -4,8 +4,8 @@ D11 n11 n12 CMAD6001
 V1 nVp 0 3.3V
 V2 0 nVm 1.5V
 V3 n01 0 SINE(5 5 10)
-R21 nVp n21 4.7kR
-R22 n22 n21 18kR
+R21 nVp n21 5.0kR
+R22 n22 n21 12kR
 R12 n21 n12 1kR
 C22 n22 n21 100pF
 XU1 0 n11 nVp nVm n12 OPA354
@@ -14,6 +14,7 @@ R1 nVp n11 150kR
 .model D D
 .lib C:\Users\habel\Documents\LTspiceXVII\lib\cmp\standard.dio
 .tran 0 2 0
+.step temp 10 50 20
 .lib OPA354.lib
 .backanno
 .end
