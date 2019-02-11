@@ -1,0 +1,26 @@
+******
+* Spice Model
+* Item: CMAD6001
+* Date: 9/29/17
+* Revision History: B
+* ==========================================================
+* This model was developed by: 
+* Central Semiconductor Corp.
+* 145 Adams Avenue
+* Hauppauge, NY 11788
+*
+* These models are subject to change without notice.
+* Users may not directly or indirectly re-sell or 
+* re-distribute this model. This model may not 
+* be modified, or altered without the consent of Central Semiconductor Corp. 
+*
+* For more information on this model contact
+* Central Semiconductor Corp. at:
+* (631) 435-1110 or Engineering@centralsemi.com
+* http://www.centralsemi.com
+* ==========================================================
+******
+*SRC=sm_Diode;sm_Diode;SpiceMod;Test;DUT
+*DWG CIRCUITS\SpiceMod\Diode\Diode.DWG
+* Diodes;Si;75.0V 0.250A 3.00us
+.MODEL sm_Diode D ( IS=71.1f RS=0.658 BV=75.0 IBV=500p CJO=2.00p M=0.333 N=1.43 TT=4.32u )
