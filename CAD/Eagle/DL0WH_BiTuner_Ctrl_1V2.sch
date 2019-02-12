@@ -4214,16 +4214,16 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 Compatible with Cortex 10-pin 0.05" JTAG/SWD Connector</description>
 <wire x1="-3.175" y1="-2.11" x2="-3.175" y2="2.11" width="0.08128125" layer="21"/>
 <wire x1="3.175" y1="2.11" x2="3.175" y2="-2.11" width="0.08128125" layer="21"/>
-<pad name="1" x="-2.54" y="-0.635" drill="0.508" diameter="0.8128" shape="square"/>
-<pad name="2" x="-2.54" y="0.635" drill="0.508" diameter="0.8128" shape="octagon"/>
-<pad name="3" x="-1.27" y="-0.635" drill="0.508" diameter="0.8128" shape="octagon"/>
-<pad name="4" x="-1.27" y="0.635" drill="0.508" diameter="0.8128" shape="octagon"/>
-<pad name="5" x="0" y="-0.635" drill="0.508" diameter="0.8128" shape="octagon"/>
-<pad name="6" x="0" y="0.635" drill="0.508" diameter="0.8128" shape="octagon"/>
-<pad name="7" x="1.27" y="-0.635" drill="0.508" diameter="0.8128" shape="octagon"/>
-<pad name="8" x="1.27" y="0.635" drill="0.508" diameter="0.8128" shape="octagon"/>
-<pad name="9" x="2.54" y="-0.635" drill="0.508" diameter="0.8128" shape="octagon"/>
-<pad name="10" x="2.54" y="0.635" drill="0.508" diameter="0.8128" shape="octagon"/>
+<pad name="1" x="-2.54" y="-0.635" drill="0.5" diameter="0.9144" shape="square"/>
+<pad name="2" x="-2.54" y="0.635" drill="0.5" diameter="0.9144" shape="octagon"/>
+<pad name="3" x="-1.27" y="-0.635" drill="0.5" diameter="0.9144" shape="octagon"/>
+<pad name="4" x="-1.27" y="0.635" drill="0.5" diameter="0.9144" shape="octagon"/>
+<pad name="5" x="0" y="-0.635" drill="0.5" diameter="0.9144" shape="octagon"/>
+<pad name="6" x="0" y="0.635" drill="0.5" diameter="0.9144" shape="octagon"/>
+<pad name="7" x="1.27" y="-0.635" drill="0.5" diameter="0.9144" shape="octagon"/>
+<pad name="8" x="1.27" y="0.635" drill="0.5" diameter="0.9144" shape="octagon"/>
+<pad name="9" x="2.54" y="-0.635" drill="0.5" diameter="0.9144" shape="octagon"/>
+<pad name="10" x="2.54" y="0.635" drill="0.5" diameter="0.9144" shape="octagon"/>
 <text x="-2.54" y="2.54" size="0.8128" layer="25" font="vector" ratio="15">&gt;NAME</text>
 <text x="-2.54" y="-3.81" size="0.8128" layer="27" font="vector" ratio="15">&gt;VALUE</text>
 <rectangle x1="-2.794" y1="-0.889" x2="-2.286" y2="-0.381" layer="51"/>
