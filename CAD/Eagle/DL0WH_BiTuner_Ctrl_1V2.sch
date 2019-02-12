@@ -17156,10 +17156,13 @@ I2C1 addr: 0x28</text>
 <instance part="U0961" gate="G$1" x="167.64" y="48.26"/>
 <instance part="R0961" gate="G$1" x="142.24" y="45.72"/>
 <instance part="R0962" gate="G$1" x="149.86" y="63.5" rot="R90"/>
-<instance part="R0963" gate="G$1" x="185.42" y="63.5" rot="R270"/>
+<instance part="R0963" gate="G$1" x="185.42" y="63.5" smashed="yes" rot="R270">
+<attribute name="NAME" x="182.88" y="60.96" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="187.96" y="60.96" size="1.778" layer="96" rot="R90"/>
+</instance>
 <instance part="C0963" gate="G$1" x="177.8" y="58.42" smashed="yes" rot="R90">
 <attribute name="NAME" x="169.164" y="58.801" size="1.778" layer="95"/>
-<attribute name="VALUE" x="181.864" y="58.801" size="1.778" layer="96"/>
+<attribute name="VALUE" x="181.864" y="56.261" size="1.778" layer="96"/>
 </instance>
 <instance part="U0941" gate="G$1" x="38.1" y="45.72" smashed="yes" rot="R180">
 <attribute name="NAME" x="33.909" y="59.4106" size="2.0828" layer="95" ratio="10" rot="SR0"/>
