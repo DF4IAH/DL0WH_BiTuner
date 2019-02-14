@@ -151,7 +151,7 @@ const char controllerGreetMsg11[] =
     "\t=====================\r\n"
     "\r\n"
     "\t\tFirmware date\t%08lu\r\n"
-    "\t\tDeveloppped by\tDF4IAH\r\n";
+    "\t\tDeveloped by\tDF4IAH\r\n";
 
 static void controllerUsbGreet(void)
 {
@@ -704,7 +704,7 @@ static void controllerFSM_GetGlobalVars(void)
   }
 
 
-#if 1
+#if 0
   /* Logging */
   {
     int32_t   l_adc1_temp_deg_i    = 0L;
@@ -719,47 +719,47 @@ static void controllerFSM_GetGlobalVars(void)
         (int16_t) (g_adc1_vref_mv    + 0.5f),
         (int16_t) (g_adc1_bat_mv     + 0.5f),
         l_adc1_temp_deg_i, l_adc1_temp_deg_f100);
-    usbLogLen(dbgBuf, dbgLen);
+    interpreterConsolePush(dbgBuf, dbgLen);
   }
 #endif
 
-#if 1
-            /* Logging */
-            {
-              int   dbgLen;
-              char  dbgBuf[128];
+#if 0
+  /* Logging */
+  {
+    int   dbgLen;
+    char  dbgBuf[128];
 
-              dbgLen = sprintf(dbgBuf, "ADC2: FWD = %5d mV\r\n", (int16_t) (g_adc2_fwd_mv + 0.5f));
-              usbLogLen(dbgBuf, dbgLen);
-            }
+    dbgLen = sprintf(dbgBuf, "ADC2: FWD = %5d mV\r\n", (int16_t) (g_adc2_fwd_mv + 0.5f));
+    interpreterConsolePush(dbgBuf, dbgLen);
+  }
 #endif
 
-#if 1
-            /* Logging */
-            {
-              int32_t   l_swr_i    = 0L;
-              uint32_t  l_swr_f100 = 0UL;
-              int   dbgLen;
-              char  dbgBuf[128];
+#if 0
+  /* Logging */
+  {
+    int32_t   l_swr_i    = 0L;
+    uint32_t  l_swr_f100 = 0UL;
+    int   dbgLen;
+    char  dbgBuf[128];
 
-              mainCalcFloat2IntFrac(g_adc_swr, 2, &l_swr_i, &l_swr_f100);
+    mainCalcFloat2IntFrac(g_adc_swr, 2, &l_swr_i, &l_swr_f100);
 
-              dbgLen = sprintf(dbgBuf, "ADC2: REV = %5d mV, SWR = %+3ld.%03lu\r\n",
-                  (int16_t) (g_adc2_rev_mv + 0.5f),
-                  l_swr_i, l_swr_f100);
-              usbLogLen(dbgBuf, dbgLen);
-            }
+    dbgLen = sprintf(dbgBuf, "ADC2: REV = %5d mV, SWR = %+3ld.%03lu\r\n",
+        (int16_t) (g_adc2_rev_mv + 0.5f),
+        l_swr_i, l_swr_f100);
+    interpreterConsolePush(dbgBuf, dbgLen);
+  }
 #endif
 
-#if 1
-              /* Logging */
-              {
-                int   dbgLen;
-                char  dbgBuf[128];
+#if 0
+  /* Logging */
+  {
+    int   dbgLen;
+    char  dbgBuf[128];
 
-                dbgLen = sprintf(dbgBuf, "ADC3: Vdiode = %4d mV\r\n", (int16_t) (g_adc3_vdiode_mv + 0.5f));
-                usbLogLen(dbgBuf, dbgLen);
-              }
+    dbgLen = sprintf(dbgBuf, "ADC3: Vdiode = %4d mV\r\n", (int16_t) (g_adc3_vdiode_mv + 0.5f));
+    interpreterConsolePush(dbgBuf, dbgLen);
+  }
 #endif
 }
 

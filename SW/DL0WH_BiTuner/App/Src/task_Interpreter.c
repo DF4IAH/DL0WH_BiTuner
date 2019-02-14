@@ -56,6 +56,94 @@ static uint32_t             s_interpreterLineBufLen           = 0UL;
 /* Private function prototypes -----------------------------------------------*/
 
 /* Private functions ---------------------------------------------------------*/
+/* Global functions ----------------------------------------------------------*/
+
+const char                  interpreterHelpMsg001[]            = "\r\n";
+const char                  interpreterHelpMsg002[]            = "\tHELP - list of commands:\r\n";
+const char                  interpreterHelpMsg003[]            = "\t=======================\r\n";
+
+const char                  interpreterHelpMsg111[]            =     "\t\t> main commands\r\n";
+const char                  interpreterHelpMsg112[]            =     "\t\t--------------------------------------------------------------------------\r\n";
+
+const char                  interpreterHelpMsg121[]            = "\t\tCxy\t\tC relay x: 1..8, y: 1=SET 0=RESET.\r\n";
+const char                  interpreterHelpMsg122[]            = "\t\tLxy\t\tL relay x: 1..8, y: 1=SET 0=RESET.\r\n";
+const char                  interpreterHelpMsg123[]            = "\t\tCL\t\tSet C at the TRX-side and the L to the antenna side (Gamma).\r\n";
+const char                  interpreterHelpMsg124[]            = "\t\tLC\t\tSet L at the TRX-side and the C to the antenna side (reverted Gamma).\r\n";
+const char                  interpreterHelpMsg125[]            = "\t\tKxyz\t\tShort form for setting the C, L, CV and CH relays.\r\n";
+const char                  interpreterHelpMsg126[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";
+
+const char                  interpreterHelpMsg131[]            = "\t\tC\t\tClear screen.\r\n";
+const char                  interpreterHelpMsg132[]            = "\t\tHELP\t\tPrint this list of commands.\r\n";
+const char                  interpreterHelpMsg133[]            = "\t\tRESTART\t\tRestart this device.\r\n";
+
+const char                  interpreterHelpMsg141[]            =     "\t\t> additional DJ0ABR compatible commands\r\n";
+const char                  interpreterHelpMsg142[]            =     "\t\t--------------------------------------------------------------------------\r\n";
+
+const char                  interpreterHelpMsg151[]            = "\t\tHx\t\t1: LC mode, 0: CL mode.\r\n";
+const char                  interpreterHelpMsg152[]            = "\t\tVx\t\t1: CL mode, 0: LC mode.\r\n";
+const char                  interpreterHelpMsg153[]            = "\t\tCV\t\t   CL mode.\r\n";
+const char                  interpreterHelpMsg154[]            = "\t\tCH\t\t   LC mode.\r\n";
+
+
+void interpreterConsolePush(const char* buf, int bufLen)
+{
+  /* Send to USB */
+  if (true) {
+    usbLogLen(buf, bufLen);
+  }
+
+  /* Send to UART */
+  if (true) {
+    uartLogLen(buf, bufLen);
+  }
+}
+
+void interpreterPrintHelp(void)
+{
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+  interpreterConsolePush(interpreterHelpMsg002, strlen(interpreterHelpMsg002));
+  interpreterConsolePush(interpreterHelpMsg003, strlen(interpreterHelpMsg003));
+
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+  interpreterConsolePush(interpreterHelpMsg111, strlen(interpreterHelpMsg111));
+  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
+  interpreterConsolePush(interpreterHelpMsg121, strlen(interpreterHelpMsg121));
+  interpreterConsolePush(interpreterHelpMsg122, strlen(interpreterHelpMsg122));
+  interpreterConsolePush(interpreterHelpMsg123, strlen(interpreterHelpMsg123));
+  interpreterConsolePush(interpreterHelpMsg124, strlen(interpreterHelpMsg124));
+  interpreterConsolePush(interpreterHelpMsg125, strlen(interpreterHelpMsg125));
+  interpreterConsolePush(interpreterHelpMsg126, strlen(interpreterHelpMsg126));
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+
+  interpreterConsolePush(interpreterHelpMsg131, strlen(interpreterHelpMsg131));
+  interpreterConsolePush(interpreterHelpMsg132, strlen(interpreterHelpMsg132));
+  interpreterConsolePush(interpreterHelpMsg133, strlen(interpreterHelpMsg133));
+  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+
+
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+  interpreterConsolePush(interpreterHelpMsg141, strlen(interpreterHelpMsg141));
+  interpreterConsolePush(interpreterHelpMsg142, strlen(interpreterHelpMsg142));
+  interpreterConsolePush(interpreterHelpMsg151, strlen(interpreterHelpMsg151));
+  interpreterConsolePush(interpreterHelpMsg152, strlen(interpreterHelpMsg152));
+  interpreterConsolePush(interpreterHelpMsg153, strlen(interpreterHelpMsg153));
+  interpreterConsolePush(interpreterHelpMsg154, strlen(interpreterHelpMsg154));
+  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+}
+
+void interpreterShowCursor(void)
+{
+  interpreterConsolePush("> ", 2UL);
+}
+
+void interpreterClearScreen(void)
+{
+  interpreterConsolePush(usbClrScrBuf, strlen(usbClrScrBuf));
+}
+
+
 static uint32_t interpreterCalcLineLen(const uint8_t* buf, uint32_t len)
 {
   const uint8_t* bufPtr = buf;
@@ -197,6 +285,8 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
   if (!len) {
     s_interpreterLineBufLen = 0UL;
     memset(s_interpreterLineBuf, 0, sizeof(s_interpreterLineBuf));
+
+    interpreterShowCursor();
     return;
   }
 
@@ -221,7 +311,9 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 
 #endif
   } else if (!strncmp("HELP", cb, 4) && (4 == len)) {
+    interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
     interpreterPrintHelp();
+    interpreterShowCursor();
 
   } else if (!strncmp("C", cb, 1) && (3 == len)) {
     /* Set capacitance */
@@ -297,6 +389,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 
   } else {
     interpreterUnknownCommand();
+    interpreterShowCursor();
   }
 
   /* Find next line */
@@ -326,84 +419,6 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     s_interpreterLineBufLen = 0UL;
   }
   memset(s_interpreterLineBuf + s_interpreterLineBufLen, 0, sizeof(s_interpreterLineBuf) - s_interpreterLineBufLen);
-}
-
-
-/* Global functions ----------------------------------------------------------*/
-
-const char                  interpreterHelpMsg001[]            = "\r\n";
-const char                  interpreterHelpMsg002[]            = "\tHELP - list of commands:\r\n";
-const char                  interpreterHelpMsg003[]            = "\t=======================\r\n";
-
-const char                  interpreterHelpMsg111[]            =     "\t\t> Main commands\r\n";
-const char                  interpreterHelpMsg112[]            =     "\t\t--------------------------------------------------------------------------\r\n";
-
-const char                  interpreterHelpMsg121[]            = "\t\tCxy\t\tC relay x: 1..8, y: 1=SET 0=RESET.\r\n";
-const char                  interpreterHelpMsg122[]            = "\t\tLxy\t\tL relay x: 1..8, y: 1=SET 0=RESET.\r\n";
-const char                  interpreterHelpMsg123[]            = "\t\tCL\t\tSet C at the TRX-side and the L to the antenna side (Gamma).\r\n";
-const char                  interpreterHelpMsg124[]            = "\t\tLC\t\tSet L at the TRX-side and the C to the antenna side (reverted Gamma).\r\n";
-const char                  interpreterHelpMsg125[]            = "\t\tHx\t\t1: LC mode, 0: CL mode.\r\n";
-const char                  interpreterHelpMsg126[]            = "\t\tVx\t\t1: CL mode, 0: LC mode.\r\n";
-const char                  interpreterHelpMsg127[]            = "\t\tCV\t\t   CL mode.\r\n";
-const char                  interpreterHelpMsg128[]            = "\t\tCH\t\t   LC mode.\r\n";
-const char                  interpreterHelpMsg129[]            = "\t\tKxyz\t\tShort form for setting the C, L, CV and CH relays.\r\n";
-const char                  interpreterHelpMsg130[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";
-
-const char                  interpreterHelpMsg151[]            = "\t\tC\t\tClear screen.\r\n";
-const char                  interpreterHelpMsg152[]            = "\t\tHELP\t\tPrint this list of commands.\r\n";
-const char                  interpreterHelpMsg153[]            = "\t\tRESTART\t\tRestart this device.\r\n";
-
-
-void interpreterConsolePush(const char* buf, int bufLen)
-{
-  /* Send to USB */
-  if (true) {
-    usbLogLen(buf, bufLen);
-  }
-
-  /* Send to UART */
-  if (true) {
-    uartLogLen(buf, bufLen);
-  }
-}
-
-void interpreterPrintHelp(void)
-{
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
-  interpreterConsolePush(interpreterHelpMsg002, strlen(interpreterHelpMsg002));
-  interpreterConsolePush(interpreterHelpMsg003, strlen(interpreterHelpMsg003));
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
-
-  interpreterConsolePush(interpreterHelpMsg111, strlen(interpreterHelpMsg111));
-  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
-  interpreterConsolePush(interpreterHelpMsg121, strlen(interpreterHelpMsg121));
-  interpreterConsolePush(interpreterHelpMsg122, strlen(interpreterHelpMsg122));
-  interpreterConsolePush(interpreterHelpMsg123, strlen(interpreterHelpMsg123));
-  interpreterConsolePush(interpreterHelpMsg124, strlen(interpreterHelpMsg124));
-  interpreterConsolePush(interpreterHelpMsg125, strlen(interpreterHelpMsg125));
-  interpreterConsolePush(interpreterHelpMsg126, strlen(interpreterHelpMsg126));
-  interpreterConsolePush(interpreterHelpMsg127, strlen(interpreterHelpMsg127));
-  interpreterConsolePush(interpreterHelpMsg128, strlen(interpreterHelpMsg128));
-  interpreterConsolePush(interpreterHelpMsg129, strlen(interpreterHelpMsg129));
-  interpreterConsolePush(interpreterHelpMsg130, strlen(interpreterHelpMsg130));
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
-
-  interpreterConsolePush(interpreterHelpMsg151, strlen(interpreterHelpMsg151));
-  interpreterConsolePush(interpreterHelpMsg152, strlen(interpreterHelpMsg152));
-  interpreterConsolePush(interpreterHelpMsg153, strlen(interpreterHelpMsg153));
-
-  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
-}
-
-void interpreterShowCursor(void)
-{
-  interpreterConsolePush("> ", 2UL);
-}
-
-void interpreterClearScreen(void)
-{
-  interpreterConsolePush(usbClrScrBuf, strlen(usbClrScrBuf));
 }
 
 
@@ -437,6 +452,7 @@ void interpreterGetterTask(void const * argument)
   }
 }
 
+
 static void interpreterInit(void)
 {
   /* Wait until init message is done */
@@ -448,6 +464,7 @@ static void interpreterInit(void)
 
   /* Prepare console output */
   interpreterPrintHelp();
+  interpreterShowCursor();
 }
 
 static void interpreterMsgProcess(uint32_t msgLen, const uint32_t* msgAry)

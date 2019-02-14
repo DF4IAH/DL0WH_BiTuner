@@ -1386,7 +1386,7 @@ void vApplicationMallocFailedHook(void)
   char dbgBuf[128];
 
   dbgLen = sprintf(dbgBuf, "***ERROR: Out of memory  vApplicationMallocFailedHook(): file %s on line %d\r\n", __FILE__, __LINE__);
-  usbLogLen(dbgBuf, dbgLen);
+  interpreterConsolePush(dbgBuf, dbgLen);
 
   configASSERT(0);
 }
@@ -1428,7 +1428,7 @@ void _Error_Handler(char *file, int line)
   char dbgBuf[128];
 
   dbgLen = sprintf(dbgBuf, "***ERROR: ERROR-HANDLER  Wrong parameters value  _Error_Handler(): file %s on line %d\r\n", file, line);
-  usbLogLen(dbgBuf, dbgLen);
+  interpreterConsolePush(dbgBuf, dbgLen);
 
   configASSERT(0);
   /* USER CODE END Error_Handler_Debug */
@@ -1451,7 +1451,7 @@ void assert_failed(uint8_t* file, uint32_t line)
   char dbgBuf[128];
 
   dbgLen = sprintf(dbgBuf, "***ERROR: ERROR-HANDLER  Wrong parameters value  assert_failed(): file %s on line %ld\r\n", file, line);
-  usbLogLen(dbgBuf, dbgLen);
+  interpreterConsolePush(dbgBuf, dbgLen);
 
   configASSERT(0);
   /* USER CODE END 6 */
