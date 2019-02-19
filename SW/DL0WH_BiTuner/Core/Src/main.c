@@ -72,6 +72,7 @@
 #include "bus_i2c.h"
 #include "bus_spi.h"
 #include "task_Controller.h"
+#include "task_Interpreter.h"
 #include "task_USB.h"
 
 
