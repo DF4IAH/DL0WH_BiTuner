@@ -69,7 +69,7 @@ const char                  interpreterHelpMsg121[]            = "\t\tCxy\t\tC r
 const char                  interpreterHelpMsg122[]            = "\t\tLxy\t\tL relay x: 1..8, y: 1=SET 0=RESET.\r\n";
 const char                  interpreterHelpMsg123[]            = "\t\tCL\t\tSet C at the TRX-side and the L to the antenna side (Gamma).\r\n";
 const char                  interpreterHelpMsg124[]            = "\t\tLC\t\tSet L at the TRX-side and the C to the antenna side (reverted Gamma).\r\n";
-const char                  interpreterHelpMsg125[]            = "\t\tKxyz\t\tShort form for setting the C, L, CV and CH relays.\r\n";
+const char                  interpreterHelpMsg125[]            = "\t\tHxxyyzz\t\tHexadecimal entry of the 18 bits of x:[CH,CV], y:[L8-1], z:[C8-1] relays.\r\n";
 const char                  interpreterHelpMsg126[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";
 
 const char                  interpreterHelpMsg131[]            = "\t\tC\t\tClear screen.\r\n";
@@ -79,10 +79,11 @@ const char                  interpreterHelpMsg133[]            = "\t\tRESTART\t\
 const char                  interpreterHelpMsg141[]            =     "\t\t> additional DJ0ABR compatible commands\r\n";
 const char                  interpreterHelpMsg142[]            =     "\t\t--------------------------------------------------------------------------\r\n";
 
-const char                  interpreterHelpMsg151[]            = "\t\tHx\t\t1: LC mode, 0: CL mode.\r\n";
-const char                  interpreterHelpMsg152[]            = "\t\tVx\t\t1: CL mode, 0: LC mode.\r\n";
-const char                  interpreterHelpMsg153[]            = "\t\tCV\t\t   CL mode.\r\n";
-const char                  interpreterHelpMsg154[]            = "\t\tCH\t\t   LC mode.\r\n";
+const char                  interpreterHelpMsg151[]            = "\t\tKxyz\t\tShort form for setting the C, L, CV and CH relays.\r\n";
+const char                  interpreterHelpMsg152[]            = "\t\tHx\t\t1: LC mode, 0: CL mode.\r\n";
+const char                  interpreterHelpMsg153[]            = "\t\tVx\t\t1: CL mode, 0: LC mode.\r\n";
+const char                  interpreterHelpMsg154[]            = "\t\tCV\t\t   CL mode.\r\n";
+const char                  interpreterHelpMsg155[]            = "\t\tCH\t\t   LC mode.\r\n";
 
 
 void interpreterConsolePush(const char* buf, int bufLen)
@@ -162,59 +163,42 @@ static void interpreterUnknownCommand(void)
   interpreterConsolePush(unknownStr, strlen(unknownStr));
 }
 
-#ifdef OLD
-static void interpreterPushToInterOutQueue(const uint8_t* cmdAry, uint16_t cmdLen)
-{
-  /* Sanity check */
-  if (cmdLen > 255U) {
-    return;
-  }
 
-  for (uint8_t idx = 0; idx < cmdLen; ++idx) {
-    xQueueSendToBack(interOutQueueHandle, cmdAry + idx, 1);
-  }
-  xEventGroupSetBits(controllerEventGroupHandle, Controller_EGW__INTER_QUEUE_OUT);
-}
-#endif
-
-#if 0
 static uint8_t interpreterDoInterprete__HexString_HexNibbleParser(char c)
 {
   if ('0' <= c && c <= '9') {
     return c - '0';
   }
 
-  c = tolower(c);
-  if ('a' <= c && c <= 'f') {
-    return (c - 'a') + 10;
+  c = toupper(c);
+  if ('A' <= c && c <= 'F') {
+    return (c - 'A') + 10;
   }
 
   /* Bad hex */
   return 0;
 }
-#endif
 
-#if 0
-static void interpreterDoInterprete__HexString(const char* buf, uint16_t len)
+static uint32_t interpreterDoInterprete__HexString(const char* buf, uint8_t len)
 {
-  uint8_t hexAry[256] = { 0 };
-  uint8_t idxIn = 0U, idxOut = 0U;
+  uint32_t  retVal        = 0UL;
+  uint8_t   idxIn         = 0U;
 
   /* Sanity check: 0xAB is minimal valid length */
-  if (!len) {
-    return;
+  if (!buf || !len || (len > 8U)) {
+    return 0UL;
   }
 
-  while ((idxIn  < len) &&
-         (idxOut < (sizeof(hexAry) - 1))) {
-    uint8_t c = buf[idxIn++];
-    uint8_t nibLo = 0U, nibHi = 0U;
+  while (idxIn < len) {
+    uint8_t c     = buf[idxIn++];
+    uint8_t nibLo = 0U;
+    uint8_t nibHi = 0U;
 
     /* Parse first nibble */
     {
+#if 0
       /* Skip any blanks */
-      while (isspace(c) &&
-            (idxIn < len)) {
+      while (isspace(c) && (idxIn < len)) {
         c = buf[idxIn++];
       }
 
@@ -223,11 +207,7 @@ static void interpreterDoInterprete__HexString(const char* buf, uint16_t len)
         idxIn++;
         c = buf[idxIn++];
       }
-
-      /* Length check: at least two bytes are needed here */
-      if (idxIn > len) {
-        return interpreterSendLoRaBare((char*) hexAry, idxOut);
-      }
+#endif
 
       /* Scan first hex nibble */
       nibHi = interpreterDoInterprete__HexString_HexNibbleParser(c);
@@ -249,13 +229,12 @@ static void interpreterDoInterprete__HexString(const char* buf, uint16_t len)
     }
 
     /* Write out */
-    const uint8_t byte = (uint8_t) (0xff & ((nibHi << 4) | (nibLo)));
-    hexAry[idxOut++] = byte;
+    const uint8_t byte = (uint8_t) (0xffU & ((nibHi << 4) | (nibLo)));
+    retVal <<= 8;
+    retVal  |= byte;
   }
-
-  interpreterSendLoRaBare((char*) hexAry, idxOut);
+  return retVal;
 }
-#endif
 
 static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 {
@@ -304,12 +283,6 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
   if (!strncmp("C", cb, 1) && (1 == len)) {
     interpreterClearScreen();
 
-#if 0
-  } else if (!strncmp("CONF ", cb, 5) && (5 < len)) {
-    const long    confEnable  = strtol(cb + 5, NULL, 10);
-    const uint8_t pushAry[3]  = { 2, InterOutQueueCmds__ConfirmedPackets, (confEnable ?  1U : 0U) };
-
-#endif
   } else if (!strncmp("HELP", cb, 4) && (4 == len)) {
     interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
     interpreterPrintHelp();
@@ -326,6 +299,8 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
       cmd[1] = (valCsw      << 24U) |
                (valLenable  << 16U) ;
       controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
+      controllerMsgPushToInQueue(1, cmd, 10UL);
     }
 
   } else if (!strncmp("L", cb, 1) && (3 == len)) {
@@ -339,6 +314,8 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
       cmd[1] = (valLsw      << 24U) |
                (valLenable  << 16U) ;
       controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
+      controllerMsgPushToInQueue(1, cmd, 10UL);
     } else {
       interpreterUnknownCommand();
     }
@@ -349,11 +326,32 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__SetVar03_CL);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
+    controllerMsgPushToInQueue(1, cmd, 10UL);
+
   } else if ((!strncmp("LC", cb, 2) || !strncmp("H1", cb, 2) || !strncmp("V0", cb, 2) || !strncmp("CH", cb, 2)) && (2 == len)) {
     /* Set configuration to reverted Gamma (CH) */
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__SetVar04_LC);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
+    controllerMsgPushToInQueue(1, cmd, 10UL);
+
+  } else if (!strncmp("H", cb, 1) && (7 == len)) {
+    /* Set relays */
+    const uint32_t bitmask  = interpreterDoInterprete__HexString(cb + 1, 6);
+    uint32_t       relayExt = bitmask & 0x010000UL;
+    relayExt               |= (relayExt ^ 0x010000UL) << 1;
+    const uint32_t relays   =  relayExt | (bitmask & 0x00ffffUL);
+
+    uint32_t cmd[2];
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 4U, MsgController__SetVar05_K);
+    cmd[1] = relays;
+    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
+    controllerMsgPushToInQueue(1, cmd, 10UL);
 
   } else if (!strncmp("K", cb, 1) && (4 == len)) {
     /* Set relays */
@@ -367,6 +365,9 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 4U, MsgController__SetVar05_K);
     cmd[1] = relays;
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+
+    cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
+    controllerMsgPushToInQueue(1, cmd, 10UL);
 
 #if 0
   } else if (!strncmp("MON ", cb, 4) && (4 < len)) {

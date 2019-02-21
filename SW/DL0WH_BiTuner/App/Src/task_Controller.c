@@ -1501,8 +1501,8 @@ static void controllerSetCLExt(uint32_t relays)
   const ControllerOptiCVH_t l_CVH = ( relays        & 0x10000UL) ?  ControllerOptiCVH__CV : ControllerOptiCVH__CH;
 
   /* Calculate corresponding C and L values */
-  const float valC = controllerCalcMatcherC2pF(s_controller_opti_C_relays);
-  const float valL = controllerCalcMatcherL2nH(s_controller_opti_L_relays);
+  const float valC = controllerCalcMatcherC2pF(l_C_relays);
+  const float valL = controllerCalcMatcherL2nH(l_L_relays);
   float fwd_mw;
 
   /* Disabled IRQ section */
@@ -1551,34 +1551,40 @@ static void controllerPrintLC(void)
 
   /* Print relay settings */
   {
-    const uint8_t relL = controllerCalcMatcherNH2L(valL);
-    const uint8_t relC = controllerCalcMatcherPF2C(valC);
-    char buf[4] = { ' ', ' ', '?' };
+    const uint8_t relL  = controllerCalcMatcherNH2L(valL);
+    const uint8_t relC  = controllerCalcMatcherPF2C(valC);
+    char buf[4]         = { ' ', ' ', '?' };
+    char strbuf[128]    = { 0 };
     uint32_t relays;
 
     relays  = ((uint32_t)relC <<  0U);
     relays |= ((uint32_t)relL <<  8U);
     relays |= configLC == ControllerOptiCVH__CV ?  0x10000UL : 0x20000UL;
 
-    const char* bufStr = "\r\n\r\n## C1 C2 C3 C4 C5 C6 C7 C8  L1 L2 L3 L4 L5 L6 L7 L8  CV CH\r\n ";
+    /* 1st line: header */
+    const char* bufStr = "\r\n\r\n## CH CV  L8 L7 L6 L5 L4 L3 L2 L1  C8 C7 C6 C5 C4 C3 C2 C1\r\n##";
     interpreterConsolePush(bufStr, strlen(bufStr));
 
-    for (uint8_t idx = 0U; idx < 18U; idx++) {
-      if (idx == 8U || idx == 16U) {
+    /* 2nd line: bit field */
+    for (int8_t idx = 17; idx >= 0; idx--) {
+      if (idx == 15 || idx == 7) {
         interpreterConsolePush(" ", 1);
       }
       buf[2] = (relays & (1UL << idx)) != 0UL ?  '1' : '0';
       interpreterConsolePush(buf, 3);
     }
-    interpreterConsolePush("\r\n\r\n", 4);
+
+    /* 3rd line: hex number */
+    const int len = snprintf(strbuf, (sizeof(strbuf) - 1), "\r\n## (Relay short settings: H%06lx)\r\n", (relays & 0x03ffffUL));
+    interpreterConsolePush(strbuf, len);
   }
 
-  /* Print L/C configuration and L, C values */
+  /* 4th line: print L/C configuration and L, C values */
   {
     const char*    sConfig      = configLC == ControllerOptiCVH__CV ?  "C-L   normal Gamma" : "L-C reverted Gamma";
     char           strbuf[128]  = { 0 };
 
-    const int len = snprintf(strbuf, (sizeof(strbuf) - 1), "## Config: %s\t L= %6ld nH\t C= %6ld pF\r\n\r\n", sConfig, (uint32_t)valL, (uint32_t)valC);
+    const int len = snprintf(strbuf, (sizeof(strbuf) - 1), "## Config: %s\t L = %ld nH\t C = %ld pF\r\n\r\n", sConfig, (uint32_t)valL, (uint32_t)valC);
     interpreterConsolePush(strbuf, len);
   }
 }
@@ -1734,7 +1740,6 @@ static void controllerMsgProcessor(void)
       const uint8_t relNum    = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 24U));
       const uint8_t relEnable = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 16U));
       controllerSetL(relNum, relEnable);
-      controllerPrintLC();
     }
       break;
 
@@ -1743,21 +1748,18 @@ static void controllerMsgProcessor(void)
       const uint8_t relNum    = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 24U));
       const uint8_t relEnable = (uint8_t) (0xffUL & (s_msg_in.rawAry[1] >> 16U));
       controllerSetC(relNum, relEnable);
-      controllerPrintLC();
     }
       break;
 
     case MsgController__SetVar03_CL:
     {
       controllerSetConfigLC(false);
-      controllerPrintLC();
     }
       break;
 
     case MsgController__SetVar04_LC:
     {
       controllerSetConfigLC(true);
-      controllerPrintLC();
     }
       break;
 
@@ -1765,7 +1767,6 @@ static void controllerMsgProcessor(void)
     {
       const uint32_t relays = s_msg_in.rawAry[1] & 0x03ffffUL;
       controllerSetCLExt(relays);
-      controllerPrintLC();
     }
       break;
 
