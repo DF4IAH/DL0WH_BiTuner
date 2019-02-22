@@ -132,8 +132,8 @@ static float                s_controller_adc_fwd_mv           = 0.0f;
 static float                s_controller_adc_swr              = 0.0f;
 static float                s_controller_adc_fwd_mw           = 0.0f;
 
-static _Bool                s_controller_doCycle              = false;
-static _Bool                s_controller_doAdc                = false;
+static _Bool                s_controller_doCycle              = 0;
+static _Bool                s_controller_doAdc                = 0;
 
 static DefaultMcuClocking_t s_controller_McuClocking          = DefaultMcuClocking__4MHz_MSI;
 
@@ -842,9 +842,9 @@ static _Bool controllerFSM_CheckPower(void)
     /* Overdrive or to low energy */
     s_controller_FSM_state = ControllerFsm__doAdc;
 
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 static _Bool controllerFSM_CheckSwrTime(void)

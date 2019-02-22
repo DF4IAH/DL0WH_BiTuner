@@ -97,7 +97,7 @@ void HAL_CAT_ErrorCallback(UART_HandleTypeDef *UartHandle)
 
 static void catUartHalInit(void)
 {
-  _Bool already = false;
+  _Bool already = 0;
 
   /* Block when already called */
   {

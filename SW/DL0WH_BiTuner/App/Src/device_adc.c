@@ -11,6 +11,7 @@
 #include "cmsis_os.h"
 #include "FreeRTOS.h"
 
+#include "main.h"
 #include "device_adc.h"
 
 
@@ -24,7 +25,7 @@ extern EventGroupHandle_t   adcEventGroupHandle;
 static uint16_t             s_adc1_dma_buf[ADC1_DMA_CHANNELS] = { 0U };
 static uint16_t             s_adc2_dma_buf[ADC2_DMA_CHANNELS] = { 0U };
 
-static _Bool                s_adc2_isFwd                      = false;
+static _Bool                s_adc2_isFwd                      = 0;
 
 extern float                g_adc1_refint_val;
 extern float                g_adc1_vref_mv;
@@ -54,7 +55,7 @@ void adcStartConv(ADC_ENUM_t adc)
       HAL_GPIO_WritePin(GPIO_SWR_SEL_REV_GPIO_Port, GPIO_SWR_SEL_REV_Pin, GPIO_PIN_RESET);
       __DMB();
       HAL_GPIO_WritePin(GPIO_SWR_SEL_FWD_GPIO_Port, GPIO_SWR_SEL_FWD_Pin, GPIO_PIN_SET);
-      s_adc2_isFwd = true;
+      s_adc2_isFwd = 1;
 
       /* Have constant delay for low pass filter in front of the ADC */
       for (uint8_t delay = 255U; delay; --delay)
@@ -73,7 +74,7 @@ void adcStartConv(ADC_ENUM_t adc)
       HAL_GPIO_WritePin(GPIO_SWR_SEL_FWD_GPIO_Port, GPIO_SWR_SEL_FWD_Pin, GPIO_PIN_RESET);
       __DMB();
       HAL_GPIO_WritePin(GPIO_SWR_SEL_REV_GPIO_Port, GPIO_SWR_SEL_REV_Pin, GPIO_PIN_SET);
-      s_adc2_isFwd = false;
+      s_adc2_isFwd = 0;
 
       /* Have constant delay for low pass filter in front of the ADC */
       for (uint8_t delay = 255U; delay; --delay)

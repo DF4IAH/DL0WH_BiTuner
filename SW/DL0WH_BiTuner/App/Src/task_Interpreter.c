@@ -142,6 +142,7 @@ void interpreterShowCursor(void)
 void interpreterClearScreen(void)
 {
   interpreterConsolePush(usbClrScrBuf, strlen(usbClrScrBuf));
+  interpreterShowCursor();
 }
 
 

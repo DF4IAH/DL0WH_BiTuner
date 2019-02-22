@@ -124,7 +124,7 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle)
 
 static void uartHalInit(void)
 {
-  _Bool already = false;
+  _Bool already = 0;
 
   /* Block when already called */
   {
