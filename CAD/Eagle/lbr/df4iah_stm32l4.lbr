@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.5" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.25" altunitdist="mm" altunit="mm"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="yes" active="yes"/>
@@ -1571,6 +1571,95 @@ Ping</text>
 <text x="-5.08" y="43.18" size="1.778" layer="95">&gt;NAME</text>
 <text x="-5.08" y="-45.72" size="1.778" layer="96">&gt;VALUE</text>
 </symbol>
+<symbol name="STM32L452RET_64PIN_SMPS">
+<description>&lt;h4&gt;STM32L476RxT 64LQFP&lt;/h4&gt;</description>
+<wire x1="-104.14" y1="40.386" x2="-104.14" y2="-40.64" width="0.15" layer="94"/>
+<wire x1="-104.14" y1="-40.64" x2="-83.82" y2="-40.64" width="0.15" layer="94"/>
+<wire x1="-83.82" y1="-40.64" x2="-83.82" y2="40.386" width="0.15" layer="94"/>
+<wire x1="-83.82" y1="40.386" x2="-104.14" y2="40.386" width="0.15" layer="94"/>
+<pin name="VDD@19" x="-111.76" y="-20.32" direction="pwr"/>
+<pin name="PA4" x="-68.58" y="17.78"/>
+<pin name="PA5" x="-68.58" y="12.7"/>
+<pin name="PA6" x="-68.58" y="7.62"/>
+<pin name="PA7" x="-68.58" y="2.54"/>
+<pin name="PC4" x="30.48" y="17.78"/>
+<pin name="PA9" x="-68.58" y="-7.62"/>
+<pin name="PA10" x="-68.58" y="-12.7"/>
+<pin name="PA11" x="-68.58" y="-17.78"/>
+<pin name="PA12" x="-68.58" y="-22.86"/>
+<pin name="PC8" x="30.48" y="-2.54"/>
+<pin name="PC9" x="30.48" y="-7.62"/>
+<pin name="PC10" x="30.48" y="-12.7"/>
+<pin name="PC11" x="30.48" y="-17.78"/>
+<pin name="PC12" x="30.48" y="-22.86"/>
+<pin name="PB6" x="-20.32" y="7.62"/>
+<pin name="PB7" x="-20.32" y="2.54"/>
+<pin name="PB10" x="-20.32" y="-12.7"/>
+<pin name="PB11" x="-20.32" y="-17.78"/>
+<pin name="PA1" x="-68.58" y="33.02"/>
+<pin name="PA2_WKUP" x="-68.58" y="27.94"/>
+<pin name="PC13_WKUP" x="30.48" y="-27.94"/>
+<pin name="PC14_OSC32_IN" x="30.48" y="-33.02"/>
+<pin name="PC15_OSC32_OUT" x="30.48" y="-38.1"/>
+<pin name="PA13_JTMS_SWDIO" x="-68.58" y="-27.94"/>
+<pin name="PA14_JTCK_SWCLK" x="-68.58" y="-33.02"/>
+<pin name="PA15_JTDI" x="-68.58" y="-38.1"/>
+<pin name="PB3_JTDO_TRACESWO" x="-20.32" y="22.86"/>
+<pin name="PC6" x="30.48" y="7.62"/>
+<pin name="PC7" x="30.48" y="2.54"/>
+<pin name="PC0" x="30.48" y="38.1"/>
+<pin name="PC1" x="30.48" y="33.02"/>
+<pin name="PC2" x="30.48" y="27.94"/>
+<pin name="PC3" x="30.48" y="22.86"/>
+<pin name="PC5_WKUP" x="30.48" y="12.7"/>
+<pin name="PB0" x="-20.32" y="38.1"/>
+<pin name="PB1" x="-20.32" y="33.02"/>
+<pin name="PB2" x="-20.32" y="27.94"/>
+<pin name="PD2" x="76.2" y="27.94"/>
+<pin name="VDD@32" x="-111.76" y="-22.86" direction="pwr"/>
+<pin name="VSS@18" x="-111.76" y="-30.48" direction="pas"/>
+<pin name="BOOT0" x="-111.76" y="33.02" direction="out"/>
+<pin name="PA3" x="-68.58" y="22.86"/>
+<pin name="PB12" x="-20.32" y="-22.86"/>
+<pin name="PA8" x="-68.58" y="-2.54"/>
+<pin name="PB13" x="-20.32" y="-27.94"/>
+<pin name="PB14" x="-20.32" y="-33.02"/>
+<pin name="PB15" x="-20.32" y="-38.1"/>
+<pin name="PB4_NJTRST" x="-20.32" y="17.78"/>
+<pin name="PB5" x="-20.32" y="12.7"/>
+<pin name="VDD@64" x="-111.76" y="-25.4" direction="pwr"/>
+<pin name="VDDA_VREF_P" x="-111.76" y="-7.62" direction="pwr"/>
+<pin name="PA0_WKUP" x="-68.58" y="38.1"/>
+<pin name="VSS@31" x="-111.76" y="-33.02" direction="pas"/>
+<pin name="VSSA_VREF_M" x="-111.76" y="-12.7" direction="pas"/>
+<pin name="PH0_OSC_IN" x="-111.76" y="22.86"/>
+<pin name="PH1_OSC_OUT" x="-111.76" y="17.78"/>
+<pin name="NRST" x="-111.76" y="38.1"/>
+<pin name="PB9" x="-20.32" y="-7.62"/>
+<pin name="PB8" x="-20.32" y="-2.54"/>
+<pin name="VBAT" x="-111.76" y="7.62" direction="pwr"/>
+<wire x1="-60.96" y1="-40.64" x2="-35.56" y2="-40.64" width="0.15" layer="94"/>
+<wire x1="-35.56" y1="-40.64" x2="-35.56" y2="40.386" width="0.15" layer="94"/>
+<wire x1="-35.56" y1="40.386" x2="-60.96" y2="40.386" width="0.15" layer="94"/>
+<wire x1="-60.96" y1="-40.64" x2="-60.96" y2="40.386" width="0.15" layer="94"/>
+<wire x1="-12.7" y1="-40.64" x2="15.24" y2="-40.64" width="0.15" layer="94"/>
+<wire x1="15.24" y1="-40.64" x2="15.24" y2="40.386" width="0.15" layer="94"/>
+<wire x1="15.24" y1="40.386" x2="-12.7" y2="40.386" width="0.15" layer="94"/>
+<wire x1="-12.7" y1="-40.64" x2="-12.7" y2="40.386" width="0.15" layer="94"/>
+<wire x1="38.1" y1="-40.64" x2="60.96" y2="-40.64" width="0.15" layer="94"/>
+<wire x1="60.96" y1="-40.64" x2="60.96" y2="40.386" width="0.15" layer="94"/>
+<wire x1="60.96" y1="40.386" x2="38.1" y2="40.386" width="0.15" layer="94"/>
+<wire x1="38.1" y1="-40.64" x2="38.1" y2="40.386" width="0.15" layer="94"/>
+<wire x1="83.82" y1="-40.64" x2="104.14" y2="-40.64" width="0.15" layer="94"/>
+<wire x1="104.14" y1="-40.64" x2="104.14" y2="40.386" width="0.15" layer="94"/>
+<wire x1="104.14" y1="40.386" x2="83.82" y2="40.386" width="0.15" layer="94"/>
+<wire x1="83.82" y1="-40.64" x2="83.82" y2="40.386" width="0.15" layer="94"/>
+<pin name="VSS@47" x="-111.76" y="-35.56" direction="pas"/>
+<pin name="VDDUSB" x="-111.76" y="0" direction="pwr"/>
+<pin name="VSS@63" x="-111.76" y="-38.1" direction="pas"/>
+<text x="-5.08" y="43.18" size="1.778" layer="95">&gt;NAME</text>
+<text x="-5.08" y="-45.72" size="1.778" layer="96">&gt;VALUE</text>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="STM32L4Z_144PIN_LDO">
@@ -1895,6 +1984,85 @@ Ping</text>
 <description>&lt;h4&gt;STM32L476RxT 64LQFP&lt;/h4&gt;</description>
 <gates>
 <gate name="G$1" symbol="STM32L476RXT_64PIN_LDO" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="LQFP64">
+<connects>
+<connect gate="G$1" pin="BOOT0" pad="60"/>
+<connect gate="G$1" pin="NRST" pad="7"/>
+<connect gate="G$1" pin="PA0_WKUP" pad="14"/>
+<connect gate="G$1" pin="PA1" pad="15"/>
+<connect gate="G$1" pin="PA10" pad="43"/>
+<connect gate="G$1" pin="PA11" pad="44"/>
+<connect gate="G$1" pin="PA12" pad="45"/>
+<connect gate="G$1" pin="PA13_JTMS_SWDIO" pad="46"/>
+<connect gate="G$1" pin="PA14_JTCK_SWCLK" pad="49"/>
+<connect gate="G$1" pin="PA15_JTDI" pad="50"/>
+<connect gate="G$1" pin="PA2_WKUP" pad="16"/>
+<connect gate="G$1" pin="PA3" pad="17"/>
+<connect gate="G$1" pin="PA4" pad="20"/>
+<connect gate="G$1" pin="PA5" pad="21"/>
+<connect gate="G$1" pin="PA6" pad="22"/>
+<connect gate="G$1" pin="PA7" pad="23"/>
+<connect gate="G$1" pin="PA8" pad="41"/>
+<connect gate="G$1" pin="PA9" pad="42"/>
+<connect gate="G$1" pin="PB0" pad="26"/>
+<connect gate="G$1" pin="PB1" pad="27"/>
+<connect gate="G$1" pin="PB10" pad="29"/>
+<connect gate="G$1" pin="PB11" pad="30"/>
+<connect gate="G$1" pin="PB12" pad="33"/>
+<connect gate="G$1" pin="PB13" pad="34"/>
+<connect gate="G$1" pin="PB14" pad="35"/>
+<connect gate="G$1" pin="PB15" pad="36"/>
+<connect gate="G$1" pin="PB2" pad="28"/>
+<connect gate="G$1" pin="PB3_JTDO_TRACESWO" pad="55"/>
+<connect gate="G$1" pin="PB4_NJTRST" pad="56"/>
+<connect gate="G$1" pin="PB5" pad="57"/>
+<connect gate="G$1" pin="PB6" pad="58"/>
+<connect gate="G$1" pin="PB7" pad="59"/>
+<connect gate="G$1" pin="PB8" pad="61"/>
+<connect gate="G$1" pin="PB9" pad="62"/>
+<connect gate="G$1" pin="PC0" pad="8"/>
+<connect gate="G$1" pin="PC1" pad="9"/>
+<connect gate="G$1" pin="PC10" pad="51"/>
+<connect gate="G$1" pin="PC11" pad="52"/>
+<connect gate="G$1" pin="PC12" pad="53"/>
+<connect gate="G$1" pin="PC13_WKUP" pad="2"/>
+<connect gate="G$1" pin="PC14_OSC32_IN" pad="3"/>
+<connect gate="G$1" pin="PC15_OSC32_OUT" pad="4"/>
+<connect gate="G$1" pin="PC2" pad="10"/>
+<connect gate="G$1" pin="PC3" pad="11"/>
+<connect gate="G$1" pin="PC4" pad="24"/>
+<connect gate="G$1" pin="PC5_WKUP" pad="25"/>
+<connect gate="G$1" pin="PC6" pad="37"/>
+<connect gate="G$1" pin="PC7" pad="38"/>
+<connect gate="G$1" pin="PC8" pad="39"/>
+<connect gate="G$1" pin="PC9" pad="40"/>
+<connect gate="G$1" pin="PD2" pad="54"/>
+<connect gate="G$1" pin="PH0_OSC_IN" pad="5"/>
+<connect gate="G$1" pin="PH1_OSC_OUT" pad="6"/>
+<connect gate="G$1" pin="VBAT" pad="1"/>
+<connect gate="G$1" pin="VDD@19" pad="19"/>
+<connect gate="G$1" pin="VDD@32" pad="32"/>
+<connect gate="G$1" pin="VDD@64" pad="64"/>
+<connect gate="G$1" pin="VDDA_VREF_P" pad="13"/>
+<connect gate="G$1" pin="VDDUSB" pad="48"/>
+<connect gate="G$1" pin="VSS@18" pad="18"/>
+<connect gate="G$1" pin="VSS@31" pad="31"/>
+<connect gate="G$1" pin="VSS@47" pad="47"/>
+<connect gate="G$1" pin="VSS@63" pad="63"/>
+<connect gate="G$1" pin="VSSA_VREF_M" pad="12"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="STM32L452RET_64PIN_SMPS" prefix="U">
+<description>&lt;h4&gt;STM32L452RET6P 64LQFP&lt;/h4&gt;</description>
+<gates>
+<gate name="G$1" symbol="STM32L452RET_64PIN_SMPS" x="0" y="0"/>
 </gates>
 <devices>
 <device name="" package="LQFP64">
