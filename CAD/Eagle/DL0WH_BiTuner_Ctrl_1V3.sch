@@ -15177,7 +15177,7 @@ TSSOP-20</description>
 <part name="D0971" library="df4iah_diode" deviceset="D_SOD923" device="" value="CMAD6001"/>
 <part name="R0971" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="10kR"/>
 <part name="GND0961" library="df4iah_supply" deviceset="GND" device=""/>
-<part name="X0601" library="df4iah_connector" deviceset="HEADER-2X2" device=""/>
+<part name="X0501" library="df4iah_connector" deviceset="HEADER-2X2" device=""/>
 <part name="GND0501" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="+3V6" library="df4iah_supply" deviceset="+3V3" device=""/>
 <part name="R0903" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="150kR"/>
@@ -16086,7 +16086,7 @@ Crystal 32.768 kHz</text>
 <instance part="FRAME_06" gate="G$1" x="0" y="0"/>
 <instance part="R0511" gate="G$1" x="22.86" y="134.62" rot="R90"/>
 <instance part="R0512" gate="G$1" x="33.02" y="134.62" rot="R90"/>
-<instance part="X0601" gate="G$1" x="33.02" y="96.52" rot="R270"/>
+<instance part="X0501" gate="G$1" x="33.02" y="96.52" rot="R270"/>
 <instance part="GND0501" gate="1" x="30.48" y="83.82"/>
 </instances>
 <busses>
@@ -16098,7 +16098,7 @@ Crystal 32.768 kHz</text>
 <label x="58.42" y="124.46" size="1.778" layer="95" xref="yes"/>
 <pinref part="R0512" gate="G$1" pin="1"/>
 <wire x1="33.02" y1="124.46" x2="33.02" y2="129.54" width="0.1524" layer="91"/>
-<pinref part="X0601" gate="G$1" pin="1"/>
+<pinref part="X0501" gate="G$1" pin="1"/>
 <wire x1="33.02" y1="124.46" x2="33.02" y2="101.6" width="0.1524" layer="91"/>
 <junction x="33.02" y="124.46"/>
 </segment>
@@ -16110,7 +16110,7 @@ Crystal 32.768 kHz</text>
 <pinref part="R0511" gate="G$1" pin="1"/>
 <wire x1="30.48" y1="119.38" x2="58.42" y2="119.38" width="0.1524" layer="91"/>
 <wire x1="22.86" y1="119.38" x2="22.86" y2="129.54" width="0.1524" layer="91"/>
-<pinref part="X0601" gate="G$1" pin="3"/>
+<pinref part="X0501" gate="G$1" pin="3"/>
 <wire x1="30.48" y1="119.38" x2="30.48" y2="101.6" width="0.1524" layer="91"/>
 <junction x="30.48" y="119.38"/>
 </segment>
@@ -16129,9 +16129,9 @@ Crystal 32.768 kHz</text>
 </net>
 <net name="GND" class="0">
 <segment>
-<pinref part="X0601" gate="G$1" pin="2"/>
+<pinref part="X0501" gate="G$1" pin="2"/>
 <wire x1="33.02" y1="91.44" x2="33.02" y2="88.9" width="0.1524" layer="91"/>
-<pinref part="X0601" gate="G$1" pin="4"/>
+<pinref part="X0501" gate="G$1" pin="4"/>
 <wire x1="30.48" y1="91.44" x2="30.48" y2="88.9" width="0.1524" layer="91"/>
 <wire x1="33.02" y1="88.9" x2="30.48" y2="88.9" width="0.1524" layer="91"/>
 <wire x1="30.48" y1="88.9" x2="30.48" y2="86.36" width="0.1524" layer="91"/>
