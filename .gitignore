@@ -51,6 +51,12 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+# Eagle shadow files
+*.b#?
+*.s#?
+
+# DiskStation
+@eaDir/
 
 Debug/
 Release/

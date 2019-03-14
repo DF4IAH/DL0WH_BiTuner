@@ -15055,7 +15055,7 @@ TSSOP-20</description>
 <part name="C1222" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="22uF"/>
 <part name="C1223" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="22uF"/>
 <part name="X1211" library="df4iah_connector" deviceset="WIRE-TO-BOARD_5MM08_1X02" device=""/>
-<part name="U0101" library="df4iah_stm32l4" deviceset="STM32L476RXT_64PIN_LDO" device=""/>
+<part name="U0101" library="df4iah_stm32l4" deviceset="STM32L476RXT_64PIN_LDO" device="" value="STM32L476RGT6_64PIN_LDO"/>
 <part name="FRAME_07" library="df4iah_frame" deviceset="A4L-LOC" device="" value="Holes"/>
 <part name="FRAME_08" library="df4iah_frame" deviceset="A4L-LOC" device="" value="Holes"/>
 <part name="FRAME_09" library="df4iah_frame" deviceset="A4L-LOC" device="" value="Holes"/>
