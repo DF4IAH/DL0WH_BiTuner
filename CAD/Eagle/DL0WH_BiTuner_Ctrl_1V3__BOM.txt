@@ -1,0 +1,84 @@
+Stückliste exportiert aus /Users/espero/nfs_ds_nfs/git/DL0WH_BiTuner/CAD/Eagle/DL0WH_BiTuner_Ctrl_1V3.sch am 16.03.19 19:05
+
+Qty Value                    Device                               Package                             Parts                                                                                                                                             Description                                           
+
+1   STM32L476RGT6_64PIN_LDO  STM32L476RXT_64PIN_LDO               LQFP64                              U0101                                                                                                                                             STM32L476RxT 64LQFP                                   
+
+1   MCP4661-103E-MS          MCP4661-104E-MS                      TSSOP14                             U0962                                                                                                                                             Microchip MCP4661                                     
+
+1   LM53603-Q1               LM53603-Q1                           HTSSOP16                            U1201                                                                                                                                             TI LM53603-Q1                                         
+1   TPS62056                 TPS62051                             S-PDSO-G10                          U1301                                                                                                                                             TPS62051 800-mA Synchronous Step-Down Converter: 3.3V 
+1   LM2611                   LM2611                               SOT95P280X145-5N                    U0941                                                                                                                                             IC REG CUK INV ADJ 1.2A SOT23-5                       
+
+2   MAX232_SOIC16            MAX232_SOIC16                        SOIC16N                             U1001, U1101                                                                                                                                      RS232 TRANSCEIVER                                     
+3   MC33996                  MC33996                              SOICW32                             U0601, U0701, U0801                                                                                                                               NXP MC33996                                           
+
+2   OPA354                   OPA354                               SOT-23-5                            U0951, U0961                                                                                                                                      CMOS OPERATIONAL AMPLIFIERS                           
+
+1   TS5A23166                TS5A23166                            R-PDSO-G8                           U0921                                                                                                                                             TS5A23166                                             
+
+1   ABS07-32.768KHZ          ABS07-32.768KHZ                      ABS07                               Q0321                                                                                                                                             ABRACON ABS07                                         
+
+2   CMAD6001                 D_SOD923                             SOD923                              D0951, D0971                                                                                                                                      DIODE with SOD923 footprint                           
+2   CRS08                    CRS08                                SOD80C                              D0942, D1221                                                                                                                                      SCHOTTKY BARRIER RECTIFIER                            
+
+
+3   0R                       R-EU_R0402                           R0402                               R0401, R0441, R0622                                                                                                                               RESISTOR, European symbol                             
+1   3R                       R-EU_R0402                           R0402                               R1211                                                                                                                                             RESISTOR, European symbol                             
+21  47R                      R-EU_R0402                           R0402                               R0611, R0621, R0623, R0624, R0625, R0626, R0711, R0724, R0811, R0824, R0921, R0922, R0972, R1001, R1002, R1003, R1004, R1101, R1102, R1103, R1104 RESISTOR, European symbol                             
+6   1kR                      R-EU_R0402                           R0402                               R0511, R0512, R0901, R0911, R0961, R0962                                                                                                          RESISTOR, European symbol                             
+1   8.2kR                    R-EU_R0402                           R0402                               R0945                                                                                                                                             RESISTOR, European symbol                             
+2   10kR                     R-EU_R0402                           R0402                               R0963, R0971                                                                                                                                      RESISTOR, European symbol                             
+2   15kR                     R-EU_R0402                           R0402                               R0902, R0912                                                                                                                                      RESISTOR, European symbol                             
+2   33kR                     R-EU_R0402                           R0402                               R0221, R0946                                                                                                                                      RESISTOR, European symbol                             
+1   100kR                    R-EU_R0402                           R0402                               R1301                                                                                                                                             RESISTOR, European symbol                             
+2   150kR                    R-EU_R0402                           R0402                               R0903, R0913                                                                                                                                      RESISTOR, European symbol                             
+3   220kR                    R-EU_R0402                           R0402                               R0231, R0232, R1302                                                                                                                               RESISTOR, European symbol                             
+1   330kR                    R-EU_R0402                           R0402                               R1402                                                                                                                                             RESISTOR, European symbol                             
+2   1MR                      R-EU_R0402                           R0402                               R1321, R1322                                                                                                                                      RESISTOR, European symbol                             
+
+1   1.1A/2.2A                R-EU_M1206                           M1206                               PF1411                                                                                                                                            RESISTOR, European symbol                             
+
+
+1   18pF                     C-EUC0402                            C0402                               C0332                                                                                                                                             CAPACITOR, European symbol                            
+1   22pF                     C-EUC0402                            C0402                               C0311                                                                                                                                             CAPACITOR, European symbol                            
+1   100pF                    C-EUC0402                            C0402                               C0963                                                                                                                                             CAPACITOR, European symbol                            
+4   1nF                      C-EUC0402                            C0402                               C0901, C0911, C0945, C1403                                                                                                                        CAPACITOR, European symbol                            
+10  10nF                     C-EUC0402                            C0402                               C0412, C1051, C1052, C1053, C1054, C1151, C1152, C1153, C1154, C1204                                                                              CAPACITOR, European symbol                            
+15  100nF                    C-EUC0402                            C0402                               C0213, C0401, C0402, C0403, C0601, C0602, C0701, C0702, C0801, C0802, C0921, C0951, C0952, C0962, C1212                                           CAPACITOR, European symbol                            
+1   0.47uF                   C-EUC0402                            C0402                               C1211                                                                                                                                             CAPACITOR, European symbol                            
+11  1uF                      C-EUC0402                            C0402                               C0413, C1001, C1002, C1003, C1004, C1005, C1101, C1102, C1103, C1104, C1105                                                                       CAPACITOR, European symbol                            
+1   2.2uF                    C-EUC0603                            C0603                               C0942                                                                                                                                             CAPACITOR, European symbol                            
+1   3.3uF                    C-EUC0603                            C0603                               C1205                                                                                                                                             CAPACITOR, European symbol                            
+1   4.7uF                    C-EUC0603                            C0603                               C0410                                                                                                                                             CAPACITOR, European symbol                            
+3   10uF                     C-EUC0603                            C0603                               C1201, C1202, C1203                                                                                                                               CAPACITOR, European symbol
+10  22uF                     C-EUC0603                            C0603                               C0603, C0703, C0803, C0941, C0943, C1221, C1222, C1223, C1301, C1311                                                                              CAPACITOR, European symbol                            
+1   47uF                     C-EUC0805                            C0805                               C0451                                                                                                                                             CAPACITOR, European symbol                            
+
+1   JR200                    C-TRIMM3MM2_2MM5                     3MM2_X_2MM5                         C0331                                                                                                                                             Trimm capacitor                                       
+
+
+1   2.2uH                    L-EU6.00X6.00MM                      L_6.00MM_X_6.00MM                   L1211                                                                                                                                             INDUCTOR, European symbol                             
+1   10uH                     L-EU4.50X3.20MM                      L_4.50MM_X_3.20MM                   L1311                                                                                                                                             INDUCTOR, European symbol                             
+3   10uH                     L-EUL0603                            L0603                               L0411, L0901, L0911                                                                                                                               INDUCTOR, European symbol                             
+2   20uH                     L-EUL1812                            L1812                               L0941, L0943                                                                                                                                      INDUCTOR, European symbol                             
+
+
+
+1   KSR223GLFG               KSR223G_SMD_1POL                     KSR223G_SMD_1POL                    S0212                                                                                                                                             KSR223G                                               
+
+1   SAMTEC SMA-J-P-H-RA-TH1  SMA_SMT_AMPHENOL-901-143             SMA_SMT_AMPHENOL_901-143            X1511                                                                                                                                             RF/COAXIAL, SMA JACK, R/A, 50OHM, THD                 
+1   SMA_SMT_AMPHENOL-901-143 SMA_SMT_AMPHENOL-901-143             SMA_SMT_AMPHENOL_901-143            X1501                                                                                                                                             RF/COAXIAL, SMA JACK, R/A, 50OHM, THD                 
+
+1   MOLEX 105017-0001        USB_MICRO-B_MOLEX                    USB-B-MICRO-SMD_MOLEX-105017-0001   X1401                                                                                                                                             USB Type Micro-B Connector                            
+
+1   FTSH-105-01-F-D-K        2X05_1MM27_SHROUDED_CORTEX_JTAG_SWD" 2X05_1MM27_SHROUDED_CORTEX_JTAG_SWD X0201                                                                                                                                             Header 2X5 1.27mm 0.05" shrouded - CORTEX JTAG-SWD    
+2                            2X10_2MM56_SOCKET                    2X10                                X1601, X1602                                                                                                                                      Header 2X10 2.54mm                                    
+1                            HEADER-1X2                           1X02                                X0222                                                                                                                                             Header 1X2 2.54mm                                     
+1                            HEADER-2X2                           2X02                                X0501                                                                                                                                             Header 2X2 2.54mm                                     
+
+7   WIRE-TO-BOARD_5MM08_1X02 WIRE-TO-BOARD_5MM08_1X02             WIRE-TO-BOARD_5MM08_1X02            X1051, X1052, X1053, X1151, X1152, X1153, X1211                                                                                                   Wire-to-Board connector 5.08mm 1x02                   
+
+
+
+<EOF>
