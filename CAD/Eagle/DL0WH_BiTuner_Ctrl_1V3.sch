@@ -3694,109 +3694,6 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 </deviceset>
 </devicesets>
 </library>
-<library name="df4iah_jumper">
-<description>&lt;b&gt;Jumpers&lt;/b&gt;&lt;p&gt;
-&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
-<packages>
-<package name="SJ">
-<description>&lt;b&gt;Solder jumper&lt;/b&gt;</description>
-<wire x1="1.397" y1="-1.016" x2="-1.397" y2="-1.016" width="0.1524" layer="21"/>
-<wire x1="1.397" y1="1.016" x2="1.651" y2="0.762" width="0.1524" layer="21" curve="-90"/>
-<wire x1="-1.651" y1="0.762" x2="-1.397" y2="1.016" width="0.1524" layer="21" curve="-90"/>
-<wire x1="-1.651" y1="-0.762" x2="-1.397" y2="-1.016" width="0.1524" layer="21" curve="90"/>
-<wire x1="1.397" y1="-1.016" x2="1.651" y2="-0.762" width="0.1524" layer="21" curve="90"/>
-<wire x1="1.651" y1="-0.762" x2="1.651" y2="0.762" width="0.1524" layer="21"/>
-<wire x1="-1.651" y1="-0.762" x2="-1.651" y2="0.762" width="0.1524" layer="21"/>
-<wire x1="-1.397" y1="1.016" x2="1.397" y2="1.016" width="0.1524" layer="21"/>
-<wire x1="1.016" y1="0" x2="1.524" y2="0" width="0.1524" layer="51"/>
-<wire x1="-1.016" y1="0" x2="-1.524" y2="0" width="0.1524" layer="51"/>
-<wire x1="-0.254" y1="-0.127" x2="-0.254" y2="0.127" width="1.27" layer="51" curve="-180" cap="flat"/>
-<wire x1="0.254" y1="0.127" x2="0.254" y2="-0.127" width="1.27" layer="51" curve="-180" cap="flat"/>
-<smd name="1" x="-0.762" y="0" dx="1.1684" dy="1.6002" layer="1"/>
-<smd name="2" x="0.762" y="0" dx="1.1684" dy="1.6002" layer="1"/>
-<text x="-1.651" y="1.143" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-<text x="0.4001" y="0" size="0.02" layer="27">&gt;VALUE</text>
-<rectangle x1="-0.0762" y1="-0.9144" x2="0.0762" y2="0.9144" layer="29"/>
-</package>
-<package name="SJW">
-<description>&lt;b&gt;Solder jumper&lt;/b&gt;</description>
-<wire x1="1.905" y1="-1.524" x2="-1.905" y2="-1.524" width="0.1524" layer="21"/>
-<wire x1="1.905" y1="1.524" x2="2.159" y2="1.27" width="0.1524" layer="21" curve="-90"/>
-<wire x1="-2.159" y1="1.27" x2="-1.905" y2="1.524" width="0.1524" layer="21" curve="-90"/>
-<wire x1="-2.159" y1="-1.27" x2="-1.905" y2="-1.524" width="0.1524" layer="21" curve="90"/>
-<wire x1="1.905" y1="-1.524" x2="2.159" y2="-1.27" width="0.1524" layer="21" curve="90"/>
-<wire x1="2.159" y1="-1.27" x2="2.159" y2="1.27" width="0.1524" layer="21"/>
-<wire x1="-2.159" y1="-1.27" x2="-2.159" y2="1.27" width="0.1524" layer="21"/>
-<wire x1="-1.905" y1="1.524" x2="1.905" y2="1.524" width="0.1524" layer="21"/>
-<wire x1="0.762" y1="0.762" x2="0.762" y2="-0.762" width="0.1524" layer="51"/>
-<wire x1="-0.762" y1="0.762" x2="-0.762" y2="-0.762" width="0.1524" layer="51"/>
-<wire x1="1.524" y1="0" x2="2.032" y2="0" width="0.1524" layer="51"/>
-<wire x1="-1.524" y1="0" x2="-2.032" y2="0" width="0.1524" layer="51"/>
-<wire x1="0.762" y1="0.762" x2="0.762" y2="-0.762" width="0.1524" layer="51" curve="-180"/>
-<wire x1="-0.762" y1="0.762" x2="-0.762" y2="-0.762" width="0.1524" layer="51" curve="180"/>
-<smd name="1" x="-1.27" y="0" dx="1.27" dy="2.54" layer="1"/>
-<smd name="2" x="1.27" y="0" dx="1.27" dy="2.54" layer="1"/>
-<text x="-2.159" y="1.778" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-<text x="1" y="0" size="0.02" layer="27">&gt;VALUE</text>
-<rectangle x1="0.762" y1="-0.762" x2="1.016" y2="0.762" layer="51"/>
-<rectangle x1="1.016" y1="-0.635" x2="1.27" y2="0.635" layer="51"/>
-<rectangle x1="1.27" y1="-0.508" x2="1.397" y2="0.508" layer="51"/>
-<rectangle x1="1.397" y1="-0.254" x2="1.524" y2="0.254" layer="51"/>
-<rectangle x1="-1.016" y1="-0.762" x2="-0.762" y2="0.762" layer="51"/>
-<rectangle x1="-1.27" y1="-0.635" x2="-1.016" y2="0.635" layer="51"/>
-<rectangle x1="-1.397" y1="-0.508" x2="-1.27" y2="0.508" layer="51"/>
-<rectangle x1="-1.524" y1="-0.254" x2="-1.397" y2="0.254" layer="51"/>
-<rectangle x1="0.9652" y1="-0.7112" x2="1.0922" y2="-0.5842" layer="51"/>
-<rectangle x1="1.3462" y1="-0.3556" x2="1.4732" y2="-0.2286" layer="51"/>
-<rectangle x1="1.3462" y1="0.2032" x2="1.4732" y2="0.3302" layer="51"/>
-<rectangle x1="0.9652" y1="0.5842" x2="1.0922" y2="0.7112" layer="51"/>
-<rectangle x1="-1.0922" y1="-0.7112" x2="-0.9652" y2="-0.5842" layer="51"/>
-<rectangle x1="-1.4478" y1="-0.3302" x2="-1.3208" y2="-0.2032" layer="51"/>
-<rectangle x1="-1.4732" y1="0.2032" x2="-1.3462" y2="0.3302" layer="51"/>
-<rectangle x1="-1.1176" y1="0.5842" x2="-0.9906" y2="0.7112" layer="51"/>
-</package>
-</packages>
-<symbols>
-<symbol name="SJ">
-<wire x1="0.381" y1="0.635" x2="0.381" y2="-0.635" width="1.27" layer="94" curve="-180" cap="flat"/>
-<wire x1="-0.381" y1="-0.635" x2="-0.381" y2="0.635" width="1.27" layer="94" curve="-180" cap="flat"/>
-<wire x1="2.54" y1="0" x2="1.651" y2="0" width="0.1524" layer="94"/>
-<wire x1="-2.54" y1="0" x2="-1.651" y2="0" width="0.1524" layer="94"/>
-<text x="-2.54" y="2.54" size="1.778" layer="95">&gt;NAME</text>
-<text x="-2.54" y="-3.81" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="2" x="5.08" y="0" visible="pad" length="short" direction="pas" swaplevel="1" rot="R180"/>
-<pin name="1" x="-5.08" y="0" visible="pad" length="short" direction="pas" swaplevel="1"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="SJ" prefix="SJ" uservalue="yes">
-<description>SMD solder &lt;b&gt;JUMPER&lt;/b&gt;</description>
-<gates>
-<gate name="1" symbol="SJ" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="SJ">
-<connects>
-<connect gate="1" pin="1" pad="1"/>
-<connect gate="1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="W" package="SJW">
-<connects>
-<connect gate="1" pin="1" pad="1"/>
-<connect gate="1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
 <library name="df4iah_connector">
 <description>&lt;b&gt;DF4IAH Library - Connectors: headers, coax-jacks, BNC, SMA, MCX, USB and more ...&lt;/b&gt;</description>
 <packages>
@@ -14993,7 +14890,7 @@ TSSOP-20</description>
 <part name="GND0401" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="C0412" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="10nF"/>
 <part name="GND0411" library="df4iah_supply" deviceset="GND" device=""/>
-<part name="SJ0401" library="df4iah_jumper" deviceset="SJ" device=""/>
+<part name="R0401" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="0R"/>
 <part name="GND0201" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="X0222" library="df4iah_connector" deviceset="HEADER-1X2" device=""/>
 <part name="GND0221" library="df4iah_supply" deviceset="GND" device=""/>
@@ -15184,16 +15081,16 @@ TSSOP-20</description>
 <part name="R0913" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="150kR"/>
 <part name="R0901" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1kR"/>
 <part name="R0911" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1kR"/>
-<part name="C1052" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
-<part name="C1051" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
-<part name="C1053" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
-<part name="C0054" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
+<part name="C1052" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="10nF"/>
+<part name="C1051" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="10nF"/>
+<part name="C1053" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="10nF"/>
+<part name="C1054" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="10nF"/>
 <part name="GND0001" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="GND0002" library="df4iah_supply" deviceset="GND" device=""/>
-<part name="C1152" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
-<part name="C1151" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
-<part name="C1153" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
-<part name="C1154" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="10nF"/>
+<part name="C1152" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="10nF"/>
+<part name="C1151" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="10nF"/>
+<part name="C1153" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="10nF"/>
+<part name="C1154" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="10nF"/>
 <part name="GND0005" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="GND0006" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="X0201" library="df4iah_connector" deviceset="2X05_1MM27_SHROUDED_CORTEX_JTAG_SWD" device="&quot;" value="FTSH-105-01-F-D-K"/>
@@ -15201,14 +15098,14 @@ TSSOP-20</description>
 <part name="C0952" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="100nF"/>
 <part name="U0961" library="df4iah_opamp" deviceset="OPA354" device=""/>
 <part name="R0961" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1kR"/>
-<part name="R0962" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1.0kR"/>
+<part name="R0962" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1kR"/>
 <part name="R0963" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="10kR"/>
 <part name="C0963" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="100pF"/>
 <part name="U0941" library="df4iah_powersupply" deviceset="LM2611" device=""/>
 <part name="C0941" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="22uF"/>
 <part name="GND0941" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="L0941" library="df4iah_rcl" deviceset="L-EU" device="L1812" value="20uH"/>
-<part name="C0942" library="df4iah_rcl" deviceset="C-EU" device="C0805" value="2.2uF"/>
+<part name="C0942" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="2.2uF"/>
 <part name="GND0942" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="L0943" library="df4iah_rcl" deviceset="L-EU" device="L1812" value="20uH"/>
 <part name="GND0943" library="df4iah_supply" deviceset="GND" device=""/>
@@ -15934,7 +15831,7 @@ Crystal 32.768 kHz</text>
 <instance part="GND0401" gate="1" x="226.06" y="124.46"/>
 <instance part="C0412" gate="G$1" x="200.66" y="101.6"/>
 <instance part="GND0411" gate="1" x="200.66" y="88.9"/>
-<instance part="SJ0401" gate="1" x="119.38" y="147.32"/>
+<instance part="R0401" gate="G$1" x="119.38" y="147.32"/>
 <instance part="GND0441" gate="1" x="200.66" y="33.02"/>
 <instance part="R0441" gate="G$1" x="213.36" y="38.1"/>
 <instance part="C0451" gate="G$1" x="66.04" y="43.18"/>
@@ -16030,7 +15927,7 @@ Crystal 32.768 kHz</text>
 <pinref part="C0403" gate="G$1" pin="1"/>
 <wire x1="165.1" y1="147.32" x2="165.1" y2="139.7" width="0.1524" layer="91"/>
 <junction x="165.1" y="147.32"/>
-<pinref part="SJ0401" gate="1" pin="2"/>
+<pinref part="R0401" gate="G$1" pin="2"/>
 <wire x1="134.62" y1="147.32" x2="124.46" y2="147.32" width="0.1524" layer="91"/>
 <pinref part="C0410" gate="G$1" pin="1"/>
 <wire x1="134.62" y1="119.38" x2="142.24" y2="119.38" width="0.1524" layer="91"/>
@@ -16062,7 +15959,7 @@ Crystal 32.768 kHz</text>
 </net>
 <net name="+3V3" class="0">
 <segment>
-<pinref part="SJ0401" gate="1" pin="1"/>
+<pinref part="R0401" gate="G$1" pin="1"/>
 <label x="40.64" y="147.32" size="1.778" layer="95" rot="R180" xref="yes"/>
 <wire x1="114.3" y1="147.32" x2="40.64" y2="147.32" width="0.1524" layer="91"/>
 </segment>
@@ -17726,7 +17623,7 @@ I2C1 addr: 0x28</text>
 <instance part="C1052" gate="G$1" x="193.04" y="114.3"/>
 <instance part="C1051" gate="G$1" x="180.34" y="114.3"/>
 <instance part="C1053" gate="G$1" x="180.34" y="81.28"/>
-<instance part="C0054" gate="G$1" x="193.04" y="81.28"/>
+<instance part="C1054" gate="G$1" x="193.04" y="81.28"/>
 <instance part="GND0001" gate="1" x="180.34" y="106.68"/>
 <instance part="GND0002" gate="1" x="180.34" y="73.66"/>
 </instances>
@@ -17772,7 +17669,7 @@ I2C1 addr: 0x28</text>
 <pinref part="C1053" gate="G$1" pin="2"/>
 <wire x1="180.34" y1="76.2" x2="193.04" y2="76.2" width="0.1524" layer="91"/>
 <junction x="180.34" y="76.2"/>
-<pinref part="C0054" gate="G$1" pin="2"/>
+<pinref part="C1054" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="RS_MX_C2M1" class="0">
@@ -17951,7 +17848,7 @@ I2C1 addr: 0x28</text>
 <label x="144.78" y="91.44" size="1.778" layer="95"/>
 <pinref part="X1053" gate="G$1" pin="2"/>
 <wire x1="165.1" y1="88.9" x2="193.04" y2="88.9" width="0.1524" layer="91"/>
-<pinref part="C0054" gate="G$1" pin="1"/>
+<pinref part="C1054" gate="G$1" pin="1"/>
 <wire x1="193.04" y1="88.9" x2="215.9" y2="88.9" width="0.1524" layer="91"/>
 <wire x1="193.04" y1="88.9" x2="193.04" y2="83.82" width="0.1524" layer="91"/>
 <junction x="193.04" y="88.9"/>
@@ -19233,11 +19130,10 @@ USB host (OTG) interface</text>
 <approved hash="106,1,226.06,129.54,PD2,,,,,"/>
 <approved hash="106,1,38.1,124.46,PH0,,,,,"/>
 <approved hash="106,1,38.1,119.38,PH1,,,,,"/>
-<approved hash="113,4,119.38,148.836,SJ0401,,,,,"/>
 <approved hash="113,2,139.251,141.915,X0222,,,,,"/>
 <approved hash="113,16,80.8313,104.14,X1601,,,,,"/>
 <approved hash="113,16,134.171,104.14,X1602,,,,,"/>
-<approved hash="113,5,33.4687,96.52,X0601,,,,,"/>
+<approved hash="113,5,33.4687,96.52,X0501,,,,,"/>
 </errors>
 </schematic>
 </drawing>
