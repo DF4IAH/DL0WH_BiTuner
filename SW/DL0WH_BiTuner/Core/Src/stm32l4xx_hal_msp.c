@@ -105,12 +105,12 @@ void HAL_MspInit(void)
   /* PendSV_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(PendSV_IRQn, 15, 0);
 
-  /**PVD Configuration 
+  /** PVD Configuration 
   */
   sConfigPVD.PVDLevel = PWR_PVDLEVEL_3;
   sConfigPVD.Mode = PWR_PVD_MODE_NORMAL;
   HAL_PWR_ConfigPVD(&sConfigPVD);
-  /**Enable the PVD Output 
+  /** Enable the PVD Output 
   */
   HAL_PWR_EnablePVD();
 
