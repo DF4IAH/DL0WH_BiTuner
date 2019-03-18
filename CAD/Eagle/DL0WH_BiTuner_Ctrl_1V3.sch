@@ -15119,8 +15119,6 @@ TSSOP-20</description>
 <part name="GND0962" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="+3V7" library="df4iah_supply" deviceset="+3V3" device=""/>
 <part name="C0962" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="100nF"/>
-<part name="C0949" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="100nF"/>
-<part name="R0949" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="100kR"/>
 </parts>
 <sheets>
 <sheet>
@@ -17018,6 +17016,8 @@ I2C1 addr: 0x28</text>
 <text x="226.06" y="93.98" size="1.778" layer="97">DC</text>
 <text x="213.36" y="137.16" size="1.778" layer="97" rot="R90">MCU_I2C1_SCL</text>
 <text x="208.28" y="137.16" size="1.778" layer="97" rot="R90">MCU_I2C1_SDA</text>
+<text x="205.74" y="109.22" size="1.778" layer="97">nom: 5.0kR</text>
+<text x="226.06" y="109.22" size="1.778" layer="97">nom: 4.9kR</text>
 </plain>
 <instances>
 <instance part="FRAME_05" gate="G$1" x="0" y="0"/>
@@ -17093,11 +17093,6 @@ I2C1 addr: 0x28</text>
 <instance part="GND0962" gate="1" x="193.04" y="127"/>
 <instance part="+3V7" gate="G$1" x="246.38" y="167.64"/>
 <instance part="C0962" gate="G$1" x="238.76" y="147.32"/>
-<instance part="C0949" gate="G$1" x="78.74" y="76.2" smashed="yes" rot="R90">
-<attribute name="NAME" x="70.104" y="76.581" size="1.778" layer="95"/>
-<attribute name="VALUE" x="82.804" y="76.581" size="1.778" layer="96"/>
-</instance>
-<instance part="R0949" gate="G$1" x="20.32" y="76.2"/>
 </instances>
 <busses>
 </busses>
@@ -17311,8 +17306,9 @@ I2C1 addr: 0x28</text>
 <wire x1="111.76" y1="71.12" x2="10.16" y2="71.12" width="0.1524" layer="91"/>
 <pinref part="U0941" gate="G$1" pin="VIN"/>
 <wire x1="20.32" y1="38.1" x2="10.16" y2="38.1" width="0.1524" layer="91"/>
-<wire x1="10.16" y1="71.12" x2="10.16" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="10.16" y1="71.12" x2="10.16" y2="53.34" width="0.1524" layer="91"/>
 <pinref part="C0941" gate="G$1" pin="1"/>
+<wire x1="10.16" y1="53.34" x2="10.16" y2="38.1" width="0.1524" layer="91"/>
 <wire x1="10.16" y1="38.1" x2="10.16" y2="22.86" width="0.1524" layer="91"/>
 <junction x="10.16" y="38.1"/>
 <pinref part="L0941" gate="G$1" pin="2"/>
@@ -17323,10 +17319,9 @@ I2C1 addr: 0x28</text>
 <wire x1="167.64" y1="88.9" x2="238.76" y2="88.9" width="0.1524" layer="91"/>
 <pinref part="U0962" gate="G$1" pin="P0A"/>
 <wire x1="238.76" y1="88.9" x2="238.76" y2="96.52" width="0.1524" layer="91"/>
-<wire x1="10.16" y1="71.12" x2="10.16" y2="76.2" width="0.1524" layer="91"/>
-<junction x="10.16" y="71.12"/>
-<pinref part="R0949" gate="G$1" pin="1"/>
-<wire x1="10.16" y1="76.2" x2="15.24" y2="76.2" width="0.1524" layer="91"/>
+<pinref part="U0941" gate="G$1" pin="!SHDN"/>
+<wire x1="10.16" y1="53.34" x2="20.32" y2="53.34" width="0.1524" layer="91"/>
+<junction x="10.16" y="53.34"/>
 </segment>
 <segment>
 <wire x1="114.3" y1="165.1" x2="114.3" y2="167.64" width="0.1524" layer="91"/>
@@ -17463,10 +17458,6 @@ I2C1 addr: 0x28</text>
 <pinref part="C0945" gate="G$1" pin="2"/>
 <wire x1="88.9" y1="53.34" x2="83.82" y2="53.34" width="0.1524" layer="91"/>
 <junction x="88.9" y="53.34"/>
-<wire x1="88.9" y1="63.5" x2="88.9" y2="76.2" width="0.1524" layer="91"/>
-<junction x="88.9" y="63.5"/>
-<pinref part="C0949" gate="G$1" pin="2"/>
-<wire x1="88.9" y1="76.2" x2="83.82" y2="76.2" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SWR_OP2_IN" class="0">
@@ -17571,20 +17562,6 @@ I2C1 addr: 0x28</text>
 <pinref part="U0962" gate="G$1" pin="SDA"/>
 <wire x1="208.28" y1="132.08" x2="208.28" y2="157.48" width="0.1524" layer="91"/>
 <label x="208.28" y="157.48" size="1.778" layer="95" rot="R90" xref="yes"/>
-</segment>
-</net>
-<net name="LM_SHDN" class="0">
-<segment>
-<pinref part="U0941" gate="G$1" pin="!SHDN"/>
-<wire x1="20.32" y1="53.34" x2="17.78" y2="53.34" width="0.1524" layer="91"/>
-<wire x1="17.78" y1="53.34" x2="17.78" y2="66.04" width="0.1524" layer="91"/>
-<wire x1="17.78" y1="66.04" x2="33.02" y2="66.04" width="0.1524" layer="91"/>
-<wire x1="33.02" y1="66.04" x2="33.02" y2="76.2" width="0.1524" layer="91"/>
-<pinref part="R0949" gate="G$1" pin="2"/>
-<wire x1="33.02" y1="76.2" x2="25.4" y2="76.2" width="0.1524" layer="91"/>
-<pinref part="C0949" gate="G$1" pin="1"/>
-<wire x1="33.02" y1="76.2" x2="76.2" y2="76.2" width="0.1524" layer="91"/>
-<junction x="33.02" y="76.2"/>
 </segment>
 </net>
 </nets>
