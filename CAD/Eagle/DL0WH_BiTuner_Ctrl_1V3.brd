@@ -28,8 +28,8 @@
 <layer number="18" name="Vias" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="19" name="Unrouted" color="6" fill="1" visible="no" active="yes"/>
 <layer number="20" name="Dimension" color="5" fill="1" visible="yes" active="yes"/>
-<layer number="21" name="tPlace" color="7" fill="1" visible="no" active="yes"/>
-<layer number="22" name="bPlace" color="7" fill="1" visible="no" active="yes"/>
+<layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="yes"/>
 <layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="yes"/>
 <layer number="25" name="tNames" color="7" fill="1" visible="no" active="yes"/>
@@ -4176,7 +4176,7 @@ TSSOP-20</description>
 <attribute name="NAME" x="12.85875" y="28.575" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="13.97" y="25.4" size="0.6096" layer="27" font="vector" ratio="10" rot="R90"/>
 </element>
-<element name="R0972" library="df4iah_rcl" package="R0402" value="47R" x="15.875" y="20.955" smashed="yes" rot="MR90">
+<element name="R0972" library="df4iah_rcl" package="R0402" value="1kR" x="15.875" y="20.955" smashed="yes" rot="MR90">
 <attribute name="NAME" x="16.98625" y="20.0025" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="14.2875" y="19.3675" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
 </element>
@@ -4311,6 +4311,8 @@ TSSOP-20</description>
 <attribute name="NAME" x="10.4775" y="12.3825" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
 <attribute name="VALUE" x="12.7" y="12.3825" size="0.6096" layer="28" font="vector" ratio="10" rot="MR0"/>
 </element>
+<element name="C0949" library="df4iah_rcl" package="C0402" value="100nF" x="-3.81" y="-24.13"/>
+<element name="R0949" library="df4iah_rcl" package="R0402" value="100kR" x="-3.81" y="-29.21"/>
 </elements>
 <signals>
 <signal name="GND">
@@ -5335,7 +5337,6 @@ TSSOP-20</description>
 <wire x1="79.375" y1="3.81" x2="80.01" y2="4.445" width="0.3048" layer="16"/>
 <contactref element="U0961" pad="5"/>
 <contactref element="U0941" pad="5"/>
-<contactref element="U0941" pad="4"/>
 <contactref element="C0941" pad="1"/>
 <contactref element="L0941" pad="2"/>
 <contactref element="U0962" pad="8"/>
@@ -5344,10 +5345,8 @@ TSSOP-20</description>
 <contactref element="C0962" pad="1"/>
 <wire x1="24.4221" y1="34.11855" x2="22.28125" y2="34.11855" width="0.3048" layer="16"/>
 <wire x1="22.28125" y1="34.11855" x2="22.28125" y2="34.13125" width="0.1524" layer="16"/>
-<wire x1="24.4221" y1="34.11855" x2="24.4221" y2="32.23895" width="0.3048" layer="16"/>
 <via x="23.33625" y="32.22625" extent="1-16" drill="0.3"/>
 <wire x1="23.33625" y1="32.22625" x2="24.56125" y2="32.22625" width="0.3048" layer="1"/>
-<wire x1="24.4221" y1="32.23895" x2="23.34895" y2="32.23895" width="0.3048" layer="16"/>
 <wire x1="23.34895" y1="32.23895" x2="23.33625" y2="32.22625" width="0.3048" layer="16"/>
 <wire x1="24.56125" y1="32.22625" x2="25.0375" y2="31.75" width="0.3048" layer="1"/>
 <wire x1="25.4" y1="33.02" x2="24.60625" y2="32.22625" width="0.3048" layer="1"/>
@@ -5376,6 +5375,9 @@ TSSOP-20</description>
 <wire x1="13.6398" y1="17.7546" x2="17.62125" y2="21.73605" width="0.254" layer="1"/>
 <wire x1="17.62125" y1="21.73605" x2="17.62125" y2="23.33625" width="0.254" layer="1"/>
 <wire x1="17.62125" y1="23.33625" x2="16.66875" y2="24.28875" width="0.254" layer="1"/>
+<contactref element="R0949" pad="1"/>
+<wire x1="25.4" y1="33.02" x2="24.4221" y2="34.11855" width="0" layer="19" extent="1-16"/>
+<wire x1="-4.46" y1="-29.21" x2="13.91" y2="10.725" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="P$8">
 </signal>
@@ -7242,6 +7244,8 @@ TSSOP-20</description>
 <wire x1="29.5275" y1="26.67" x2="20.32" y2="26.67" width="0.3048" layer="16"/>
 <wire x1="20.32" y1="26.67" x2="16.66875" y2="23.01875" width="0.3048" layer="16"/>
 <via x="16.66875" y="23.01875" extent="1-16" drill="0.3"/>
+<contactref element="C0949" pad="2"/>
+<wire x1="-3.16" y1="-24.13" x2="12.7" y2="20.3454" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="SWR_OP2_IN">
 <contactref element="R0961" pad="2"/>
@@ -7342,6 +7346,13 @@ TSSOP-20</description>
 <wire x1="17.93875" y1="10.63625" x2="19.05" y2="10.63625" width="0.1524" layer="16"/>
 <wire x1="19.05" y1="10.63625" x2="19.04" y2="10.795" width="0.1524" layer="16"/>
 <wire x1="19.04" y1="10.795" x2="19.11" y2="10.725" width="0.1524" layer="16"/>
+</signal>
+<signal name="LM_SHDN">
+<contactref element="U0941" pad="4"/>
+<contactref element="R0949" pad="2"/>
+<contactref element="C0949" pad="1"/>
+<wire x1="-4.46" y1="-24.13" x2="24.4221" y2="32.23895" width="0" layer="19" extent="1-16"/>
+<wire x1="-3.16" y1="-29.21" x2="-4.46" y2="-24.13" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 <errors>
