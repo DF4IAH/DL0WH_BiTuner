@@ -129,7 +129,7 @@ void Error_Handler(void);
 #endif
 
 
-#define BITUNER_CTRL_VERSION                                 20190222UL
+#define BITUNER_CTRL_VERSION                                 20190329UL
 
 
 typedef enum POWERSWITCH_ENUM {

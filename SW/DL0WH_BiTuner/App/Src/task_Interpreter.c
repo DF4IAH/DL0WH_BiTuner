@@ -388,6 +388,8 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+    osDelay(850);
+    interpreterShowCursor();
 
   } else {
     interpreterUnknownCommand();
@@ -458,7 +460,7 @@ void interpreterGetterTask(void const * argument)
 static void interpreterInit(void)
 {
   /* Wait until init message is done */
-  osDelay(5000UL);
+  osDelay(5750UL);
 
   /* Start console input thread */
   osThreadDef(interpreterGetterTask, interpreterGetterTask, osPriorityNormal, 0, 128);

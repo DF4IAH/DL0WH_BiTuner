@@ -141,7 +141,7 @@ static DefaultMcuClocking_t s_controller_McuClocking          = DefaultMcuClocki
 
 /* Controller's welcome */
 
-const char controllerGreetMsg01[] = "\r\n";
+const char controllerGreetMsg01[] = "\r\n\r\n";
 const char controllerGreetMsg02[] = "+=======================================================+\r\n";
 const char controllerGreetMsg03[] = "*                                                       *\r\n";
 const char controllerGreetMsg04[] = "*  DL0WH BiTuner - ARM Cortex M4  powered by STM32L476  *\r\n";
@@ -158,6 +158,7 @@ static void controllerUsbGreet(void)
   char verBuf[128];
 
   interpreterClearScreen();
+  interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
 
   sprintf(verBuf, controllerGreetMsg11, BITUNER_CTRL_VERSION);
 
@@ -169,10 +170,8 @@ static void controllerUsbGreet(void)
     interpreterConsolePush(controllerGreetMsg03, strlen(controllerGreetMsg03));
     interpreterConsolePush(controllerGreetMsg02, strlen(controllerGreetMsg02));
     interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
-    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
 
     interpreterConsolePush(verBuf, strlen(verBuf));
-    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
     interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
   }
 }
@@ -230,7 +229,6 @@ static void controllerPrintMCU(void)
   uint16_t flashSize      = (uint16_t) ((*((uint32_t*) FLASHSIZE_BASE)) & 0x0000ffffUL);
 
   int len = sprintf(buf,
-      "\r\n" \
       "\tMCU Info:\r\n" \
       "\t========\r\n" \
       "\r\n" \
@@ -238,7 +236,7 @@ static void controllerPrintMCU(void)
       "\t\tWafer\t\t%lu\r\n" \
       "\t\tPos. X/Y\t%2lu/%2lu\r\n" \
       "\t\tPackage(s)\t%s\r\n" \
-      "\t\tFlash size\t%4u kB\r\n\r\n\r\n",
+      "\t\tFlash size\t%4u kB\r\n",
       lotBuf, uidWaf, uidPosX, uidPosY, packagePtr, flashSize);
   interpreterConsolePush(buf, len);
 }
@@ -1606,6 +1604,9 @@ static void controllerCyclicTimerEvent(void)
 
     /* Inits to be done after USB/DCD connection is established */
     controllerInitAfterGreet();
+
+    /* Print current state */
+    controllerPrintLC();
   }
 
   /* FSM logic */
@@ -1895,8 +1896,10 @@ static void controllerInit(void)
     }
   }
 
-  /* Set relay state */
-  controllerFSM_PushOptiVars();
+  /* Set inverted relay state - then preset state */
+  controllerSetCLExt(0x02ffffUL);
+  osDelay(30);
+  controllerSetCLExt(0x010000UL);
 
   /* Enable service cycle */
   if (s_controller_doCycle) {
