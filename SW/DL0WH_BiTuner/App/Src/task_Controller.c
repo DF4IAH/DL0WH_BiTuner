@@ -19,6 +19,7 @@
 #include "stm32l476xx.h"
 
 //#include "stm32l4xx_hal_gpio.h"
+#include "bus_i2c.h"
 #include "bus_spi.h"
 #include "task_USB.h"
 #include "task_CAT.h"
@@ -47,6 +48,15 @@ extern osSemaphoreId        c2catTx_BSemHandle;
 extern osSemaphoreId        c2catRx_BSemHandle;
 
 extern EventGroupHandle_t   globalEventGroupHandle;
+
+
+#define I2C1_BUS_ADDR_SCAN
+
+#ifdef I2C1_BUS_ADDR_SCAN
+  #include "i2c.h"
+  extern osSemaphoreId        i2c1_BSemHandle;
+  extern I2C_HandleTypeDef    hi2c1;
+#endif
 
 extern float                g_adc1_refint_val;
 extern float                g_adc1_vref_mv;
@@ -1607,6 +1617,12 @@ static void controllerCyclicTimerEvent(void)
 
     /* Print current state */
     controllerPrintLC();
+
+    #ifdef I2C1_BUS_ADDR_SCAN
+    uint32_t last = xTaskGetTickCount();
+    osDelayUntil(&last, 3000UL);
+    i2cBusAddrScan(&hi2c1, i2c1_BSemHandle);
+    #endif
   }
 
   /* FSM logic */
@@ -1913,11 +1929,6 @@ static void controllerInit(void)
 
   /* Reset SWR start timer */
   s_controller_swr_tmr = osKernelSysTick();
-
-  //#define I2C1_BUS_ADDR_SCAN
-  #ifdef I2C1_BUS_ADDR_SCAN
-  i2cBusAddrScan(&hi2c1, i2c1MutexHandle);
-  #endif
 }
 
 

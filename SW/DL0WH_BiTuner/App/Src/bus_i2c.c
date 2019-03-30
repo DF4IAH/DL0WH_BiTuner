@@ -33,15 +33,19 @@ volatile uint8_t            i2c1RxBuffer[I2C_RXBUFSIZE];
 
 
 void i2cBusAddrScan(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle) {
-  /* DEBUG I2C4 Bus */
+  /* DEBUG I2C1 Bus */
+  const char msgStart[] = "\r\n\r\nI2C1 bus scan: scanning ...\r\n";
+  const char msgEnd[]   = "... done.\r\n\r\n> ";
   char dbgBuf[64];
   int dbgLen;
 
   osSemaphoreWait(semaphoreHandle, osWaitForever);
 
+  interpreterConsolePush(msgStart, strlen(msgStart));
+
   i2c1TxBuffer[0] = 0x00;
   for (uint8_t addr = 0x01U; addr <= 0x7FU; addr++) {
-    if (HAL_OK != HAL_I2C_Master_Sequential_Transmit_IT(dev, ((uint16_t)addr << 1U), (uint8_t*) i2c1TxBuffer, 0U, I2C_FIRST_AND_LAST_FRAME)) {
+    if (HAL_OK != HAL_I2C_Master_Sequential_Transmit_IT(dev, ((uint16_t)addr << 1U), (uint8_t*)i2c1TxBuffer, 0U, I2C_FIRST_AND_LAST_FRAME)) {
       /* Error_Handler() function is called when error occurs. */
       Error_Handler();
     }
@@ -49,11 +53,13 @@ void i2cBusAddrScan(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle) {
       osDelay(1UL);
     }
     if (HAL_I2C_GetError(dev) != HAL_I2C_ERROR_AF) {
-      dbgLen = sprintf(dbgBuf, "GOOD:  Addr=0x%02X  got response\r\n", addr);
+      dbgLen = sprintf(dbgBuf, "GOOD:  Addr=0x%02X  got response\r\n", addr >> 1U);
       interpreterConsolePush(dbgBuf, dbgLen);
     }
     osDelay(25UL);
   }
+
+  interpreterConsolePush(msgEnd, strlen(msgEnd));
 
   osSemaphoreRelease(semaphoreHandle);
 }
@@ -168,7 +174,7 @@ void i2cx_Init(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle)
       #if 0
       __HAL_RCC_GPIOG_CLK_ENABLE();                                                                   // I2C1: SCL, SDA
       #endif
-      MX_I2C1_Init();
+      //MX_I2C1_Init();                                                                               // Already done in main()
       /* Do not turn off clock of GPIOx SCL */
       break;
 

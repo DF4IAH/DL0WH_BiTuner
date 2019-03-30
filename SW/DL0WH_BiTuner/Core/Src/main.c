@@ -1379,11 +1379,11 @@ void PostSleepProcessing(uint32_t *ulExpectedIdleTime)
 
 void vApplicationMallocFailedHook(void)
 {
-  int  dbgLen;
-  char dbgBuf[128];
+  //int  dbgLen;
+  //char dbgBuf[128];
 
-  dbgLen = sprintf(dbgBuf, "***ERROR: Out of memory  vApplicationMallocFailedHook(): file %s on line %d\r\n", __FILE__, __LINE__);
-  interpreterConsolePush(dbgBuf, dbgLen);
+  //dbgLen = sprintf(dbgBuf, "***ERROR: Out of memory  vApplicationMallocFailedHook(): file %s on line %d\r\n", __FILE__, __LINE__);
+  //interpreterConsolePush(dbgBuf, dbgLen);
 
   configASSERT(0);
 }
@@ -1419,9 +1419,9 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  const char str[] = "***ERROR: ERROR-HANDLER  Wrong parameters value  _Error_Handler()\r\n";
+  //const char str[] = "***ERROR: ERROR-HANDLER  Wrong parameters value  _Error_Handler()\r\n";
 
-  interpreterConsolePush(str, strlen(str));
+  //interpreterConsolePush(str, strlen(str));
 
   configASSERT(0);
   /* USER CODE END Error_Handler_Debug */
@@ -1440,11 +1440,11 @@ void assert_failed(char *file, uint32_t line)
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-  int  dbgLen;
-  char dbgBuf[128];
+  //int  dbgLen;
+  //char dbgBuf[128];
 
-  dbgLen = sprintf(dbgBuf, "***ERROR: ERROR-HANDLER  Wrong parameters value  assert_failed(): file %s on line %ld\r\n", file, line);
-  interpreterConsolePush(dbgBuf, dbgLen);
+  //dbgLen = sprintf(dbgBuf, "***ERROR: ERROR-HANDLER  Wrong parameters value  assert_failed(): file %s on line %ld\r\n", file, line);
+  //interpreterConsolePush(dbgBuf, dbgLen);
 
   configASSERT(0);
   /* USER CODE END 6 */

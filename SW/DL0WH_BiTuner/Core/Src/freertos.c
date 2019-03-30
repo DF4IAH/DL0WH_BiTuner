@@ -62,6 +62,7 @@
 
 // App
 #include "bus_spi.h"
+#include "bus_i2c.h"
 #include "device_adc.h"
 #include "task_Controller.h"
 #include "task_Interpreter.h"
@@ -92,6 +93,7 @@ extern volatile uint8_t               spi1TxBuffer[SPI1_BUFFERSIZE];
 extern volatile uint8_t               spi1RxBuffer[SPI1_BUFFERSIZE];
 
 extern SPI_HandleTypeDef              hspi1;
+extern I2C_HandleTypeDef              hi2c1;
 
 extern float                          g_adc1_refint_val;
 extern float                          g_adc1_vref_mv;
@@ -521,7 +523,7 @@ static void rtosDefaultInit(void)
   /* Set relays to default setting
    * L's are shorted when SET - inverted logic
    */
-  s_rtos_Matcher = 0x00ff00UL;
+  s_rtos_Matcher = 0x01ff00UL;
   rtosDefaultUpdateRelays();
 }
 
@@ -843,6 +845,12 @@ void StartDefaultTask(void const * argument)
 
   /* USER CODE BEGIN StartDefaultTask */
   /* defaultTaskInit() section */
+
+  /* Init SPI */
+  spix_Init(&hspi1, spi1_BSemHandle);
+
+  /* Init I2C */
+  i2cx_Init(&hi2c1, i2c1_BSemHandle);
 
   /* Wait until controller is up */
   xEventGroupWaitBits(globalEventGroupHandle,
