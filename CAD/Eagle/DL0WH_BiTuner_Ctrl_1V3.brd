@@ -239,6 +239,10 @@
 <text x="22.38375" y="60.48375" size="1.778" layer="21" font="vector">OUTPUT A</text>
 <text x="80.3275" y="8.73125" size="1.778" layer="21" font="vector">SWD</text>
 <text x="8.255" y="60.96" size="1.778" layer="21" font="vector">BAT</text>
+<text x="11.90625" y="27.6225" size="0.6096" layer="21">A</text>
+<text x="12.3825" y="25.0825" size="0.6096" layer="21">C</text>
+<text x="13.6525" y="27.6225" size="0.6096" layer="21">C</text>
+<text x="13.6525" y="25.0825" size="0.6096" layer="21">A</text>
 </plain>
 <libraries>
 <library name="rcl">
