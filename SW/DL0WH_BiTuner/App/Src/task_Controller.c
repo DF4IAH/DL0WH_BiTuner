@@ -58,13 +58,13 @@ extern EventGroupHandle_t   globalEventGroupHandle;
   extern I2C_HandleTypeDef    hi2c1;
 #endif
 
-extern float                g_adc1_refint_val;
-extern float                g_adc1_vref_mv;
-extern float                g_adc1_bat_mv;
-extern float                g_adc1_temp_deg;
-extern float                g_adc2_fwd_mv;
-extern float                g_adc2_rev_mv;
-extern float                g_adc3_vdiode_mv;
+extern float                g_adc_refint_val;
+extern float                g_adc_vref_mv;
+extern float                g_adc_bat_mv;
+extern float                g_adc_temp_deg;
+extern float                g_adc_fwd_mv;
+extern float                g_adc_rev_mv;
+extern float                g_adc_vdiode_mv;
 extern float                g_adc_swr;
 
 
@@ -672,7 +672,7 @@ static void controllerFSM_GetGlobalVars(void)
   {
     taskDISABLE_INTERRUPTS();
 
-    s_controller_adc_fwd_mv     = g_adc2_fwd_mv;
+    s_controller_adc_fwd_mv     = g_adc_fwd_mv;
     s_controller_adc_swr        = g_adc_swr;
 
     if (s_controller_adc_swr < Controller_AutoSWR_SWR_Init) {
@@ -704,68 +704,37 @@ static void controllerFSM_GetGlobalVars(void)
 
   /* Disabled IRQ section */
   {
-  taskDISABLE_INTERRUPTS();
+    taskDISABLE_INTERRUPTS();
 
-  s_controller_adc_fwd_mw = fwdMv;
+    s_controller_adc_fwd_mw = fwdMv;
 
-  taskENABLE_INTERRUPTS();
+    taskENABLE_INTERRUPTS();
   }
 
 
-#if 0
+#if 1
   /* Logging */
-  {
-    int32_t   l_adc1_temp_deg_i    = 0L;
-    uint32_t  l_adc1_temp_deg_f100 = 0UL;
+  if (xTaskGetTickCount() > 5000UL) {
+    int32_t   l_adc1_temp_deg_i     = 0L;
+    uint32_t  l_adc1_temp_deg_f100  = 0UL;
+    int32_t   l_swr_i               = 0L;
+    uint32_t  l_swr_f100            = 0UL;
     int       dbgLen;
-    char      dbgBuf[128];
+    char      dbgBuf[256];
 
-    mainCalcFloat2IntFrac(g_adc1_temp_deg, 2, &l_adc1_temp_deg_i, &l_adc1_temp_deg_f100);
-
-    dbgLen = sprintf(dbgBuf, "ADC1: refint_val = %4d, Vref = %4d mV, Bat = %4d mV, Temp = %+3ld.%02luC\r\n",
-        (int16_t) (g_adc1_refint_val + 0.5f),
-        (int16_t) (g_adc1_vref_mv    + 0.5f),
-        (int16_t) (g_adc1_bat_mv     + 0.5f),
-        l_adc1_temp_deg_i, l_adc1_temp_deg_f100);
-    interpreterConsolePush(dbgBuf, dbgLen);
-  }
-#endif
-
-#if 0
-  /* Logging */
-  {
-    int   dbgLen;
-    char  dbgBuf[128];
-
-    dbgLen = sprintf(dbgBuf, "ADC2: FWD = %5d mV\r\n", (int16_t) (g_adc2_fwd_mv + 0.5f));
-    interpreterConsolePush(dbgBuf, dbgLen);
-  }
-#endif
-
-#if 0
-  /* Logging */
-  {
-    int32_t   l_swr_i    = 0L;
-    uint32_t  l_swr_f100 = 0UL;
-    int   dbgLen;
-    char  dbgBuf[128];
-
+    mainCalcFloat2IntFrac(g_adc_temp_deg, 2, &l_adc1_temp_deg_i, &l_adc1_temp_deg_f100);
     mainCalcFloat2IntFrac(g_adc_swr, 2, &l_swr_i, &l_swr_f100);
 
-    dbgLen = sprintf(dbgBuf, "ADC2: REV = %5d mV, SWR = %+3ld.%03lu\r\n",
-        (int16_t) (g_adc2_rev_mv + 0.5f),
-        l_swr_i, l_swr_f100);
-    interpreterConsolePush(dbgBuf, dbgLen);
-  }
-#endif
-
-#if 0
-  /* Logging */
-  {
-    int   dbgLen;
-    char  dbgBuf[128];
-
-    dbgLen = sprintf(dbgBuf, "ADC3: Vdiode = %4d mV\r\n", (int16_t) (g_adc3_vdiode_mv + 0.5f));
+    dbgLen = sprintf(dbgBuf, "ADC1: refint_val = %4d, Vref = %4d mV, Bat = %4d mV, Temp = %+3ld.%02luC, Vdiode = %4d mV, FWD = %5d mV, REV = %5d mV, SWR = %+3ld.%03lu\r\n",
+        (int16_t) (g_adc_refint_val + 0.5f),
+        (int16_t) (g_adc_vref_mv    + 0.5f),
+        (int16_t) (g_adc_bat_mv     + 0.5f),
+        l_adc1_temp_deg_i, l_adc1_temp_deg_f100,
+        (int16_t) (g_adc_vdiode_mv + 0.5f),
+        (int16_t) (g_adc_fwd_mv + 0.5f),
+        (int16_t) (g_adc_rev_mv + 0.5f),
+        l_swr_i, l_swr_f100
+    );
     interpreterConsolePush(dbgBuf, dbgLen);
   }
 #endif
@@ -1200,6 +1169,9 @@ static void controllerFSM(void)
     if (controllerFSM_CheckSwrTime())
       break;
 
+    break;   // TODO: remove me!
+
+
     /* Run (V)SWR optimization */
     s_controller_FSM_optiCVH      = ControllerOptiCVH__CV;
     s_controller_FSM_optiLC       = ControllerOptiLC__L;
@@ -1597,6 +1569,31 @@ static void controllerPrintLC(void)
   }
 }
 
+static void controllerSetMuxCh(uint8_t muxCh)
+{
+  /* Set input MUX to channel - 0: off, 1: FWD, 2: REV */
+  switch(muxCh) {
+  case 0:
+    HAL_GPIO_WritePin(GPIO_SWR_SEL_FWD_GPIO_Port, GPIO_SWR_SEL_FWD_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIO_SWR_SEL_REV_GPIO_Port, GPIO_SWR_SEL_REV_Pin, GPIO_PIN_RESET);
+    break;
+
+  case 1:
+    /* FWD */
+    HAL_GPIO_WritePin(GPIO_SWR_SEL_FWD_GPIO_Port, GPIO_SWR_SEL_FWD_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIO_SWR_SEL_REV_GPIO_Port, GPIO_SWR_SEL_REV_Pin, GPIO_PIN_RESET);
+    break;
+
+  case 2:
+    /* REV */
+    HAL_GPIO_WritePin(GPIO_SWR_SEL_FWD_GPIO_Port, GPIO_SWR_SEL_FWD_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIO_SWR_SEL_REV_GPIO_Port, GPIO_SWR_SEL_REV_Pin, GPIO_PIN_SET);
+    break;
+
+  default: { }
+  }
+}
+
 
 /* Timer functions */
 
@@ -1787,6 +1784,13 @@ static void controllerMsgProcessor(void)
     }
       break;
 
+    case MsgController__SetVar06_MM:
+    {
+      const uint8_t muxCh = (s_msg_in.rawAry[1] >> 24U) & 0xffUL;
+      controllerSetMuxCh(muxCh);
+    }
+      break;
+
     default:
     {
       Error_Handler();
@@ -1801,6 +1805,9 @@ static void controllerMsgProcessor(void)
 
 static void controllerInit(void)
 {
+  /* Set MUX input to FWD */
+  controllerSetMuxCh(1U);
+
   /* Load configuration */
 
   /* Prepare all semaphores */
@@ -1911,6 +1918,9 @@ static void controllerInit(void)
       controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
     }
   }
+
+  /* Set MUX input to FWD */
+  controllerSetMuxCh(1U);
 
   /* Set inverted relay state - then preset state */
   controllerSetCLExt(0x02ffffUL);

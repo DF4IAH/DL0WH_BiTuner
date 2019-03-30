@@ -9,8 +9,7 @@
 #define DEVICE_ADC_H_
 
 
-#define ADC1_DMA_CHANNELS             3
-#define ADC2_DMA_CHANNELS             1
+#define ADC1_DMA_CHANNELS             5
 
 #define ADC_V_OFFS_VREF_mV           -58.0f
 #define ADC_V_OFFS_BAT_mV            -64.0f
@@ -23,14 +22,14 @@
 
 typedef enum ADC_ENUM {
 
-  ADC_ADC1_REFINT_VAL               = 0x00,
-  ADC_ADC1_VREF_MV,
-  ADC_ADC1_BAT_MV,
-  ADC_ADC1_TEMP_DEG,
+  ADC_REFINT_VAL                      = 0x00,
+  ADC_VREF_MV,
+  ADC_BAT_MV,
+  ADC_TEMP_DEG,
 
-  ADC_ADC2_IN1_FWD_MV,
-  ADC_ADC2_IN1_REV_MV,
-  ADC_ADC3_IN3_VDIODE_MV,
+  ADC_FWD_MV,
+  ADC_REV_MV,
+  ADC_VDIODE_MV,
 
 } ADC_ENUM_t;
 
@@ -38,14 +37,14 @@ typedef enum ADC_ENUM {
 /* Event Group ADC */
 typedef enum EG_ADC_ENUM {
 
-  EG_ADC1__CONV_AVAIL_REFINT        = 0x0001U,
-  EG_ADC1__CONV_AVAIL_BAT           = 0x0002U,
-  EG_ADC1__CONV_AVAIL_TEMP          = 0x0004U,
+  EG_ADC__CONV_AVAIL_REFINT           = 0x0001U,
+  EG_ADC__CONV_AVAIL_BAT              = 0x0002U,
+  EG_ADC__CONV_AVAIL_TEMP             = 0x0004U,
 
-  EG_ADC2__CONV_AVAIL_FWD           = 0x0010U,
-  EG_ADC2__CONV_AVAIL_REV,
+  EG_ADC__CONV_AVAIL_FWD              = 0x0010U,
+  EG_ADC__CONV_AVAIL_REV,
 
-  EG_ADC3__CONV_AVAIL_VDIODE        = 0x0100U,
+  EG_ADC__CONV_AVAIL_VDIODE           = 0x0100U,
 
 } EG_ADC_ENUM_t;
 

@@ -67,12 +67,12 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIO_SPI_PWM_GPIO_Port, GPIO_SPI_PWM_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PCPin PCPin */
-  GPIO_InitStruct.Pin = GPIO_SWR_SEL_FWD_Pin|GPIO_SPI_RST_Pin;
+  /*Configure GPIO pin : PtPin */
+  GPIO_InitStruct.Pin = GPIO_SWR_SEL_FWD_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIO_SWR_SEL_FWD_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = GPIO_SWR_SEL_REV_Pin;
@@ -87,6 +87,13 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : PtPin */
+  GPIO_InitStruct.Pin = GPIO_SPI_RST_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  HAL_GPIO_Init(GPIO_SPI_RST_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pins : PC5 PC6 PC7 PC8 
                            PC9 PC10 PC11 PC12 */
   GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8 
@@ -95,19 +102,12 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PBPin PBPin PBPin */
-  GPIO_InitStruct.Pin = GPIO_SPI_SEL_L_Pin|GPIO_SPI_SEL_C_Pin|GPIO_SPI_SEL_EXT_Pin;
+  /*Configure GPIO pins : PBPin PBPin PBPin PBPin */
+  GPIO_InitStruct.Pin = GPIO_SPI_SEL_L_Pin|GPIO_SPI_SEL_C_Pin|GPIO_SPI_SEL_EXT_Pin|GPIO_SPI_PWM_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PtPin */
-  GPIO_InitStruct.Pin = GPIO_SPI_PWM_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIO_SPI_PWM_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB14 PB15 PB3 PB4 
                            PB5 PB8 */

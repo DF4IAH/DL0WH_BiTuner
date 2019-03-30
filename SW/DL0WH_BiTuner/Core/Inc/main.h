@@ -89,10 +89,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define ADC2_IN1_FWDREV_Pin GPIO_PIN_0
-#define ADC2_IN1_FWDREV_GPIO_Port GPIOC
-#define ADC3_IN3_VDIODE_Pin GPIO_PIN_2
-#define ADC3_IN3_VDIODE_GPIO_Port GPIOC
+#define ADC1_IN1_FWDREV_Pin GPIO_PIN_0
+#define ADC1_IN1_FWDREV_GPIO_Port GPIOC
+#define ADC1_IN3_VDIODE_Pin GPIO_PIN_2
+#define ADC1_IN3_VDIODE_GPIO_Port GPIOC
 #define GPIO_SWR_SEL_FWD_Pin GPIO_PIN_3
 #define GPIO_SWR_SEL_FWD_GPIO_Port GPIOC
 #define GPIO_SWR_SEL_REV_Pin GPIO_PIN_3

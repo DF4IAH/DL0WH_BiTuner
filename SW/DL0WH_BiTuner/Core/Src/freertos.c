@@ -95,13 +95,13 @@ extern volatile uint8_t               spi1RxBuffer[SPI1_BUFFERSIZE];
 extern SPI_HandleTypeDef              hspi1;
 extern I2C_HandleTypeDef              hi2c1;
 
-extern float                          g_adc1_refint_val;
-extern float                          g_adc1_vref_mv;
-extern float                          g_adc1_bat_mv;
-extern float                          g_adc1_temp_deg;
-extern float                          g_adc2_fwd_mv;
-extern float                          g_adc2_rev_mv;
-extern float                          g_adc3_vdiode_mv;
+extern float                          g_adc_refint_val;
+extern float                          g_adc_vref_mv;
+extern float                          g_adc_bat_mv;
+extern float                          g_adc_temp_deg;
+extern float                          g_adc_fwd_mv;
+extern float                          g_adc_rev_mv;
+extern float                          g_adc_vdiode_mv;
 extern float                          g_adc_swr;
 
 EventGroupHandle_t                    adcEventGroupHandle;
@@ -449,45 +449,36 @@ static void rtosDefaultUpdateRelays(void)
 
 static void defaultCyclicTimerEvent(void)
 {
-  static uint32_t ctr = 0UL;
-
   /* Start ADC1 conversion chain each 30 ms */
   {
-    /* Start chain of ADC1 conversions */
-    adcStartConv(ADC_ADC1_TEMP_DEG);
-  }
+    /* Start chain of ADC1 conversions - part 1 */
+    {
+      adcStartConv(ADC_FWD_MV);
 
-  /* Start ADC3 every 3 s */
-  if (!(ctr % 100)) {
-    adcStartConv(ADC_ADC3_IN3_VDIODE_MV);
-  }
+      xEventGroupWaitBits(adcEventGroupHandle,
+          EG_ADC__CONV_AVAIL_FWD | EG_ADC__CONV_AVAIL_VDIODE,
+          EG_ADC__CONV_AVAIL_FWD | EG_ADC__CONV_AVAIL_VDIODE,
+          pdTRUE, 5UL);
 
-  /* Start ADC2 double conversion each 30 ms */
-  {
-    adcStartConv(ADC_ADC2_IN1_FWD_MV);
-    EventBits_t eb = xEventGroupWaitBits(adcEventGroupHandle,
-        EG_ADC2__CONV_AVAIL_FWD,
-        EG_ADC2__CONV_AVAIL_FWD,
-        pdFALSE, 5UL);
+      /* Shut part 1 */
+      adcStopConv(ADC_FWD_MV);
+    }
 
-    if (eb & ADC_ADC2_IN1_FWD_MV) {
-      adcStartConv(ADC_ADC2_IN1_REV_MV);
+    /* Start chain of ADC1 conversions - part 2 */
+    {
+      adcStartConv(ADC_REV_MV);
 
-      eb = xEventGroupWaitBits(adcEventGroupHandle,
-          EG_ADC2__CONV_AVAIL_REV,
-          EG_ADC2__CONV_AVAIL_REV,
-          pdFALSE, 5UL);
+      xEventGroupWaitBits(adcEventGroupHandle,
+          EG_ADC__CONV_AVAIL_REV | EG_ADC__CONV_AVAIL_VDIODE,
+          EG_ADC__CONV_AVAIL_REV | EG_ADC__CONV_AVAIL_VDIODE,
+          pdTRUE, 5UL);
 
-      if (eb & ADC_ADC2_IN1_REV_MV) {
-        g_adc_swr = mainCalc_VSWR(g_adc2_fwd_mv, g_adc2_rev_mv);
-      }
+      /* Shut part 2 */
+      adcStopConv(ADC_REV_MV);
 
-      /* Shut FWD and REV path */
-      adcStopConv(ADC_ADC2_IN1_REV_MV);
+      g_adc_swr = mainCalc_VSWR(g_adc_fwd_mv, g_adc_rev_mv);
     }
   }
-
-  ctr++;
 }
 
 static void defaultCyclicStart(uint32_t period_ms)
