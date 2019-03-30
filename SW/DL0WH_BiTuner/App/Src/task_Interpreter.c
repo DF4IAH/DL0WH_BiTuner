@@ -72,6 +72,10 @@ const char                  interpreterHelpMsg124[]            = "\t\tLC\t\tSet 
 const char                  interpreterHelpMsg125[]            = "\t\tHxxyyzz\t\tHexadecimal entry of the 18 bits of x:[CH,CV], y:[L8-1], z:[C8-1] relays.\r\n";
 const char                  interpreterHelpMsg126[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";
 
+const char                  interpreterHelpMsg161[]            = "\t\tMMd\t\tSet MUX input to d. 0: off, 1: SMA_FWD, 2: SMA_REV\r\n";
+const char                  interpreterHelpMsg162[]            = "\t\tMOOd\t\tMeassurement OP Offset value d. d: 0..255\r\n";
+const char                  interpreterHelpMsg163[]            = "\t\tMOGd\t\tMeassurement OP Gain   value d. d: 0..255\r\n";
+
 const char                  interpreterHelpMsg131[]            = "\t\tC\t\tClear screen.\r\n";
 const char                  interpreterHelpMsg132[]            = "\t\tHELP\t\tPrint this list of commands.\r\n";
 const char                  interpreterHelpMsg133[]            = "\t\tRESTART\t\tRestart this device.\r\n";
@@ -114,6 +118,11 @@ void interpreterPrintHelp(void)
   interpreterConsolePush(interpreterHelpMsg124, strlen(interpreterHelpMsg124));
   interpreterConsolePush(interpreterHelpMsg125, strlen(interpreterHelpMsg125));
   interpreterConsolePush(interpreterHelpMsg126, strlen(interpreterHelpMsg126));
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+
+  interpreterConsolePush(interpreterHelpMsg161, strlen(interpreterHelpMsg161));
+  interpreterConsolePush(interpreterHelpMsg162, strlen(interpreterHelpMsg162));
+  interpreterConsolePush(interpreterHelpMsg163, strlen(interpreterHelpMsg163));
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
 
   interpreterConsolePush(interpreterHelpMsg131, strlen(interpreterHelpMsg131));
@@ -369,6 +378,18 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
     controllerMsgPushToInQueue(1, cmd, 10UL);
+
+  } else if (!strncmp("MM", cb, 2) && (3 == len)) {
+    /* Set inductance */
+    uint8_t valD = *(cb + 1) > '0' ?  *(cb + 1) - '0' : 0;
+    if (0 <= valD && valD <= 2) {
+      uint32_t cmd[2];
+      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgController__SetVar06_MM);
+      cmd[1] = (valD      << 24U);
+      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+    } else {
+      interpreterUnknownCommand();
+    }
 
 #if 0
   } else if (!strncmp("MON ", cb, 4) && (4 < len)) {
