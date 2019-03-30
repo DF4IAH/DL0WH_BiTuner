@@ -7218,7 +7218,7 @@ TSSOP-20</description>
 <wire x1="4.8" y1="28.96" x2="6.1" y2="28.96" width="0.1524" layer="16"/>
 <wire x1="7.9" y1="29.46" x2="6.6" y2="29.46" width="0.1524" layer="16"/>
 <wire x1="6.6" y1="29.46" x2="6.1" y2="28.96" width="0.1524" layer="16"/>
-<wire x1="11.165" y1="29.46" x2="11.43" y2="29.195" width="0" layer="19" extent="16-16"/>
+<wire x1="11.165" y1="29.46" x2="11.43" y2="29.195" width="0.1524" layer="16"/>
 </signal>
 <signal name="SWR_OP1_OUT">
 <contactref element="U0951" pad="1"/>
