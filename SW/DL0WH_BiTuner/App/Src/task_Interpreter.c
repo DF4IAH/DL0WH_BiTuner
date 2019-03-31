@@ -73,8 +73,8 @@ const char                  interpreterHelpMsg125[]            = "\t\tHxxyyzz\t\
 const char                  interpreterHelpMsg126[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";
 
 const char                  interpreterHelpMsg161[]            = "\t\tMMd\t\tSet MUX input to d. 0: off, 1: SMA_FWD, 2: SMA_REV\r\n";
-const char                  interpreterHelpMsg162[]            = "\t\tMOOd\t\tMeassurement OP Offset value d. d: 0..255\r\n";
-const char                  interpreterHelpMsg163[]            = "\t\tMOGd\t\tMeassurement OP Gain   value d. d: 0..255\r\n";
+const char                  interpreterHelpMsg162[]            = "\t\tMOd\t\tMeassurement OP Offset value d. d: 0..255\r\n";
+const char                  interpreterHelpMsg163[]            = "\t\tMGd\t\tMeassurement OP Gain   value d. d: 0..255\r\n";
 
 const char                  interpreterHelpMsg131[]            = "\t\tC\t\tClear screen.\r\n";
 const char                  interpreterHelpMsg132[]            = "\t\tHELP\t\tPrint this list of commands.\r\n";
@@ -380,12 +380,36 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     controllerMsgPushToInQueue(1, cmd, 10UL);
 
   } else if (!strncmp("MM", cb, 2) && (3 == len)) {
-    /* Set inductance */
+    /* Set measure MUX switch  */
     uint8_t valD = *(cb + 1) > '0' ?  *(cb + 1) - '0' : 0;
     if (0 <= valD && valD <= 2) {
       uint32_t cmd[2];
       cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgController__SetVar06_MM);
       cmd[1] = (valD      << 24U);
+      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+    } else {
+      interpreterUnknownCommand();
+    }
+
+  } else if (!strncmp("MO", cb, 2) && (3 <= len && len <= 5)) {
+    /* Set measure offset */
+    uint32_t valUL = strtol(cb + 2, NULL, 10);
+    if (0 <= valUL && valUL <= 255UL) {
+      uint32_t cmd[2];
+      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgController__SetVar07_MO);
+      cmd[1] = (valUL      << 24U);
+      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+    } else {
+      interpreterUnknownCommand();
+    }
+
+  } else if (!strncmp("MG", cb, 2) && (3 <= len && len <= 5)) {
+    /* Set measure gain */
+	uint32_t valUL = strtol(cb + 2, NULL, 10);
+	if (0 <= valUL && valUL <= 255UL) {
+	  uint32_t cmd[2];
+	  cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgController__SetVar08_MG);
+	  cmd[1] = (valUL      << 24U);
       controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
     } else {
       interpreterUnknownCommand();

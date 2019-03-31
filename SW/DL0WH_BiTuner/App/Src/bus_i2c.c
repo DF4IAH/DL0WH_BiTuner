@@ -55,8 +55,8 @@ void i2cBusAddrScan(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle) {
     if (HAL_I2C_GetError(dev) != HAL_I2C_ERROR_AF) {
       dbgLen = sprintf(dbgBuf, "GOOD:  Addr=0x%02X  got response\r\n", addr >> 1U);
       interpreterConsolePush(dbgBuf, dbgLen);
+      osDelay(25UL);
     }
-    osDelay(25UL);
   }
 
   interpreterConsolePush(msgEnd, strlen(msgEnd));

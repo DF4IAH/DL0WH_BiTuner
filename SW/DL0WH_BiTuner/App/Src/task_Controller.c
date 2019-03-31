@@ -1597,6 +1597,42 @@ static void controllerSetMuxCh(uint8_t muxCh)
   }
 }
 
+static void controllerSetOpOfs(uint8_t opOfs)
+{
+	i2c1TxBuffer[0] = 0x00;
+	i2c1TxBuffer[1] = opOfs;
+
+    if (HAL_OK != HAL_I2C_Master_Sequential_Transmit_IT(dev, (I2C_ADDR_DIG_POT << 1U), (uint8_t*)i2c1TxBuffer, 2U, I2C_FIRST_FRAME)) {
+      /* Error_Handler() function is called when error occurs. */
+      Error_Handler();
+    }
+    while (HAL_I2C_GetState(dev) != HAL_I2C_STATE_READY) {
+      osDelay(1UL);
+    }
+    if (HAL_I2C_GetError(dev) != HAL_I2C_ERROR_AF) {
+      dbgLen = sprintf(dbgBuf, "GOOD:  Offset value pushed\r\n");
+      interpreterConsolePush(dbgBuf, dbgLen);
+    }
+}
+
+static void controllerSetOpGain(uint8_t opGain)
+{
+	i2c1TxBuffer[0] = 0x00;
+	i2c1TxBuffer[1] = opOfs;
+
+    if (HAL_OK != HAL_I2C_Master_Sequential_Transmit_IT(dev, (I2C_ADDR_DIG_POT << 1U), (uint8_t*)i2c1TxBuffer, 2U, I2C_FIRST_FRAME)) {
+      /* Error_Handler() function is called when error occurs. */
+      Error_Handler();
+    }
+    while (HAL_I2C_GetState(dev) != HAL_I2C_STATE_READY) {
+      osDelay(1UL);
+    }
+    if (HAL_I2C_GetError(dev) != HAL_I2C_ERROR_AF) {
+      dbgLen = sprintf(dbgBuf, "GOOD:  Offset value pushed\r\n");
+      interpreterConsolePush(dbgBuf, dbgLen);
+    }
+}
+
 
 /* Timer functions */
 
@@ -1791,6 +1827,20 @@ static void controllerMsgProcessor(void)
     {
       const uint8_t muxCh = (s_msg_in.rawAry[1] >> 24U) & 0xffUL;
       controllerSetMuxCh(muxCh);
+    }
+      break;
+
+    case MsgController__SetVar07_MO:
+    {
+      const uint8_t opOfs = (s_msg_in.rawAry[1] >> 24U) & 0xffUL;
+      controllerSetOpOfs(opOfs);
+    }
+      break;
+
+    case MsgController__SetVar08_MG:
+    {
+      const uint8_t opGain = (s_msg_in.rawAry[1] >> 24U) & 0xffUL;
+      controllerSetOpGain(opGain);
     }
       break;
 
