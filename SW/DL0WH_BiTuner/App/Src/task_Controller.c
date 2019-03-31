@@ -21,6 +21,7 @@
 //#include "stm32l4xx_hal_gpio.h"
 #include "bus_i2c.h"
 #include "bus_spi.h"
+#include "device_adc.h"
 #include "task_USB.h"
 #include "task_CAT.h"
 #include "task_Interpreter.h"
@@ -48,9 +49,10 @@ extern osSemaphoreId        c2catTx_BSemHandle;
 extern osSemaphoreId        c2catRx_BSemHandle;
 
 extern EventGroupHandle_t   globalEventGroupHandle;
+extern EventGroupHandle_t   adcEventGroupHandle;
 
 
-#define I2C1_BUS_ADDR_SCAN
+//#define I2C1_BUS_ADDR_SCAN
 
 #ifdef I2C1_BUS_ADDR_SCAN
   #include "i2c.h"
@@ -143,7 +145,6 @@ static float                s_controller_adc_swr              = 0.0f;
 static float                s_controller_adc_fwd_mw           = 0.0f;
 
 static _Bool                s_controller_doCycle              = 0;
-static _Bool                s_controller_doAdc                = 0;
 
 static DefaultMcuClocking_t s_controller_McuClocking          = DefaultMcuClocking__4MHz_MSI;
 
@@ -581,7 +582,6 @@ static void controllerFSM_LogAutoFinished(void)
   /* SWR: we have got it */
 
   s_controller_FSM_state = ControllerFsm__done;
-  s_controller_doAdc     = true;
 
   /* Logging */
   {
@@ -789,9 +789,12 @@ static void controllerFSM_PushOptiVars(void)
   controllerMsgPushToOutQueue(sizeof(msgAry) / sizeof(uint32_t), msgAry, osWaitForever);
 }
 
-static void controllerFSM_StartAdc(void)
+static void controllerFSM_WaitNextAdc(void)
 {
-  s_controller_doAdc = true;
+  xEventGroupWaitBits(adcEventGroupHandle,
+            EG_ADC__CONV_AVAIL_REV | EG_ADC__CONV_AVAIL_VDIODE,
+            EG_ADC__CONV_AVAIL_REFINT | EG_ADC__CONV_AVAIL_BAT | EG_ADC__CONV_AVAIL_TEMP | EG_ADC__CONV_AVAIL_FWD | EG_ADC__CONV_AVAIL_REV | EG_ADC__CONV_AVAIL_VDIODE,
+            pdTRUE, 30UL);
 }
 
 static _Bool controllerFSM_CheckPower(void)
@@ -892,7 +895,6 @@ static void controllerFSM_SwitchOverCVH(void)
   } else {
     /* Exhausted - start over again */
     s_controller_FSM_state        = ControllerFsm__done;
-    s_controller_doAdc            = true;
   }
 }
 
@@ -1150,7 +1152,7 @@ static void controllerFSM(void)
     s_controller_xnull_LC_ratio = 0.0f;
     #endif
 
-    controllerFSM_StartAdc();
+    controllerFSM_WaitNextAdc();
 
     s_controller_FSM_state = ControllerFsm__startAuto;
   }
@@ -1161,6 +1163,9 @@ static void controllerFSM(void)
     /* Pull global vars */
     controllerFSM_GetGlobalVars();
 
+    controllerFSM_WaitNextAdc();   // TODO: remove me!
+    break;   // TODO: remove me!
+
     /* Check for security */
     if (controllerFSM_CheckPower())
       break;
@@ -1168,8 +1173,6 @@ static void controllerFSM(void)
     /* Check if auto tuner should start */
     if (controllerFSM_CheckSwrTime())
       break;
-
-    break;   // TODO: remove me!
 
 
     /* Run (V)SWR optimization */
@@ -1193,7 +1196,7 @@ static void controllerFSM(void)
 
     /* Push opti data to relays */
     controllerFSM_PushOptiVars();
-    controllerFSM_StartAdc();
+    controllerFSM_WaitNextAdc();
   }
     break;
 
@@ -1257,7 +1260,7 @@ static void controllerFSM(void)
 
     /* Push opti data to relays */
     controllerFSM_PushOptiVars();
-    controllerFSM_StartAdc();
+    controllerFSM_WaitNextAdc();
   }
     break;
 
@@ -1323,7 +1326,7 @@ static void controllerFSM(void)
 
     /* Push opti data to relays */
     controllerFSM_PushOptiVars();
-    controllerFSM_StartAdc();
+    controllerFSM_WaitNextAdc();
   }
     break;
 
@@ -1346,7 +1349,7 @@ static void controllerFSM(void)
       s_controller_FSM_state = ControllerFsm__doAdc;
     }
 
-    controllerFSM_StartAdc();
+    controllerFSM_WaitNextAdc();
   }
     break;
 
@@ -1838,8 +1841,8 @@ static void controllerInit(void)
 
     s_mod_start.rtos_Default                                  = 1U;
     s_mod_start.Interpreter                                   = 1U;
-    s_mod_start.network_USBtoHost                             = 1U;
-    s_mod_start.network_USBfromHost                           = 1U;
+    s_mod_start.network_USBtoHost                             = 0U;
+    s_mod_start.network_USBfromHost                           = 0U;
     s_mod_start.network_UartTx                                = 1U;
     s_mod_start.network_UartRx                                = 1U;
     s_mod_start.network_CatTx                                 = 0U;

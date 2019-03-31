@@ -449,36 +449,79 @@ static void rtosDefaultUpdateRelays(void)
 
 static void defaultCyclicTimerEvent(void)
 {
+#define ADC_TIMING_CHECK
+#ifdef ADC_TIMING_CHECK
+  uint32_t t1 = xTaskGetTickCount();
+  uint32_t t2 = 0UL, t3 = 0UL, t4 = 0UL, t5 = 0UL, t6 = 0UL, t7 = 0UL, t8 = 0UL;
+#endif
+
   /* Start ADC1 conversion chain each 30 ms */
   {
+    xEventGroupClearBits(adcEventGroupHandle,
+        EG_ADC__CONV_AVAIL_REFINT | EG_ADC__CONV_AVAIL_BAT | EG_ADC__CONV_AVAIL_TEMP | EG_ADC__CONV_AVAIL_FWD | EG_ADC__CONV_AVAIL_REV | EG_ADC__CONV_AVAIL_VDIODE
+        );
+
     /* Start chain of ADC1 conversions - part 1 */
     {
       adcStartConv(ADC_FWD_MV);
+#ifdef ADC_TIMING_CHECK
+      t2 = xTaskGetTickCount();
+#endif
 
       xEventGroupWaitBits(adcEventGroupHandle,
           EG_ADC__CONV_AVAIL_FWD | EG_ADC__CONV_AVAIL_VDIODE,
-          EG_ADC__CONV_AVAIL_FWD | EG_ADC__CONV_AVAIL_VDIODE,
+          EG_ADC__CONV_AVAIL_VDIODE,
           pdTRUE, 5UL);
+#ifdef ADC_TIMING_CHECK
+      t3 = xTaskGetTickCount();
+#endif
 
       /* Shut part 1 */
       adcStopConv(ADC_FWD_MV);
+#ifdef ADC_TIMING_CHECK
+      t4 = xTaskGetTickCount();
+#endif
     }
 
     /* Start chain of ADC1 conversions - part 2 */
     {
       adcStartConv(ADC_REV_MV);
+#ifdef ADC_TIMING_CHECK
+      t5 = xTaskGetTickCount();
+#endif
 
       xEventGroupWaitBits(adcEventGroupHandle,
           EG_ADC__CONV_AVAIL_REV | EG_ADC__CONV_AVAIL_VDIODE,
-          EG_ADC__CONV_AVAIL_REV | EG_ADC__CONV_AVAIL_VDIODE,
+          0UL,
           pdTRUE, 5UL);
+#ifdef ADC_TIMING_CHECK
+      t6 = xTaskGetTickCount();
+#endif
 
       /* Shut part 2 */
       adcStopConv(ADC_REV_MV);
+#ifdef ADC_TIMING_CHECK
+      t7 = xTaskGetTickCount();
+#endif
 
       g_adc_swr = mainCalc_VSWR(g_adc_fwd_mv, g_adc_rev_mv);
+#ifdef ADC_TIMING_CHECK
+      t8 = xTaskGetTickCount();
+#endif
     }
   }
+
+#ifdef ADC_TIMING_CHECK
+  __NOP();
+  (void) t1;
+  (void) t2;
+  (void) t3;
+  (void) t4;
+  (void) t5;
+  (void) t6;
+  (void) t7;
+  (void) t8;
+#endif
 }
 
 static void defaultCyclicStart(uint32_t period_ms)
