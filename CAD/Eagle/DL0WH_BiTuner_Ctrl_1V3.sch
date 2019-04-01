@@ -15076,9 +15076,6 @@ TSSOP-20</description>
 <part name="GND0961" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="X0501" library="df4iah_connector" deviceset="HEADER-2X2" device=""/>
 <part name="GND0501" library="df4iah_supply" deviceset="GND" device=""/>
-<part name="+3V6" library="df4iah_supply" deviceset="+3V3" device=""/>
-<part name="R0903" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="150kR"/>
-<part name="R0913" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="150kR"/>
 <part name="R0901" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1kR"/>
 <part name="R0911" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1kR"/>
 <part name="C1052" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="10nF"/>
@@ -15119,6 +15116,8 @@ TSSOP-20</description>
 <part name="GND0962" library="df4iah_supply" deviceset="GND" device=""/>
 <part name="+3V7" library="df4iah_supply" deviceset="+3V3" device=""/>
 <part name="C0962" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="100nF"/>
+<part name="R0923" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="2MR"/>
+<part name="GND0922" library="df4iah_supply" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -17046,9 +17045,6 @@ I2C1 addr: 0x28</text>
 <instance part="D0971" gate="G$1" x="223.52" y="71.12"/>
 <instance part="R0971" gate="G$1" x="205.74" y="71.12"/>
 <instance part="GND0961" gate="1" x="236.22" y="66.04"/>
-<instance part="+3V6" gate="G$1" x="114.3" y="170.18"/>
-<instance part="R0903" gate="G$1" x="101.6" y="160.02" rot="R90"/>
-<instance part="R0913" gate="G$1" x="114.3" y="160.02" rot="R90"/>
 <instance part="R0901" gate="G$1" x="71.12" y="132.08" rot="R90"/>
 <instance part="R0911" gate="G$1" x="78.74" y="132.08" rot="R90"/>
 <instance part="C0952" gate="G$1" x="111.76" y="22.86"/>
@@ -17093,6 +17089,8 @@ I2C1 addr: 0x28</text>
 <instance part="GND0962" gate="1" x="193.04" y="127"/>
 <instance part="+3V7" gate="G$1" x="246.38" y="167.64"/>
 <instance part="C0962" gate="G$1" x="238.76" y="147.32"/>
+<instance part="R0923" gate="G$1" x="88.9" y="86.36" rot="R90"/>
+<instance part="GND0922" gate="1" x="88.9" y="76.2"/>
 </instances>
 <busses>
 </busses>
@@ -17153,9 +17151,6 @@ I2C1 addr: 0x28</text>
 <wire x1="180.34" y1="129.54" x2="177.8" y2="129.54" width="0.1524" layer="91"/>
 <pinref part="R0912" gate="G$1" pin="2"/>
 <label x="139.7" y="116.84" size="1.778" layer="95"/>
-<junction x="114.3" y="142.24"/>
-<pinref part="R0913" gate="G$1" pin="1"/>
-<wire x1="114.3" y1="154.94" x2="114.3" y2="142.24" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SWR_IN_FWD" class="0">
@@ -17164,12 +17159,8 @@ I2C1 addr: 0x28</text>
 <pinref part="U0921" gate="G$1" pin="1"/>
 <wire x1="139.7" y1="144.78" x2="142.24" y2="144.78" width="0.1524" layer="91"/>
 <pinref part="R0902" gate="G$1" pin="2"/>
-<wire x1="139.7" y1="152.4" x2="101.6" y2="152.4" width="0.1524" layer="91"/>
+<wire x1="139.7" y1="152.4" x2="96.52" y2="152.4" width="0.1524" layer="91"/>
 <label x="124.46" y="152.4" size="1.778" layer="95"/>
-<wire x1="101.6" y1="152.4" x2="96.52" y2="152.4" width="0.1524" layer="91"/>
-<pinref part="R0903" gate="G$1" pin="1"/>
-<wire x1="101.6" y1="152.4" x2="101.6" y2="154.94" width="0.1524" layer="91"/>
-<junction x="101.6" y="152.4"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -17275,6 +17266,11 @@ I2C1 addr: 0x28</text>
 <wire x1="238.76" y1="134.62" x2="238.76" y2="142.24" width="0.1524" layer="91"/>
 <junction x="238.76" y="134.62"/>
 </segment>
+<segment>
+<pinref part="GND0922" gate="1" pin="GND"/>
+<pinref part="R0923" gate="G$1" pin="1"/>
+<wire x1="88.9" y1="78.74" x2="88.9" y2="81.28" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="+3V3" class="0">
 <segment>
@@ -17322,14 +17318,6 @@ I2C1 addr: 0x28</text>
 <pinref part="U0941" gate="G$1" pin="!SHDN"/>
 <wire x1="10.16" y1="53.34" x2="20.32" y2="53.34" width="0.1524" layer="91"/>
 <junction x="10.16" y="53.34"/>
-</segment>
-<segment>
-<wire x1="114.3" y1="165.1" x2="114.3" y2="167.64" width="0.1524" layer="91"/>
-<junction x="114.3" y="165.1"/>
-<pinref part="+3V6" gate="G$1" pin="+3V3"/>
-<pinref part="R0913" gate="G$1" pin="2"/>
-<pinref part="R0903" gate="G$1" pin="2"/>
-<wire x1="114.3" y1="165.1" x2="101.6" y2="165.1" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="U0962" gate="G$1" pin="VDD"/>
@@ -17400,6 +17388,10 @@ I2C1 addr: 0x28</text>
 <pinref part="D0951" gate="G$1" pin="A"/>
 <wire x1="96.52" y1="60.96" x2="101.6" y2="60.96" width="0.1524" layer="91"/>
 <junction x="96.52" y="60.96"/>
+<wire x1="96.52" y1="93.98" x2="88.9" y2="93.98" width="0.1524" layer="91"/>
+<junction x="96.52" y="93.98"/>
+<pinref part="R0923" gate="G$1" pin="2"/>
+<wire x1="88.9" y1="93.98" x2="88.9" y2="91.44" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SWR_OP1_OUT" class="0">
