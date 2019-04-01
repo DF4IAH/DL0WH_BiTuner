@@ -1,4 +1,3 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file           : main.h
@@ -47,52 +46,24 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef __MAIN_H__
+#define __MAIN_H__
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
-/* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <sys/_stdint.h>
 
 /* USER CODE END Includes */
 
-/* Exported types ------------------------------------------------------------*/
-/* USER CODE BEGIN ET */
+/* Private define ------------------------------------------------------------*/
 
-/* USER CODE END ET */
-
-/* Exported constants --------------------------------------------------------*/
-/* USER CODE BEGIN EC */
-
-/* USER CODE END EC */
-
-/* Exported macro ------------------------------------------------------------*/
-/* USER CODE BEGIN EM */
-
-/* USER CODE END EM */
-
-/* Exported functions prototypes ---------------------------------------------*/
-void Error_Handler(void);
-
-/* USER CODE BEGIN EFP */
-
-/* USER CODE END EFP */
-
-/* Private defines -----------------------------------------------------------*/
-#define ADC1_IN1_FWDREV_Pin GPIO_PIN_0
-#define ADC1_IN1_FWDREV_GPIO_Port GPIOC
-#define ADC1_IN3_VDIODE_Pin GPIO_PIN_2
-#define ADC1_IN3_VDIODE_GPIO_Port GPIOC
+#define ADC2_IN1_FWDREV_Pin GPIO_PIN_0
+#define ADC2_IN1_FWDREV_GPIO_Port GPIOC
+#define ADC3_IN3_VDIODE_Pin GPIO_PIN_2
+#define ADC3_IN3_VDIODE_GPIO_Port GPIOC
 #define GPIO_SWR_SEL_FWD_Pin GPIO_PIN_3
 #define GPIO_SWR_SEL_FWD_GPIO_Port GPIOC
 #define GPIO_SWR_SEL_REV_Pin GPIO_PIN_3
@@ -107,6 +78,14 @@ void Error_Handler(void);
 #define GPIO_SPI_SEL_EXT_GPIO_Port GPIOB
 #define GPIO_SPI_PWM_Pin GPIO_PIN_11
 #define GPIO_SPI_PWM_GPIO_Port GPIOB
+
+/* ########################## Assert Selection ############################## */
+/**
+  * @brief Uncomment the line below to expanse the "assert_param" macro in the 
+  *        HAL drivers code
+  */
+ #define USE_FULL_ASSERT    1U 
+
 /* USER CODE BEGIN Private defines */
 
 #ifndef PI
@@ -170,9 +149,15 @@ void Again_SystemClock_Config(SYSCLK_CONFIG_t sel);
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
+ extern "C" {
+#endif
+void _Error_Handler(char *, int);
+
+#define Error_Handler() _Error_Handler(__FILE__, __LINE__)
+#ifdef __cplusplus
 }
 #endif
 
-#endif /* __MAIN_H */
+#endif /* __MAIN_H__ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -1599,6 +1599,7 @@ static void controllerSetMuxCh(uint8_t muxCh)
 
 static void controllerSetOpOfs(uint8_t opOfs)
 {
+#if 0
 	i2c1TxBuffer[0] = 0x00;
 	i2c1TxBuffer[1] = opOfs;
 
@@ -1613,10 +1614,12 @@ static void controllerSetOpOfs(uint8_t opOfs)
       dbgLen = sprintf(dbgBuf, "GOOD:  Offset value pushed\r\n");
       interpreterConsolePush(dbgBuf, dbgLen);
     }
+#endif
 }
 
 static void controllerSetOpGain(uint8_t opGain)
 {
+#if 0
 	i2c1TxBuffer[0] = 0x00;
 	i2c1TxBuffer[1] = opOfs;
 
@@ -1631,6 +1634,7 @@ static void controllerSetOpGain(uint8_t opGain)
       dbgLen = sprintf(dbgBuf, "GOOD:  Offset value pushed\r\n");
       interpreterConsolePush(dbgBuf, dbgLen);
     }
+#endif
 }
 
 

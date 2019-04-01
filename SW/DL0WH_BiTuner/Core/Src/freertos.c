@@ -744,36 +744,85 @@ void MX_FREERTOS_Init(void) {
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
 
+  /* Create the thread(s) */
+  /* definition and creation of defaultTask */
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 256);
+  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+
+  /* definition and creation of controllerTask */
+  osThreadDef(controllerTask, StartControllerTask, osPriorityHigh, 0, 256);
+  controllerTaskHandle = osThreadCreate(osThread(controllerTask), NULL);
+
+  /* definition and creation of usbToHostTask */
+  osThreadDef(usbToHostTask, StartUsbToHostTask, osPriorityNormal, 0, 256);
+  usbToHostTaskHandle = osThreadCreate(osThread(usbToHostTask), NULL);
+
+  /* definition and creation of usbFromHostTask */
+  osThreadDef(usbFromHostTask, StartUsbFromHostTask, osPriorityAboveNormal, 0, 256);
+  usbFromHostTaskHandle = osThreadCreate(osThread(usbFromHostTask), NULL);
+
+  /* definition and creation of interpreterTask */
+  osThreadDef(interpreterTask, StartInterpreterTask, osPriorityNormal, 0, 512);
+  interpreterTaskHandle = osThreadCreate(osThread(interpreterTask), NULL);
+
+  /* definition and creation of uartTxTask */
+  osThreadDef(uartTxTask, StartUartTxTask, osPriorityNormal, 0, 256);
+  uartTxTaskHandle = osThreadCreate(osThread(uartTxTask), NULL);
+
+  /* definition and creation of uartRxTask */
+  osThreadDef(uartRxTask, StartUartRxTask, osPriorityAboveNormal, 0, 256);
+  uartRxTaskHandle = osThreadCreate(osThread(uartRxTask), NULL);
+
+  /* definition and creation of catTxTask */
+  osThreadDef(catTxTask, StartCatTxTask, osPriorityNormal, 0, 256);
+  catTxTaskHandle = osThreadCreate(osThread(catTxTask), NULL);
+
+  /* definition and creation of catRxTask */
+  osThreadDef(catRxTask, StartCatRxTask, osPriorityAboveNormal, 0, 256);
+  catRxTaskHandle = osThreadCreate(osThread(catRxTask), NULL);
+
+  /* USER CODE BEGIN RTOS_THREADS */
+  /* add threads, ... */
+  /* USER CODE END RTOS_THREADS */
+
   /* Create the queue(s) */
   /* definition and creation of usbToHostQueue */
+/* what about the sizeof here??? cd native code */
   osMessageQDef(usbToHostQueue, 256, uint8_t);
   usbToHostQueueHandle = osMessageCreate(osMessageQ(usbToHostQueue), NULL);
 
   /* definition and creation of usbFromHostQueue */
+/* what about the sizeof here??? cd native code */
   osMessageQDef(usbFromHostQueue, 32, uint8_t);
   usbFromHostQueueHandle = osMessageCreate(osMessageQ(usbFromHostQueue), NULL);
 
   /* definition and creation of controllerInQueue */
+/* what about the sizeof here??? cd native code */
   osMessageQDef(controllerInQueue, 64, uint32_t);
   controllerInQueueHandle = osMessageCreate(osMessageQ(controllerInQueue), NULL);
 
   /* definition and creation of controllerOutQueue */
+/* what about the sizeof here??? cd native code */
   osMessageQDef(controllerOutQueue, 32, uint32_t);
   controllerOutQueueHandle = osMessageCreate(osMessageQ(controllerOutQueue), NULL);
 
   /* definition and creation of uartTxQueue */
+/* what about the sizeof here??? cd native code */
   osMessageQDef(uartTxQueue, 256, uint8_t);
   uartTxQueueHandle = osMessageCreate(osMessageQ(uartTxQueue), NULL);
 
   /* definition and creation of uartRxQueue */
+/* what about the sizeof here??? cd native code */
   osMessageQDef(uartRxQueue, 32, uint8_t);
   uartRxQueueHandle = osMessageCreate(osMessageQ(uartRxQueue), NULL);
 
   /* definition and creation of catTxQueue */
+/* what about the sizeof here??? cd native code */
   osMessageQDef(catTxQueue, 256, uint8_t);
   catTxQueueHandle = osMessageCreate(osMessageQ(catTxQueue), NULL);
 
   /* definition and creation of catRxQueue */
+/* what about the sizeof here??? cd native code */
   osMessageQDef(catRxQueue, 32, uint8_t);
   catRxQueueHandle = osMessageCreate(osMessageQ(catRxQueue), NULL);
 
@@ -821,48 +870,6 @@ void MX_FREERTOS_Init(void) {
   vQueueAddToRegistry(catRx_BSemHandle,           "Wk catRx");
 
   /* USER CODE END RTOS_QUEUES */
-
-  /* Create the thread(s) */
-  /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 256);
-  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
-
-  /* definition and creation of controllerTask */
-  osThreadDef(controllerTask, StartControllerTask, osPriorityHigh, 0, 256);
-  controllerTaskHandle = osThreadCreate(osThread(controllerTask), NULL);
-
-  /* definition and creation of usbToHostTask */
-  osThreadDef(usbToHostTask, StartUsbToHostTask, osPriorityNormal, 0, 256);
-  usbToHostTaskHandle = osThreadCreate(osThread(usbToHostTask), NULL);
-
-  /* definition and creation of usbFromHostTask */
-  osThreadDef(usbFromHostTask, StartUsbFromHostTask, osPriorityAboveNormal, 0, 256);
-  usbFromHostTaskHandle = osThreadCreate(osThread(usbFromHostTask), NULL);
-
-  /* definition and creation of interpreterTask */
-  osThreadDef(interpreterTask, StartInterpreterTask, osPriorityNormal, 0, 512);
-  interpreterTaskHandle = osThreadCreate(osThread(interpreterTask), NULL);
-
-  /* definition and creation of uartTxTask */
-  osThreadDef(uartTxTask, StartUartTxTask, osPriorityNormal, 0, 256);
-  uartTxTaskHandle = osThreadCreate(osThread(uartTxTask), NULL);
-
-  /* definition and creation of uartRxTask */
-  osThreadDef(uartRxTask, StartUartRxTask, osPriorityAboveNormal, 0, 256);
-  uartRxTaskHandle = osThreadCreate(osThread(uartRxTask), NULL);
-
-  /* definition and creation of catTxTask */
-  osThreadDef(catTxTask, StartCatTxTask, osPriorityNormal, 0, 256);
-  catTxTaskHandle = osThreadCreate(osThread(catTxTask), NULL);
-
-  /* definition and creation of catRxTask */
-  osThreadDef(catRxTask, StartCatRxTask, osPriorityAboveNormal, 0, 256);
-  catRxTaskHandle = osThreadCreate(osThread(catRxTask), NULL);
-
-  /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
-  /* USER CODE END RTOS_THREADS */
-
 }
 
 /* USER CODE BEGIN Header_StartDefaultTask */
