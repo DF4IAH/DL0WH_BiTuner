@@ -746,31 +746,31 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 256);
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 256);  // 256
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of controllerTask */
-  osThreadDef(controllerTask, StartControllerTask, osPriorityHigh, 0, 256);
+  osThreadDef(controllerTask, StartControllerTask, osPriorityHigh, 0, 256);  // 256
   controllerTaskHandle = osThreadCreate(osThread(controllerTask), NULL);
 
   /* definition and creation of usbToHostTask */
-  osThreadDef(usbToHostTask, StartUsbToHostTask, osPriorityNormal, 0, 256);
+  osThreadDef(usbToHostTask, StartUsbToHostTask, osPriorityNormal, 0, 256);  // 256
   usbToHostTaskHandle = osThreadCreate(osThread(usbToHostTask), NULL);
 
   /* definition and creation of usbFromHostTask */
-  osThreadDef(usbFromHostTask, StartUsbFromHostTask, osPriorityAboveNormal, 0, 256);
+  osThreadDef(usbFromHostTask, StartUsbFromHostTask, osPriorityAboveNormal, 0, 256);  // 256
   usbFromHostTaskHandle = osThreadCreate(osThread(usbFromHostTask), NULL);
 
   /* definition and creation of interpreterTask */
-  osThreadDef(interpreterTask, StartInterpreterTask, osPriorityNormal, 0, 512);
+  osThreadDef(interpreterTask, StartInterpreterTask, osPriorityNormal, 0, 512);  // 512
   interpreterTaskHandle = osThreadCreate(osThread(interpreterTask), NULL);
 
   /* definition and creation of uartTxTask */
-  osThreadDef(uartTxTask, StartUartTxTask, osPriorityNormal, 0, 256);
+  osThreadDef(uartTxTask, StartUartTxTask, osPriorityNormal, 0, 256);  // 256
   uartTxTaskHandle = osThreadCreate(osThread(uartTxTask), NULL);
 
   /* definition and creation of uartRxTask */
-  osThreadDef(uartRxTask, StartUartRxTask, osPriorityAboveNormal, 0, 256);
+  osThreadDef(uartRxTask, StartUartRxTask, osPriorityAboveNormal, 0, 256);  // 256
   uartRxTaskHandle = osThreadCreate(osThread(uartRxTask), NULL);
 
   /* definition and creation of catTxTask */
