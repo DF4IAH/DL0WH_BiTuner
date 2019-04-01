@@ -39,7 +39,7 @@
 "38","PC7","I/O","",""
 "39","PC8","I/O","",""
 "40","PC9","I/O","",""
-"41","PA8","I/O","USB_OTG_FS_SOF",""
+"41","PA8","I/O","RCC_MCO",""
 "42","PA9","I/O","USB_OTG_FS_VBUS",""
 "43","PA10","I/O","USB_OTG_FS_ID",""
 "44","PA11","I/O","USB_OTG_FS_DM",""
