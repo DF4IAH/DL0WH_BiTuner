@@ -140,8 +140,8 @@ float controllerCalcMatcherC2pF(uint8_t Cval);
 uint8_t controllerCalcMatcherNH2L(float nH);
 uint8_t controllerCalcMatcherPF2C(float pF);
 
-uint32_t controllerMsgPushToInQueue(uint32_t msgLen, uint32_t* msgAry, uint32_t waitMs);
-void controllerMsgPushToOutQueue(uint32_t msgLen, uint32_t* msgAry, uint32_t waitMs);
+uint32_t controllerMsgPushToInQueue(uint32_t* msgAry, uint32_t msgLen, uint32_t waitMs);
+void controllerMsgPushToOutQueue(uint32_t* msgAry, uint32_t msgLen, uint32_t waitMs);
 uint32_t controllerMsgPullFromOutQueue(uint32_t* msgAry, ControllerMsgDestinations_t dst, uint32_t waitMs);
 
 void controllerTimerCallback(void const *argument);
