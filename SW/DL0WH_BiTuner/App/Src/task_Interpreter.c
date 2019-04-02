@@ -476,14 +476,15 @@ void interpreterGetterTask(void const * argument)
   /* Handle serial console on input streams USB and UART */
   for (;;) {
     uint8_t inBuf[64]  = { 0U };
+    const uint8_t inBufLenM1 = sizeof(inBuf) - 1;
     uint32_t inBufLen;
 
     /* Transfer USB input*/
-    inBufLen = usbPullFromOutQueue(inBuf, 1UL);
+    inBufLen = usbPullFromOutQueue(inBuf, inBufLenM1, 1UL);
 
     /* Transfer UART input*/
     if (!inBufLen) {
-      inBufLen = uartRxPullFromQueue(inBuf, sizeof(inBuf), 1UL);
+      inBufLen = uartRxPullFromQueue(inBuf, inBufLenM1, 1UL);
     }
 
     if (inBufLen) {

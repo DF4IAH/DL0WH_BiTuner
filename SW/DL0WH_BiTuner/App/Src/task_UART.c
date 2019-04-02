@@ -187,7 +187,7 @@ uint32_t uartRxPullFromQueue(uint8_t* msgAry, uint32_t maxLen, uint32_t waitMs)
     }
   } while (len < maxLenM1);
 
-  /* strend */
+  /* StrEnd */
   msgAry[len] = 0U;
 
   /* Return semaphore */
@@ -218,7 +218,7 @@ static void uartTxPush(const uint8_t* buf, uint32_t len)
     osMessagePut(uartTxQueueHandle, c, 0UL);
   }
 
-  /* strend */
+  /* StrEnd */
   osMessagePut(uartTxQueueHandle, 0, 0UL);
 }
 
