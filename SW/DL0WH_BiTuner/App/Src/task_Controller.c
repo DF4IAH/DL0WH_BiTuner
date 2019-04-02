@@ -18,7 +18,6 @@
 #include "cmsis_os.h"
 #include "stm32l476xx.h"
 
-//#include "stm32l4xx_hal_gpio.h"
 #include "bus_i2c.h"
 #include "bus_spi.h"
 #include "device_adc.h"
@@ -166,12 +165,13 @@ const char controllerGreetMsg11[] =
 
 static void controllerUsbGreet(void)
 {
-  char verBuf[128];
+  char  verBuf[128];
+  const uint32_t verBufLenM1 = sizeof(verBuf) - 1;
 
   interpreterClearScreen();
   interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
 
-  sprintf(verBuf, controllerGreetMsg11, BITUNER_CTRL_VERSION);
+  const int verLen = snprintf(verBuf, verBufLenM1, controllerGreetMsg11, BITUNER_CTRL_VERSION);
 
   /* usbToHost block */
   {
@@ -182,7 +182,7 @@ static void controllerUsbGreet(void)
     interpreterConsolePush(controllerGreetMsg02, strlen(controllerGreetMsg02));
     interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
 
-    interpreterConsolePush(verBuf, strlen(verBuf));
+    interpreterConsolePush(verBuf, verLen);
     interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
   }
 }
@@ -196,16 +196,18 @@ const char controllerPackages0x11[] = "WLCSP100";
 const char controllerPackages0xXX[] = "(reserved)";
 static void controllerPrintMCU(void)
 {
-  char lotBuf[8];
-  char buf[220] = { 0 };
-  const char *packagePtr = NULL;
+  char            lotBuf[8];
+  const uint32_t  lotBufLenM1   = sizeof(lotBuf) - 1;
+  char            buf[220]      = { 0 };
+  const uint32_t  bufLenM1      = sizeof(buf) - 1;
+  const char*     packagePtr    = NULL;
 
   uint32_t uidPosX    = (*((uint32_t*)  UID_BASE     )      ) & 0X0000ffffUL;
   uint32_t uidPosY    = (*((uint32_t*)  UID_BASE     ) >> 16) & 0X0000ffffUL;
   uint32_t uidWaf     = (*((uint32_t*) (UID_BASE + 4))      ) & 0X000000ffUL;
   char* uidLot        = ((char*)       (UID_BASE + 5));
-  memcpy((void*)lotBuf, (const void*)uidLot, 7);
-  lotBuf[7] = 0;
+  memcpy((void*)lotBuf, (const void*)uidLot, lotBufLenM1);
+  lotBuf[lotBufLenM1] = 0;
 
   uint32_t package    = (*((uint32_t*)  PACKAGE_BASE))        & 0X0000001fUL;
   switch(package) {
@@ -239,7 +241,7 @@ static void controllerPrintMCU(void)
 
   uint16_t flashSize      = (uint16_t) ((*((uint32_t*) FLASHSIZE_BASE)) & 0x0000ffffUL);
 
-  int len = sprintf(buf,
+  int len = snprintf(buf, bufLenM1,
       "\tMCU Info:\r\n" \
       "\t========\r\n" \
       "\r\n" \
@@ -268,16 +270,18 @@ uint32_t controllerCalcMsgHdr(ControllerMsgDestinations_t dst, ControllerMsgDest
 
 uint32_t controllerCalcMsgInit(uint32_t* ary, ControllerMsgDestinations_t dst, uint32_t startDelayMs)
 {
-  ary[0] = controllerCalcMsgHdr(dst, Destinations__Controller, sizeof(uint32_t), MsgController__InitDo);
-  ary[1] = startDelayMs;
-  return 2UL;
+  uint32_t idx = 0UL;
+
+  ary[idx++] = controllerCalcMsgHdr(dst, Destinations__Controller, sizeof(uint32_t), MsgController__InitDo);
+  ary[idx++] = startDelayMs;
+  return idx;
 }
 
 float controllerCalcMatcherL2nH(uint8_t Lval)
 {
   float sum = Controller_L0_nH;
 
-  for (uint8_t idx = 0; idx < 8; idx++) {
+  for (uint8_t idx = 0U; idx < 8U; idx++) {
     if (Lval & (1U << idx)) {
       sum += Controller_Ls_nH[idx];
     }
@@ -289,7 +293,7 @@ float controllerCalcMatcherC2pF(uint8_t Cval)
 {
   float sum = Controller_C0_pF;
 
-  for (uint8_t idx = 0; idx < 8; idx++) {
+  for (uint8_t idx = 0U; idx < 8U; idx++) {
     if (Cval & (1U << idx)) {
       sum += Controller_Cp_pF[idx];
     }
@@ -307,7 +311,7 @@ uint8_t controllerCalcMatcherNH2L(float nH)
     const float absThis = fabs(valL - nH);
 
     if (absMin > absThis) {
-      absMin = absThis;
+      absMin  = absThis;
       valThis = val;
     }
   }
