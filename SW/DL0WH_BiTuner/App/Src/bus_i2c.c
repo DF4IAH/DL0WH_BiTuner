@@ -36,8 +36,6 @@ void i2cBusAddrScan(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle) {
   /* DEBUG I2C1 Bus */
   const char msgStart[] = "\r\n\r\nI2C1 bus scan: scanning ...\r\n";
   const char msgEnd[]   = "... done.\r\n\r\n> ";
-  char dbgBuf[64];
-  int dbgLen;
 
   osSemaphoreWait(semaphoreHandle, osWaitForever);
 
@@ -53,7 +51,9 @@ void i2cBusAddrScan(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle) {
       osDelay(1UL);
     }
     if (HAL_I2C_GetError(dev) != HAL_I2C_ERROR_AF) {
-      dbgLen = sprintf(dbgBuf, "GOOD:  Addr=0x%02X  got response\r\n", addr >> 1U);
+      char dbgBuf[64];
+      const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
+                                  "GOOD:  Addr=0x%02X  got response\r\n", addr >> 1U);
       interpreterConsolePush(dbgBuf, dbgLen);
       osDelay(25UL);
     }
