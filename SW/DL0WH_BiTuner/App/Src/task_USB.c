@@ -59,11 +59,11 @@ volatile uint32_t           v_usbUsbFromHostISRBufLen               = 0UL;
 void usbFromHostFromIRQ(const uint8_t* buf, uint32_t len)
 {
   if (buf && len && !v_usbUsbFromHostISRBufLen) {
-    BaseType_t  lMaxLen = sizeof(v_usbUsbFromHostISRBuf) - 1;
+    BaseType_t  maxLenM1 = sizeof(v_usbUsbFromHostISRBuf) - 1;
     BaseType_t  lLen = len;
 
-    if (lLen > lMaxLen) {
-      lLen = lMaxLen;
+    if (lLen > maxLenM1) {
+      lLen = maxLenM1;
     }
     memcpy((void*)v_usbUsbFromHostISRBuf, (const void*)buf, lLen);
     v_usbUsbFromHostISRBuf[lLen] = 0U;
@@ -80,6 +80,8 @@ static void usbToHost(const uint8_t* buf, uint32_t len)
 		while (len--) {
 			osMessagePut(usbToHostQueueHandle, (uint32_t) *(buf++), usbToHost_MaxWaitQueueMs);
 		}
+
+		/* StrEnd */
 		osMessagePut(usbToHostQueueHandle, 0UL, usbToHost_MaxWaitQueueMs);
 	}
 }
@@ -135,9 +137,10 @@ const char usbClrScrBuf[4] = { 0x0c, 0x0d, 0x0a, 0 };
 
 void usbStartUsbToHostTask(void const * argument)
 {
-  static uint8_t  buf[48] = { 0U };
-  static uint32_t bufCtr  = 0UL;
-  uint8_t         inChr   = 0U;
+  static uint8_t    buf[48]   = { 0U };
+  const uint8_t     bufLenM1  = sizeof(buf) - 1U;
+  static uint32_t   bufCtr    = 0UL;
+  uint8_t           inChr     = 0U;
 
   /* Clear queue */
   while (xQueueReceive(usbToHostQueueHandle, &inChr, 0) == pdPASS) {
@@ -147,7 +150,7 @@ void usbStartUsbToHostTask(void const * argument)
   /* Init connection with dummy data */
   const uint8_t MaxCnt = 30U;
   for (uint8_t cnt = MaxCnt; cnt; cnt--) {
-    uint8_t res = CDC_Transmit_FS((uint8_t*) usbClrScrBuf, 3);
+    uint8_t res = CDC_Transmit_FS((uint8_t*) usbClrScrBuf, strlen(usbClrScrBuf));
     if (res == USBD_BUSY) {
       cnt = MaxCnt;
       osDelay(500UL);
@@ -175,7 +178,7 @@ void usbStartUsbToHostTask(void const * argument)
       }
 
       /* Flush when 0 or when buffer is full */
-      if (!inChr || (bufCtr >= (sizeof(buf) - 1))) {
+      if (!inChr || (bufCtr >= bufLenM1)) {
         uint32_t retryCnt = 0UL;
 
         /* Do not send empty buffer */
@@ -235,47 +238,49 @@ static void usbUsbToHostDeInit(void)
 }
 
 
-static void usbUsbToHostMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
+static void usbUsbToHostMsgProcess(const uint32_t* msgAry, uint32_t msgLen)
 {
-  uint32_t                msgIdx  = 0UL;
-  const uint32_t          hdr     = msgAry[msgIdx++];
-  const usbMsgUsbCmds_t   cmd     = (usbMsgUsbCmds_t) (0xffUL & hdr);
+  if (msgLen >= 1UL) {
+    uint32_t                msgIdx  = 0UL;
+    const uint32_t          hdr     = msgAry[msgIdx++];
+    const usbMsgUsbCmds_t   cmd     = (usbMsgUsbCmds_t) (0xffUL & hdr);
 
-  switch (cmd) {
-  case MsgUsb__InitDo:
-    {
-      /* Start at defined point of time */
-      const uint32_t delayMs = msgAry[msgIdx++];
-      if (delayMs) {
-        uint32_t  previousWakeTime = s_usbUsbToHostStartTime;
-        osDelayUntil(&previousWakeTime, delayMs);
+    switch (cmd) {
+    case MsgUsb__InitDo:
+      if (msgLen == 2UL) {
+        /* Start at defined point of time */
+        const uint32_t delayMs = msgAry[msgIdx++];
+        if (delayMs) {
+          uint32_t  previousWakeTime = s_usbUsbToHostStartTime;
+          osDelayUntil(&previousWakeTime, delayMs);
+        }
+
+        /* Activation flag */
+        s_usbUsbToHost_enable = 1U;
+
+        /* Init module */
+        usbUsbToHostInit();
+
+        /* Return Init confirmation */
+        uint32_t cmdBack[1];
+        cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_USBtoHost, 0U, MsgUsb__InitDone);
+        controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
       }
+      break;
 
-      /* Activation flag */
-      s_usbUsbToHost_enable = 1U;
+    case MsgUsb__DeInitDo:
+      {
+        /* DeInit module */
+        usbUsbToHostDeInit();
 
-      /* Init module */
-      usbUsbToHostInit();
+        /* Deactivate flag */
+        s_usbUsbToHost_enable = 0U;
+      }
+      break;
 
-      /* Return Init confirmation */
-      uint32_t cmdBack[1];
-      cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_USBtoHost, 0U, MsgUsb__InitDone);
-      controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
-    }
-    break;
-
-  case MsgUsb__DeInitDo:
-    {
-      /* DeInit module */
-      usbUsbToHostDeInit();
-
-      /* Deactivate flag */
-      s_usbUsbToHost_enable = 0U;
-    }
-    break;
-
-  default: { }
-  }  // switch (cmd)
+    default: { }
+    }  // switch (cmd)
+  }
 }
 
 
@@ -302,23 +307,29 @@ void usbUsbToHostTaskLoop(void)
   /* Wait for door bell and hand-over controller out queue */
   {
     osSemaphoreWait(c2usbToHost_BSemHandle, osWaitForever);
-    msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Network_USBtoHost, 1UL);           // Special case of callbacks need to limit blocking time
+    msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Network_USBtoHost, 1UL);             // Special case of callbacks need to limit blocking time
   }
 
   /* Decode and execute the commands when a message exists
    * (in case of callbacks the loop catches its wakeup semaphore
    * before ctrlQout is released results to request on an empty queue) */
   if (msgLen) {
-    usbUsbToHostMsgProcess(msgLen, msgAry);
+    usbUsbToHostMsgProcess(msgAry, msgLen);
   }
 }
 
 
 /* USB-from-Host */
 
-uint32_t usbPullFromOutQueue(uint8_t* msgAry, uint32_t waitMs)
+uint32_t usbPullFromOutQueue(uint8_t* msgAry, uint32_t maxLen, uint32_t waitMs)
 {
+  const uint32_t maxLenM1 = maxLen - 1;
   uint32_t len = 0UL;
+
+  /* Sanity checks */
+  if (!msgAry || !maxLen) {
+    return 0UL;
+  }
 
   /* Get semaphore to queue out */
   osSemaphoreWait(usbFromHost_BSemHandle, waitMs);
@@ -331,7 +342,10 @@ uint32_t usbPullFromOutQueue(uint8_t* msgAry, uint32_t waitMs)
     } else {
       break;
     }
-  } while (1);
+  } while (len < maxLenM1);
+
+  /* StrEnd */
+  msgAry[len] = 0U;
 
   /* Return semaphore */
   osSemaphoreRelease(usbFromHost_BSemHandle);
@@ -389,47 +403,49 @@ static void usbUsbFromHostDeInit(void)
 }
 
 
-static void usbUsbFromHostMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
+static void usbUsbFromHostMsgProcess(const uint32_t* msgAry, uint32_t msgLen)
 {
-  uint32_t                msgIdx  = 0UL;
-  const uint32_t          hdr     = msgAry[msgIdx++];
-  const usbMsgUsbCmds_t   cmd     = (usbMsgUsbCmds_t) (0xffUL & hdr);
+  if (msgLen >= 1UL) {
+    uint32_t                msgIdx  = 0UL;
+    const uint32_t          hdr     = msgAry[msgIdx++];
+    const usbMsgUsbCmds_t   cmd     = (usbMsgUsbCmds_t) (0xffUL & hdr);
 
-  switch (cmd) {
-  case MsgUsb__InitDo:
-    {
-      /* Start at defined point of time */
-      const uint32_t delayMs = msgAry[msgIdx++];
-      if (delayMs) {
-        uint32_t  previousWakeTime = s_usbUsbFromHostStartTime;
-        osDelayUntil(&previousWakeTime, delayMs);
+    switch (cmd) {
+    case MsgUsb__InitDo:
+      if (msgLen == 2UL) {
+        /* Start at defined point of time */
+        const uint32_t delayMs = msgAry[msgIdx++];
+        if (delayMs) {
+          uint32_t  previousWakeTime = s_usbUsbFromHostStartTime;
+          osDelayUntil(&previousWakeTime, delayMs);
+        }
+
+        /* Activation flag */
+        s_usbUsbFromHost_enable = 1U;
+
+        /* Init module */
+        usbUsbFromHostInit();
+
+        /* Return Init confirmation */
+        uint32_t cmdBack[1];
+        cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_USBfromHost, 0U, MsgUsb__InitDone);
+        controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
       }
+      break;
 
-      /* Activation flag */
-      s_usbUsbFromHost_enable = 1U;
+    case MsgUsb__DeInitDo:
+      {
+        /* Init module */
+        usbUsbFromHostDeInit();
 
-      /* Init module */
-      usbUsbFromHostInit();
+        /* Deactivate flag */
+        s_usbUsbFromHost_enable = 0U;
+      }
+      break;
 
-      /* Return Init confirmation */
-      uint32_t cmdBack[1];
-      cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_USBfromHost, 0U, MsgUsb__InitDone);
-      controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
-    }
-    break;
-
-  case MsgUsb__DeInitDo:
-    {
-      /* Init module */
-      usbUsbFromHostDeInit();
-
-      /* Deactivate flag */
-      s_usbUsbFromHost_enable = 0U;
-    }
-    break;
-
-  default: { }
-  }  // switch (cmd)
+    default: { }
+    }  // switch (cmd)
+  }
 }
 
 
@@ -463,6 +479,6 @@ void usbUsbFromHostTaskLoop(void)
    * (in case of callbacks the loop catches its wakeup semaphore
    * before ctrlQout is released results to request on an empty queue) */
   if (msgLen) {
-    usbUsbFromHostMsgProcess(msgLen, msgAry);
+    usbUsbFromHostMsgProcess(msgAry, msgLen);
   }
 }
