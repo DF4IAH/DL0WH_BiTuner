@@ -160,7 +160,7 @@ static uint32_t interpreterCalcLineLen(const uint8_t* buf, uint32_t len)
   const uint8_t* bufPtr = buf;
 
   for (uint32_t idx = 0UL; idx < len; idx++, bufPtr++) {
-    if (*bufPtr == 0x0aU || *bufPtr == 0x0dU) {
+    if ((*bufPtr == 0x0aU) || (*bufPtr == 0x0dU)) {
       return idx;
     }
   }
@@ -176,12 +176,12 @@ static void interpreterUnknownCommand(void)
 
 static uint8_t interpreterDoInterprete__HexString_HexNibbleParser(char c)
 {
-  if ('0' <= c && c <= '9') {
+  if (('0' <= c) && (c <= '9')) {
     return c - '0';
   }
 
   c = toupper(c);
-  if ('A' <= c && c <= 'F') {
+  if (('A' <= c) && (c <= 'F')) {
     return (c - 'A') + 10;
   }
 
@@ -228,7 +228,7 @@ static uint32_t interpreterDoInterprete__HexString(const char* buf, uint8_t len)
       c = buf[idxIn++];
 
       /* one nibble only */
-      if ((idxIn > len) || isspace(c)) {
+      if ((idxIn >= len) || isspace(c)) {
         --idxIn;
         nibLo = nibHi;
         nibHi = 0U;
@@ -239,8 +239,8 @@ static uint32_t interpreterDoInterprete__HexString(const char* buf, uint8_t len)
     }
 
     /* Write out */
-    const uint8_t byte = (uint8_t) (0xffU & ((nibHi << 4) | (nibLo)));
-    retVal <<= 8;
+    const uint8_t byte = (uint8_t) (0xffU & ((nibHi << 4U) | nibLo));
+    retVal <<= 8U;
     retVal  |= byte;
   }
   return retVal;
@@ -248,23 +248,33 @@ static uint32_t interpreterDoInterprete__HexString(const char* buf, uint8_t len)
 
 static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 {
+  const uint32_t  bufLenM1    = sizeof(s_interpreterLineBuf) - 1;
   const char*     cb          = (const char*) s_interpreterLineBuf;
   uint8_t*        bufOutPtr   = s_interpreterLineBuf + s_interpreterLineBufLen;
   const uint8_t*  bufInPtr    = buf;
   uint8_t         c           = 0U;
 
+  /* Sanity checks */
+  if (!buf || !len) {
+    return;
+  }
+
   /* Strip ending NUL char */
   if (!buf[len-1]) {
     --len;
   }
+  if (!len) {
+    /* EndStr only */
+    return;
+  }
 
   for (uint32_t idx = 0UL; idx < len; idx++) {
-    if ((idx + s_interpreterLineBufLen) < 254UL) {
+    if ((idx + s_interpreterLineBufLen) < bufLenM1) {
       *(bufOutPtr++) = c = *(bufInPtr++);
       ++s_interpreterLineBufLen;
     }
   }
-  if (c != 0x0aU && c != 0x0dU) {
+  if ((c != 0x0aU) && (c != 0x0dU)) {
     /* Line not complete */
     return;
   }
@@ -290,19 +300,19 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
   }
 
   /* List of string patterns to compare */
-  if (!strncmp("C", cb, 1) && (1 == len)) {
+  if (!strncmp("C", cb, 1) && (1UL == len)) {
     interpreterClearScreen();
 
-  } else if (!strncmp("HELP", cb, 4) && (4 == len)) {
+  } else if (!strncmp("HELP", cb, 4) && (4UL == len)) {
     interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
     interpreterPrintHelp();
     interpreterShowCursor();
 
-  } else if (!strncmp("C", cb, 1) && (3 == len)) {
+  } else if (!strncmp("C", cb, 1) && (3UL == len)) {
     /* Set capacitance */
-    uint32_t valCsw = *(cb + 1) > '0' ?  *(cb + 1) - '0' : 0;
+    uint32_t valCsw = *(cb + 1) > '0' ?  *(cb + 1) - '0' : 0UL;
     const uint32_t valLenable  = *(cb + 2) == '1' ?  1UL : 0UL;
-    if (0 < valCsw && valCsw <= 8) {
+    if ((0UL < valCsw) && (valCsw <= 8UL)) {
       --valCsw;
       uint32_t cmd[2];
       cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 2U, MsgController__SetVar02_C);
@@ -310,14 +320,14 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
                (valLenable  << 16U) ;
       controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
       cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-      controllerMsgPushToInQueue(1, cmd, 10UL);
+      controllerMsgPushToInQueue(1UL, cmd, 10UL);
     }
 
-  } else if (!strncmp("L", cb, 1) && (3 == len)) {
+  } else if (!strncmp("L", cb, 1) && (3UL == len)) {
     /* Set inductance */
-    uint8_t valLsw = *(cb + 1) > '0' ?  *(cb + 1) - '0' : 0;
+    uint8_t valLsw = *(cb + 1) > '0' ?  *(cb + 1) - '0' : 0UL;
     const uint8_t valLenable  = *(cb + 2) != '0' ?  1U : 0U;
-    if (0 < valLsw && valLsw <= 8) {
+    if ((0UL < valLsw) && (valLsw <= 8UL)) {
       --valLsw;
       uint32_t cmd[2];
       cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 2U, MsgController__SetVar01_L);
@@ -325,34 +335,34 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
                (valLenable  << 16U) ;
       controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
       cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-      controllerMsgPushToInQueue(1, cmd, 10UL);
+      controllerMsgPushToInQueue(1UL, cmd, 10UL);
     } else {
       interpreterUnknownCommand();
     }
 
-  } else if ((!strncmp("CL", cb, 2) || !strncmp("V1", cb, 2) || !strncmp("H0", cb, 2) || !strncmp("CV", cb, 2)) && (2 == len)) {
+  } else if ((!strncmp("CL", cb, 2) || !strncmp("V1", cb, 2) || !strncmp("H0", cb, 2) || !strncmp("CV", cb, 2)) && (2UL == len)) {
     /* Set configuration to Gamma (CV) */
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__SetVar03_CL);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-    controllerMsgPushToInQueue(1, cmd, 10UL);
+    controllerMsgPushToInQueue(1UL, cmd, 10UL);
 
-  } else if ((!strncmp("LC", cb, 2) || !strncmp("H1", cb, 2) || !strncmp("V0", cb, 2) || !strncmp("CH", cb, 2)) && (2 == len)) {
+  } else if ((!strncmp("LC", cb, 2) || !strncmp("H1", cb, 2) || !strncmp("V0", cb, 2) || !strncmp("CH", cb, 2)) && (2UL == len)) {
     /* Set configuration to reverted Gamma (CH) */
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__SetVar04_LC);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-    controllerMsgPushToInQueue(1, cmd, 10UL);
+    controllerMsgPushToInQueue(1UL, cmd, 10UL);
 
-  } else if (!strncmp("H", cb, 1) && (7 == len)) {
+  } else if (!strncmp("H", cb, 1) && (7UL == len)) {
     /* Set relays */
-    const uint32_t bitmask  = interpreterDoInterprete__HexString(cb + 1, 6);
+    const uint32_t bitmask  = interpreterDoInterprete__HexString(cb + 1, 6U);
     uint32_t       relayExt = bitmask & 0x010000UL;
-    relayExt               |= (relayExt ^ 0x010000UL) << 1;
+    relayExt               |= (relayExt ^ 0x010000UL) << 1U;
     const uint32_t relays   =  relayExt | (bitmask & 0x00ffffUL);
 
     uint32_t cmd[2];
@@ -361,15 +371,15 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-    controllerMsgPushToInQueue(1, cmd, 10UL);
+    controllerMsgPushToInQueue(1UL, cmd, 10UL);
 
-  } else if (!strncmp("K", cb, 1) && (4 == len)) {
+  } else if (!strncmp("K", cb, 1) && (4UL == len)) {
     /* Set relays */
     const uint8_t relayC    = *(cb + 1);
     const uint8_t relayL    = *(cb + 2);
     uint8_t       relayExt  = *(cb + 3) & 0x01U;
     relayExt               |= (relayExt ^ 0x01U) << 1U;
-    const uint32_t relays   = ((uint32_t)relayExt << 16) | ((uint32_t)relayL << 8) | (uint32_t)relayC;
+    const uint32_t relays   = ((uint32_t)relayExt << 16U) | ((uint32_t)relayL << 8U) | (uint32_t)relayC;
 
     uint32_t cmd[2];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 4U, MsgController__SetVar05_K);
@@ -377,12 +387,12 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-    controllerMsgPushToInQueue(1, cmd, 10UL);
+    controllerMsgPushToInQueue(1UL, cmd, 10UL);
 
-  } else if (!strncmp("MM", cb, 2) && (3 == len)) {
+  } else if (!strncmp("MM", cb, 2) && (3UL == len)) {
     /* Set measure MUX switch  */
-    uint8_t valD = *(cb + 1) > '0' ?  *(cb + 1) - '0' : 0;
-    if (0 <= valD && valD <= 2) {
+    uint8_t valD = *(cb + 1) > '0' ?  *(cb + 1) - '0' : 0UL;
+    if ((0U <= valD) && (valD <= 2U)) {
       uint32_t cmd[2];
       cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgController__SetVar06_MM);
       cmd[1] = (valD      << 24U);
@@ -391,10 +401,10 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
       interpreterUnknownCommand();
     }
 
-  } else if (!strncmp("MO", cb, 2) && (3 <= len && len <= 5)) {
+  } else if (!strncmp("MO", cb, 2) && ((3UL <= len) && (len <= 5UL))) {
     /* Set measure offset */
     uint32_t valUL = strtol(cb + 2, NULL, 10);
-    if (0 <= valUL && valUL <= 255UL) {
+    if ((0UL <= valUL) && (valUL <= 255UL)) {
       uint32_t cmd[2];
       cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgController__SetVar07_MO);
       cmd[1] = (valUL      << 24U);
@@ -403,10 +413,10 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
       interpreterUnknownCommand();
     }
 
-  } else if (!strncmp("MG", cb, 2) && (3 <= len && len <= 5)) {
+  } else if (!strncmp("MG", cb, 2) && ((3UL <= len) && (len <= 5UL))) {
     /* Set measure gain */
 	uint32_t valUL = strtol(cb + 2, NULL, 10);
-	if (0 <= valUL && valUL <= 255UL) {
+	if ((0UL <= valUL) && (valUL <= 255UL)) {
 	  uint32_t cmd[2];
 	  cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgController__SetVar08_MG);
 	  cmd[1] = (valUL      << 24U);
@@ -416,11 +426,11 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     }
 
 #if 0
-  } else if (!strncmp("MON ", cb, 4) && (4 < len)) {
+  } else if (!strncmp("MON ", cb, 4) && (4UL < len)) {
     const long    val         = strtol(cb + 4, NULL, 10);
     g_monMsk                  = (uint32_t) val;
 #endif
-  } else if (!strncmp("RESTART", cb, 7) && (7 == len)) {
+  } else if (!strncmp("RESTART", cb, 7) && (7UL == len)) {
     const char infoStr[] = "*** Restarting, please wait...\r\n";
     interpreterConsolePush(infoStr, strlen(infoStr));
     osDelay(500UL);
@@ -429,11 +439,11 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc04_Restart);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
-  } else if (!strncmp("?", cb, 1) && (1 == len)) {
+  } else if (!strncmp("?", cb, 1) && (1UL == len)) {
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
-    osDelay(850);
+    osDelay(850UL);
     interpreterShowCursor();
 
   } else {
@@ -448,8 +458,8 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     const uint8_t c0 = *(bufPtr++);
     const uint8_t c1 = *bufPtr;
 
-    if (c0 == 0x0aU || c0 == 0x0dU) {
-      newIdx = (c1 == 0x0aU || c1 == 0x0dU) ?  (idx + 1) : idx;
+    if ((c0 == 0x0aU) || (c0 == 0x0dU)) {
+      newIdx = ((c1 == 0x0aU) || (c1 == 0x0dU)) ?  (idx + 1) : idx;
 
       /* Point to first character of next line */
       ++newIdx;
@@ -476,7 +486,7 @@ void interpreterGetterTask(void const * argument)
   /* Handle serial console on input streams USB and UART */
   for (;;) {
     uint8_t inBuf[64]  = { 0U };
-    const uint8_t inBufLenM1 = sizeof(inBuf) - 1;
+    const uint32_t inBufLenM1 = sizeof(inBuf) - 1;
     uint32_t inBufLen;
 
     /* Transfer USB input*/
@@ -517,37 +527,39 @@ static void interpreterInit(void)
   interpreterShowCursor();
 }
 
-static void interpreterMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
+static void interpreterMsgProcess(const uint32_t* msgAry, uint32_t msgLen)
 {
-  uint32_t                msgIdx  = 0UL;
-  const uint32_t          hdr     = msgAry[msgIdx++];
-  const InterpreterCmds_t cmd     = (InterpreterCmds_t) (0xffUL & hdr);
+  if (msgLen >= 1UL) {
+    uint32_t                msgIdx  = 0UL;
+    const uint32_t          hdr     = msgAry[msgIdx++];
+    const InterpreterCmds_t cmd     = (InterpreterCmds_t) (0xffUL & hdr);
 
-  switch (cmd) {
-  case MsgInterpreter__InitDo:
-    {
-      /* Start at defined point of time */
-      const uint32_t delayMs = msgAry[msgIdx++];
-      if (delayMs) {
-        uint32_t  previousWakeTime = s_interpreterStartTime;
-        osDelayUntil(&previousWakeTime, delayMs);
+    switch (cmd) {
+    case MsgInterpreter__InitDo:
+      if (msgLen == 2UL) {
+        /* Start at defined point of time */
+        const uint32_t delayMs = msgAry[msgIdx++];
+        if (delayMs) {
+          uint32_t  previousWakeTime = s_interpreterStartTime;
+          osDelayUntil(&previousWakeTime, delayMs);
+        }
+
+        /* Activation flag */
+        s_interpreter_enable = 1U;
+
+        /* Init module */
+        interpreterInit();
+
+        /* Return Init confirmation */
+        uint32_t cmdBack[1];
+        cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgInterpreter__InitDone);
+        controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
       }
+      break;
 
-      /* Activation flag */
-      s_interpreter_enable = 1U;
-
-      /* Init module */
-      interpreterInit();
-
-      /* Return Init confirmation */
-      uint32_t cmdBack[1];
-      cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgInterpreter__InitDone);
-      controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
-    }
-    break;
-
-  default: { }
-  }  // switch (cmd)
+    default: { }
+    }  // switch (cmd)
+  }
 }
 
 
@@ -583,6 +595,6 @@ void interpreterTaskLoop(void)
    * (in case of callbacks the loop catches its wakeup semaphore
    * before ctrlQout is released results to request on an empty queue) */
   if (msgLen) {
-    interpreterMsgProcess(msgLen, msgAry);
+    interpreterMsgProcess(msgAry, msgLen);
   }
 }
