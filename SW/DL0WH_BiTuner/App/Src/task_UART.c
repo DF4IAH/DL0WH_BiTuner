@@ -308,7 +308,6 @@ void uartTxPutterTask(void const * argument)
   }
   xEventGroupSetBits(uartEventGroupHandle, UART_EG__TX_BUF_EMPTY);
 
-
   /* TaskLoop */
   for (;;) {
     uint8_t len = 0U;
@@ -461,7 +460,7 @@ void uartRxGetterTask(void const * argument)
       const uint32_t    l_uartRxDmaBufIdx = g_uartRxDmaBufIdx;
       volatile uint8_t* bufPtr            = g_uartRxDmaBuf + g_uartRxDmaBufLast;
 
-      for (int32_t idx = g_uartRxDmaBufLast + 1U; idx <= l_uartRxDmaBufIdx; ++idx, ++bufPtr) {
+      for (int32_t idx = g_uartRxDmaBufLast + 1L; idx <= l_uartRxDmaBufIdx; ++idx, ++bufPtr) {
         xQueueSendToBack(uartRxQueueHandle, (uint8_t*)bufPtr, maxWaitMs);
       }
       xQueueSendToBack(uartRxQueueHandle, nulBuf, maxWaitMs);
@@ -561,7 +560,7 @@ void uartRxTaskLoop(void)
   /* Wait for door bell and hand-over controller out queue */
   {
     osSemaphoreWait(c2uartRx_BSemHandle, osWaitForever);
-    msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Network_UartRx, 1UL);                // Special case of callbacks need to limit blocking time
+    msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Network_UartRx, 1UL);                // Special case of callbacks needed to limit blocking time
   }
 
   /* Decode and execute the commands when a message exists
