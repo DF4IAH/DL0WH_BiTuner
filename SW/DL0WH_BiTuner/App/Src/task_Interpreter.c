@@ -483,7 +483,7 @@ void interpreterGetterTask(void const * argument)
 
     /* Transfer UART input*/
     if (!inBufLen) {
-      inBufLen = uartRxPullFromQueue(inBuf, 1UL);
+      inBufLen = uartRxPullFromQueue(inBuf, sizeof(inBuf), 1UL);
     }
 
     if (inBufLen) {

@@ -221,7 +221,7 @@ static void usbUsbToHostInit(void)
 {
 #if 0
   /* Activate USB communication */
-  HFTcore_USB_DEVICE_Init();
+  App_USB_DEVICE_Init();
 #endif
 
   osThreadDef(usbUsbToHostTask, usbStartUsbToHostTask, osPriorityHigh, 0, 128);
@@ -375,7 +375,7 @@ static void usbUsbFromHostInit(void)
 {
 #if 0
   /* Activate USB communication */
-  HFTcore_USB_DEVICE_Init();
+  App_USB_DEVICE_Init();
 #endif
 
   osThreadDef(usbUsbFromHostTask, usbStartUsbFromHostTask, osPriorityHigh, 0, 128);

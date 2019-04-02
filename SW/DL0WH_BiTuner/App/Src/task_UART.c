@@ -164,9 +164,15 @@ static void uartHalInit(void)
 
 /* Messaging */
 
-uint32_t uartRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs)
+uint32_t uartRxPullFromQueue(uint8_t* msgAry, uint32_t maxLen, uint32_t waitMs)
 {
+  const uint32_t maxLenM1 = maxLen - 1;
   uint32_t len = 0UL;
+
+  /* Sanity checks */
+  if (!msgAry || !maxLen) {
+    return 0UL;
+  }
 
   /* Get semaphore to queue out */
   osSemaphoreWait(uart_BSemHandle, waitMs);
@@ -179,7 +185,10 @@ uint32_t uartRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs)
     } else {
       break;
     }
-  } while (1);
+  } while (len < maxLenM1);
+
+  /* strend */
+  msgAry[len] = 0U;
 
   /* Return semaphore */
   osSemaphoreRelease(uart_BSemHandle);
@@ -192,15 +201,34 @@ uint32_t uartRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs)
 
 static void uartTxPush(const uint8_t* buf, uint32_t len)
 {
-  while (len--) {
-    /* Block on TX queue */
-    osMessagePut(uartTxQueueHandle, *(buf++), 0UL);
+  /* Sanity checks */
+  if (!buf || !len) {
+    return;
   }
+
+  while (len--) {
+    const uint8_t c = *(buf++);
+
+    /* Early termination */
+    if (!c) {
+      break;
+    }
+
+    /* Block on TX queue */
+    osMessagePut(uartTxQueueHandle, c, 0UL);
+  }
+
+  /* strend */
   osMessagePut(uartTxQueueHandle, 0, 0UL);
 }
 
 static void uartTxPushWait(const uint8_t* buf, uint32_t len)
 {
+  /* Sanity checks */
+  if (!buf || !len) {
+    return;
+  }
+
   /* Buffer is going to be filled */
   EventBits_t eb = xEventGroupWaitBits(uartEventGroupHandle,
       UART_EG__TX_BUF_EMPTY,
@@ -273,8 +301,7 @@ void uartTxPutterTask(void const * argument)
 {
   const uint32_t  maxWaitMs   = 25UL;
   uint8_t         buf[256];
-
-  const uint32_t  lastBuf     = sizeof(buf) - 1;
+  const uint32_t  bufLenM1    = sizeof(buf) - 1;
 
   /* Clear queue */
   while (osMessageGet(uartTxQueueHandle, 1UL).status == osEventMessage) {
@@ -287,7 +314,7 @@ void uartTxPutterTask(void const * argument)
     uint8_t len = 0U;
 
     uint8_t* bufPtr = buf;
-    for (uint32_t idx = 0UL; idx < lastBuf; idx++) {
+    for (uint32_t idx = 0UL; idx < bufLenM1; idx++) {
       osEvent ev = osMessageGet(uartTxQueueHandle, maxWaitMs);
       if (ev.status == osEventMessage) {
         if (ev.value.v) {
@@ -318,41 +345,43 @@ static void uartTxInit(void)
   uartHalInit();
 
   /* Start putter thread */
-  osThreadDef(uartTxPutterTask, uartTxPutterTask, osPriorityHigh, 0, 128);
+  osThreadDef(uartTxPutterTask, uartTxPutterTask, osPriorityHigh, 0, 256);
   s_uartTxPutterTaskHandle = osThreadCreate(osThread(uartTxPutterTask), NULL);
 }
 
-static void uartTxMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
+static void uartTxMsgProcess(const uint32_t* msgAry, uint32_t msgLen)
 {
-  uint32_t            msgIdx  = 0UL;
-  const uint32_t      hdr     = msgAry[msgIdx++];
-  const UartTxCmds_t  cmd     = (UartTxCmds_t) (0xffUL & hdr);
+  if (msgLen >= 1UL) {
+    uint32_t            msgIdx  = 0UL;
+    const uint32_t      hdr     = msgAry[msgIdx++];
+    const UartTxCmds_t  cmd     = (UartTxCmds_t) (0xffUL & hdr);
 
-  switch (cmd) {
-  case MsgUartTx__InitDo:
-    {
-      /* Start at defined point of time */
-      const uint32_t delayMs = msgAry[msgIdx++];
-      if (delayMs) {
-        uint32_t  previousWakeTime = s_uartTxStartTime;
-        osDelayUntil(&previousWakeTime, delayMs);
+    switch (cmd) {
+    case MsgUartTx__InitDo:
+      if (msgLen == 2UL) {
+        /* Start at defined point of time */
+        const uint32_t delayMs = msgAry[msgIdx++];
+        if (delayMs) {
+          uint32_t  previousWakeTime = s_uartTxStartTime;
+          osDelayUntil(&previousWakeTime, delayMs);
+        }
+
+        /* Init module */
+        uartTxInit();
+
+        /* Activation flag */
+        s_uartTx_enable = 1U;
+
+        /* Return Init confirmation */
+        uint32_t cmdBack[1];
+        cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_UartTx, 0U, MsgUartTx__InitDone);
+        controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
       }
+      break;
 
-      /* Init module */
-      uartTxInit();
-
-      /* Activation flag */
-      s_uartTx_enable = 1U;
-
-      /* Return Init confirmation */
-      uint32_t cmdBack[1];
-      cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_UartTx, 0U, MsgUartTx__InitDone);
-      controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
-    }
-    break;
-
-  default: { }
-  }  // switch (cmd)
+    default: { }
+    }  // switch (cmd)
+  }
 }
 
 void uartTxTaskInit(void)
@@ -378,14 +407,14 @@ void uartTxTaskLoop(void)
   /* Wait for door bell and hand-over controller out queue */
   {
     osSemaphoreWait(c2uartTx_BSemHandle, osWaitForever);
-    msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Network_UartTx, 1UL);                  // Special case of callbacks need to limit blocking time
+    msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Network_UartTx, 1UL);                // Special case of callbacks need to limit blocking time
   }
 
   /* Decode and execute the commands when a message exists
    * (in case of callbacks the loop catches its wakeup semaphore
    * before ctrlQout is released results to request on an empty queue) */
   if (msgLen) {
-    uartTxMsgProcess(msgLen, msgAry);
+    uartTxMsgProcess(msgAry, msgLen);
   }
 }
 
@@ -397,7 +426,7 @@ static void uartRxStartDma(void)
   const uint16_t dmaBufSize = sizeof(g_uartRxDmaBuf);
 
   /* Clear DMA buffer */
-  memset((char*) g_uartRxDmaBuf, 0, sizeof(g_uartRxDmaBuf));
+  memset((char*) g_uartRxDmaBuf, 0, dmaBufSize);
 
   /* Reset working indexes */
   g_uartRxDmaBufLast = g_uartRxDmaBufIdx = 0UL;
@@ -417,13 +446,14 @@ static void uartRxStartDma(void)
 
 void uartRxGetterTask(void const * argument)
 {
+  const uint16_t dmaBufSize = sizeof(g_uartRxDmaBuf);
   const uint8_t nulBuf[1]   = { 0U };
   const uint32_t maxWaitMs  = 25UL;
 
   /* TaskLoop */
   for (;;) {
     /* Find last written byte */
-    g_uartRxDmaBufIdx = g_uartRxDmaBufLast + strnlen((char*)g_uartRxDmaBuf + g_uartRxDmaBufLast, sizeof(g_uartRxDmaBuf) - g_uartRxDmaBufLast);
+    g_uartRxDmaBufIdx = g_uartRxDmaBufLast + strnlen((char*)g_uartRxDmaBuf + g_uartRxDmaBufLast, dmaBufSize - g_uartRxDmaBufLast);
 
     /* Send new character in RX buffer to the queue */
     if (g_uartRxDmaBufIdx > g_uartRxDmaBufLast) {
@@ -473,37 +503,39 @@ static void uartRxInit(void)
   }
 }
 
-static void uartRxMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
+static void uartRxMsgProcess(const uint32_t* msgAry, uint32_t msgLen)
 {
-  uint32_t            msgIdx  = 0UL;
-  const uint32_t      hdr     = msgAry[msgIdx++];
-  const UartRxCmds_t  cmd     = (UartRxCmds_t) (0xffUL & hdr);
+  if (msgLen >= 1UL) {
+    uint32_t            msgIdx  = 0UL;
+    const uint32_t      hdr     = msgAry[msgIdx++];
+    const UartRxCmds_t  cmd     = (UartRxCmds_t) (0xffUL & hdr);
 
-  switch (cmd) {
-  case MsgUartRx__InitDo:
-    {
-      /* Start at defined point of time */
-      const uint32_t delayMs = msgAry[msgIdx++];
-      if (delayMs) {
-        uint32_t  previousWakeTime = s_uartRxStartTime;
-        osDelayUntil(&previousWakeTime, delayMs);
+    switch (cmd) {
+    case MsgUartRx__InitDo:
+      if (msgLen == 2UL) {
+        /* Start at defined point of time */
+        const uint32_t delayMs = msgAry[msgIdx++];
+        if (delayMs) {
+          uint32_t  previousWakeTime = s_uartRxStartTime;
+          osDelayUntil(&previousWakeTime, delayMs);
+        }
+
+        /* Init module */
+        uartRxInit();
+
+        /* Activation flag */
+        s_uartRx_enable = 1U;
+
+        /* Return Init confirmation */
+        uint32_t cmdBack[1];
+        cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_UartRx, 0U, MsgUartRx__InitDone);
+        controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
       }
+      break;
 
-      /* Init module */
-      uartRxInit();
-
-      /* Activation flag */
-      s_uartRx_enable = 1U;
-
-      /* Return Init confirmation */
-      uint32_t cmdBack[1];
-      cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_UartRx, 0U, MsgUartRx__InitDone);
-      controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
-    }
-    break;
-
-  default: { }
-  }  // switch (cmd)
+    default: { }
+    }  // switch (cmd)
+  }
 }
 
 void uartRxTaskInit(void)
@@ -536,6 +568,6 @@ void uartRxTaskLoop(void)
    * (in case of callbacks the loop catches its wakeup semaphore
    * before ctrlQout is released results to request on an empty queue) */
   if (msgLen) {
-    uartRxMsgProcess(msgLen, msgAry);
+    uartRxMsgProcess(msgAry, msgLen);
   }
 }
