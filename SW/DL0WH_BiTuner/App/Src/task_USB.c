@@ -264,7 +264,7 @@ static void usbUsbToHostMsgProcess(const uint32_t* msgAry, uint32_t msgLen)
         /* Return Init confirmation */
         uint32_t cmdBack[1];
         cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_USBtoHost, 0U, MsgUsb__InitDone);
-        controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
+        controllerMsgPushToInQueue(cmdBack, sizeof(cmdBack) / sizeof(int32_t), 10UL);
       }
       break;
 
@@ -429,7 +429,7 @@ static void usbUsbFromHostMsgProcess(const uint32_t* msgAry, uint32_t msgLen)
         /* Return Init confirmation */
         uint32_t cmdBack[1];
         cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_USBfromHost, 0U, MsgUsb__InitDone);
-        controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
+        controllerMsgPushToInQueue(cmdBack, sizeof(cmdBack) / sizeof(int32_t), 10UL);
       }
       break;
 

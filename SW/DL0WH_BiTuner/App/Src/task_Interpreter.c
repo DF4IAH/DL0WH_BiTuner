@@ -318,9 +318,9 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
       cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 2U, MsgController__SetVar02_C);
       cmd[1] = (valCsw      << 24U) |
                (valLenable  << 16U) ;
-      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+      controllerMsgPushToInQueue(cmd, sizeof(cmd) / sizeof(int32_t), 10UL);
       cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-      controllerMsgPushToInQueue(1UL, cmd, 10UL);
+      controllerMsgPushToInQueue(cmd, 1UL, 10UL);
     }
 
   } else if (!strncmp("L", cb, 1) && (3UL == len)) {
@@ -333,9 +333,9 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
       cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 2U, MsgController__SetVar01_L);
       cmd[1] = (valLsw      << 24U) |
                (valLenable  << 16U) ;
-      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+      controllerMsgPushToInQueue(cmd, sizeof(cmd) / sizeof(int32_t), 10UL);
       cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-      controllerMsgPushToInQueue(1UL, cmd, 10UL);
+      controllerMsgPushToInQueue(cmd, 1UL, 10UL);
     } else {
       interpreterUnknownCommand();
     }
@@ -344,19 +344,19 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     /* Set configuration to Gamma (CV) */
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__SetVar03_CL);
-    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+    controllerMsgPushToInQueue(cmd, sizeof(cmd) / sizeof(int32_t), 10UL);
 
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-    controllerMsgPushToInQueue(1UL, cmd, 10UL);
+    controllerMsgPushToInQueue(cmd, 1UL, 10UL);
 
   } else if ((!strncmp("LC", cb, 2) || !strncmp("H1", cb, 2) || !strncmp("V0", cb, 2) || !strncmp("CH", cb, 2)) && (2UL == len)) {
     /* Set configuration to reverted Gamma (CH) */
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__SetVar04_LC);
-    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+    controllerMsgPushToInQueue(cmd, sizeof(cmd) / sizeof(int32_t), 10UL);
 
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-    controllerMsgPushToInQueue(1UL, cmd, 10UL);
+    controllerMsgPushToInQueue(cmd, 1UL, 10UL);
 
   } else if (!strncmp("H", cb, 1) && (7UL == len)) {
     /* Set relays */
@@ -368,10 +368,10 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     uint32_t cmd[2];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 4U, MsgController__SetVar05_K);
     cmd[1] = relays;
-    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+    controllerMsgPushToInQueue(cmd, sizeof(cmd) / sizeof(int32_t), 10UL);
 
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-    controllerMsgPushToInQueue(1UL, cmd, 10UL);
+    controllerMsgPushToInQueue(cmd, 1UL, 10UL);
 
   } else if (!strncmp("K", cb, 1) && (4UL == len)) {
     /* Set relays */
@@ -384,10 +384,10 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     uint32_t cmd[2];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 4U, MsgController__SetVar05_K);
     cmd[1] = relays;
-    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+    controllerMsgPushToInQueue(cmd, sizeof(cmd) / sizeof(int32_t), 10UL);
 
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-    controllerMsgPushToInQueue(1UL, cmd, 10UL);
+    controllerMsgPushToInQueue(cmd, 1UL, 10UL);
 
   } else if (!strncmp("MM", cb, 2) && (3UL == len)) {
     /* Set measure MUX switch  */
@@ -396,7 +396,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
       uint32_t cmd[2];
       cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgController__SetVar06_MM);
       cmd[1] = (valD      << 24U);
-      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+      controllerMsgPushToInQueue(cmd, sizeof(cmd) / sizeof(int32_t), 10UL);
     } else {
       interpreterUnknownCommand();
     }
@@ -408,7 +408,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
       uint32_t cmd[2];
       cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgController__SetVar07_MO);
       cmd[1] = (valUL      << 24U);
-      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+      controllerMsgPushToInQueue(cmd, sizeof(cmd) / sizeof(int32_t), 10UL);
     } else {
       interpreterUnknownCommand();
     }
@@ -420,7 +420,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 	  uint32_t cmd[2];
 	  cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgController__SetVar08_MG);
 	  cmd[1] = (valUL      << 24U);
-      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+      controllerMsgPushToInQueue(cmd, sizeof(cmd) / sizeof(int32_t), 10UL);
     } else {
       interpreterUnknownCommand();
     }
@@ -437,12 +437,12 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc04_Restart);
-    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+    controllerMsgPushToInQueue(cmd, sizeof(cmd) / sizeof(int32_t), 10UL);
 
   } else if (!strncmp("?", cb, 1) && (1UL == len)) {
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
-    controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+    controllerMsgPushToInQueue(cmd, sizeof(cmd) / sizeof(int32_t), 10UL);
     osDelay(850UL);
     interpreterShowCursor();
 
@@ -553,7 +553,7 @@ static void interpreterMsgProcess(const uint32_t* msgAry, uint32_t msgLen)
         /* Return Init confirmation */
         uint32_t cmdBack[1];
         cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgInterpreter__InitDone);
-        controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
+        controllerMsgPushToInQueue(cmdBack, sizeof(cmdBack) / sizeof(int32_t), 10UL);
       }
       break;
 

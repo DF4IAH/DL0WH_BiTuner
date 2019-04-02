@@ -374,7 +374,7 @@ static void uartTxMsgProcess(const uint32_t* msgAry, uint32_t msgLen)
         /* Return Init confirmation */
         uint32_t cmdBack[1];
         cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_UartTx, 0U, MsgUartTx__InitDone);
-        controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
+        controllerMsgPushToInQueue(cmdBack, sizeof(cmdBack) / sizeof(int32_t), 10UL);
       }
       break;
 
@@ -528,7 +528,7 @@ static void uartRxMsgProcess(const uint32_t* msgAry, uint32_t msgLen)
         /* Return Init confirmation */
         uint32_t cmdBack[1];
         cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_UartRx, 0U, MsgUartRx__InitDone);
-        controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
+        controllerMsgPushToInQueue(cmdBack, sizeof(cmdBack) / sizeof(int32_t), 10UL);
       }
       break;
 

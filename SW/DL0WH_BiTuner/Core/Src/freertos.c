@@ -542,7 +542,7 @@ static void defaultTimerCallback(void const * argument)
   /* Write cyclic timer message to this destination */
   uint8_t msgLen    = 0U;
   msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Rtos_Default, 0U, MsgDefault__CallFunc01_CyclicTimerEvent);
-  controllerMsgPushToInQueue(msgLen, msgAry, 1UL);
+  controllerMsgPushToInQueue(msgAry, msgLen, 1UL);
 }
 
 
@@ -583,7 +583,7 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
       /* Return Init confirmation */
       uint32_t cmdBack[1];
       cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Rtos_Default, 0U, MsgDefault__InitDone);
-      controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, osWaitForever);
+      controllerMsgPushToInQueue(cmdBack, sizeof(cmdBack) / sizeof(int32_t), osWaitForever);
     }
     break;
 
@@ -750,7 +750,7 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of controllerTask */
-  osThreadDef(controllerTask, StartControllerTask, osPriorityHigh, 0, 256);
+  osThreadDef(controllerTask, StartControllerTask, osPriorityHigh, 0, 512);  //256
   controllerTaskHandle = osThreadCreate(osThread(controllerTask), NULL);
 
   /* definition and creation of usbToHostTask */
@@ -762,7 +762,7 @@ void MX_FREERTOS_Init(void) {
   usbFromHostTaskHandle = osThreadCreate(osThread(usbFromHostTask), NULL);
 
   /* definition and creation of interpreterTask */
-  osThreadDef(interpreterTask, StartInterpreterTask, osPriorityNormal, 0, 512);
+  osThreadDef(interpreterTask, StartInterpreterTask, osPriorityNormal, 0, 1024);  //512
   interpreterTaskHandle = osThreadCreate(osThread(interpreterTask), NULL);
 
   /* definition and creation of uartTxTask */
