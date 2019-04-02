@@ -13,12 +13,12 @@
 
 #include "stm32l4xx_hal.h"
 #include "FreeRTOS.h"
+#include "cmsis_os.h"
 #include "task.h"
 #include "queue.h"
-#include "cmsis_os.h"
 #include "usart.h"
-#include "task_Controller.h"
 
+#include "task_Controller.h"
 #include "task_CAT.h"
 
 
@@ -36,7 +36,7 @@ extern EventGroupHandle_t   catEventGroupHandle;
 
 volatile uint8_t            g_catTxDmaBuf[256]                      = { 0U };
 
-volatile uint8_t            g_catRxDmaBuf[256]                      = { 0U };
+volatile uint8_t            g_catRxDmaBuf[16]                       = { 0U };
 uint32_t                    g_catRxDmaBufLast                       = 0UL;
 uint32_t                    g_catRxDmaBufIdx                        = 0UL;
 
@@ -61,9 +61,14 @@ static osThreadId           s_catRxGetterTaskHandle                 = 0;
   */
 void HAL_CAT_TxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
   /* Set flags: DMA complete */
-  xEventGroupSetBits(  catEventGroupHandle, CAT_EG__DMA_TX_END);
-  xEventGroupClearBits(catEventGroupHandle, CAT_EG__DMA_TX_RUN);
+  xEventGroupSetBitsFromISR(  catEventGroupHandle, CAT_EG__DMA_TX_END, &xHigherPriorityTaskWoken);
+  xEventGroupClearBitsFromISR(catEventGroupHandle, CAT_EG__DMA_TX_RUN);
+
+  /* Set flag: buffer empty */
+  xEventGroupSetBitsFromISR(  catEventGroupHandle, CAT_EG__TX_BUF_EMPTY, &xHigherPriorityTaskWoken);
 }
 
 /**
@@ -75,9 +80,11 @@ void HAL_CAT_TxCpltCallback(UART_HandleTypeDef *UartHandle)
   */
 void HAL_CAT_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
   /* Set flags: DMA complete */
-  xEventGroupClearBits(catEventGroupHandle, CAT_EG__DMA_RX_RUN);
-  xEventGroupSetBits(  catEventGroupHandle, CAT_EG__DMA_RX_END);
+  xEventGroupClearBitsFromISR(catEventGroupHandle, CAT_EG__DMA_RX_RUN);
+  xEventGroupSetBitsFromISR(  catEventGroupHandle, CAT_EG__DMA_RX_END, &xHigherPriorityTaskWoken);
 }
 
 /**
@@ -89,7 +96,11 @@ void HAL_CAT_RxCpltCallback(UART_HandleTypeDef *UartHandle)
   */
 void HAL_CAT_ErrorCallback(UART_HandleTypeDef *UartHandle)
 {
+  return;
+
+#if 0
   Error_Handler();
+#endif
 }
 
 
@@ -137,9 +148,15 @@ static void catUartHalInit(void)
 
 /* Messaging */
 
-uint32_t catRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs)
+uint32_t catRxPullFromQueue(uint8_t* msgAry, uint32_t maxLen, uint32_t waitMs)
 {
+  const uint32_t maxLenM1 = maxLen - 1;
   uint32_t len = 0UL;
+
+  /* Sanity checks */
+  if (!msgAry || !maxLen) {
+    return 0UL;
+  }
 
   /* Get semaphore to queue out */
   osSemaphoreWait(cat_BSemHandle, waitMs);
@@ -149,17 +166,15 @@ uint32_t catRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs)
     if (ev.status == osEventMessage) {
       msgAry[len++] = ev.value.v;
 
-    } else if (len) {
-      if (!msgAry[len - 1]) {
-        /* Strip off last NULL character */
-        --len;
-      }
-      break;
-
     } else {
       break;
     }
-  } while (1);
+  } while (len < maxLenM1);
+
+  while ((!msgAry[len - 1]) && (len > 1UL)) {
+    /* Strip off last NULL character(s) */
+    --len;
+  }
 
   /* Return semaphore */
   osSemaphoreRelease(cat_BSemHandle);
@@ -172,6 +187,11 @@ uint32_t catRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs)
 
 static void catTxStartDma(const uint8_t* cmdBuf, uint8_t cmdLen)
 {
+  /* Sanity checks */
+  if (!cmdBuf || !cmdLen) {
+    return;
+  }
+
   /* When TX is running wait for the end of the previous transfer */
   if (CAT_EG__DMA_TX_RUN & xEventGroupGetBits(catEventGroupHandle)) {
     /* Block until end of transmission - at max. 1 sec */
@@ -199,28 +219,35 @@ void catTxPutterTask(void const * argument)
 {
   const uint8_t   maxWaitMs   = 25U;
   uint8_t         buf[256];
+  const uint32_t  bufLenM1    = sizeof(buf) - 1;
 
-  const uint32_t  lastBuf     = sizeof(buf) - 1;
+#if 0
+  /* Clear queue */
+  while (osMessageGet(catTxQueueHandle, 1UL).status == osEventMessage) {
+  }
+  xEventGroupSetBits(catEventGroupHandle, CAT_EG__TX_BUF_EMPTY);
+#endif
 
   /* TaskLoop */
   for (;;) {
     uint8_t len = 0U;
 
     uint8_t* bufPtr = buf;
-    for (uint32_t idx = 0UL; idx < lastBuf; idx++, bufPtr++) {
+    for (uint32_t idx = 0UL; idx < bufLenM1; idx++) {
       osEvent ev = osMessageGet(catTxQueueHandle, maxWaitMs);
       if (ev.status == osEventMessage) {
-        *bufPtr = (uint8_t) ev.value.v;
+        if (ev.value.v) {
+          *(bufPtr++) = (uint8_t) ev.value.v;
+        }
 
       } else {
-        *(++bufPtr) = 0U;
-        len = idx;
+        len = bufPtr - buf;
         break;
       }
     }
-    buf[lastBuf] = 0U;
+    buf[len] = 0U;
 
-    /* Interrupt disabled section to inhibit DMA access */
+    /* Start DMA TX engine */
     if (len) {
       catTxStartDma(buf, len);
 
@@ -237,41 +264,43 @@ static void catTxInit(void)
   catUartHalInit();
 
   /* Start putter thread */
-  osThreadDef(catTxPutterTask, catTxPutterTask, osPriorityHigh, 0, 128);
+  osThreadDef(catTxPutterTask, catTxPutterTask, osPriorityHigh, 0, 256);
   s_catTxPutterTaskHandle = osThreadCreate(osThread(catTxPutterTask), NULL);
 }
 
-static void catTxMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
+static void catTxMsgProcess(const uint32_t* msgAry, uint32_t msgLen)
 {
-  uint32_t        msgIdx  = 0UL;
-  const uint32_t  hdr     = msgAry[msgIdx++];
-  const CatCmds_t cmd     = (CatCmds_t) (0xffUL & hdr);
+  if (msgLen >= 1UL) {
+    uint32_t            msgIdx  = 0UL;
+    const uint32_t      hdr     = msgAry[msgIdx++];
+    const CatTxCmds_t   cmd     = (CatTxCmds_t) (0xffUL & hdr);
 
-  switch (cmd) {
-  case MsgCatTx__InitDo:
-    {
-      /* Start at defined point of time */
-      const uint32_t delayMs = msgAry[msgIdx++];
-      if (delayMs) {
-        uint32_t  previousWakeTime = s_catTxStartTime;
-        osDelayUntil(&previousWakeTime, delayMs);
+    switch (cmd) {
+    case MsgCatTx__InitDo:
+      if (msgLen == 2UL) {
+        /* Start at defined point of time */
+        const uint32_t delayMs = msgAry[msgIdx++];
+        if (delayMs) {
+          uint32_t  previousWakeTime = s_catTxStartTime;
+          osDelayUntil(&previousWakeTime, delayMs);
+        }
+
+        /* Init module */
+        catTxInit();
+
+        /* Activation flag */
+        s_catTx_enable = 1U;
+
+        /* Return Init confirmation */
+        uint32_t cmdBack[1];
+        cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_CatTx, 0U, MsgCatTx__InitDone);
+        controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
       }
+      break;
 
-      /* Init module */
-      catTxInit();
-
-      /* Activation flag */
-      s_catTx_enable = 1U;
-
-      /* Return Init confirmation */
-      uint32_t cmdBack[1];
-      cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_CatTx, 0U, MsgCatTx__InitDone);
-      controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
-    }
-    break;
-
-  default: { }
-  }  // switch (cmd)
+    default: { }
+    }  // switch (cmd)
+  }
 }
 
 void catTxTaskInit(void)
@@ -297,28 +326,33 @@ void catTxTaskLoop(void)
   /* Wait for door bell and hand-over controller out queue */
   {
     osSemaphoreWait(c2catTx_BSemHandle, osWaitForever);
-    msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Network_CatTx, 1UL);                  // Special case of callbacks need to limit blocking time
+    msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Network_CatTx, 1UL);                 // Special case of callbacks need to limit blocking time
   }
 
   /* Decode and execute the commands when a message exists
    * (in case of callbacks the loop catches its wakeup semaphore
    * before ctrlQout is released results to request on an empty queue) */
   if (msgLen) {
-    catTxMsgProcess(msgLen, msgAry);
+    catTxMsgProcess(msgAry, msgLen);
   }
 }
 
 
-/* UART RX */
+/* CAT-UART RX */
 
 static void catRxStartDma(void)
 {
   const uint16_t dmaBufSize = sizeof(g_catRxDmaBuf);
 
-  /* Reset working indexes */
-  g_catRxDmaBufLast = g_catRxDmaBufIdx = 0U;
+  /* Clear DMA buffer */
+  memset((char*) g_catRxDmaBuf, 0, dmaBufSize);
 
-  /* Start RX DMA */
+  /* Reset working indexes */
+  g_catRxDmaBufLast = g_catRxDmaBufIdx = 0UL;
+
+  xEventGroupClearBits(catEventGroupHandle, CAT_EG__DMA_RX_END);
+
+  /* Start RX DMA after aborting the previous one */
   if (HAL_UART_Receive_DMA(&huart4, (uint8_t*)g_catRxDmaBuf, dmaBufSize) != HAL_OK)
   {
     //Error_Handler();
@@ -331,95 +365,96 @@ static void catRxStartDma(void)
 
 void catRxGetterTask(void const * argument)
 {
+  const uint16_t dmaBufSize = sizeof(g_catRxDmaBuf);
   const uint8_t nulBuf[1]   = { 0U };
-  const uint8_t maxWaitMs   = 25U;
+  const uint8_t maxWaitMs   = 25UL;
 
   /* TaskLoop */
   for (;;) {
     /* Find last written byte */
-    g_catRxDmaBufIdx = g_catRxDmaBufLast + strnlen((char*)g_catRxDmaBuf + g_catRxDmaBufLast, sizeof(g_catRxDmaBuf) - g_catRxDmaBufLast);
+    g_catRxDmaBufIdx = g_catRxDmaBufLast + strnlen((char*)g_catRxDmaBuf + g_catRxDmaBufLast, dmaBufSize - g_catRxDmaBufLast);
 
     /* Send new character in RX buffer to the queue */
     if (g_catRxDmaBufIdx > g_catRxDmaBufLast) {
-      /* Disabled IRQ section */
-      taskDISABLE_INTERRUPTS();
+      /* From UART data into the buffer */
+      const uint32_t    l_catRxDmaBufIdx  = g_catRxDmaBufIdx;
+      volatile uint8_t* bufPtr            = g_catRxDmaBuf + g_catRxDmaBufLast;
 
-      /* USB OUT EP from host put data into the buffer */
-      volatile uint8_t* bufPtr = g_catRxDmaBuf + g_catRxDmaBufLast;
-
-      for (int32_t idx = g_catRxDmaBufLast + 1U; idx <= g_catRxDmaBufIdx; ++idx, ++bufPtr) {
+      for (int32_t idx = g_catRxDmaBufLast + 1L; idx <= l_catRxDmaBufIdx; ++idx, ++bufPtr) {
         xQueueSendToBack(catRxQueueHandle, (uint8_t*)bufPtr, maxWaitMs);
       }
       xQueueSendToBack(catRxQueueHandle, nulBuf, maxWaitMs);
 
-      taskENABLE_INTERRUPTS();
+      g_catRxDmaBufLast = l_catRxDmaBufIdx;
+
+      /* Restart DMA if transfer has finished */
+      if (CAT_EG__DMA_RX_END & xEventGroupGetBits(catEventGroupHandle)) {
+        /* Reactivate CAT-UART RX DMA transfer */
+        catRxStartDma();
+      }
 
     } else {
+      /* Restart DMA if transfer has finished */
+      if (CAT_EG__DMA_RX_END & xEventGroupGetBits(catEventGroupHandle)) {
+        /* Reactivate UART RX DMA transfer */
+        catRxStartDma();
+      }
+
       /* Delay for the next attempt */
       osDelay(25UL);
-    }
-
-    /* Restart DMA if transfer has finished */
-    if (CAT_EG__DMA_RX_END & xEventGroupGetBits(catEventGroupHandle)) {
-      /* Clear DMA buffer */
-      memset((char*) g_catRxDmaBuf, 0, sizeof(g_catRxDmaBuf));
-      g_catRxDmaBufLast = g_catRxDmaBufIdx = 0UL;
-
-      xEventGroupClearBits(catEventGroupHandle, CAT_EG__DMA_RX_END);
-
-      /* Reactivate UART RX DMA transfer */
-      catRxStartDma();
     }
   }
 }
 
 static void catRxInit(void)
 {
-  /* Init UART HAL */
+  /* Init CAT-UART HAL */
   catUartHalInit();
 
   /* Start getter thread */
   osThreadDef(catRxGetterTask, catRxGetterTask, osPriorityHigh, 0, 128);
   s_catRxGetterTaskHandle = osThreadCreate(osThread(catRxGetterTask), NULL);
 
-  /* Activate UART RX DMA transfer */
+  /* Activate CAT-UART RX DMA transfer */
   if (HAL_UART_Receive_DMA(&huart4, (uint8_t*) g_catRxDmaBuf, sizeof(g_catRxDmaBuf) - 1) != HAL_OK)
   {
     Error_Handler();
   }
 }
 
-static void catRxMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
+static void catRxMsgProcess(const uint32_t* msgAry, uint32_t msgLen)
 {
-  uint32_t        msgIdx  = 0UL;
-  const uint32_t  hdr     = msgAry[msgIdx++];
-  const CatCmds_t cmd     = (CatCmds_t) (0xffUL & hdr);
+  if (msgLen >= 1UL) {
+    uint32_t            msgIdx  = 0UL;
+    const uint32_t      hdr     = msgAry[msgIdx++];
+    const CatRxCmds_t   cmd     = (CatRxCmds_t) (0xffUL & hdr);
 
-  switch (cmd) {
-  case MsgCatRx__InitDo:
-    {
-      /* Start at defined point of time */
-      const uint32_t delayMs = msgAry[msgIdx++];
-      if (delayMs) {
-        uint32_t  previousWakeTime = s_catRxStartTime;
-        osDelayUntil(&previousWakeTime, delayMs);
+    switch (cmd) {
+    case MsgCatRx__InitDo:
+      if (msgLen == 2UL) {
+        /* Start at defined point of time */
+        const uint32_t delayMs = msgAry[msgIdx++];
+        if (delayMs) {
+          uint32_t  previousWakeTime = s_catRxStartTime;
+          osDelayUntil(&previousWakeTime, delayMs);
+        }
+
+        /* Init module */
+        catRxInit();
+
+        /* Activation flag */
+        s_catRx_enable = 1U;
+
+        /* Return Init confirmation */
+        uint32_t cmdBack[1];
+        cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_CatRx, 0U, MsgCatRx__InitDone);
+        controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
       }
+      break;
 
-      /* Init module */
-      catRxInit();
-
-      /* Activation flag */
-      s_catRx_enable = 1U;
-
-      /* Return Init confirmation */
-      uint32_t cmdBack[1];
-      cmdBack[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Network_CatRx, 0U, MsgCatRx__InitDone);
-      controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, 10UL);
-    }
-    break;
-
-  default: { }
-  }  // switch (cmd)
+    default: { }
+    }  // switch (cmd)
+  }
 }
 
 void catRxTaskInit(void)
@@ -445,13 +480,13 @@ void catRxTaskLoop(void)
   /* Wait for door bell and hand-over controller out queue */
   {
     osSemaphoreWait(c2catRx_BSemHandle, osWaitForever);
-    msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Network_CatRx, 1UL);                 // Special case of callbacks need to limit blocking time
+    msgLen = controllerMsgPullFromOutQueue(msgAry, Destinations__Network_CatRx, 1UL);                 // Special case of callbacks needed to limit blocking time
   }
 
   /* Decode and execute the commands when a message exists
    * (in case of callbacks the loop catches its wakeup semaphore
    * before ctrlQout is released results to request on an empty queue) */
   if (msgLen) {
-    catRxMsgProcess(msgLen, msgAry);
+    catRxMsgProcess(msgAry, msgLen);
   }
 }

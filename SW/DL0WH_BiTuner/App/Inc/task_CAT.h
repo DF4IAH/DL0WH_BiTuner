@@ -8,26 +8,36 @@
 #ifndef INC_TASK_CAT_H_
 #define INC_TASK_CAT_H_
 
-typedef enum CatCmds_ENUM {
+typedef enum CatTxCmds_ENUM {
 
   MsgCatTx__InitDo                                            = 0x01U,
   MsgCatTx__InitDone,
-  MsgCatRx__InitDo,
+
+//MsgCatTx__SetVar01_x                                        = 0x41U,
+
+//MsgCatTx__GetVar01_y                                        = 0x81U,
+
+//MsgCatTx__CallFunc01_z                                      = 0xc1U,
+
+} CatTxCmds_t;
+
+typedef enum CatRxCmds_ENUM {
+
+  MsgCatRx__InitDo                                            = 0x01U,
   MsgCatRx__InitDone,
 
-//MsgCat__SetVar01_x                                          = 0x41U,
+//MsgCatRx__SetVar01_x                                        = 0x41U,
 
-//MsgCat__GetVar01_y                                          = 0x81U,
+//MsgCatRx__GetVar01_y                                        = 0x81U,
 
-//MsgCat__CallFunc01_z                                        = 0xc1U,
+//MsgCatRx__CallFunc01_z                                      = 0xc1U,
 
-} CatCmds_t;
+} CatRxCmds_t;
 
 
 typedef enum CAT_EG_ENUM {
 
-  CAT_EG__BUF_EMPTY                                           = (1UL <<  0U),
-  CAT_EG__ECHO_ON                                             = (1UL <<  1U),
+  CAT_EG__TX_BUF_EMPTY                                        = (1UL <<  0U),
 
   CAT_EG__DMA_TX_RUN                                          = (1UL <<  8U),
   CAT_EG__DMA_TX_END                                          = (1UL <<  9U),
@@ -43,7 +53,7 @@ void HAL_CAT_TxCpltCallback(UART_HandleTypeDef *UartHandle);
 void HAL_CAT_RxCpltCallback(UART_HandleTypeDef *UartHandle);
 void HAL_CAT_ErrorCallback(UART_HandleTypeDef *UartHandle);
 
-uint32_t catRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs);
+uint32_t catRxPullFromQueue(uint8_t* msgAry, uint32_t maxLen, uint32_t waitMs);
 
 void catTxPutterTask(void const * argument);
 void catTxTaskInit(void);
