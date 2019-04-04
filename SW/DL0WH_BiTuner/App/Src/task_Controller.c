@@ -48,7 +48,13 @@ extern osSemaphoreId        c2catRx_BSemHandle;
 
 extern EventGroupHandle_t   globalEventGroupHandle;
 
+extern float                g_adc_refint_val;
+extern float                g_adc_vref_mv;
+extern float                g_adc_bat_mv;
+extern float                g_adc_temp_deg;
 extern float                g_adc_fwd_mv;
+extern float                g_adc_rev_mv;
+extern float                g_adc_vdiode_mv;
 extern float                g_adc_swr;
 
 
@@ -1546,10 +1552,10 @@ static void controllerCyclicTimerEvent(void)
     uint8_t   msgLen = 0U;
 
     /* Get ADC channels */
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc01_MCU_ADC1);
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc02_MCU_ADC3_VDIODE);
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc03_MCU_ADC2_FWD);
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc04_MCU_ADC2_REV);
+    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc04_MCU_ADC1);
+    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc07_MCU_ADC3_VDIODE);
+    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc05_MCU_ADC2_FWD);
+    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc06_MCU_ADC2_REV);
 
     /* Push to queue */
     controllerMsgPushToOutQueue(msgLen, msgAry, 10UL);

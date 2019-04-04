@@ -443,12 +443,6 @@ static void rtosDefaultUpdateRelays(void)
 }
 
 
-static void defaultTimerCallback(void const * argument)
-{
-
-}
-
-
 static void rtosDefaultInit(void)
 {
   /* Power switch settings */
@@ -463,6 +457,28 @@ static void rtosDefaultInit(void)
   s_rtos_Matcher = 0x00ff00UL;
   rtosDefaultUpdateRelays();
 }
+
+
+static void rtosDefaultCyclicTimerEvent()
+{
+  /* Called every 30ms to start the ADCs */
+  EventBits_t eb = xEventGroupGetBits(adcEventGroupHandle);
+  if (!(eb & EG_ADCx__ANY_RUNNING)) {
+    xEventGroupSetBits(adcEventGroupHandle, EG_ADCx__ANY_RUNNING);
+
+  }
+}
+
+static void rtosDefaultCyclicStart(uint32_t period_ms)
+{
+  osTimerStart(defaultTimerHandle, period_ms);
+}
+
+static void rtosDefaultCyclicStop(void)
+{
+  osTimerStop(defaultTimerHandle);
+}
+
 
 static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
 {
@@ -489,6 +505,23 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
       controllerMsgPushToInQueue(sizeof(cmdBack) / sizeof(int32_t), cmdBack, osWaitForever);
     }
     break;
+
+
+  case MsgDefault__CallFunc01_CyclicTimerEvent:
+    rtosDefaultCyclicTimerEvent();
+    break;
+
+  case MsgDefault__CallFunc02_CyclicTimerStart:
+  {
+    const uint32_t period = msgAry[1];
+    rtosDefaultCyclicStart(period);
+  }
+    break;
+
+  case MsgDefault__CallFunc03_CyclicTimerStop:
+    rtosDefaultCyclicStop();
+    break;
+
 
   /* MCU GPIO/Alternate-Functions set-up */
   case MsgDefault__SetVar01_IOs:
@@ -524,7 +557,7 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
     break;
 
   /* ADC1 single conversion */
-  case MsgDefault__CallFunc01_MCU_ADC1:
+  case MsgDefault__CallFunc04_MCU_ADC1:
     {
       /* Do ADC1 conversion and logging of ADC1 data */
       if (s_rtos_DefaultTask_adc_enable) {
@@ -577,7 +610,7 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
     break;
 
     /* ADC2 FWD single conversion */
-    case MsgDefault__CallFunc03_MCU_ADC2_FWD:
+    case MsgDefault__CallFunc05_MCU_ADC2_FWD:
       {
         /* Do ADC2 FWD conversion and logging of ADC2 data */
         if (s_rtos_DefaultTask_adc_enable) {
@@ -631,7 +664,7 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
       break;
 
     /* ADC2 REV single conversion */
-    case MsgDefault__CallFunc04_MCU_ADC2_REV:
+    case MsgDefault__CallFunc06_MCU_ADC2_REV:
       {
         /* Do ADC2 REV conversion and logging of ADC2 data */
         if (s_rtos_DefaultTask_adc_enable) {
@@ -696,7 +729,7 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
       break;
 
       /* ADC3 Vdiode single conversion */
-      case MsgDefault__CallFunc02_MCU_ADC3_VDIODE:
+      case MsgDefault__CallFunc07_MCU_ADC3_VDIODE:
         {
           /* Do ADC3 Vdiode conversion and logging of ADC3 data */
           if (s_rtos_DefaultTask_adc_enable) {
@@ -1169,11 +1202,20 @@ void StartCatRxTask(void const * argument)
   /* USER CODE END StartCatRxTask */
 }
 
+
 /* rtosDefaultTimerCallback function */
 void rtosDefaultTimerCallback(void const * argument)
 {
   /* USER CODE BEGIN rtosDefaultTimerCallback */
-  defaultTimerCallback(argument);
+
+  /* Context of RTOS Daemon Task */
+  uint32_t msgAry[1];
+
+  /* Write cyclic timer message to this destination */
+  uint8_t msgLen    = 0U;
+  msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Rtos_Default, 0U, MsgDefault__CallFunc01_CyclicTimerEvent);
+  controllerMsgPushToInQueue(msgLen, msgAry, 1UL);
+
   /* USER CODE END rtosDefaultTimerCallback */
 }
 

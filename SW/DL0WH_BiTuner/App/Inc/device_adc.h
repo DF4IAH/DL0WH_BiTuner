@@ -45,6 +45,8 @@ typedef enum EG_ADC_ENUM {
 
   EG_ADC3__CONV_AVAIL_VDIODE        = 0x0100U,
 
+  EG_ADCx__ANY_RUNNING              = 0x1000U,
+
 } EG_ADC_ENUM_t;
 
 
