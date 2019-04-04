@@ -1632,6 +1632,10 @@ static void controllerMsgProcessor(void)
 
             msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__SetVar02_Clocking);
             msgAry[msgLen++]  = (s_controller_McuClocking << 24U);
+
+            /* Start the RtosDefault cyclic timer each 30 ms */
+            msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__CallFunc02_CyclicTimerStart);
+            msgAry[msgLen++]  = 30UL;
             controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
           }
           break;
