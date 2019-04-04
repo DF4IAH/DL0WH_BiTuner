@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.5" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.1" altunitdist="mm" altunit="mm"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -694,6 +694,57 @@
 <dimension x1="-4.45" y1="-2.6" x2="4.45" y2="-2.6" x3="0" y3="-5.5" textsize="0.5" textratio="10" layer="47" width="0.05"/>
 <dimension x1="3.4" y1="-4.375" x2="3.4" y2="4.375" x3="7.88" y3="0" textsize="0.5" textratio="10" layer="47" width="0.05"/>
 </package>
+<package name="LSOP16">
+<description>&lt;h3&gt;Small Outline Package&lt;/h3&gt;
+&lt;h4&gt;16L SOP - 150mil&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;body: 150mil (3.80mm) width&lt;/li&gt;
+&lt;li&gt;pitch: 50mil (1.27mm)&lt;/li&gt;
+&lt;li&gt;package type: L&lt;/li&gt;
+&lt;/ul&gt;</description>
+<wire x1="-5" y1="-2" x2="5" y2="-2" width="0.2032" layer="21"/>
+<wire x1="5" y1="-2" x2="5" y2="2" width="0.2032" layer="21"/>
+<wire x1="5" y1="2" x2="-5" y2="2" width="0.2032" layer="21"/>
+<wire x1="-5" y1="2" x2="-5" y2="-2" width="0.2032" layer="21"/>
+<circle x="-5.979" y="-2.241" radius="0.4422" width="0" layer="21"/>
+<smd name="1" x="-4.445" y="-2.54" dx="0.65" dy="1.8" layer="1" rot="R180"/>
+<text x="-5.461" y="-1.3599" size="0.6096" layer="25" font="vector" rot="R90">&gt;NAME</text>
+<text x="-4.5199" y="-0.68" size="0.6096" layer="27" font="vector">&gt;VALUE</text>
+<rectangle x1="-0.935" y1="-3" x2="-0.335" y2="-2" layer="51"/>
+<smd name="2" x="-3.175" y="-2.54" dx="0.65" dy="1.8" layer="1" rot="R180"/>
+<smd name="3" x="-1.905" y="-2.54" dx="0.65" dy="1.8" layer="1" rot="R180"/>
+<smd name="4" x="-0.635" y="-2.54" dx="0.65" dy="1.8" layer="1" rot="R180"/>
+<smd name="5" x="0.635" y="-2.54" dx="0.65" dy="1.8" layer="1" rot="R180"/>
+<smd name="6" x="1.905" y="-2.54" dx="0.65" dy="1.8" layer="1" rot="R180"/>
+<smd name="7" x="3.175" y="-2.54" dx="0.65" dy="1.8" layer="1" rot="R180"/>
+<smd name="8" x="4.445" y="-2.54" dx="0.65" dy="1.8" layer="1"/>
+<smd name="9" x="4.445" y="2.54" dx="0.65" dy="1.8" layer="1"/>
+<dimension x1="4" y1="-3" x2="4" y2="3" x3="7.62" y3="0" textsize="0.5" layer="47" width="0.05"/>
+<rectangle x1="-2.205" y1="-3" x2="-1.605" y2="-2" layer="51"/>
+<rectangle x1="-3.475" y1="-3" x2="-2.875" y2="-2" layer="51"/>
+<rectangle x1="-4.745" y1="-3" x2="-4.145" y2="-2" layer="51"/>
+<rectangle x1="0.335" y1="-3" x2="0.935" y2="-2" layer="51"/>
+<rectangle x1="1.605" y1="-3" x2="2.205" y2="-2" layer="51"/>
+<rectangle x1="2.875" y1="-3" x2="3.475" y2="-2" layer="51"/>
+<rectangle x1="4.145" y1="-3" x2="4.745" y2="-2" layer="51"/>
+<rectangle x1="4.145" y1="2" x2="4.745" y2="3" layer="51"/>
+<rectangle x1="2.875" y1="2" x2="3.475" y2="3" layer="51"/>
+<rectangle x1="1.605" y1="2" x2="2.205" y2="3" layer="51"/>
+<rectangle x1="0.335" y1="2" x2="0.935" y2="3" layer="51"/>
+<rectangle x1="-0.935" y1="2" x2="-0.335" y2="3" layer="51"/>
+<rectangle x1="-2.205" y1="2" x2="-1.605" y2="3" layer="51"/>
+<rectangle x1="-3.475" y1="2" x2="-2.875" y2="3" layer="51"/>
+<rectangle x1="-4.745" y1="2" x2="-4.145" y2="3" layer="51"/>
+<smd name="10" x="3.175" y="2.54" dx="0.65" dy="1.8" layer="1"/>
+<smd name="11" x="1.905" y="2.54" dx="0.65" dy="1.8" layer="1"/>
+<smd name="12" x="0.635" y="2.54" dx="0.65" dy="1.8" layer="1"/>
+<smd name="13" x="-0.635" y="2.54" dx="0.65" dy="1.8" layer="1"/>
+<smd name="14" x="-1.905" y="2.54" dx="0.65" dy="1.8" layer="1"/>
+<smd name="15" x="-3.175" y="2.54" dx="0.65" dy="1.8" layer="1"/>
+<smd name="16" x="-4.445" y="2.54" dx="0.65" dy="1.8" layer="1"/>
+<dimension x1="4" y1="-2" x2="4" y2="2" x3="6.35" y3="0" textsize="0.5" layer="47" width="0.05"/>
+<dimension x1="5" y1="2" x2="-5" y2="2" x3="0" y3="-4.445" textsize="0.5" layer="47" width="0.05"/>
+</package>
 </packages>
 <symbols>
 <symbol name="MCP3208">
@@ -790,6 +841,35 @@ ADC, 2ch, 125ksps</description>
 <pin name="MC/SCL" x="27.94" y="-17.78" length="middle" direction="in" rot="R180"/>
 <pin name="MS/AD" x="27.94" y="-20.32" length="middle" direction="in" rot="R180"/>
 <pin name="MD0" x="0" y="-27.94" length="middle" direction="in" rot="R90"/>
+</symbol>
+<symbol name="NAU7802_24BIT_I2C">
+<description>&lt;h3&gt;NAU7802&lt;/h3&gt;
+&lt;h4&gt;24-Bit Dual-Channel ADC for Bridge Sensors&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;I²C Interface&lt;/li&gt;
+&lt;/ul&gt;</description>
+<wire x1="-12.7" y1="12.7" x2="12.7" y2="12.7" width="0.254" layer="94"/>
+<wire x1="12.7" y1="12.7" x2="12.7" y2="-15.24" width="0.254" layer="94"/>
+<wire x1="12.7" y1="-15.24" x2="-12.7" y2="-15.24" width="0.254" layer="94"/>
+<wire x1="-12.7" y1="-15.24" x2="-12.7" y2="12.7" width="0.254" layer="94"/>
+<text x="-5.08" y="13.97" size="1.778" layer="95">&gt;NAME</text>
+<text x="-10.16" y="-17.78" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="VIN1P" x="-15.24" y="10.16" length="short" direction="pas"/>
+<pin name="VIN2P" x="-15.24" y="7.62" length="short" direction="pas"/>
+<pin name="AVSS" x="15.24" y="-12.7" length="short" direction="pas" rot="R180"/>
+<pin name="SDIO" x="15.24" y="2.54" length="short" rot="R180"/>
+<pin name="SCLK" x="15.24" y="0" length="short" direction="in" rot="R180"/>
+<pin name="DVDD" x="15.24" y="10.16" length="short" direction="pwr" rot="R180"/>
+<pin name="VIN1N" x="-15.24" y="5.08" length="short" direction="pas"/>
+<pin name="VIN2N" x="-15.24" y="2.54" length="short" direction="pas"/>
+<pin name="REFP" x="-15.24" y="-10.16" length="short" direction="pas"/>
+<pin name="AVDD" x="15.24" y="7.62" length="short" direction="pwr" rot="R180"/>
+<pin name="DVSS" x="15.24" y="-10.16" length="short" direction="pas" rot="R180"/>
+<pin name="DRDY" x="15.24" y="-2.54" length="short" direction="out" rot="R180"/>
+<pin name="REFN" x="-15.24" y="-12.7" length="short" direction="pas"/>
+<pin name="XOUT" x="-15.24" y="-5.08" length="short" direction="out"/>
+<pin name="XIN" x="-15.24" y="-7.62" length="short" direction="pas"/>
+<pin name="VBG" x="-15.24" y="0" length="short" direction="pas"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -901,6 +981,41 @@ ADC, 2ch, 125ksps</description>
 <connect gate="G$1" pin="VREF" pad="6"/>
 <connect gate="G$1" pin="XI" pad="10"/>
 <connect gate="G$1" pin="XO" pad="9"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="NAU7802_24BIT_I2C" prefix="U">
+<description>&lt;h3&gt;NAU7802&lt;/h3&gt;
+&lt;h4&gt;24-Bit Dual-Channel ADC for Bridge Sensors&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;I²C Interface&lt;/li&gt;
+&lt;/ul&gt;</description>
+<gates>
+<gate name="G$1" symbol="NAU7802_24BIT_I2C" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="LSOP16">
+<connects>
+<connect gate="G$1" pin="AVDD" pad="16"/>
+<connect gate="G$1" pin="AVSS" pad="8"/>
+<connect gate="G$1" pin="DRDY" pad="12"/>
+<connect gate="G$1" pin="DVDD" pad="15"/>
+<connect gate="G$1" pin="DVSS" pad="9"/>
+<connect gate="G$1" pin="REFN" pad="7"/>
+<connect gate="G$1" pin="REFP" pad="1"/>
+<connect gate="G$1" pin="SCLK" pad="13"/>
+<connect gate="G$1" pin="SDIO" pad="14"/>
+<connect gate="G$1" pin="VBG" pad="6"/>
+<connect gate="G$1" pin="VIN1N" pad="2"/>
+<connect gate="G$1" pin="VIN1P" pad="3"/>
+<connect gate="G$1" pin="VIN2N" pad="4"/>
+<connect gate="G$1" pin="VIN2P" pad="5"/>
+<connect gate="G$1" pin="XIN" pad="10"/>
+<connect gate="G$1" pin="XOUT" pad="11"/>
 </connects>
 <technologies>
 <technology name=""/>

@@ -22,12 +22,6 @@ UsedLibrary="lbr/df4iah_holes.lbr"
 UsedLibrary="/Users/espero/nfs_ds_nfs/git/DL0WH_BiTuner/CAD/Eagle/lbr/df4iah_connector.lbr"
 
 [Win_1]
-Type="Control Panel"
-Loc="0 22 599 421"
-State=2
-Number=0
-
-[Win_2]
 Type="Library Editor"
 Loc="2 22 2559 1373"
 State=2
@@ -74,7 +68,7 @@ PadsSameType=0
 Layer=21
 Package="2X05_1MM27_SHROUDED_CORTEX_JTAG_SWD"
 
-[Win_3]
+[Win_2]
 Type="Schematic Editor"
 Loc="3 23 2559 1372"
 State=2
@@ -122,7 +116,7 @@ Layer=91
 Views=" 1: -5.8452 -4.10556 271.689 182.968 2: -5.8452 -4.10556 271.689 182.968 3: -5.8452 -4.10556 271.689 182.968 4: -5.8452 -4.10556 271.689 182.968"
 Sheet="12"
 
-[Win_4]
+[Win_3]
 Type="Board Editor"
 Loc="0 24 2556 1374"
 State=2
@@ -167,6 +161,12 @@ ArcDirection=0
 AddLevel=2
 PadsSameType=0
 Layer=1
+
+[Win_4]
+Type="Control Panel"
+Loc="0 -22 599 377"
+State=2
+Number=0
 
 [Desktop]
 Screen="2560 1440"

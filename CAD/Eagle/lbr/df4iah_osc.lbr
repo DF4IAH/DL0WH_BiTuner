@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.05" unitdist="inch" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.127" altunitdist="mm" altunit="mm"/>
+<grid distance="0.05" unitdist="inch" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="mm"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -48,8 +48,8 @@
 <layer number="48" name="Document" color="7" fill="1" visible="no" active="yes"/>
 <layer number="49" name="Reference" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
-<layer number="51" name="tDocu" color="7" fill="1" visible="no" active="yes"/>
-<layer number="52" name="bDocu" color="7" fill="1" visible="no" active="yes"/>
+<layer number="51" name="tDocu" color="14" fill="1" visible="yes" active="yes"/>
+<layer number="52" name="bDocu" color="6" fill="1" visible="no" active="yes"/>
 <layer number="90" name="Modules" color="5" fill="1" visible="yes" active="yes"/>
 <layer number="91" name="Nets" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="92" name="Busses" color="1" fill="1" visible="yes" active="yes"/>
@@ -407,13 +407,21 @@ Source: www.analog.com/UploadedFiles/Data_Sheets/33830397585263AD9859_0.pdf</des
 <smd name="22" x="-0.25" y="1.95" dx="0.8" dy="0.25" layer="1" roundness="50" rot="R270"/>
 <smd name="23" x="-0.75" y="1.95" dx="0.8" dy="0.25" layer="1" roundness="50" rot="R270"/>
 <smd name="24" x="-1.25" y="1.95" dx="0.8" dy="0.25" layer="1" roundness="50" rot="R270"/>
-<wire x1="-2" y1="2" x2="-2" y2="-2" width="0.3048" layer="21"/>
-<wire x1="2" y1="2" x2="2" y2="-2" width="0.3048" layer="21"/>
-<wire x1="-2" y1="-2" x2="2" y2="-2" width="0.3048" layer="21"/>
-<wire x1="-2" y1="2" x2="2" y2="2" width="0.3048" layer="21"/>
+<wire x1="-2" y1="2" x2="-2" y2="-2" width="0.2032" layer="51"/>
+<wire x1="2" y1="2" x2="2" y2="-2" width="0.2032" layer="51"/>
+<wire x1="-2" y1="-2" x2="2" y2="-2" width="0.2032" layer="51"/>
 <text x="-2" y="3" size="1.27" layer="25" ratio="10">&gt;NAME</text>
 <text x="-3" y="-4.5" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
 <circle x="-2.5" y="2.5" radius="0.125" width="0.25" layer="21"/>
+<wire x1="-2" y1="2" x2="-2" y2="1.6" width="0.2032" layer="21"/>
+<wire x1="-2" y1="-1.6" x2="-2" y2="-2" width="0.2032" layer="21"/>
+<wire x1="2" y1="2" x2="2" y2="1.6" width="0.2032" layer="21"/>
+<wire x1="2" y1="-1.6" x2="2" y2="-2" width="0.2032" layer="21"/>
+<wire x1="-2" y1="-2" x2="-1.6" y2="-2" width="0.2032" layer="21"/>
+<wire x1="1.6" y1="-2" x2="2" y2="-2" width="0.2032" layer="21"/>
+<wire x1="-2" y1="2" x2="2" y2="2" width="0.2032" layer="51"/>
+<wire x1="1.6" y1="2" x2="2" y2="2" width="0.2032" layer="21"/>
+<wire x1="-2" y1="2" x2="-1.6" y2="2" width="0.2032" layer="21"/>
 </package>
 <package name="QFN24_P0MM5_CTRPAD">
 <description>&lt;h4&gt;QFN24 - pitch 0.5 mm&lt;/h4&gt;</description>
@@ -441,14 +449,22 @@ Source: www.analog.com/UploadedFiles/Data_Sheets/33830397585263AD9859_0.pdf</des
 <smd name="22" x="-0.25" y="1.95" dx="0.8" dy="0.25" layer="1" roundness="50" rot="R270"/>
 <smd name="23" x="-0.75" y="1.95" dx="0.8" dy="0.25" layer="1" roundness="50" rot="R270"/>
 <smd name="24" x="-1.25" y="1.95" dx="0.8" dy="0.25" layer="1" roundness="50" rot="R270"/>
-<wire x1="-2" y1="2" x2="-2" y2="-2" width="0.3048" layer="21"/>
-<wire x1="2" y1="2" x2="2" y2="-2" width="0.3048" layer="21"/>
-<wire x1="-2" y1="-2" x2="2" y2="-2" width="0.3048" layer="21"/>
-<wire x1="-2" y1="2" x2="2" y2="2" width="0.3048" layer="21"/>
+<wire x1="-2" y1="2" x2="-2" y2="-2" width="0.2032" layer="51"/>
+<wire x1="2" y1="2" x2="2" y2="-2" width="0.2032" layer="51"/>
+<wire x1="-2" y1="2" x2="2" y2="2" width="0.2032" layer="51"/>
 <text x="-2" y="3" size="1.27" layer="25" ratio="10">&gt;NAME</text>
 <text x="-3" y="-4.5" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
 <circle x="-2.5" y="2.5" radius="0.125" width="0.25" layer="21"/>
 <smd name="25" x="0" y="0" dx="2.4" dy="2.4" layer="1" roundness="5"/>
+<wire x1="-2" y1="-1.6" x2="-2" y2="-2" width="0.2032" layer="21"/>
+<wire x1="-2" y1="2" x2="-2" y2="1.6" width="0.2032" layer="21"/>
+<wire x1="2" y1="2" x2="2" y2="1.6" width="0.2032" layer="21"/>
+<wire x1="2" y1="-1.6" x2="2" y2="-2" width="0.2032" layer="21"/>
+<wire x1="-2" y1="2" x2="-1.6" y2="2" width="0.2032" layer="21"/>
+<wire x1="1.6" y1="2" x2="2" y2="2" width="0.2032" layer="21"/>
+<wire x1="-2" y1="-2" x2="2" y2="-2" width="0.2032" layer="51"/>
+<wire x1="-2" y1="-2" x2="-1.6" y2="-2" width="0.2032" layer="21"/>
+<wire x1="1.6" y1="-2" x2="2" y2="-2" width="0.2032" layer="21"/>
 </package>
 </packages>
 <symbols>
