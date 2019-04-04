@@ -193,10 +193,6 @@ typedef enum RtosMsgDefaultCmds_ENUM {
   MsgDefault__CallFunc01_CyclicTimerEvent                     = 0xc1U,
   MsgDefault__CallFunc02_CyclicTimerStart,
   MsgDefault__CallFunc03_CyclicTimerStop,
-  MsgDefault__CallFunc04_MCU_ADC1,
-  MsgDefault__CallFunc05_MCU_ADC2_FWD,
-  MsgDefault__CallFunc06_MCU_ADC2_REV,
-  MsgDefault__CallFunc07_MCU_ADC3_VDIODE,
 
 } RtosMsgDefaultCmds_t;
 

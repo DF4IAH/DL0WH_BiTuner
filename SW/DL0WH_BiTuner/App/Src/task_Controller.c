@@ -128,12 +128,17 @@ static vector<float>          s_controller_xnull_C;
 static float                  s_controller_xnull_LC_ratio       = 0.0f;
 #endif
 
-static float                s_controller_adc_fwd_mv           = 0.0f;
-static float                s_controller_adc_swr              = 0.0f;
-static float                s_controller_adc_fwd_mw           = 0.0f;
+static float                  s_controller_adc_bat_mv           = 0.0f;
+static float                  s_controller_adc_temp_deg         = 0.0f;
+static float                  s_controller_adc_fwd_mv           = 0.0f;
+static float                  s_controller_adc_rev_mv           = 0.0f;
+static float                  s_controller_adc_vdiode_mv        = 0.0f;
+static float                  s_controller_adc_swr              = 0.0f;
+static float                  s_controller_adc_fwd_mw           = 0.0f;
+static float                  s_controller_adc_rev_mw           = 0.0f;
 
-static _Bool                s_controller_doCycle              = false;
-static _Bool                s_controller_doAdc                = false;
+static _Bool                  s_controller_doCycle              = false;
+static _Bool                  s_controller_doAdc                = false;
 
 static DefaultMcuClocking_t s_controller_McuClocking          = DefaultMcuClocking__4MHz_MSI;
 
@@ -611,7 +616,7 @@ static void controllerFSM_LogState(void)
 
   s_controller_30ms_cnt += 30UL;
 
-  len = sprintf(buf,
+  len = snprintf(buf, sizeof(buf) - 1,
                 "\r\nController FSM:\tcontrollerFSM_LogState: time= %5lu ms (iteration= %03lu)\r\n" \
                 "\ta)\t\t FSM_state= %u, optiLC= %c, optiStrat= %u, optiUpDn= %s, optiCVH= %s:\r\n" \
                 "\tb)\t\t opti_L= %5lu nH (%03u), opti_C= %5lu pF (%03u),\r\n" \
@@ -634,7 +639,7 @@ static void controllerFSM_LogState(void)
   mainCalcFloat2IntFrac(s_controller_opti_swr_2nd,    3, &s_controller_opti_swr_2nd_i,    &s_controller_opti_swr_2nd_f  );
   mainCalcFloat2IntFrac(s_controller_opti_swr_2nd_L,  1, &s_controller_opti_swr_2nd_L_i,  &s_controller_opti_swr_2nd_L_f);
   mainCalcFloat2IntFrac(s_controller_opti_swr_2nd_C,  1, &s_controller_opti_swr_2nd_C_i,  &s_controller_opti_swr_2nd_C_f);
-  len = sprintf(buf,
+  len = snprintf(buf, sizeof(buf) - 1,
                 "\td)\t\t swr_1st= %2ld.%03lu, L= %5ld.%01lu nH, C= %5ld.%01lu pF # swr_2nd= %2ld.%03lu, L= %5ld.%01lu nH, C= %5ld.%01lu pF,\r\n",
                 s_controller_opti_swr_1st_i,        s_controller_opti_swr_1st_f,
                 s_controller_opti_swr_1st_L_i,      s_controller_opti_swr_1st_L_f,
@@ -650,7 +655,7 @@ static void controllerFSM_LogState(void)
 
   mainCalcFloat2IntFrac(s_controller_adc_swr,   3, &swr_i,      &swr_f);
   mainCalcFloat2IntFrac(s_controller_best_swr,  3, &best_swr_i, &best_swr_f);
-  len = sprintf(buf,
+  len = snprintf(buf, sizeof(buf) - 1,
                 "\te)\t\t fwd_mv=%5lu mV, fwd_mw=%5lu mW,\r\n" \
                 "\tf)\t\t swr= %2ld.%03lu, best_swr= %2ld.%03lu @ CVH= %u: L= %5lu nH, C= %5lu pF.\r\n\r\n",
                 (uint32_t)s_controller_adc_fwd_mv, (uint32_t)s_controller_adc_fwd_mw,
@@ -664,7 +669,11 @@ static void controllerFSM_GetGlobalVars(void)
   {
     taskDISABLE_INTERRUPTS();
 
+    s_controller_adc_bat_mv     = g_adc_bat_mv;
+    s_controller_adc_temp_deg   = g_adc_temp_deg;
     s_controller_adc_fwd_mv     = g_adc_fwd_mv;
+    s_controller_adc_rev_mv     = g_adc_rev_mv;
+    s_controller_adc_vdiode_mv  = g_adc_vdiode_mv;
     s_controller_adc_swr        = g_adc_swr;
 
     if (s_controller_adc_swr < Controller_AutoSWR_SWR_Init) {
@@ -690,17 +699,92 @@ static void controllerFSM_GetGlobalVars(void)
     }
 
     taskENABLE_INTERRUPTS();
-  }
 
-  const float fwdMv = mainCalc_mV_to_mW(s_controller_adc_fwd_mv);
+    /* FWD power calculation */
+    {
+      const float fwdMv = mainCalc_mV_to_mW(s_controller_adc_fwd_mv);
+      const float revMv = mainCalc_mV_to_mW(s_controller_adc_rev_mv);
 
-  /* Disabled IRQ section */
-  {
-  taskDISABLE_INTERRUPTS();
+      /* Disabled IRQ section */
+      taskDISABLE_INTERRUPTS();
 
-  s_controller_adc_fwd_mw = fwdMv;
+      s_controller_adc_fwd_mw = fwdMv;
+      s_controller_adc_rev_mw = revMv;
 
-  taskENABLE_INTERRUPTS();
+      taskENABLE_INTERRUPTS();
+    }
+
+
+#if 1
+    /* Logging */
+    {
+      int32_t   l_adc_temp_deg_i    = 0L;
+      uint32_t  l_adc_temp_deg_f100 = 0UL;
+      char      dbgBuf[128];
+      float     s_controller_adc_revint_val;
+      float     s_controller_adc_vref_mv;
+
+      /* Disabled IRQ section */
+      taskDISABLE_INTERRUPTS();
+
+      s_controller_adc_revint_val = g_adc_refint_val;
+      s_controller_adc_vref_mv    = g_adc_vref_mv;
+
+      taskENABLE_INTERRUPTS();
+
+
+      mainCalcFloat2IntFrac(s_controller_adc_temp_deg, 2, &l_adc_temp_deg_i, &l_adc_temp_deg_f100);
+
+      const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
+          "ADC1: refint_val = %4d, Vref = %4d mV, Bat = %4d mV, Temp = %+3ld.%02luC\r\n",
+          (int16_t) (s_controller_adc_revint_val + 0.5f),
+          (int16_t) (s_controller_adc_vref_mv    + 0.5f),
+          (int16_t) (s_controller_adc_bat_mv     + 0.5f),
+          l_adc_temp_deg_i, l_adc_temp_deg_f100);
+      usbLogLen(dbgBuf, dbgLen);
+    }
+#endif
+
+#if 1
+    /* Logging */
+    {
+      char  dbgBuf[128];
+
+      const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
+          "ADC2: FWD = %5d mV\r\n",
+          (int16_t) (s_controller_adc_fwd_mv + 0.5f));
+      usbLogLen(dbgBuf, dbgLen);
+    }
+#endif
+
+#if 1
+    /* Logging */
+    {
+      char      dbgBuf[128];
+      int32_t   l_swr_i;
+      uint32_t  l_swr_f100;
+
+      mainCalcFloat2IntFrac(s_controller_adc_swr, 2, &l_swr_i, &l_swr_f100);
+
+      const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
+          "ADC2: REV = %5d mV, SWR = %+3ld.%03lu\r\n",
+          (int16_t) (s_controller_adc_rev_mv + 0.5f),
+          l_swr_i, l_swr_f100);
+      usbLogLen(dbgBuf, dbgLen);
+    }
+#endif
+
+#if 1
+    /* Logging */
+    {
+      char  dbgBuf[128];
+
+      const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
+          "ADC3: Vdiode = %4d mV\r\n",
+          (int16_t) (s_controller_adc_vdiode_mv + 0.5f));
+      usbLogLen(dbgBuf, dbgLen);
+    }
+#endif
   }
 }
 
@@ -1545,21 +1629,6 @@ static void controllerCyclicTimerEvent(void)
 
   /* FSM logic */
   controllerFSM();
-
-  /* Request ADC values for next iteration */
-  if (s_controller_doAdc) {
-    uint32_t  msgAry[4];
-    uint8_t   msgLen = 0U;
-
-    /* Get ADC channels */
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc04_MCU_ADC1);
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc07_MCU_ADC3_VDIODE);
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc05_MCU_ADC2_FWD);
-    msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 0U, MsgDefault__CallFunc06_MCU_ADC2_REV);
-
-    /* Push to queue */
-    controllerMsgPushToOutQueue(msgLen, msgAry, 10UL);
-  }
 
   /* Handle serial CAT interface packets */
   {

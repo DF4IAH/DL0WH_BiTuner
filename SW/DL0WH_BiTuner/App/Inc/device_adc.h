@@ -28,7 +28,9 @@ typedef enum ADC_ENUM {
   ADC_ADC1_BAT_MV,
   ADC_ADC1_TEMP_DEG,
 
-  ADC_ADC2_IN1_FWDREV_MV,
+  ADC_ADC2_IN1_FWD_MV,
+  ADC_ADC2_IN1_REV_MV,
+
   ADC_ADC3_IN3_VDIODE_MV,
 
 } ADC_ENUM_t;
@@ -38,19 +40,21 @@ typedef enum ADC_ENUM {
 typedef enum EG_ADC_ENUM {
 
   EG_ADC1__CONV_AVAIL_REFINT        = 0x0001U,
-  EG_ADC1__CONV_AVAIL_BAT           = 0x0002U,
-  EG_ADC1__CONV_AVAIL_TEMP          = 0x0004U,
+  EG_ADC1__CONV_AVAIL_VREF          = 0x0002U,
+  EG_ADC1__CONV_AVAIL_BAT           = 0x0004U,
+  EG_ADC1__CONV_AVAIL_TEMP          = 0x0008U,
 
-  EG_ADC2__CONV_AVAIL_FWDREV        = 0x0010U,
+  EG_ADC2__CONV_AVAIL_FWD           = 0x0010U,
+  EG_ADC2__CONV_AVAIL_REV,
 
   EG_ADC3__CONV_AVAIL_VDIODE        = 0x0100U,
 
-  EG_ADCx__ANY_RUNNING              = 0x1000U,
+  EG_ADC1__CONV_RUNNING             = 0x1000U,
+  EG_ADC2__CONV_RUNNING,
+  EG_ADC3__CONV_RUNNING,
 
 } EG_ADC_ENUM_t;
 
-
-float adcGetVal(ADC_ENUM_t channel);
 
 void adcStartConv(ADC_ENUM_t adc);
 void adcStopConv(ADC_ENUM_t adc);
