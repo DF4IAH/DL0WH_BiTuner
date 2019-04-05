@@ -1,6 +1,6 @@
 Configuration	DL0WH_BiTuner
 STM32CubeMX 	4.27.0
-Date	02/10/2019
+Date	04/04/2019
 MCU	STM32L476RGTx
 
 
@@ -90,7 +90,7 @@ SOFTWARE PROJECT
 
 Project Settings : 
 Project Name : DL0WH_BiTuner
-Project Folder : Z:\nfs_ds_nfs\git\DL0WH_BiTuner\SW\DL0WH_BiTuner
+Project Folder : C:\Users\espero\git\DL0WH_BiTuner\SW\DL0WH_BiTuner
 Toolchain / IDE : TrueSTUDIO
 Firmware Package Name and Version : STM32Cube FW_L4 V1.13.0
 

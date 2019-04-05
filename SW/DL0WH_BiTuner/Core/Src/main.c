@@ -96,6 +96,7 @@ extern uint8_t                        i2c1TxBuffer[I2C_TXBUFSIZE];
 extern uint8_t                        i2c1RxBuffer[I2C_RXBUFSIZE];
 
 
+ADC1_RUNNING_VAR_t                    g_adc1_running_var      = ADC1__NOT_RUNNING;
 float                                 g_adc_refint_val        = 0.0f;
 float                                 g_adc_vref_mv           = 0.0f;
 float                                 g_adc_bat_mv            = 0.0f;

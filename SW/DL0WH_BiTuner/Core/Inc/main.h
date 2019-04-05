@@ -108,7 +108,7 @@
 #endif
 
 
-#define BITUNER_CTRL_VERSION                                 20190404UL
+#define BITUNER_CTRL_VERSION                                 20190405UL
 
 
 typedef enum POWERSWITCH_ENUM {
@@ -120,6 +120,7 @@ typedef enum POWERSWITCH_ENUM {
 
 } POWERSWITCH_ENUM_t;
 
+
 typedef enum SYSCLK_CONFIG_ENUM {
 
   SYSCLK_CONFIG_04MHz_MSI                                     =  4000,
@@ -130,6 +131,18 @@ typedef enum SYSCLK_CONFIG_ENUM {
   SYSCLK_CONFIG_80MHz_MSI16_PLL                               = 80000,
 
 } SYSCLK_CONFIG_t;
+
+
+typedef enum ADC1_RUNNING_VAR_ENUM {
+
+  ADC1__NOT_RUNNING                                           = 0,
+  ADC1__RUNNING_VREFINT,
+  ADC1__RUNNING_VBAT,
+  ADC1__RUNNING_TEMP,
+
+} ADC1_RUNNING_VAR_t;
+
+
 
 uint32_t crcCalc(const uint32_t* ptr, uint32_t len);
 
