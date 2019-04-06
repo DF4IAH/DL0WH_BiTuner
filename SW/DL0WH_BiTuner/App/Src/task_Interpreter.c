@@ -299,9 +299,11 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     s_interpreterLineBuf[0] = 'K';
   }
 
+
   /* List of string patterns to compare */
   if (!strncmp("C", cb, 1) && (1 == len)) {
     interpreterClearScreen();
+    interpreterShowCursor();
 
 #if 0
   } else if (!strncmp("CONF ", cb, 5) && (5 < len)) {
