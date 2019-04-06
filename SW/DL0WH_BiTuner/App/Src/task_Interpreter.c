@@ -82,8 +82,8 @@ const char                  interpreterHelpMsg142[]            =     "\t\t------
 const char                  interpreterHelpMsg151[]            = "\t\tKxyz\t\tShort form for setting the C, L, CV and CH relays.\r\n";
 const char                  interpreterHelpMsg152[]            = "\t\tHx\t\t1: LC mode, 0: CL mode.\r\n";
 const char                  interpreterHelpMsg153[]            = "\t\tVx\t\t1: CL mode, 0: LC mode.\r\n";
-const char                  interpreterHelpMsg154[]            = "\t\tCV\t\t   CL mode.\r\n";
-const char                  interpreterHelpMsg155[]            = "\t\tCH\t\t   LC mode.\r\n";
+const char                  interpreterHelpMsg154[]            = "\t\tCH\t\t   LC mode.\r\n";
+const char                  interpreterHelpMsg155[]            = "\t\tCV\t\t   CL mode.\r\n";
 
 
 void interpreterConsolePush(const char* buf, int bufLen)
@@ -130,6 +130,7 @@ void interpreterPrintHelp(void)
   interpreterConsolePush(interpreterHelpMsg152, strlen(interpreterHelpMsg152));
   interpreterConsolePush(interpreterHelpMsg153, strlen(interpreterHelpMsg153));
   interpreterConsolePush(interpreterHelpMsg154, strlen(interpreterHelpMsg154));
+  interpreterConsolePush(interpreterHelpMsg155, strlen(interpreterHelpMsg155));
   interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
 }
