@@ -34,7 +34,6 @@ volatile uint8_t            i2c1RxBuffer[I2C_RXBUFSIZE];
 void i2cBusAddrScan(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle) {
   /* DEBUG I2C4 Bus */
   char dbgBuf[64];
-  int dbgLen;
 
   osSemaphoreWait(semaphoreHandle, osWaitForever);
 
@@ -48,7 +47,8 @@ void i2cBusAddrScan(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle) {
       osDelay(1UL);
     }
     if (HAL_I2C_GetError(dev) != HAL_I2C_ERROR_AF) {
-      dbgLen = sprintf(dbgBuf, "GOOD:  Addr=0x%02X  got response\r\n", addr);
+      const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
+          "GOOD:  Addr=0x%02X  got response\r\n", addr);
       interpreterConsolePush(dbgBuf, dbgLen);
     }
     osDelay(25UL);

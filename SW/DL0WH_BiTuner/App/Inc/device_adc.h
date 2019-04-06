@@ -17,7 +17,7 @@
 #define ADC_V_OFFS_FWDREV_mV          47.0f
 #define ADC_V_OFFS_VDIODE_mV          56.0f
 
-#define ADC_MUL_BAT                   5.23f
+#define ADC_MUL_BAT                   5.24f
 #define ADC_MUL_TEMP                  1.50f
 
 

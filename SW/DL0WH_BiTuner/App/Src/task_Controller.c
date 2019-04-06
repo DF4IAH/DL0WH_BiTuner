@@ -164,7 +164,7 @@ static void controllerUsbGreet(void)
 
   interpreterClearScreen();
 
-  sprintf(verBuf, controllerGreetMsg11, BITUNER_CTRL_VERSION);
+  snprintf(verBuf, sizeof(verBuf) - 1, controllerGreetMsg11, BITUNER_CTRL_VERSION);
 
   /* usbToHost block */
   {
@@ -234,7 +234,7 @@ static void controllerPrintMCU(void)
 
   uint16_t flashSize      = (uint16_t) ((*((uint32_t*) FLASHSIZE_BASE)) & 0x0000ffffUL);
 
-  int len = sprintf(buf,
+  const int len = snprintf(buf, sizeof(buf) - 1,
       "\r\n" \
       "\tMCU Info:\r\n" \
       "\t========\r\n" \
@@ -334,12 +334,15 @@ static void controllerCalcMatcherLcRatio(void)
     const int   vCnt    = s_controller_xnull_L.size();
     const float deltaL  = s_controller_xnull_L[vCnt - 1] - s_controller_xnull_L[0];
     const float deltaC  = s_controller_xnull_C[vCnt - 1] - s_controller_xnull_C[0];
+    char buf[64];
 
     s_controller_xnull_LC_ratio = (deltaC != 0.0f) ?  deltaL / deltaC : 0.0f;
 
-    printf("controllerCalcMatcherLcRatio: new xnull_LC_ratio= %f, deltaL= %f, deltaC= %f.\r\n",
+    const int bufLen = snprintf(buf, sizeof(buf) - 1,
+        "controllerCalcMatcherLcRatio: new xnull_LC_ratio= %f, deltaL= %f, deltaC= %f.\r\n",
         s_controller_xnull_LC_ratio,
         deltaL, deltaC);
+    interpreterConsolePush(buf, bufLen);
   }
 }
 #endif
@@ -584,7 +587,8 @@ static void controllerFSM_LogAutoFinished(void)
   {
     char buf[128];
 
-    const int len = sprintf(buf, "Controller FSM: ControllerFsm__findImagZeroL - SWR good enough - tuner has finished.\r\n");
+    const int len = snprintf(buf, sizeof(buf) - 1,
+        "Controller FSM: ControllerFsm__findImagZeroL - SWR good enough - tuner has finished.\r\n");
     interpreterConsolePush(buf, len);
   }
 }
@@ -678,7 +682,6 @@ static void controllerFSM_GetGlobalVars(void)
 
     if (s_controller_adc_swr < Controller_AutoSWR_SWR_Init) {
       /* Add current data to the maps */
-      //printf("controllerFSM_GetGlobalVars 1: adding swr= %.3f to the L/C maps.\r\n", s_controller_adc_swr);
       if (s_controller_adc_swr < s_controller_opti_swr_1st) {
         /* Move back */
         s_controller_opti_swr_2nd   = s_controller_opti_swr_1st;
@@ -853,7 +856,7 @@ static _Bool controllerFSM_CheckPower(void)
       uint32_t  pwr_f;
 
       mainCalcFloat2IntFrac(s_controller_adc_fwd_mw, 3, &pwr_i, &pwr_f);
-      const int len = sprintf(buf,
+      const int len = snprintf(buf, sizeof(buf) - 1,
                               "Controller FSM: power= %5ld.%03lu out of [%u .. %u] Watts - stop auto tuner.\r\n",
                               pwr_i, pwr_f,
                               (uint16_t)Controller_AutoSWR_P_mW_Min, (uint16_t)Controller_AutoSWR_P_mW_Max);
@@ -882,7 +885,7 @@ static _Bool controllerFSM_CheckSwrTime(void)
       uint32_t  swr_f;
 
       mainCalcFloat2IntFrac(s_controller_adc_swr, 3, &swr_i, &swr_f);
-      const int len = sprintf(buf,
+      const int len = snprintf(buf, sizeof(buf) - 1,
                               "Controller FSM: VSWR= %2ld.%03lu is good enough - stop auto tuner.\r\n",
                               swr_i, swr_f);
       interpreterConsolePush(buf, len);
@@ -912,7 +915,7 @@ static void controllerFSM_SwitchOverCVH(void)
     /* Logging */
     {
       char      buf[128];
-      const int len = sprintf(buf,
+      const int len = snprintf(buf, sizeof(buf) - 1,
                               "Controller FSM: switch over the constellation to %d (0: CV, 1: CH), CVH pingpong ctr= %u.\r\n",
                               !s_controller_FSM_optiCVH, s_controller_opti_CVHpongCtr);
       interpreterConsolePush(buf, len);
@@ -1020,7 +1023,7 @@ static void controllerFSM_ZeroXHalfStrategy(void)
   if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
     const float L_diff_abs = fabs(s_controller_opti_swr_1st_L - s_controller_opti_swr_2nd_L);
 
-    printf("controllerFSM_ZeroXHalfStrategy 1: abs(swr_1st_L - swr_2nd_L)=%f\r\n", L_diff_abs);
+    //printf("controllerFSM_ZeroXHalfStrategy 1: abs(swr_1st_L - swr_2nd_L)=%f\r\n", L_diff_abs);
     if (L_diff_abs <= Controller_Ls_nH[0]) {
       #if 0
       /* First zero X found */
@@ -1064,7 +1067,7 @@ static void controllerFSM_ZeroXHalfStrategy(void)
   } else {
     const float C_diff_abs = fabs(s_controller_opti_swr_1st_C - s_controller_opti_swr_2nd_C);
 
-    printf("controllerFSM_ZeroXHalfStrategy 2: abs(swr_1st_C - swr_2nd_C)=%f\r\n", C_diff_abs);
+    //printf("controllerFSM_ZeroXHalfStrategy 2: abs(swr_1st_C - swr_2nd_C)=%f\r\n", C_diff_abs);
     if (C_diff_abs <= Controller_Cp_pF[0]) {
       #if 0
       /* First zero X found */
@@ -1117,7 +1120,7 @@ static void controllerFSM_OptiHalfStrategy(void)
   if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
     const float L_diff_abs = fabs(s_controller_opti_swr_1st_L - s_controller_opti_swr_2nd_L);
 
-    printf("controllerFSM_OptiHalfStrategy 1: abs(swr_1st_L - swr_2nd_L)=%f\r\n", L_diff_abs);
+    //printf("controllerFSM_OptiHalfStrategy 1: abs(swr_1st_L - swr_2nd_L)=%f\r\n", L_diff_abs);
     if (L_diff_abs <= Controller_Ls_nH[0]) {
       #if 0
       /* Again, zero X found */
@@ -1147,7 +1150,7 @@ static void controllerFSM_OptiHalfStrategy(void)
   } else {
     const float C_diff_abs = fabs(s_controller_opti_swr_1st_C - s_controller_opti_swr_2nd_C);
 
-    printf("controllerFSM_OptiHalfStrategy 2: abs(swr_1st_C - swr_2nd_C)=%f\r\n", C_diff_abs);
+    //printf("controllerFSM_OptiHalfStrategy 2: abs(swr_1st_C - swr_2nd_C)=%f\r\n", C_diff_abs);
     if (C_diff_abs <= Controller_Cp_pF[0]) {
       #if 0
       /* Again, zero X found */
@@ -1234,7 +1237,8 @@ static void controllerFSM(void)
     {
       char buf[128];
 
-      const int len = sprintf(buf, "Controller FSM: ControllerFsm__startAuto - start auto tuner.\r\n");
+      const int len = snprintf(buf, sizeof(buf) - 1,
+          "Controller FSM: ControllerFsm__startAuto - start auto tuner.\r\n");
       interpreterConsolePush(buf, len);
     }
 
