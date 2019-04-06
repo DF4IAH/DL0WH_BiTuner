@@ -715,7 +715,7 @@ static void controllerFSM_GetGlobalVars(void)
     }
 
 
-#if 1
+#if 0
     /* Logging */
     {
       int32_t   l_adc_temp_deg_i    = 0L;
@@ -741,11 +741,11 @@ static void controllerFSM_GetGlobalVars(void)
           (int16_t) (s_controller_adc_vref_mv    + 0.5f),
           (int16_t) (s_controller_adc_bat_mv     + 0.5f),
           l_adc_temp_deg_i, l_adc_temp_deg_f100);
-      usbLogLen(dbgBuf, dbgLen);
+      interpreterConsolePush(dbgBuf, dbgLen);
     }
 #endif
 
-#if 1
+#if 0
     /* Logging */
     {
       char  dbgBuf[128];
@@ -753,11 +753,11 @@ static void controllerFSM_GetGlobalVars(void)
       const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
           "ADC2: FWD = %5d mV\r\n",
           (int16_t) (s_controller_adc_fwd_mv + 0.5f));
-      usbLogLen(dbgBuf, dbgLen);
+      interpreterConsolePush(dbgBuf, dbgLen);
     }
 #endif
 
-#if 1
+#if 0
     /* Logging */
     {
       char      dbgBuf[128];
@@ -770,11 +770,11 @@ static void controllerFSM_GetGlobalVars(void)
           "ADC2: REV = %5d mV, SWR = %+3ld.%03lu\r\n",
           (int16_t) (s_controller_adc_rev_mv + 0.5f),
           l_swr_i, l_swr_f100);
-      usbLogLen(dbgBuf, dbgLen);
+      interpreterConsolePush(dbgBuf, dbgLen);
     }
 #endif
 
-#if 1
+#if 0
     /* Logging */
     {
       char  dbgBuf[128];
@@ -782,7 +782,7 @@ static void controllerFSM_GetGlobalVars(void)
       const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
           "ADC3: Vdiode = %4d mV\r\n",
           (int16_t) (s_controller_adc_vdiode_mv + 0.5f));
-      usbLogLen(dbgBuf, dbgLen);
+      interpreterConsolePush(dbgBuf, dbgLen);
     }
 #endif
   }

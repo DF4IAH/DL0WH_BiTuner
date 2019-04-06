@@ -85,7 +85,8 @@ uint32_t i2cSequenceWriteLong(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHan
 
   if (i2cErr == HAL_I2C_ERROR_AF) {
     /* Chip not responding */
-    //usbLog("i2cSequenceWriteLong: ERROR chip does not respond\r\n");
+    const char errMsg[] = "i2cSequenceWriteLong: ERROR chip does not respond\r\n";
+    interpreterConsolePush(errMsg, strlen(errMsg));
     return HAL_I2C_ERROR_AF;
   }
 
@@ -114,7 +115,8 @@ uint32_t i2cSequenceRead(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle, 
     osSemaphoreRelease(semaphoreHandle);
 
     /* Chip not responding */
-    usbLog("i2cSequenceRead: ERROR chip does not respond\r\n");
+    const char errMsg[] = "i2cSequenceRead: ERROR chip does not respond\r\n";
+    interpreterConsolePush(errMsg, strlen(errMsg));
     return HAL_I2C_ERROR_AF;
   }
 
