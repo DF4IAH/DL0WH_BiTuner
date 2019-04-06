@@ -54,3 +54,7 @@ dkms.conf
 
 Debug/
 Release/
+
+# Eagle shadow files
+*.b#?
+*.s#?
