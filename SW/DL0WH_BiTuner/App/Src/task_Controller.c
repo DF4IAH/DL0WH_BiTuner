@@ -156,7 +156,7 @@ const char controllerGreetMsg11[] =
     "\t=====================\r\n"
     "\r\n"
     "\t\tFirmware date\t%08lu\r\n"
-    "\t\tDeveloppped by\tDF4IAH\r\n";
+    "\t\tDeveloped by\tDF4IAH\r\n";
 
 static void controllerUsbGreet(void)
 {
