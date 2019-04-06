@@ -1209,6 +1209,8 @@ static void controllerFSM(void)
     /* Pull global vars */
     controllerFSM_GetGlobalVars();
 
+    break;  // TODO: remove me!
+
     /* Check for security */
     if (controllerFSM_CheckPower())
       break;
@@ -1840,8 +1842,8 @@ static void controllerInit(void)
 
     s_mod_start.rtos_Default                                  = 1U;
     s_mod_start.Interpreter                                   = 1U;
-    s_mod_start.network_USBtoHost                             = 1U;
-    s_mod_start.network_USBfromHost                           = 1U;
+    s_mod_start.network_USBtoHost                             = 0U;
+    s_mod_start.network_USBfromHost                           = 0U;
     s_mod_start.network_UartTx                                = 1U;
     s_mod_start.network_UartRx                                = 1U;
     s_mod_start.network_CatTx                                 = 0U;

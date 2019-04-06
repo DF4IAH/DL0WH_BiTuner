@@ -72,6 +72,29 @@ static float adcCalcMean(float* fa, uint32_t cnt, float newVal)
   return sum / cnt;
 }
 
+static void adcMuxSelect(uint8_t mux)
+{
+  switch (mux) {
+  case 1:
+    HAL_GPIO_WritePin(GPIO_SWR_SEL_REV_GPIO_Port, GPIO_SWR_SEL_REV_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIO_SWR_SEL_FWD_GPIO_Port, GPIO_SWR_SEL_FWD_Pin, GPIO_PIN_SET);
+    break;
+
+  default:
+  case 0:
+  case 2:
+    HAL_GPIO_WritePin(GPIO_SWR_SEL_FWD_GPIO_Port, GPIO_SWR_SEL_FWD_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIO_SWR_SEL_REV_GPIO_Port, GPIO_SWR_SEL_REV_Pin, GPIO_PIN_SET);
+    break;
+  }
+
+#if 0
+  /* Delay some time = 2661 systicks = 33.3 us */
+  for (uint8_t i = 255; i; --i)
+    ;
+#endif
+}
+
 void adcStartConv(ADC_ENUM_t adc)
 {
   switch (adc) {
@@ -150,6 +173,7 @@ void adcStartConv(ADC_ENUM_t adc)
 
 
   case ADC_ADC2_IN1_FWD_MV:
+    adcMuxSelect(1);
     HAL_ADC_Stop_DMA(&hadc2);
     xEventGroupClearBits(adcEventGroupHandle, EG_ADC2__CONV_RUNNING | EG_ADC2__CONV_AVAIL_FWD | EG_ADC2__CONV_AVAIL_REV);
 
@@ -159,6 +183,7 @@ void adcStartConv(ADC_ENUM_t adc)
     break;
 
   case ADC_ADC2_IN1_REV_MV:
+    adcMuxSelect(2);
     HAL_ADC_Stop_DMA(&hadc2);
     xEventGroupClearBits(adcEventGroupHandle, EG_ADC2__CONV_RUNNING | EG_ADC2__CONV_AVAIL_REV);
 
@@ -270,10 +295,18 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     /* Variant */
     if (g_adc_select_rev) {
       g_adc_rev_mv = l_adc_fwdrev_mv;
+
+      /* Turn MUX to the FWD side to give enough time */
+      adcMuxSelect(1);
+
       xEventGroupSetBitsFromISR(adcEventGroupHandle, EG_ADC2__CONV_AVAIL_REV, &pxHigherPriorityTaskWoken);
 
     } else {
       g_adc_fwd_mv = l_adc_fwdrev_mv;
+
+      /* Turn MUX to the REV side to give enough time */
+      adcMuxSelect(2);
+
       xEventGroupSetBitsFromISR(adcEventGroupHandle, EG_ADC2__CONV_AVAIL_FWD, &pxHigherPriorityTaskWoken);
     }
 

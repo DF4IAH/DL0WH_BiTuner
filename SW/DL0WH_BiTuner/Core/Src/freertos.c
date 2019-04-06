@@ -688,11 +688,11 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 256);
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityHigh, 0, 256);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of controllerTask */
-  osThreadDef(controllerTask, StartControllerTask, osPriorityHigh, 0, 256);
+  osThreadDef(controllerTask, StartControllerTask, osPriorityAboveNormal, 0, 256);
   controllerTaskHandle = osThreadCreate(osThread(controllerTask), NULL);
 
   /* definition and creation of usbToHostTask */
