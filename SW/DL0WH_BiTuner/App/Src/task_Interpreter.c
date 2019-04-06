@@ -72,18 +72,21 @@ const char                  interpreterHelpMsg124[]            = "\t\tLC\t\tSet 
 const char                  interpreterHelpMsg125[]            = "\t\tHxxyyzz\t\tHexadecimal entry of the 18 bits of x:[CH,CV], y:[L8-1], z:[C8-1] relays.\r\n";
 const char                  interpreterHelpMsg126[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";
 
-const char                  interpreterHelpMsg131[]            = "\t\tC\t\tClear screen.\r\n";
-const char                  interpreterHelpMsg132[]            = "\t\tHELP\t\tPrint this list of commands.\r\n";
-const char                  interpreterHelpMsg133[]            = "\t\tRESTART\t\tRestart this device.\r\n";
+const char                  interpreterHelpMsg131[]            = "\t\tMG\t\tMeasuremnet OpAmp gain:   0..256\r\n";
+const char                  interpreterHelpMsg132[]            = "\t\tMO\t\tMeasuremnet OpAmp offset: 0..256\r\n";
 
-const char                  interpreterHelpMsg141[]            =     "\t\t> additional DJ0ABR compatible commands\r\n";
-const char                  interpreterHelpMsg142[]            =     "\t\t--------------------------------------------------------------------------\r\n";
+const char                  interpreterHelpMsg141[]            = "\t\tC\t\tClear screen.\r\n";
+const char                  interpreterHelpMsg142[]            = "\t\tHELP\t\tPrint this list of commands.\r\n";
+const char                  interpreterHelpMsg143[]            = "\t\tRESTART\t\tRestart this device.\r\n";
 
-const char                  interpreterHelpMsg151[]            = "\t\tKxyz\t\tShort form for setting the C, L, CV and CH relays.\r\n";
-const char                  interpreterHelpMsg152[]            = "\t\tHx\t\t1: LC mode, 0: CL mode.\r\n";
-const char                  interpreterHelpMsg153[]            = "\t\tVx\t\t1: CL mode, 0: LC mode.\r\n";
-const char                  interpreterHelpMsg154[]            = "\t\tCH\t\t   LC mode.\r\n";
-const char                  interpreterHelpMsg155[]            = "\t\tCV\t\t   CL mode.\r\n";
+const char                  interpreterHelpMsg151[]            =     "\t\t> additional DJ0ABR compatible commands\r\n";
+const char                  interpreterHelpMsg152[]            =     "\t\t--------------------------------------------------------------------------\r\n";
+
+const char                  interpreterHelpMsg161[]            = "\t\tKxyz\t\tShort form for setting the C, L, CV and CH relays.\r\n";
+const char                  interpreterHelpMsg162[]            = "\t\tHx\t\t1: LC mode, 0: CL mode.\r\n";
+const char                  interpreterHelpMsg163[]            = "\t\tVx\t\t1: CL mode, 0: LC mode.\r\n";
+const char                  interpreterHelpMsg164[]            = "\t\tCH\t\t   LC mode.\r\n";
+const char                  interpreterHelpMsg165[]            = "\t\tCV\t\t   CL mode.\r\n";
 
 
 void interpreterConsolePush(const char* buf, int bufLen)
@@ -118,19 +121,25 @@ void interpreterPrintHelp(void)
 
   interpreterConsolePush(interpreterHelpMsg131, strlen(interpreterHelpMsg131));
   interpreterConsolePush(interpreterHelpMsg132, strlen(interpreterHelpMsg132));
-  interpreterConsolePush(interpreterHelpMsg133, strlen(interpreterHelpMsg133));
+  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+
+  interpreterConsolePush(interpreterHelpMsg141, strlen(interpreterHelpMsg141));
+  interpreterConsolePush(interpreterHelpMsg142, strlen(interpreterHelpMsg142));
+  interpreterConsolePush(interpreterHelpMsg143, strlen(interpreterHelpMsg143));
   interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
 
 
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
-  interpreterConsolePush(interpreterHelpMsg141, strlen(interpreterHelpMsg141));
-  interpreterConsolePush(interpreterHelpMsg142, strlen(interpreterHelpMsg142));
   interpreterConsolePush(interpreterHelpMsg151, strlen(interpreterHelpMsg151));
   interpreterConsolePush(interpreterHelpMsg152, strlen(interpreterHelpMsg152));
-  interpreterConsolePush(interpreterHelpMsg153, strlen(interpreterHelpMsg153));
-  interpreterConsolePush(interpreterHelpMsg154, strlen(interpreterHelpMsg154));
-  interpreterConsolePush(interpreterHelpMsg155, strlen(interpreterHelpMsg155));
+
+  interpreterConsolePush(interpreterHelpMsg161, strlen(interpreterHelpMsg161));
+  interpreterConsolePush(interpreterHelpMsg162, strlen(interpreterHelpMsg162));
+  interpreterConsolePush(interpreterHelpMsg163, strlen(interpreterHelpMsg163));
+  interpreterConsolePush(interpreterHelpMsg164, strlen(interpreterHelpMsg164));
+  interpreterConsolePush(interpreterHelpMsg165, strlen(interpreterHelpMsg165));
   interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
 }
@@ -373,11 +382,32 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
     controllerMsgPushToInQueue(1, cmd, 10UL);
 
-#if 0
-  } else if (!strncmp("MON ", cb, 4) && (4 < len)) {
-    const long    val         = strtol(cb + 4, NULL, 10);
-    g_monMsk                  = (uint32_t) val;
-#endif
+  } else if (!strncmp("MG", cb, 2) && (3 < len && len < 5)) {
+    const long val = strtol(cb + 2, NULL, 10);
+
+    if (0 <= val && val <= 256) {
+      uint32_t cmd[2];
+      cmd[0] = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Interpreter, 0U, MsgDefault__CallFunc04_DigPot_SetGain);
+      cmd[1] = (uint32_t) val;
+      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+    } else {
+      interpreterUnknownCommand();
+      interpreterShowCursor();
+    }
+
+  } else if (!strncmp("MO", cb, 2) && (3 < len && len < 5)) {
+    const long val = strtol(cb + 2, NULL, 10);
+
+    if (0 <= val && val <= 256) {
+      uint32_t cmd[2];
+      cmd[0] = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Interpreter, 0U, MsgDefault__CallFunc05_DigPot_SetOffset);
+      cmd[1] = (uint32_t) val;
+      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+    } else {
+      interpreterUnknownCommand();
+      interpreterShowCursor();
+    }
+
   } else if (!strncmp("RESTART", cb, 7) && (7 == len)) {
     const char infoStr[] = "*** Restarting, please wait...\r\n";
     interpreterConsolePush(infoStr, strlen(infoStr));

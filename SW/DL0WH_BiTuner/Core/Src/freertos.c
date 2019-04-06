@@ -442,6 +442,16 @@ static void rtosDefaultUpdateRelays(void)
   matcherCurrent = s_rtos_Matcher;
 }
 
+static void rtosDefaultDigPotSetGain(uint32_t gain)
+{
+
+}
+
+static void rtosDefaultDigPotSetOffset(uint32_t offset)
+{
+
+}
+
 
 static void rtosDefaultInit(void)
 {
@@ -541,6 +551,20 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
 
   case MsgDefault__CallFunc03_CyclicTimerStop:
     rtosDefaultCyclicStop();
+    break;
+
+  case MsgDefault__CallFunc04_DigPot_SetGain:
+  {
+    const uint32_t gain = msgAry[1];
+    rtosDefaultDigPotSetGain(gain);
+  }
+    break;
+
+  case MsgDefault__CallFunc05_DigPot_SetOffset:
+  {
+    const uint32_t offset = msgAry[1];
+    rtosDefaultDigPotSetOffset(offset);
+  }
     break;
 
 

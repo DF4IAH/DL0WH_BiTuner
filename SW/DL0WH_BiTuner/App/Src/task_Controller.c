@@ -25,6 +25,15 @@
 #include "task_Interpreter.h"
 
 
+#define I2C1_BUS_ADDR_SCAN
+
+#ifdef I2C1_BUS_ADDR_SCAN
+# include "bus_i2c.h"
+extern I2C_HandleTypeDef    hi2c1;
+extern osSemaphoreId        i2c1_BSemHandle;
+#endif
+
+
 extern osMessageQId         controllerInQueueHandle;
 extern osMessageQId         controllerOutQueueHandle;
 
@@ -158,7 +167,7 @@ const char controllerGreetMsg11[] =
     "\t\tFirmware date\t%08lu\r\n"
     "\t\tDeveloped by\tDF4IAH\r\n";
 
-static void controllerUsbGreet(void)
+static void controllerGreet(void)
 {
   char verBuf[128];
 
@@ -1628,18 +1637,6 @@ static void controllerPrintLC(void)
 static void controllerCyclicTimerEvent(void)
 {
   /* Cyclic jobs to do */
-  static bool isUsbRdy = false;
-
-  /* USB initial setup */
-  if (!isUsbRdy && (osKernelSysTick() > 3500UL)) {
-    isUsbRdy = true;
-
-    /* Greetings to the USB CDC */
-    controllerUsbGreet();
-
-    /* Inits to be done after USB/DCD connection is established */
-    controllerInitAfterGreet();
-  }
 
   /* FSM logic */
   controllerFSM();
@@ -1930,26 +1927,37 @@ static void controllerInit(void)
     }
   }
 
+  /* Init messages */
+  {
+    osDelay(3500UL);
+
+    /* Greetings to the interfaces */
+    controllerGreet();
+
+    /* Inits to be done after USB/DCD connection is established */
+    controllerInitAfterGreet();
+
+    osDelay(3000UL);
+  }
+
+  #ifdef I2C1_BUS_ADDR_SCAN
+  i2cBusAddrScan(&hi2c1, i2c1_BSemHandle);
+  #endif
+
   /* Set relay state */
   controllerFSM_PushOptiVars();
-
-  /* Enable service cycle */
-  if (s_controller_doCycle) {
-    /* Latching relays do need 30ms to change state */
-    //controllerCyclicStart(30UL);  // TODO: enable me!
-    controllerCyclicStart(500UL);  // TODO: remove me!
-
-  } else {
-    controllerCyclicStop();
-  }
 
   /* Reset SWR start timer */
   s_controller_swr_tmr = osKernelSysTick();
 
-  //#define I2C1_BUS_ADDR_SCAN
-  #ifdef I2C1_BUS_ADDR_SCAN
-  i2cBusAddrScan(&hi2c1, i2c1MutexHandle);
-  #endif
+
+  /* Enable service cycle */
+  if (s_controller_doCycle) {
+    controllerCyclicStart(1000UL);  // TODO: change to 30ms
+
+  } else {
+    controllerCyclicStop();
+  }
 }
 
 
