@@ -261,7 +261,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
   const char*     cb          = (const char*) s_interpreterLineBuf;
   uint8_t*        bufOutPtr   = s_interpreterLineBuf + s_interpreterLineBufLen;
   const uint8_t*  bufInPtr    = buf;
-  uint8_t         c;
+  uint8_t         c           = 0U;
 
   /* Strip ending NUL char */
   if (!buf[len-1]) {
