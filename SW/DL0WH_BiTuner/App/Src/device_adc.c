@@ -261,7 +261,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     case ADC1__RUNNING_VBAT:
     {
       const float mean = adcCalcMean(s_adc1_val_mean_vbat, sizeof(s_adc1_val_mean_vbat) / sizeof(float), s_adc1_dma_buf[1] / 16.0f);
-      g_adc_bat_mv     = ((ADC_MUL_BAT * mean * g_adc_vref_mv) / 65535.0f) + ADC_V_OFFS_BAT_mV;
+      g_adc_bat_mv     = ((ADC_MUL_BAT * mean * g_adc_vref_mv) / 4095.0f) + ADC_V_OFFS_BAT_mV;
 
       xEventGroupSetBitsFromISR(adcEventGroupHandle, EG_ADC1__CONV_AVAIL_BAT, &pxHigherPriorityTaskWoken);
     }

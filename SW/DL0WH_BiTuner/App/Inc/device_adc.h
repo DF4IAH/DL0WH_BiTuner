@@ -12,13 +12,13 @@
 #define ADC1_DMA_CHANNELS             3
 #define ADC2_DMA_CHANNELS             1
 
-#define ADC_V_OFFS_VREF_mV          -162.0f
+#define ADC_V_OFFS_VREF_mV          -135.4f
 #define ADC_V_OFFS_BAT_mV             56.0f
-#define ADC_V_OFFS_FWDREV_mV          56.0f
+#define ADC_V_OFFS_FWDREV_mV          47.0f
 #define ADC_V_OFFS_VDIODE_mV          56.0f
 
-#define ADC_MUL_BAT                 303.5f
-#define ADC_MUL_TEMP                  5.5226f
+#define ADC_MUL_BAT                   5.23f
+#define ADC_MUL_TEMP                  1.50f
 
 
 typedef enum ADC_ENUM {
