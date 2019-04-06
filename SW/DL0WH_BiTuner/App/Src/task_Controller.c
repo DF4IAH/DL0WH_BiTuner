@@ -748,7 +748,7 @@ static void controllerFSM_GetGlobalVars(void)
     }
 #endif
 
-#if 0
+#if 1
     /* Logging */
     {
       char  dbgBuf[128];
@@ -760,7 +760,7 @@ static void controllerFSM_GetGlobalVars(void)
     }
 #endif
 
-#if 0
+#if 1
     /* Logging */
     {
       char      dbgBuf[128];

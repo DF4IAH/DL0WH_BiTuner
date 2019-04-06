@@ -11,6 +11,7 @@
 #include "cmsis_os.h"
 #include "FreeRTOS.h"
 
+#include "main.h"
 #include "device_adc.h"
 
 
@@ -30,6 +31,7 @@ extern float                g_adc_temp_deg;
 extern float                g_adc_fwd_mv;
 extern float                g_adc_rev_mv;
 extern float                g_adc_vdiode_mv;
+extern float                g_adc_swr;
 extern _Bool                g_adc_select_rev;
 
 static uint16_t             s_adc1_dma_buf[ADC1_DMA_CHANNELS] = { 0U };
@@ -294,7 +296,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 
     /* Variant */
     if (g_adc_select_rev) {
-      g_adc_rev_mv = l_adc_fwdrev_mv;
+      g_adc_rev_mv  = l_adc_fwdrev_mv;
+      g_adc_swr     = mainCalc_VSWR(g_adc_fwd_mv, l_adc_fwdrev_mv);
 
       /* Turn MUX to the FWD side to give enough time */
       adcMuxSelect(1);
