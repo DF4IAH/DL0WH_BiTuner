@@ -74,7 +74,7 @@ static float adcCalcMean(float* fa, uint32_t cnt, float newVal)
   return sum / cnt;
 }
 
-static void adcMuxSelect(uint8_t mux)
+void adcMuxSelect(uint8_t mux)
 {
   switch (mux) {
   case 1:

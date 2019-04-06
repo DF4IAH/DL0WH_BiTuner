@@ -56,6 +56,8 @@ typedef enum EG_ADC_ENUM {
 } EG_ADC_ENUM_t;
 
 
+void adcMuxSelect(uint8_t mux);
+
 void adcStartConv(ADC_ENUM_t adc);
 void adcStopConv(ADC_ENUM_t adc);
 

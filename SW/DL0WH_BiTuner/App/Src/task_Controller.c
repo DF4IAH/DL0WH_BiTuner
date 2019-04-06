@@ -20,6 +20,7 @@
 
 //#include "stm32l4xx_hal_gpio.h"
 #include "bus_spi.h"
+#include "device_adc.h"
 #include "task_USB.h"
 #include "task_CAT.h"
 #include "task_Interpreter.h"
@@ -1716,6 +1717,13 @@ static void controllerMsgProcessor(void)
             /* Start the RtosDefault cyclic timer each 30 ms */
             msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__CallFunc02_CyclicTimerStart);
             msgAry[msgLen++]  = 30UL;
+
+            msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__CallFunc04_DigPot_SetGain);
+            msgAry[msgLen++]  = 64;
+
+            msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__CallFunc05_DigPot_SetOffset);
+            msgAry[msgLen++]  = 138;
+
             controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
           }
           break;
@@ -1817,6 +1825,9 @@ static void controllerMsgProcessor(void)
 static void controllerInit(void)
 {
   /* Load configuration */
+
+  /* At once switch ADC MUX to any valid input port */
+  adcMuxSelect(1);
 
   /* Prepare all semaphores */
   {
@@ -1953,7 +1964,7 @@ static void controllerInit(void)
 
   /* Enable service cycle */
   if (s_controller_doCycle) {
-    controllerCyclicStart(1000UL);  // TODO: change to 30ms
+    controllerCyclicStart(5000UL);  // TODO: change to 30ms
 
   } else {
     controllerCyclicStop();

@@ -21,6 +21,8 @@
 #define I2C_TXBUFSIZE                                         32U
 #define I2C_RXBUFSIZE                                         32U
 
+#define I2C_DIGPOT_ADDR                                       0x28
+
 
 void i2cBusAddrScan(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle);
 uint32_t i2cSequenceWriteLong(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle, uint8_t addr, uint8_t i2cReg, uint16_t count, const uint8_t i2cWriteAryLong[]);

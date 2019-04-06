@@ -62,6 +62,7 @@
 
 // App
 #include "bus_spi.h"
+#include "bus_i2c.h"
 #include "device_adc.h"
 #include "task_Controller.h"
 #include "task_Interpreter.h"
@@ -92,6 +93,7 @@ extern volatile uint8_t               spi1TxBuffer[SPI1_BUFFERSIZE];
 extern volatile uint8_t               spi1RxBuffer[SPI1_BUFFERSIZE];
 
 extern SPI_HandleTypeDef              hspi1;
+extern I2C_HandleTypeDef              hi2c1;
 
 extern float                          g_adc_refint_val;
 extern float                          g_adc_vref_mv;
@@ -442,14 +444,36 @@ static void rtosDefaultUpdateRelays(void)
   matcherCurrent = s_rtos_Matcher;
 }
 
-static void rtosDefaultDigPotSetGain(uint32_t gain)
-{
-
-}
-
 static void rtosDefaultDigPotSetOffset(uint32_t offset)
 {
+  uint8_t cmd = 0x00;
+  if (offset == 256UL) {
+    cmd |= 0x01U;
+  }
 
+  uint8_t val[1];
+  val[0] = (uint8_t) (offset & 0xffUL);
+
+  uint32_t i2cErr = i2cSequenceWriteLong(&hi2c1, i2c1_BSemHandle, I2C_DIGPOT_ADDR, cmd, sizeof(val), val);
+  if (i2cErr != HAL_I2C_ERROR_NONE) {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+}
+
+static void rtosDefaultDigPotSetGain(uint32_t gain)
+{
+  uint8_t cmd = 0x10;
+  if (gain == 256UL) {
+    cmd |= 0x01U;
+  }
+
+  uint8_t val[1];
+  val[0] = (uint8_t) (gain & 0xffUL);
+
+  uint32_t i2cErr = i2cSequenceWriteLong(&hi2c1, i2c1_BSemHandle, I2C_DIGPOT_ADDR, cmd, sizeof(val), val);
+  if (i2cErr != HAL_I2C_ERROR_NONE) {
+    _Error_Handler(__FILE__, __LINE__);
+  }
 }
 
 
