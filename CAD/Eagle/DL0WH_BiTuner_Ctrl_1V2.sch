@@ -16074,7 +16074,7 @@ Crystal 32.768 kHz</text>
 <plain>
 <text x="134.62" y="137.16" size="2.54" layer="97" ratio="15">Addr        Device
 
-0x14        DigResistor: OpAmp gain and offset
+0x28        DigResistor: OpAmp gain and offset
 </text>
 <text x="22.86" y="162.56" size="2.54" layer="97" ratio="15">I2C1 Termination</text>
 <text x="165.1" y="15.24" size="2.54" layer="97" ratio="15">I2C1 Termination</text>
