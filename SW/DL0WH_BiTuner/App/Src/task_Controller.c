@@ -1618,6 +1618,8 @@ static void controllerPrintLC(void)
     const int len = snprintf(strbuf, (sizeof(strbuf) - 1), "## Config: %s\t L = %ld nH\t C = %ld pF\r\n\r\n", sConfig, (uint32_t)valL, (uint32_t)valC);
     interpreterConsolePush(strbuf, len);
   }
+
+  interpreterShowCursor();
 }
 
 
