@@ -36,8 +36,8 @@
 <layer number="26" name="bNames" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="27" name="tValues" color="7" fill="1" visible="no" active="yes"/>
 <layer number="28" name="bValues" color="7" fill="1" visible="no" active="yes"/>
-<layer number="29" name="tStop" color="7" fill="3" visible="no" active="yes"/>
-<layer number="30" name="bStop" color="7" fill="6" visible="no" active="yes"/>
+<layer number="29" name="tStop" color="7" fill="3" visible="yes" active="yes"/>
+<layer number="30" name="bStop" color="7" fill="6" visible="yes" active="yes"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="yes"/>
 <layer number="32" name="bCream" color="7" fill="5" visible="no" active="yes"/>
 <layer number="33" name="tFinish" color="6" fill="3" visible="no" active="yes"/>
@@ -52,14 +52,14 @@
 <layer number="42" name="bRestrict" color="1" fill="10" visible="no" active="yes"/>
 <layer number="43" name="vRestrict" color="2" fill="10" visible="no" active="yes"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="yes"/>
-<layer number="45" name="Holes" color="7" fill="1" visible="no" active="yes"/>
-<layer number="46" name="Milling" color="3" fill="1" visible="no" active="yes"/>
+<layer number="45" name="Holes" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="46" name="Milling" color="3" fill="1" visible="yes" active="yes"/>
 <layer number="47" name="Measures" color="13" fill="1" visible="no" active="yes"/>
-<layer number="48" name="Document" color="7" fill="1" visible="no" active="yes"/>
+<layer number="48" name="Document" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="49" name="Reference" color="7" fill="1" visible="no" active="yes"/>
 <layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
-<layer number="51" name="tDocu" color="14" fill="1" visible="no" active="yes"/>
-<layer number="52" name="bDocu" color="6" fill="1" visible="no" active="yes"/>
+<layer number="51" name="tDocu" color="14" fill="1" visible="yes" active="yes"/>
+<layer number="52" name="bDocu" color="6" fill="1" visible="yes" active="yes"/>
 <layer number="53" name="tGND_GNDA" color="7" fill="9" visible="no" active="no"/>
 <layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
 <layer number="56" name="wert" color="7" fill="1" visible="no" active="no"/>
@@ -4139,13 +4139,13 @@ TSSOP-20</description>
 <attribute name="NAME" x="3.175" y="33.9725" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
 <attribute name="VALUE" x="6.35" y="32.7025" size="0.6096" layer="28" font="vector" ratio="10" rot="MR0"/>
 </element>
-<element name="R0912" library="df4iah_rcl" package="R0402" value="15kR" x="7.62" y="33.02" smashed="yes" rot="MR270">
-<attribute name="NAME" x="8.5725" y="31.75" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
-<attribute name="VALUE" x="9.2075" y="34.6075" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
+<element name="R0913" library="df4iah_rcl" package="R0402" value="15kR" x="7.77875" y="32.22625" smashed="yes" rot="MR270">
+<attribute name="NAME" x="8.73125" y="30.95625" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="9.36625" y="33.81375" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
-<element name="R0902" library="df4iah_rcl" package="R0402" value="15kR" x="7.62" y="24.13" smashed="yes" rot="MR90">
-<attribute name="NAME" x="8.41375" y="22.5425" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
-<attribute name="VALUE" x="6.0325" y="22.5425" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
+<element name="R0903" library="df4iah_rcl" package="R0402" value="15kR" x="7.14375" y="26.035" smashed="yes" rot="MR90">
+<attribute name="NAME" x="7.9375" y="24.4475" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
+<attribute name="VALUE" x="5.55625" y="24.4475" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
 </element>
 <element name="U0921" library="df4iah_sc-switches" package="R-PDSO-G8" value="TS5A23166" x="6.35" y="29.21" smashed="yes" rot="MR90">
 <attribute name="NAME" x="7.6675" y="27.12625" size="0.6096" layer="26" font="vector" rot="MR0"/>
@@ -4196,11 +4196,11 @@ TSSOP-20</description>
 <attribute name="NAME" x="82.55" y="27.305" size="0.8128" layer="25" font="vector" ratio="15" rot="R90"/>
 <attribute name="VALUE" x="74.93" y="24.765" size="1.27" layer="27"/>
 </element>
-<element name="R0901" library="df4iah_rcl" package="R0402" value="1kR" x="5.08" y="24.765" smashed="yes" rot="MR180">
+<element name="R0902" library="df4iah_rcl" package="R0402" value="1kR" x="5.08" y="24.765" smashed="yes" rot="MR180">
 <attribute name="NAME" x="3.175" y="24.4475" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
 <attribute name="VALUE" x="3.4925" y="26.3525" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
-<element name="R0911" library="df4iah_rcl" package="R0402" value="1kR" x="5.08" y="32.385" smashed="yes" rot="MR180">
+<element name="R0912" library="df4iah_rcl" package="R0402" value="1kR" x="5.08" y="32.385" smashed="yes" rot="MR180">
 <attribute name="NAME" x="3.175" y="32.0675" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
 <attribute name="VALUE" x="3.4925" y="33.9725" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
 </element>
@@ -4257,7 +4257,7 @@ TSSOP-20</description>
 <attribute name="VALUE" x="13.335" y="21.74875" size="0.6096" layer="28" font="vector" ratio="10" rot="MR270"/>
 </element>
 <element name="R0962" library="df4iah_rcl" package="R0402" value="1kR" x="11.7475" y="15.39875" rot="R270"/>
-<element name="R0963" library="df4iah_rcl" package="R0402" value="10kR" x="15.875" y="18.0975" smashed="yes" rot="MR90">
+<element name="R0963" library="df4iah_rcl" package="R0402" value="20kR" x="15.875" y="18.0975" smashed="yes" rot="MR90">
 <attribute name="NAME" x="16.98625" y="16.8275" size="0.6096" layer="26" font="vector" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="14.2875" y="16.51" size="0.6096" layer="28" font="vector" ratio="10" rot="MR90"/>
 </element>
@@ -4311,6 +4311,13 @@ TSSOP-20</description>
 <attribute name="NAME" x="3.33375" y="28.2575" size="0.6096" layer="25" font="vector" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="2.38125" y="31.27375" size="0.6096" layer="27" font="vector" ratio="10" rot="R270"/>
 </element>
+<element name="R0901" library="df4iah_rcl" package="R0402" value="2kR" x="7.14375" y="23.495" rot="MR90"/>
+<element name="R0911" library="df4iah_rcl" package="R0402" value="2kR" x="7.77875" y="34.29" smashed="yes" rot="MR180">
+<attribute name="NAME" x="9.68375" y="34.925" size="0.6096" layer="26" font="vector" ratio="10" rot="MR0"/>
+<attribute name="VALUE" x="6.19125" y="35.8775" size="0.6096" layer="28" font="vector" ratio="10" rot="MR180"/>
+</element>
+<element name="R0904" library="df4iah_rcl" package="R0402" value="150kR" x="6.35" y="27.46375"/>
+<element name="R0914" library="df4iah_rcl" package="R0402" value="150kR" x="5.55625" y="31.4325" rot="R180"/>
 </elements>
 <signals>
 <signal name="GND">
@@ -4461,8 +4468,8 @@ TSSOP-20</description>
 <contactref element="D0971" pad="C"/>
 <contactref element="X0501" pad="2"/>
 <contactref element="X0501" pad="4"/>
-<contactref element="R0901" pad="1"/>
-<contactref element="R0911" pad="1"/>
+<contactref element="R0902" pad="1"/>
+<contactref element="R0912" pad="1"/>
 <via x="9.7155" y="56.769" extent="1-16" drill="0.3048"/>
 <wire x1="11.3875" y1="56.87" x2="9.88" y2="56.87" width="0.3048" layer="1"/>
 <wire x1="9.88" y1="56.87" x2="9.7155" y2="56.769" width="0.3048" layer="1"/>
@@ -5387,6 +5394,14 @@ TSSOP-20</description>
 <via x="24.60625" y="33.17875" extent="1-16" drill="0.3"/>
 <wire x1="24.60625" y1="33.17875" x2="24.60625" y2="33.9344" width="0.1524" layer="16"/>
 <wire x1="24.60625" y1="33.9344" x2="24.4221" y2="34.11855" width="0.1524" layer="16"/>
+<contactref element="R0904" pad="2"/>
+<contactref element="R0914" pad="2"/>
+<wire x1="7" y1="27.46375" x2="8.09625" y2="27.46375" width="0.1524" layer="1"/>
+<wire x1="8.09625" y1="27.46375" x2="8.255" y2="27.6225" width="0.1524" layer="1"/>
+<wire x1="4.90625" y1="31.4325" x2="4.90625" y2="30.33625" width="0.1524" layer="1"/>
+<wire x1="4.90625" y1="30.33625" x2="6.985" y2="28.2575" width="0.1524" layer="1"/>
+<wire x1="6.985" y1="28.2575" x2="6.985" y2="27.47875" width="0.1524" layer="1"/>
+<wire x1="6.985" y1="27.47875" x2="7" y2="27.46375" width="0.1524" layer="1"/>
 <wire x1="24.56125" y1="32.22625" x2="24.4221" y2="32.23895" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="P$8">
@@ -5419,7 +5434,7 @@ TSSOP-20</description>
 <signal name="RM_FWD">
 <contactref element="X1501" pad="1"/>
 <contactref element="L0901" pad="2"/>
-<wire x1="6.35" y1="17.78" x2="6.35" y2="19.47" width="0.3048" layer="16"/>
+<wire x1="6.35" y1="17.78" x2="6.35" y2="19.47" width="0.1524" layer="16"/>
 </signal>
 <signal name="LM53603_VCC">
 <contactref element="U1201" pad="4"/>
@@ -7098,40 +7113,49 @@ TSSOP-20</description>
 <signal name="SWR_IN_FWD_HI">
 <contactref element="L0901" pad="1"/>
 <contactref element="C0901" pad="1"/>
-<contactref element="R0902" pad="1"/>
-<contactref element="R0901" pad="2"/>
 <wire x1="5.73" y1="22.86" x2="5.93" y2="22.645" width="0.3048" layer="16"/>
-<wire x1="5.93" y1="22.645" x2="6.35" y2="22.225" width="0.3048" layer="16"/>
-<wire x1="6.35" y1="22.225" x2="6.35" y2="21.17" width="0.3048" layer="16"/>
-<wire x1="5.73" y1="22.86" x2="5.73" y2="24.765" width="0.3048" layer="16"/>
-<wire x1="5.73" y1="22.86" x2="7.2" y2="22.86" width="0.3048" layer="16"/>
-<wire x1="7.2" y1="22.86" x2="7.62" y2="23.48" width="0.3048" layer="16"/>
+<wire x1="5.93" y1="22.645" x2="6.35" y2="22.225" width="0.1524" layer="16"/>
+<wire x1="6.35" y1="22.225" x2="6.35" y2="21.17" width="0.1524" layer="16"/>
+<contactref element="R0901" pad="1"/>
+<wire x1="6.35" y1="22.225" x2="6.6675" y2="22.5425" width="0.1524" layer="16"/>
+<wire x1="6.6675" y1="22.5425" x2="6.84125" y2="22.5425" width="0.1524" layer="16"/>
+<wire x1="6.84125" y1="22.5425" x2="7.14375" y2="22.845" width="0.1524" layer="16"/>
 </signal>
 <signal name="SWR_IN_REV_HI">
 <contactref element="L0911" pad="1"/>
 <contactref element="C0911" pad="1"/>
-<contactref element="R0912" pad="1"/>
-<contactref element="R0911" pad="2"/>
 <wire x1="5.73" y1="34.29" x2="5.73" y2="34.6225" width="0.1524" layer="16"/>
 <wire x1="5.73" y1="34.6225" x2="6.35" y2="35.2425" width="0.1524" layer="16"/>
 <wire x1="6.35" y1="35.2425" x2="6.35" y2="35.98" width="0.1524" layer="16"/>
-<wire x1="7.62" y1="33.67" x2="6.97" y2="33.67" width="0.1524" layer="16"/>
-<wire x1="6.97" y1="33.67" x2="6.35" y2="34.29" width="0.1524" layer="16"/>
-<wire x1="6.35" y1="34.29" x2="5.73" y2="34.29" width="0.1524" layer="16"/>
-<wire x1="5.73" y1="32.385" x2="5.73" y2="34.29" width="0.1524" layer="16"/>
+<contactref element="R0911" pad="1"/>
+<wire x1="7.12875" y1="34.29" x2="5.73" y2="34.29" width="0.1524" layer="16"/>
 </signal>
 <signal name="SWR_IN_REV">
 <contactref element="U0921" pad="5"/>
-<contactref element="R0912" pad="2"/>
-<wire x1="7.9" y1="29.96" x2="7.9" y2="32.09" width="0.1524" layer="16"/>
-<wire x1="7.9" y1="32.09" x2="7.62" y2="32.37" width="0.1524" layer="16"/>
+<contactref element="R0913" pad="2"/>
+<wire x1="7.9" y1="29.96" x2="7.9" y2="31.29625" width="0.1524" layer="16"/>
+<wire x1="7.9" y1="31.29625" x2="7.77875" y2="31.57625" width="0.1524" layer="16"/>
+<contactref element="R0914" pad="1"/>
+<wire x1="6.20625" y1="31.4325" x2="6.82625" y2="31.4325" width="0.1524" layer="1"/>
+<wire x1="6.82625" y1="31.4325" x2="6.985" y2="31.59125" width="0.1524" layer="1"/>
+<via x="6.985" y="31.59125" extent="1-16" drill="0.3048"/>
+<wire x1="6.985" y1="31.59125" x2="7.47625" y2="31.59125" width="0.1524" layer="16"/>
+<wire x1="7.47625" y1="31.59125" x2="7.77875" y2="31.57625" width="0.1524" layer="16"/>
 </signal>
 <signal name="SWR_IN_FWD">
 <contactref element="U0921" pad="1"/>
-<contactref element="R0902" pad="2"/>
-<wire x1="7.62" y1="24.78" x2="7.62" y2="25.4" width="0.1524" layer="16"/>
-<wire x1="4.8" y1="28.46" x2="4.8" y2="28.22" width="0.1524" layer="16"/>
-<wire x1="4.8" y1="28.22" x2="7.62" y2="25.4" width="0.1524" layer="16"/>
+<contactref element="R0903" pad="2"/>
+<wire x1="4.8" y1="28.46" x2="4.8" y2="28.06125" width="0.1524" layer="16"/>
+<wire x1="4.8" y1="28.06125" x2="5.715" y2="27.14625" width="0.1524" layer="16"/>
+<wire x1="5.715" y1="27.14625" x2="6.19125" y2="26.67" width="0.1524" layer="16"/>
+<wire x1="6.19125" y1="26.67" x2="7.12875" y2="26.67" width="0.1524" layer="16"/>
+<wire x1="7.12875" y1="26.67" x2="7.14375" y2="26.685" width="0.1524" layer="16"/>
+<contactref element="R0904" pad="1"/>
+<wire x1="5.7" y1="27.46375" x2="5.7" y2="26.9725" width="0.1524" layer="1"/>
+<wire x1="5.7" y1="26.9725" x2="5.3975" y2="26.67" width="0.1524" layer="1"/>
+<via x="5.3975" y="26.67" extent="1-16" drill="0.3048"/>
+<wire x1="5.3975" y1="26.67" x2="5.715" y2="26.9875" width="0.1524" layer="16"/>
+<wire x1="5.715" y1="26.9875" x2="5.715" y2="27.14625" width="0.1524" layer="16"/>
 </signal>
 <signal name="SWR_SEL_REV" class="6">
 <contactref element="U0921" pad="3"/>
@@ -7348,6 +7372,27 @@ TSSOP-20</description>
 <wire x1="19.05" y1="10.63625" x2="19.04" y2="10.795" width="0.1524" layer="16"/>
 <wire x1="19.04" y1="10.795" x2="19.11" y2="10.725" width="0.1524" layer="16"/>
 </signal>
+<signal name="SWR_IN_REV_LO">
+<contactref element="R0913" pad="1"/>
+<contactref element="R0912" pad="2"/>
+<contactref element="R0911" pad="2"/>
+<wire x1="8.42875" y1="34.29" x2="8.255" y2="34.29" width="0.1524" layer="16"/>
+<wire x1="8.255" y1="34.29" x2="8.255" y2="33.3375" width="0.1524" layer="16"/>
+<wire x1="7.77875" y1="32.87625" x2="7.79375" y2="32.87625" width="0.1524" layer="16"/>
+<wire x1="7.79375" y1="32.87625" x2="8.255" y2="33.3375" width="0.1524" layer="16"/>
+<wire x1="5.73" y1="32.385" x2="6.6675" y2="32.385" width="0.1524" layer="16"/>
+<wire x1="6.6675" y1="32.385" x2="7.14375" y2="32.86125" width="0.1524" layer="16"/>
+<wire x1="7.14375" y1="32.86125" x2="7.76375" y2="32.86125" width="0.1524" layer="16"/>
+<wire x1="7.76375" y1="32.86125" x2="7.77875" y2="32.87625" width="0.1524" layer="16"/>
+</signal>
+<signal name="SWR_IN_FWD_LO">
+<contactref element="R0903" pad="1"/>
+<contactref element="R0902" pad="2"/>
+<contactref element="R0901" pad="2"/>
+<wire x1="7.14375" y1="24.145" x2="7.14375" y2="24.765" width="0.1524" layer="16"/>
+<wire x1="7.14375" y1="24.765" x2="7.14375" y2="25.385" width="0.1524" layer="16"/>
+<wire x1="5.73" y1="24.765" x2="7.14375" y2="24.765" width="0.1524" layer="16"/>
+</signal>
 </signals>
 <errors>
 <approved hash="7,40,89d01a281ad3892b"/>
@@ -7499,12 +7544,12 @@ TSSOP-20</description>
 <approved hash="5,1,9a0f82c59ad1a09f"/>
 <approved hash="5,1,e991bec7e684e1dc"/>
 <approved hash="5,1,1d420a2ad47e25b3"/>
-<approved hash="5,1,38f70d24b84d73f5"/>
 <approved hash="5,1,392f8ce2eb7d1ff5"/>
+<approved hash="5,1,38f70d24b84d73f5"/>
 <approved hash="5,1,8bb6ac7b942f5547"/>
 <approved hash="5,1,1159c6ab38f7ef0d"/>
-<approved hash="5,1,efa438f7c6c21159"/>
 <approved hash="5,1,efa4392f477b9159"/>
+<approved hash="5,1,efa438f7c6c21159"/>
 <approved hash="5,1,380d29048e5416f4"/>
 <approved hash="5,1,0527203c56b6d68d"/>
 <approved hash="5,1,324a2a0d029b0630"/>
@@ -7517,33 +7562,33 @@ TSSOP-20</description>
 <approved hash="5,1,2ff6a38f2ec03678"/>
 <approved hash="5,1,3aabae12235e2326"/>
 <approved hash="5,1,f8cc31e231c4f8bf"/>
-<approved hash="5,1,4e5d3ba48bde659f"/>
 <approved hash="5,1,10f0ee073a198d98"/>
+<approved hash="5,1,4e5d3ba48bde659f"/>
 <approved hash="5,1,768b4847b06e0874"/>
 <approved hash="5,1,1082929eff16d5ab"/>
 <approved hash="5,1,de173e48b45ef631"/>
 <approved hash="5,1,de173e48b45ef631"/>
 <approved hash="5,1,ad0aa05b3023398c"/>
-<approved hash="5,1,50845871f90e529d"/>
-<approved hash="5,1,53f55973f82a51ca"/>
-<approved hash="5,1,9852ec25e82dcc49"/>
-<approved hash="5,1,e97e6277a1641593"/>
-<approved hash="5,1,55625875f90a577b"/>
 <approved hash="5,1,575358f3f9ee5528"/>
-<approved hash="5,1,1c10e67f33a8be92"/>
-<approved hash="5,1,e795b13428a27d65"/>
 <approved hash="5,1,d439cef1ceabe1b0"/>
 <approved hash="5,1,b451eb30f462b50b"/>
+<approved hash="5,1,55625875f90a577b"/>
+<approved hash="5,1,53f55973f82a51ca"/>
+<approved hash="5,1,e795b13428a27d65"/>
+<approved hash="5,1,1c10e67f33a8be92"/>
+<approved hash="5,1,50845871f90e529d"/>
+<approved hash="5,1,9852ec25e82dcc49"/>
+<approved hash="5,1,e97e6277a1641593"/>
 <approved hash="5,1,48916cf065fc49d3"/>
 <approved hash="5,1,78d73d8543b1072b"/>
 <approved hash="5,1,57de2c580540cfee"/>
 <approved hash="5,1,86389637e5d030c1"/>
 <approved hash="5,1,6423859f2352e282"/>
-<approved hash="5,1,e0fa11b2395d02fa"/>
 <approved hash="5,1,4677a9cca8f87a5e"/>
+<approved hash="5,1,e0fa11b2395d02fa"/>
 <approved hash="5,1,198feb4845be7282"/>
-<approved hash="5,1,64eeec0630569515"/>
 <approved hash="5,1,59c6fb3cd4b6576c"/>
+<approved hash="5,1,64eeec0630569515"/>
 <approved hash="5,1,e8a9ef0d849a0dd2"/>
 <approved hash="5,1,34fe01ee512b4206"/>
 <approved hash="5,1,c2d7155c33bcf83f"/>
@@ -7557,8 +7602,8 @@ TSSOP-20</description>
 <approved hash="5,1,d1ba4d38ea0b180b"/>
 <approved hash="5,1,be35e76112d7c27a"/>
 <approved hash="5,1,c7fa1768e2d1bbba"/>
-<approved hash="5,1,9cd4b9eebb0e4141"/>
 <approved hash="5,1,9e1fbef4bcd64348"/>
+<approved hash="5,1,9cd4b9eebb0e4141"/>
 <approved hash="5,1,6add86013d4b91dd"/>
 <approved hash="5,16,651006591d512595"/>
 <approved hash="5,16,192b023455ee9101"/>

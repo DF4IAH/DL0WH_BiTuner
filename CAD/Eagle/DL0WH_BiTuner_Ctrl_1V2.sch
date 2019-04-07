@@ -15155,10 +15155,10 @@ TSSOP-20</description>
 <part name="R1301" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="100kR"/>
 <part name="R1302" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="220kR"/>
 <part name="FRAME_05" library="df4iah_frame" deviceset="A4L-LOC" device="" value="Holes"/>
-<part name="L0901" library="df4iah_rcl" deviceset="L-EU" device="L0603" value="10uH"/>
-<part name="L0911" library="df4iah_rcl" deviceset="L-EU" device="L0603" value="10uH"/>
-<part name="C0901" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="1nF"/>
-<part name="C0911" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="1nF"/>
+<part name="L0901" library="df4iah_rcl" deviceset="L-EU" device="L0603" value="2kR"/>
+<part name="L0911" library="df4iah_rcl" deviceset="L-EU" device="L0603" value="2kR"/>
+<part name="C0901" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="N/A"/>
+<part name="C0911" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="N/A"/>
 <part name="R0912" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="15kR"/>
 <part name="R0902" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="15kR"/>
 <part name="GND0901" library="df4iah_supply" deviceset="GND" device=""/>
@@ -15201,8 +15201,8 @@ TSSOP-20</description>
 <part name="C0952" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="100nF"/>
 <part name="U0961" library="df4iah_opamp" deviceset="OPA354" device=""/>
 <part name="R0961" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1kR"/>
-<part name="R0962" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1.0kR"/>
-<part name="R0963" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="10kR"/>
+<part name="R0962" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="1kR"/>
+<part name="R0963" library="df4iah_rcl" deviceset="R-EU_" device="R0402" value="20kR"/>
 <part name="C0963" library="df4iah_rcl" deviceset="C-EU" device="C0402" value="100pF"/>
 <part name="U0941" library="df4iah_powersupply" deviceset="LM2611" device=""/>
 <part name="C0941" library="df4iah_rcl" deviceset="C-EU" device="C0603" value="22uF"/>
