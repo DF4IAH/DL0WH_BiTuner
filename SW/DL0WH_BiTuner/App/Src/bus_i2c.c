@@ -33,7 +33,7 @@ volatile uint8_t            i2c1RxBuffer[I2C_RXBUFSIZE];
 
 void i2cBusAddrScan(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle) {
   /* DEBUG I2C1 Bus */
-  const char msgStart[] = "\r\n\r\nI2C1 bus scan: scanning ...\r\n";
+  const char msgStart[] = "\r\n\r\nI2C1 bus: scanning ...\r\n";
   const char msgEnd[]   = "... done.\r\n\r\n> ";
 
   osSemaphoreWait(semaphoreHandle, osWaitForever);
