@@ -10,6 +10,7 @@
 
 #include "cmsis_os.h"
 #include "FreeRTOS.h"
+#include "math.h"
 
 #include "main.h"
 #include "device_adc.h"
@@ -28,7 +29,9 @@ extern float                g_adc_refint_val;
 extern float                g_adc_vref_mv;
 extern float                g_adc_bat_mv;
 extern float                g_adc_temp_deg;
+extern float                g_adc_fwd_mv_log;
 extern float                g_adc_fwd_mv;
+extern float                g_adc_rev_mv_log;
 extern float                g_adc_rev_mv;
 extern float                g_adc_vdiode_mv;
 extern float                g_adc_swr;
@@ -72,6 +75,14 @@ static float adcCalcMean(float* fa, uint32_t cnt, float newVal)
   fa[cnt - 1] = newVal;
 
   return sum / cnt;
+}
+
+static float adcCalcFwdRevExp(float adcLog)
+{
+  const float a2 = -0.0139f, a1 = 1.13f, a0 = -1.166f;
+  const float x = expf(adcLog / 1000.0f);
+  const float y = ((x*x) * a2) + (x * a1) + a0;
+  return y * 1000.0f;
 }
 
 void adcMuxSelect(uint8_t mux)
@@ -292,12 +303,13 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     HAL_ADC_Stop_DMA(&hadc2);
     xEventGroupClearBitsFromISR(adcEventGroupHandle, EG_ADC2__CONV_RUNNING);
 
-    const float l_adc_fwdrev_mv = (s_adc2_dma_buf[0] * g_adc_vref_mv / 65535.0f) + ADC_V_OFFS_FWDREV_mV;
+    const float l_adc_fwdrev_mv_log = (s_adc2_dma_buf[0] * g_adc_vref_mv / 65535.0f) + ADC_V_OFFS_FWDREV_mV;
 
     /* Variant */
     if (g_adc_select_rev) {
-      g_adc_rev_mv  = l_adc_fwdrev_mv;
-      g_adc_swr     = mainCalc_VSWR(g_adc_fwd_mv, l_adc_fwdrev_mv);
+      g_adc_rev_mv_log  = l_adc_fwdrev_mv_log;
+      g_adc_rev_mv      = adcCalcFwdRevExp(l_adc_fwdrev_mv_log);
+      g_adc_swr         = mainCalc_VSWR(g_adc_fwd_mv, g_adc_rev_mv);
 
       /* Turn MUX to the FWD side to give enough time */
       adcMuxSelect(1);
@@ -305,7 +317,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
       xEventGroupSetBitsFromISR(adcEventGroupHandle, EG_ADC2__CONV_AVAIL_REV, &pxHigherPriorityTaskWoken);
 
     } else {
-      g_adc_fwd_mv = l_adc_fwdrev_mv;
+      g_adc_fwd_mv_log  = l_adc_fwdrev_mv_log;
+      g_adc_fwd_mv      = adcCalcFwdRevExp(l_adc_fwdrev_mv_log);
 
       /* Turn MUX to the REV side to give enough time */
       adcMuxSelect(2);

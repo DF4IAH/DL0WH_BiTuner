@@ -62,7 +62,9 @@ extern float                g_adc_refint_val;
 extern float                g_adc_vref_mv;
 extern float                g_adc_bat_mv;
 extern float                g_adc_temp_deg;
+extern float                g_adc_fwd_mv_log;
 extern float                g_adc_fwd_mv;
+extern float                g_adc_rev_mv_log;
 extern float                g_adc_rev_mv;
 extern float                g_adc_vdiode_mv;
 extern float                g_adc_swr;
@@ -140,7 +142,9 @@ static float                  s_controller_xnull_LC_ratio       = 0.0f;
 
 static float                  s_controller_adc_bat_mv           = 0.0f;
 static float                  s_controller_adc_temp_deg         = 0.0f;
+static float                  s_controller_adc_fwd_mv_log       = 0.0f;
 static float                  s_controller_adc_fwd_mv           = 0.0f;
+static float                  s_controller_adc_rev_mv_log       = 0.0f;
 static float                  s_controller_adc_rev_mv           = 0.0f;
 static float                  s_controller_adc_vdiode_mv        = 0.0f;
 static float                  s_controller_adc_swr              = 0.0f;
@@ -685,7 +689,9 @@ static void controllerFSM_GetGlobalVars(void)
 
     s_controller_adc_bat_mv     = g_adc_bat_mv;
     s_controller_adc_temp_deg   = g_adc_temp_deg;
+    s_controller_adc_fwd_mv_log = g_adc_fwd_mv_log;
     s_controller_adc_fwd_mv     = g_adc_fwd_mv;
+    s_controller_adc_rev_mv_log = g_adc_rev_mv_log;
     s_controller_adc_rev_mv     = g_adc_rev_mv;
     s_controller_adc_vdiode_mv  = g_adc_vdiode_mv;
     s_controller_adc_swr        = g_adc_swr;
@@ -764,8 +770,9 @@ static void controllerFSM_GetGlobalVars(void)
       char  dbgBuf[128];
 
       const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
-          "ADC2: FWD = %5d mV\r\n",
-          (int16_t) (s_controller_adc_fwd_mv + 0.5f));
+          "ADC2: FWD = %5d mV  (ADC mV = %5d mV)\r\n",
+          (int16_t) (s_controller_adc_fwd_mv      + 0.5f),
+          (int16_t) (s_controller_adc_fwd_mv_log  + 0.5f));
       interpreterConsolePush(dbgBuf, dbgLen);
     }
 #endif
@@ -780,8 +787,9 @@ static void controllerFSM_GetGlobalVars(void)
       mainCalcFloat2IntFrac(s_controller_adc_swr, 2, &l_swr_i, &l_swr_f100);
 
       const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
-          "ADC2: REV = %5d mV, SWR = %+3ld.%03lu\r\n",
-          (int16_t) (s_controller_adc_rev_mv + 0.5f),
+          "ADC2: REV = %5d mV  (ADC mV = %5d mV), SWR = %+3ld.%03lu\r\n",
+          (int16_t) (s_controller_adc_rev_mv      + 0.5f),
+          (int16_t) (s_controller_adc_rev_mv_log  + 0.5f),
           l_swr_i, l_swr_f100);
       interpreterConsolePush(dbgBuf, dbgLen);
     }
@@ -1718,11 +1726,13 @@ static void controllerMsgProcessor(void)
             msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__CallFunc02_CyclicTimerStart);
             msgAry[msgLen++]  = 30UL;
 
+            /* DigPot. - measurement set gain: 0..256 */
             msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__CallFunc04_DigPot_SetGain);
-            msgAry[msgLen++]  = 64;
+            msgAry[msgLen++]  = 68;
 
+            /* DigPot. - measurement set offset: 0..256 */
             msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__CallFunc05_DigPot_SetOffset);
-            msgAry[msgLen++]  = 138;
+            msgAry[msgLen++]  = 140;
 
             controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
           }
@@ -1964,7 +1974,7 @@ static void controllerInit(void)
 
   /* Enable service cycle */
   if (s_controller_doCycle) {
-    controllerCyclicStart(5000UL);  // TODO: change to 30ms
+    controllerCyclicStart(2000UL);  // TODO: remove me
 
   } else {
     controllerCyclicStop();
