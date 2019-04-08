@@ -144,6 +144,11 @@ void interpreterPrintHelp(void)
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
 }
 
+void interpreterShowCrLf(void)
+{
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+}
+
 void interpreterShowCursor(void)
 {
   interpreterConsolePush("> ", 2UL);
@@ -151,7 +156,7 @@ void interpreterShowCursor(void)
 
 static void interpreterShowCrLfCursor(void)
 {
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+  interpreterShowCrLf();
   interpreterShowCursor();
 }
 

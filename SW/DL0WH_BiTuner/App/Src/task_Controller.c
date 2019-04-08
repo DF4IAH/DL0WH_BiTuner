@@ -152,7 +152,6 @@ static float                  s_controller_adc_fwd_mw           = 0.0f;
 static float                  s_controller_adc_rev_mw           = 0.0f;
 
 static _Bool                  s_controller_doCycle              = false;
-static _Bool                  s_controller_doAdc                = false;
 
 static DefaultMcuClocking_t s_controller_McuClocking          = DefaultMcuClocking__4MHz_MSI;
 
@@ -595,7 +594,6 @@ static void controllerFSM_LogAutoFinished(void)
   /* SWR: we have got it */
 
   s_controller_FSM_state = ControllerFsm__done;
-  s_controller_doAdc     = true;
 
   /* Logging */
   {
@@ -795,7 +793,7 @@ static void controllerFSM_GetGlobalVars(void)
     }
 #endif
 
-#if 0
+#if 1
     /* Logging */
     {
       char  dbgBuf[128];
@@ -806,6 +804,7 @@ static void controllerFSM_GetGlobalVars(void)
       interpreterConsolePush(dbgBuf, dbgLen);
     }
 #endif
+    interpreterShowCrLf();
   }
 }
 
@@ -856,11 +855,6 @@ static void controllerFSM_PushOptiVars(void)
               ((uint32_t)relC                    ) ;
 
   controllerMsgPushToOutQueue(sizeof(msgAry) / sizeof(uint32_t), msgAry, osWaitForever);
-}
-
-static void controllerFSM_StartAdc(void)
-{
-  s_controller_doAdc = true;
 }
 
 static _Bool controllerFSM_CheckPower(void)
@@ -961,7 +955,6 @@ static void controllerFSM_SwitchOverCVH(void)
   } else {
     /* Exhausted - start over again */
     s_controller_FSM_state        = ControllerFsm__done;
-    s_controller_doAdc            = true;
   }
 }
 
@@ -1219,8 +1212,6 @@ static void controllerFSM(void)
     s_controller_xnull_LC_ratio = 0.0f;
     #endif
 
-    controllerFSM_StartAdc();
-
     s_controller_FSM_state = ControllerFsm__startAuto;
   }
     break;
@@ -1262,7 +1253,6 @@ static void controllerFSM(void)
 
     /* Push opti data to relays */
     controllerFSM_PushOptiVars();
-    controllerFSM_StartAdc();
   }
     break;
 
@@ -1326,7 +1316,6 @@ static void controllerFSM(void)
 
     /* Push opti data to relays */
     controllerFSM_PushOptiVars();
-    controllerFSM_StartAdc();
   }
     break;
 
@@ -1392,7 +1381,6 @@ static void controllerFSM(void)
 
     /* Push opti data to relays */
     controllerFSM_PushOptiVars();
-    controllerFSM_StartAdc();
   }
     break;
 
@@ -1414,8 +1402,6 @@ static void controllerFSM(void)
       /* Done - wait for new start */
       s_controller_FSM_state = ControllerFsm__doAdc;
     }
-
-    controllerFSM_StartAdc();
   }
     break;
 
@@ -1974,7 +1960,7 @@ static void controllerInit(void)
 
   /* Enable service cycle */
   if (s_controller_doCycle) {
-    controllerCyclicStart(2000UL);  // TODO: remove me
+    controllerCyclicStart(1000UL);  // TODO: remove me --> own task for controllerFSM, waiting for "EG_ADC3__CONV_AVAIL_VDIODE"
 
   } else {
     controllerCyclicStop();
