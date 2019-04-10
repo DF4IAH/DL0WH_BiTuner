@@ -25,7 +25,7 @@ typedef enum InterpreterCmds_ENUM {
 } InterpreterCmds_t;
 
 
-void interpreterConsolePush(const char* buf, int bufLen);
+void interpreterConsolePush(const char* buf, int bufLen, _Bool doWait);
 void interpreterPrintHelp(void);
 void interpreterShowCrLf(void);
 void interpreterShowCursor(void);

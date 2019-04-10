@@ -495,33 +495,7 @@ static void rtosDefaultInit(void)
 
 static void rtosDefaultCyclicTimerEvent()
 {
-  /* Called every 30ms to start the ADCs */
-  EventBits_t eb = xEventGroupGetBits(adcEventGroupHandle);
-  if (!(eb & (EG_ADC1__CONV_RUNNING | EG_ADC2__CONV_RUNNING | EG_ADC3__CONV_RUNNING))) {
-    /* No ADC conversions are active */
-
-    adcStartConv(ADC_ADC1_REFINT_VAL);
-    eb = xEventGroupWaitBits(adcEventGroupHandle, EG_ADC1__CONV_AVAIL_VREF, 0UL, pdFALSE, 5UL / portTICK_PERIOD_MS);
-    if (!(eb & EG_ADC1__CONV_AVAIL_VREF)) {
-      return;
-    }
-
-    adcStartConv(ADC_ADC1_BAT_MV);
-    adcStartConv(ADC_ADC2_IN1_FWD_MV);
-    eb = xEventGroupWaitBits(adcEventGroupHandle, EG_ADC1__CONV_AVAIL_BAT | EG_ADC2__CONV_AVAIL_FWD, 0UL, pdTRUE, 5UL / portTICK_PERIOD_MS);
-    if ((eb & (EG_ADC1__CONV_AVAIL_BAT | EG_ADC2__CONV_AVAIL_FWD)) != (EG_ADC1__CONV_AVAIL_BAT | EG_ADC2__CONV_AVAIL_FWD)) {
-      return;
-    }
-
-    adcStartConv(ADC_ADC1_TEMP_DEG);
-    adcStartConv(ADC_ADC2_IN1_REV_MV);
-    eb = xEventGroupWaitBits(adcEventGroupHandle, EG_ADC1__CONV_AVAIL_TEMP | EG_ADC2__CONV_AVAIL_REV, 0UL, pdTRUE, 5UL / portTICK_PERIOD_MS);
-    if ((eb & (EG_ADC1__CONV_AVAIL_TEMP | EG_ADC2__CONV_AVAIL_REV)) != (EG_ADC1__CONV_AVAIL_TEMP | EG_ADC2__CONV_AVAIL_REV)) {
-      return;
-    }
-
-    adcStartConv(ADC_ADC3_IN3_VDIODE_MV);
-  }
+  // No job to do at this time
 }
 
 static void rtosDefaultCyclicStart(uint32_t period_ms)

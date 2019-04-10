@@ -38,7 +38,7 @@ void i2cBusAddrScan(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle) {
 
   osSemaphoreWait(semaphoreHandle, osWaitForever);
 
-  interpreterConsolePush(msgStart, strlen(msgStart));
+  interpreterConsolePush(msgStart, strlen(msgStart), 1);
 
   i2c1TxBuffer[0] = 0x00;
   for (uint8_t addr = 0x01U; addr <= 0x7FU; addr++) {
@@ -53,12 +53,12 @@ void i2cBusAddrScan(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle) {
       char dbgBuf[64];
       const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
                                   "GOOD:  Addr=0x%02X  got response\r\n", addr);
-      interpreterConsolePush(dbgBuf, dbgLen);
+      interpreterConsolePush(dbgBuf, dbgLen, 1);
       osDelay(25UL);
     }
   }
 
-  interpreterConsolePush(msgEnd, strlen(msgEnd));
+  interpreterConsolePush(msgEnd, strlen(msgEnd), 1);
 
   osSemaphoreRelease(semaphoreHandle);
 }
@@ -92,7 +92,7 @@ uint32_t i2cSequenceWriteLong(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHan
   if (i2cErr == HAL_I2C_ERROR_AF) {
     /* Chip not responding */
     const char errMsg[] = "i2cSequenceWriteLong: ERROR chip does not respond\r\n";
-    interpreterConsolePush(errMsg, strlen(errMsg));
+    interpreterConsolePush(errMsg, strlen(errMsg), 0);
     return HAL_I2C_ERROR_AF;
   }
 
@@ -122,7 +122,7 @@ uint32_t i2cSequenceRead(I2C_HandleTypeDef* dev, osSemaphoreId semaphoreHandle, 
 
     /* Chip not responding */
     const char errMsg[] = "i2cSequenceRead: ERROR chip does not respond\r\n";
-    interpreterConsolePush(errMsg, strlen(errMsg));
+    interpreterConsolePush(errMsg, strlen(errMsg), 0);
     return HAL_I2C_ERROR_AF;
   }
 

@@ -57,6 +57,7 @@ extern osSemaphoreId        c2catTx_BSemHandle;
 extern osSemaphoreId        c2catRx_BSemHandle;
 
 extern EventGroupHandle_t   globalEventGroupHandle;
+extern EventGroupHandle_t   adcEventGroupHandle;
 
 extern float                g_adc_refint_val;
 extern float                g_adc_vref_mv;
@@ -151,7 +152,7 @@ static float                  s_controller_adc_swr              = 0.0f;
 static float                  s_controller_adc_fwd_mw           = 0.0f;
 static float                  s_controller_adc_rev_mw           = 0.0f;
 
-static _Bool                  s_controller_doCycle              = false;
+static uint32_t               s_controller_doCycle              = 0UL;
 
 static DefaultMcuClocking_t s_controller_McuClocking          = DefaultMcuClocking__4MHz_MSI;
 
@@ -181,17 +182,17 @@ static void controllerGreet(void)
 
   /* usbToHost block */
   {
-    interpreterConsolePush(controllerGreetMsg02, strlen(controllerGreetMsg02));
-    interpreterConsolePush(controllerGreetMsg03, strlen(controllerGreetMsg03));
-    interpreterConsolePush(controllerGreetMsg04, strlen(controllerGreetMsg04));
-    interpreterConsolePush(controllerGreetMsg03, strlen(controllerGreetMsg03));
-    interpreterConsolePush(controllerGreetMsg02, strlen(controllerGreetMsg02));
-    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
-    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
+    interpreterConsolePush(controllerGreetMsg02, strlen(controllerGreetMsg02), 1);
+    interpreterConsolePush(controllerGreetMsg03, strlen(controllerGreetMsg03), 1);
+    interpreterConsolePush(controllerGreetMsg04, strlen(controllerGreetMsg04), 1);
+    interpreterConsolePush(controllerGreetMsg03, strlen(controllerGreetMsg03), 1);
+    interpreterConsolePush(controllerGreetMsg02, strlen(controllerGreetMsg02), 1);
+    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01), 1);
+    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01), 1);
 
-    interpreterConsolePush(verBuf, strlen(verBuf));
-    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
-    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01));
+    interpreterConsolePush(verBuf, strlen(verBuf), 1);
+    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01), 1);
+    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01), 1);
   }
 }
 
@@ -258,7 +259,7 @@ static void controllerPrintMCU(void)
       "\t\tPackage(s)\t%s\r\n" \
       "\t\tFlash size\t%4u kB\r\n\r\n\r\n",
       lotBuf, uidWaf, uidPosX, uidPosY, packagePtr, flashSize);
-  interpreterConsolePush(buf, len);
+  interpreterConsolePush(buf, len, 1);
 }
 
 static void controllerInitAfterGreet(void)
@@ -601,7 +602,7 @@ static void controllerFSM_LogAutoFinished(void)
 
     const int len = snprintf(buf, sizeof(buf) - 1,
         "Controller FSM: ControllerFsm__findImagZeroL - SWR good enough - tuner has finished.\r\n");
-    interpreterConsolePush(buf, len);
+    interpreterConsolePush(buf, len, 0);
   }
 }
 
@@ -647,7 +648,7 @@ static void controllerFSM_LogState(void)
                 (uint32_t)s_controller_opti_L, s_controller_opti_L_relays,
                 (uint32_t)s_controller_opti_C, s_controller_opti_C_relays,
                 s_controller_opti_CVHpongCtr, s_controller_opti_LCpongCtr, s_controller_bad_swr_ctr);
-  interpreterConsolePush(buf, len);
+  interpreterConsolePush(buf, len, 0);
 
   mainCalcFloat2IntFrac(s_controller_opti_swr_1st,    3, &s_controller_opti_swr_1st_i,    &s_controller_opti_swr_1st_f  );
   mainCalcFloat2IntFrac(s_controller_opti_swr_1st_L,  1, &s_controller_opti_swr_1st_L_i,  &s_controller_opti_swr_1st_L_f);
@@ -664,7 +665,7 @@ static void controllerFSM_LogState(void)
                 s_controller_opti_swr_2nd_L_i,      s_controller_opti_swr_2nd_L_f,
                 s_controller_opti_swr_2nd_C_i,      s_controller_opti_swr_2nd_C_f
                );
-  interpreterConsolePush(buf, len);
+  interpreterConsolePush(buf, len, 0);
 
   int32_t   swr_i, best_swr_i;
   uint32_t  swr_f, best_swr_f;
@@ -676,7 +677,7 @@ static void controllerFSM_LogState(void)
                 "\tf)\t\t swr= %2ld.%03lu, best_swr= %2ld.%03lu @ CVH= %u: L= %5lu nH, C= %5lu pF.\r\n\r\n",
                 (uint32_t)s_controller_adc_fwd_mv, (uint32_t)s_controller_adc_fwd_mw,
                 swr_i, swr_f,  best_swr_i, best_swr_f,  s_controller_best_swr_CVH, (uint32_t)s_controller_best_swr_L, (uint32_t)s_controller_best_swr_C);
-  interpreterConsolePush(buf, len);
+  interpreterConsolePush(buf, len, 0);
 }
 
 static void controllerFSM_GetGlobalVars(void)
@@ -732,7 +733,15 @@ static void controllerFSM_GetGlobalVars(void)
     }
 
 
-#if 0
+    /* Logging every 1 sec */
+    static uint32_t s_timeLast = 0UL;
+    uint32_t l_timeNow = HAL_GetTick();
+    if (s_timeLast + 1000UL > l_timeNow) {
+      return;
+    }
+    s_timeLast = l_timeNow;
+
+#if 1
     /* Logging */
     {
       int32_t   l_adc_temp_deg_i    = 0L;
@@ -758,7 +767,7 @@ static void controllerFSM_GetGlobalVars(void)
           (int16_t) (s_controller_adc_vref_mv    + 0.5f),
           (int16_t) (s_controller_adc_bat_mv     + 0.5f),
           l_adc_temp_deg_i, l_adc_temp_deg_f100);
-      interpreterConsolePush(dbgBuf, dbgLen);
+      interpreterConsolePush(dbgBuf, dbgLen, 0);
     }
 #endif
 
@@ -771,7 +780,7 @@ static void controllerFSM_GetGlobalVars(void)
           "ADC2: FWD = %5d mV  (ADC mV = %5d mV)\r\n",
           (int16_t) (s_controller_adc_fwd_mv      + 0.5f),
           (int16_t) (s_controller_adc_fwd_mv_log  + 0.5f));
-      interpreterConsolePush(dbgBuf, dbgLen);
+      interpreterConsolePush(dbgBuf, dbgLen, 0);
     }
 #endif
 
@@ -789,7 +798,7 @@ static void controllerFSM_GetGlobalVars(void)
           (int16_t) (s_controller_adc_rev_mv      + 0.5f),
           (int16_t) (s_controller_adc_rev_mv_log  + 0.5f),
           l_swr_i, l_swr_f100);
-      interpreterConsolePush(dbgBuf, dbgLen);
+      interpreterConsolePush(dbgBuf, dbgLen, 0);
     }
 #endif
 
@@ -801,7 +810,7 @@ static void controllerFSM_GetGlobalVars(void)
       const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
           "ADC3: Vdiode = %4d mV\r\n",
           (int16_t) (s_controller_adc_vdiode_mv + 0.5f));
-      interpreterConsolePush(dbgBuf, dbgLen);
+      interpreterConsolePush(dbgBuf, dbgLen, 0);
     }
 #endif
     interpreterShowCrLf();
@@ -900,7 +909,7 @@ static _Bool controllerFSM_CheckSwrTime(void)
       const int len = snprintf(buf, sizeof(buf) - 1,
                               "Controller FSM: VSWR= %2ld.%03lu is good enough - stop auto tuner.\r\n",
                               swr_i, swr_f);
-      interpreterConsolePush(buf, len);
+      interpreterConsolePush(buf, len, 0);
     }
 
     /* No need to start */
@@ -930,7 +939,7 @@ static void controllerFSM_SwitchOverCVH(void)
       const int len = snprintf(buf, sizeof(buf) - 1,
                               "Controller FSM: switch over the constellation to %d (0: CV, 1: CH), CVH pingpong ctr= %u.\r\n",
                               !s_controller_FSM_optiCVH, s_controller_opti_CVHpongCtr);
-      interpreterConsolePush(buf, len);
+      interpreterConsolePush(buf, len, 0);
     }
 
     /* Switch over to opposite CVH constellation */
@@ -1248,7 +1257,7 @@ static void controllerFSM(void)
 
       const int len = snprintf(buf, sizeof(buf) - 1,
           "Controller FSM: ControllerFsm__startAuto - start auto tuner.\r\n");
-      interpreterConsolePush(buf, len);
+      interpreterConsolePush(buf, len, 0);
     }
 
     /* Push opti data to relays */
@@ -1454,7 +1463,7 @@ static void controllerSetL(uint8_t relLnum, uint8_t relEnable)
 
   } else {
     const char errMsg[] = "*** Power to high to set L ***\r\n\r\n";
-    interpreterConsolePush(errMsg, strlen(errMsg));
+    interpreterConsolePush(errMsg, strlen(errMsg), 0);
   }
 }
 
@@ -1496,7 +1505,7 @@ static void controllerSetC(uint8_t relLnum, uint8_t relEnable)
 
   } else {
     const char errMsg[] = "*** Power to high to set C ***\r\n\r\n";
-    interpreterConsolePush(errMsg, strlen(errMsg));
+    interpreterConsolePush(errMsg, strlen(errMsg), 0);
   }
 }
 
@@ -1525,7 +1534,7 @@ static void controllerSetConfigLC(bool isLC)
 
   } else {
     const char errMsg[] = "*** Power to high to set L/C mode ***\r\n\r\n";
-    interpreterConsolePush(errMsg, strlen(errMsg));
+    interpreterConsolePush(errMsg, strlen(errMsg), 0);
   }
 }
 
@@ -1567,7 +1576,7 @@ static void controllerSetCLExt(uint32_t relays)
 
   } else {
     const char errMsg[] = "*** Power to high to set C, L or C/L mode ***\r\n\r\n";
-    interpreterConsolePush(errMsg, strlen(errMsg));
+    interpreterConsolePush(errMsg, strlen(errMsg), 0);
   }
 }
 
@@ -1598,20 +1607,20 @@ static void controllerPrintLC(void)
 
     /* 1st line: header */
     const char* bufStr = "\r\n\r\n## CH CV  L8 L7 L6 L5 L4 L3 L2 L1  C8 C7 C6 C5 C4 C3 C2 C1\r\n##";
-    interpreterConsolePush(bufStr, strlen(bufStr));
+    interpreterConsolePush(bufStr, strlen(bufStr), 0);
 
     /* 2nd line: bit field */
     for (int8_t idx = 17; idx >= 0; idx--) {
       if (idx == 15 || idx == 7) {
-        interpreterConsolePush(" ", 1);
+        interpreterConsolePush(" ", 1, 0);
       }
       buf[2] = (relays & (1UL << idx)) != 0UL ?  '1' : '0';
-      interpreterConsolePush(buf, 3);
+      interpreterConsolePush(buf, 3, 0);
     }
 
     /* 3rd line: hex number */
     const int len = snprintf(strbuf, (sizeof(strbuf) - 1), "\r\n## (Relay short settings: H%06lx)\r\n", (relays & 0x03ffffUL));
-    interpreterConsolePush(strbuf, len);
+    interpreterConsolePush(strbuf, len, 0);
   }
 
   /* 4th line: print L/C configuration and L, C values */
@@ -1620,7 +1629,7 @@ static void controllerPrintLC(void)
     char           strbuf[128]  = { 0 };
 
     const int len = snprintf(strbuf, (sizeof(strbuf) - 1), "## Config: %s\t L = %ld nH\t C = %ld pF\r\n\r\n", sConfig, (uint32_t)valL, (uint32_t)valC);
-    interpreterConsolePush(strbuf, len);
+    interpreterConsolePush(strbuf, len, 0);
   }
 
   interpreterShowCursor();
@@ -1632,6 +1641,41 @@ static void controllerPrintLC(void)
 static void controllerCyclicTimerEvent(void)
 {
   /* Cyclic jobs to do */
+
+  /* Called every 30ms to start the ADCs */
+  EventBits_t eb = xEventGroupGetBits(adcEventGroupHandle);
+  if (!(eb & (EG_ADC1__CONV_RUNNING | EG_ADC2__CONV_RUNNING | EG_ADC3__CONV_RUNNING))) {
+    /* No ADC conversions are active */
+
+    adcStartConv(ADC_ADC1_REFINT_VAL);
+    eb = xEventGroupWaitBits(adcEventGroupHandle, EG_ADC1__CONV_AVAIL_VREF, 0UL, pdFALSE, 5UL / portTICK_PERIOD_MS);
+    if (!(eb & EG_ADC1__CONV_AVAIL_VREF)) {
+      return;
+    }
+
+    adcStartConv(ADC_ADC1_BAT_MV);
+    adcStartConv(ADC_ADC2_IN1_FWD_MV);
+    eb = xEventGroupWaitBits(adcEventGroupHandle, EG_ADC1__CONV_AVAIL_BAT | EG_ADC2__CONV_AVAIL_FWD, 0UL, pdTRUE, 5UL / portTICK_PERIOD_MS);
+    if ((eb & (EG_ADC1__CONV_AVAIL_BAT | EG_ADC2__CONV_AVAIL_FWD)) != (EG_ADC1__CONV_AVAIL_BAT | EG_ADC2__CONV_AVAIL_FWD)) {
+      return;
+    }
+
+    adcStartConv(ADC_ADC1_TEMP_DEG);
+    adcStartConv(ADC_ADC2_IN1_REV_MV);
+    eb = xEventGroupWaitBits(adcEventGroupHandle, EG_ADC1__CONV_AVAIL_TEMP | EG_ADC2__CONV_AVAIL_REV, 0UL, pdTRUE, 5UL / portTICK_PERIOD_MS);
+    if ((eb & (EG_ADC1__CONV_AVAIL_TEMP | EG_ADC2__CONV_AVAIL_REV)) != (EG_ADC1__CONV_AVAIL_TEMP | EG_ADC2__CONV_AVAIL_REV)) {
+      return;
+    }
+
+    adcStartConv(ADC_ADC3_IN3_VDIODE_MV);
+  }
+
+  /* Wait for end of convert */
+  eb = xEventGroupWaitBits(adcEventGroupHandle, EG_ADC3__CONV_AVAIL_VDIODE, 0UL, pdFALSE, 30UL / portTICK_PERIOD_MS);
+  if (!(eb & EG_ADC3__CONV_AVAIL_VDIODE)) {
+    return;
+  }
+
 
   /* FSM logic */
   controllerFSM();
@@ -1708,9 +1752,11 @@ static void controllerMsgProcessor(void)
             msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__SetVar02_Clocking);
             msgAry[msgLen++]  = (s_controller_McuClocking << 24U);
 
-            /* Start the RtosDefault cyclic timer each 30 ms */
+#if 0
+            /* Start the RtosDefault cyclic timer  */
             msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__CallFunc02_CyclicTimerStart);
-            msgAry[msgLen++]  = 30UL;
+            msgAry[msgLen++]  = 1000UL;
+#endif
 
             /* DigPot. - measurement set gain: 0..256 */
             msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__CallFunc04_DigPot_SetGain);
@@ -1849,7 +1895,7 @@ static void controllerInit(void)
 
     s_controller_McuClocking                                  = DefaultMcuClocking_16MHz_MSI;
 
-    s_controller_doCycle                                      = 1U;
+    s_controller_doCycle                                      = 30UL;  // Each 30ms the relays are ready for a new setting
 
     s_mod_start.rtos_Default                                  = 1U;
     s_mod_start.Interpreter                                   = 1U;
@@ -1934,6 +1980,9 @@ static void controllerInit(void)
     }
   }
 
+  /* Set relay state */
+  controllerFSM_PushOptiVars();
+
   /* Init messages */
   {
     osDelay(3500UL);
@@ -1951,16 +2000,13 @@ static void controllerInit(void)
   i2cBusAddrScan(&hi2c1, i2c1_BSemHandle);
   #endif
 
-  /* Set relay state */
-  controllerFSM_PushOptiVars();
-
   /* Reset SWR start timer */
   s_controller_swr_tmr = osKernelSysTick();
 
 
   /* Enable service cycle */
   if (s_controller_doCycle) {
-    controllerCyclicStart(1000UL);  // TODO: remove me --> own task for controllerFSM, waiting for "EG_ADC3__CONV_AVAIL_VDIODE"
+    controllerCyclicStart(s_controller_doCycle);
 
   } else {
     controllerCyclicStop();

@@ -50,8 +50,7 @@ typedef enum UART_EG_ENUM {
 } UART_EG_t;
 
 
-void uartLogLen(const char* str, int len);
-void uartLog(const char* str);
+void uartLogLen(const char* str, int len, _Bool doWait);
 
 uint32_t uartRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs);
 

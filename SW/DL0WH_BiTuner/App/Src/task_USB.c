@@ -96,14 +96,14 @@ static void usbToHostWait(const uint8_t* buf, uint32_t len)
   EventBits_t eb = xEventGroupWaitBits(usbToHostEventGroupHandle,
       USB_TO_HOST_EG__BUF_EMPTY,
       USB_TO_HOST_EG__BUF_EMPTY,
-      0, usbToHost_MaxWaitQueueMs);
+      0, usbToHost_MaxWaitQueueMs / portTICK_PERIOD_MS);
 
   if (eb & USB_TO_HOST_EG__BUF_EMPTY) {
     usbToHost(buf, len);
   }
 }
 
-void usbLogLen(const char* str, int len)
+void usbLogLen(const char* str, int len, _Bool doWait)
 {
   /* Sanity checks */
   if (!str || !len) {
@@ -112,20 +112,16 @@ void usbLogLen(const char* str, int len)
 
   if (s_usbUsbToHost_enable) {
     osSemaphoreWait(usb_BSemHandle, 0UL);
-    usbToHostWait((uint8_t*)str, len);
+
+    if (doWait) {
+      usbToHostWait((uint8_t*)str, len);
+
+    } else {
+      usbToHost((uint8_t*)str, len);
+    }
+
     osSemaphoreRelease(usb_BSemHandle);
   }
-}
-
-inline
-void usbLog(const char* str)
-{
-  /* Sanity check */
-  if (!str) {
-    return;
-  }
-
-  usbLogLen(str, strlen(str));
 }
 
 

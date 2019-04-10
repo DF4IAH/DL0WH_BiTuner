@@ -205,14 +205,14 @@ static void uartTxPushWait(const uint8_t* buf, uint32_t len)
   EventBits_t eb = xEventGroupWaitBits(uartEventGroupHandle,
       UART_EG__TX_BUF_EMPTY,
       UART_EG__TX_BUF_EMPTY,
-      0, 300UL);  // One buffer w/ 256 bytes @ 9.600 baud
+      0, 300UL / portTICK_PERIOD_MS);  // One buffer w/ 256 bytes @ 9.600 baud
 
   if (eb & UART_EG__TX_BUF_EMPTY) {
     uartTxPush(buf, len);
   }
 }
 
-void uartLogLen(const char* str, int len)
+void uartLogLen(const char* str, int len, _Bool doWait)
 {
   /* Sanity checks */
   if (!str || !len) {
@@ -221,20 +221,16 @@ void uartLogLen(const char* str, int len)
 
   if (s_uartTx_enable) {
     osSemaphoreWait(uart_BSemHandle, 0UL);
-    uartTxPushWait((uint8_t*)str, len);
+
+    if (doWait) {
+      uartTxPushWait((uint8_t*)str, len);
+
+    } else {
+      uartTxPush((uint8_t*)str, len);
+    }
+
     osSemaphoreRelease(uart_BSemHandle);
   }
-}
-
-inline
-void uartLog(const char* str)
-{
-  /* Sanity check */
-  if (!str) {
-    return;
-  }
-
-  uartLogLen(str, strlen(str));
 }
 
 
@@ -246,7 +242,7 @@ static void uartTxStartDma(const uint8_t* cmdBuf, uint8_t cmdLen)
     xEventGroupWaitBits(uartEventGroupHandle,
         UART_EG__DMA_TX_END,
         UART_EG__DMA_TX_END,
-        0, 1000 / portTICK_PERIOD_MS);
+        0, 1000UL / portTICK_PERIOD_MS);
   }
 
   {

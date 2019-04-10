@@ -89,69 +89,69 @@ const char                  interpreterHelpMsg164[]            = "\t\tCH\t\t   L
 const char                  interpreterHelpMsg165[]            = "\t\tCV\t\t   CL mode.\r\n";
 
 
-void interpreterConsolePush(const char* buf, int bufLen)
+void interpreterConsolePush(const char* buf, int bufLen, _Bool doWait)
 {
   /* Send to USB */
   if (true) {
-    usbLogLen(buf, bufLen);
+    usbLogLen(buf, bufLen, doWait);
   }
 
   /* Send to UART */
   if (true) {
-    uartLogLen(buf, bufLen);
+    uartLogLen(buf, bufLen, doWait);
   }
 }
 
 void interpreterPrintHelp(void)
 {
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
-  interpreterConsolePush(interpreterHelpMsg002, strlen(interpreterHelpMsg002));
-  interpreterConsolePush(interpreterHelpMsg003, strlen(interpreterHelpMsg003));
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
+  interpreterConsolePush(interpreterHelpMsg002, strlen(interpreterHelpMsg002), 1);
+  interpreterConsolePush(interpreterHelpMsg003, strlen(interpreterHelpMsg003), 1);
 
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
-  interpreterConsolePush(interpreterHelpMsg111, strlen(interpreterHelpMsg111));
-  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
-  interpreterConsolePush(interpreterHelpMsg121, strlen(interpreterHelpMsg121));
-  interpreterConsolePush(interpreterHelpMsg122, strlen(interpreterHelpMsg122));
-  interpreterConsolePush(interpreterHelpMsg123, strlen(interpreterHelpMsg123));
-  interpreterConsolePush(interpreterHelpMsg124, strlen(interpreterHelpMsg124));
-  interpreterConsolePush(interpreterHelpMsg125, strlen(interpreterHelpMsg125));
-  interpreterConsolePush(interpreterHelpMsg126, strlen(interpreterHelpMsg126));
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
+  interpreterConsolePush(interpreterHelpMsg111, strlen(interpreterHelpMsg111), 1);
+  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 1);
+  interpreterConsolePush(interpreterHelpMsg121, strlen(interpreterHelpMsg121), 1);
+  interpreterConsolePush(interpreterHelpMsg122, strlen(interpreterHelpMsg122), 1);
+  interpreterConsolePush(interpreterHelpMsg123, strlen(interpreterHelpMsg123), 1);
+  interpreterConsolePush(interpreterHelpMsg124, strlen(interpreterHelpMsg124), 1);
+  interpreterConsolePush(interpreterHelpMsg125, strlen(interpreterHelpMsg125), 1);
+  interpreterConsolePush(interpreterHelpMsg126, strlen(interpreterHelpMsg126), 1);
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
 
-  interpreterConsolePush(interpreterHelpMsg131, strlen(interpreterHelpMsg131));
-  interpreterConsolePush(interpreterHelpMsg132, strlen(interpreterHelpMsg132));
-  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+  interpreterConsolePush(interpreterHelpMsg131, strlen(interpreterHelpMsg131), 1);
+  interpreterConsolePush(interpreterHelpMsg132, strlen(interpreterHelpMsg132), 1);
+  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 1);
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
 
-  interpreterConsolePush(interpreterHelpMsg141, strlen(interpreterHelpMsg141));
-  interpreterConsolePush(interpreterHelpMsg142, strlen(interpreterHelpMsg142));
-  interpreterConsolePush(interpreterHelpMsg143, strlen(interpreterHelpMsg143));
-  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+  interpreterConsolePush(interpreterHelpMsg141, strlen(interpreterHelpMsg141), 1);
+  interpreterConsolePush(interpreterHelpMsg142, strlen(interpreterHelpMsg142), 1);
+  interpreterConsolePush(interpreterHelpMsg143, strlen(interpreterHelpMsg143), 1);
+  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 1);
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
 
 
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
-  interpreterConsolePush(interpreterHelpMsg151, strlen(interpreterHelpMsg151));
-  interpreterConsolePush(interpreterHelpMsg152, strlen(interpreterHelpMsg152));
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
+  interpreterConsolePush(interpreterHelpMsg151, strlen(interpreterHelpMsg151), 1);
+  interpreterConsolePush(interpreterHelpMsg152, strlen(interpreterHelpMsg152), 1);
 
-  interpreterConsolePush(interpreterHelpMsg161, strlen(interpreterHelpMsg161));
-  interpreterConsolePush(interpreterHelpMsg162, strlen(interpreterHelpMsg162));
-  interpreterConsolePush(interpreterHelpMsg163, strlen(interpreterHelpMsg163));
-  interpreterConsolePush(interpreterHelpMsg164, strlen(interpreterHelpMsg164));
-  interpreterConsolePush(interpreterHelpMsg165, strlen(interpreterHelpMsg165));
-  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112));
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+  interpreterConsolePush(interpreterHelpMsg161, strlen(interpreterHelpMsg161), 1);
+  interpreterConsolePush(interpreterHelpMsg162, strlen(interpreterHelpMsg162), 1);
+  interpreterConsolePush(interpreterHelpMsg163, strlen(interpreterHelpMsg163), 1);
+  interpreterConsolePush(interpreterHelpMsg164, strlen(interpreterHelpMsg164), 1);
+  interpreterConsolePush(interpreterHelpMsg165, strlen(interpreterHelpMsg165), 1);
+  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 1);
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
 }
 
 void interpreterShowCrLf(void)
 {
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 0);
 }
 
 void interpreterShowCursor(void)
 {
-  interpreterConsolePush("> ", 2UL);
+  interpreterConsolePush("> ", 2UL, 0);
 }
 
 static void interpreterShowCrLfCursor(void)
@@ -162,7 +162,7 @@ static void interpreterShowCrLfCursor(void)
 
 void interpreterClearScreen(void)
 {
-  interpreterConsolePush(usbClrScrBuf, strlen(usbClrScrBuf));
+  interpreterConsolePush(usbClrScrBuf, strlen(usbClrScrBuf), 1);
 }
 
 static uint32_t interpreterCalcLineLen(const uint8_t* buf, uint32_t len)
@@ -180,7 +180,7 @@ static uint32_t interpreterCalcLineLen(const uint8_t* buf, uint32_t len)
 static void interpreterUnknownCommand(void)
 {
   const char* unknownStr = "\r\n?? unknown command - please try 'HELP' ??\r\n\r\n";
-  interpreterConsolePush(unknownStr, strlen(unknownStr));
+  interpreterConsolePush(unknownStr, strlen(unknownStr), 0);
 }
 
 
@@ -307,7 +307,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     interpreterShowCursor();
 
   } else if (!strncmp("HELP", cb, 4) && (4UL == len)) {
-    interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001));
+    interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 0);
     interpreterPrintHelp();
     interpreterShowCursor();
 
@@ -421,7 +421,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 
   } else if (!strncmp("RESTART", cb, 7) && (7UL == len)) {
     const char infoStr[] = "*** Restarting, please wait...\r\n";
-    interpreterConsolePush(infoStr, strlen(infoStr));
+    interpreterConsolePush(infoStr, strlen(infoStr), 0);
     osDelay(500UL);
 
     uint32_t cmd[1];
@@ -486,7 +486,7 @@ void interpreterGetterTask(void const * argument)
     if (inBufLen) {
       /* Echo */
       if (true) {
-        interpreterConsolePush((char*)inBuf, inBufLen);
+        interpreterConsolePush((char*)inBuf, inBufLen, 0);
       }
 
       /* Lets do the interpreter */
