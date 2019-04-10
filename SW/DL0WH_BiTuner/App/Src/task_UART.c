@@ -245,6 +245,9 @@ static void uartTxStartDma(const uint8_t* cmdBuf, uint8_t cmdLen)
         0, 1000UL / portTICK_PERIOD_MS);
   }
 
+  /* Be sure that DMA engine is really stopped */
+  HAL_UART_AbortTransmit(&hlpuart1);
+
   {
     taskDISABLE_INTERRUPTS();
 
