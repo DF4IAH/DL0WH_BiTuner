@@ -60,7 +60,7 @@ typedef enum ControllerCmds_ENUM {
 typedef enum ControllerFsm_ENUM {
 
   ControllerFsm__NOP                                          = 0U,
-  ControllerFsm__doAdc,
+  ControllerFsm__Init,
   ControllerFsm__startAuto,
   ControllerFsm__findImagZero,
   ControllerFsm__findMinSwr,

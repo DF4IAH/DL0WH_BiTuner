@@ -144,6 +144,7 @@ osMessageQId catTxQueueHandle;
 osMessageQId catRxQueueHandle;
 osTimerId defaultTimerHandle;
 osTimerId controllerTimerHandle;
+osTimerId defaultRelayOffTimerHandle;
 osSemaphoreId c2default_BSemHandle;
 osSemaphoreId i2c1_BSemHandle;
 osSemaphoreId spi1_BSemHandle;
@@ -179,6 +180,7 @@ void StartCatTxTask(void const * argument);
 void StartCatRxTask(void const * argument);
 void rtosDefaultTimerCallback(void const * argument);
 void rtosControllerTimerCallback(void const * argument);
+void defaultRelayOffTimerCallback(void const * argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -382,9 +384,9 @@ static void rtosDefaultSpiRelays(uint64_t relaySettings)
 
   /* Enable PWM for 30 ms and thus energizes the relay coils for that time */
   {
+    __GPIOB_CLK_ENABLE();
     HAL_GPIO_WritePin(GPIO_SPI_PWM_GPIO_Port, GPIO_SPI_PWM_Pin, GPIO_PIN_SET);
-    osDelay(30UL);
-    HAL_GPIO_WritePin(GPIO_SPI_PWM_GPIO_Port, GPIO_SPI_PWM_Pin, GPIO_PIN_RESET);
+    osTimerStart(defaultRelayOffTimerHandle, 30UL);
   }
   isInit = true;
 
@@ -703,6 +705,10 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of controllerTimer */
   osTimerDef(controllerTimer, rtosControllerTimerCallback);
   controllerTimerHandle = osTimerCreate(osTimer(controllerTimer), osTimerPeriodic, NULL);
+
+  /* definition and creation of defaultRelayOffTimer */
+  osTimerDef(defaultRelayOffTimer, defaultRelayOffTimerCallback);
+  defaultRelayOffTimerHandle = osTimerCreate(osTimer(defaultRelayOffTimer), osTimerOnce, NULL);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
@@ -1058,6 +1064,15 @@ void rtosControllerTimerCallback(void const * argument)
   /* USER CODE BEGIN rtosControllerTimerCallback */
   controllerTimerCallback(argument);
   /* USER CODE END rtosControllerTimerCallback */
+}
+
+/* defaultRelayOffTimerCallback function */
+void defaultRelayOffTimerCallback(void const * argument)
+{
+  /* USER CODE BEGIN defaultRelayOffTimerCallback */
+  __GPIOB_CLK_ENABLE();
+  HAL_GPIO_WritePin(GPIO_SPI_PWM_GPIO_Port, GPIO_SPI_PWM_Pin, GPIO_PIN_RESET);
+  /* USER CODE END defaultRelayOffTimerCallback */
 }
 
 /* Private application code --------------------------------------------------*/

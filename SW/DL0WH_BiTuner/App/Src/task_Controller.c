@@ -96,8 +96,8 @@ volatile const float Controller_Cp_pF[8]                      = {
     1939.0f
 };
 
-static const float          Controller_AutoSWR_P_mW_Min       = 5.0f;
-static const float          Controller_AutoSWR_P_mW_Max       = 15.0f;
+static const float          Controller_AutoSWR_P_mW_Min       =  5000.0f  / 1000.0f;  // -30 dB coupling
+static const float          Controller_AutoSWR_P_mW_Max       = 15000.0f  / 1000.0f;  // -30 dB coupling
 static const float          Controller_AutoSWR_SWR_Init       = 999.9f;
 static const float          Controller_AutoSWR_SWR_Min        = 1.1f;
 static const float          Controller_AutoSWR_SWR_Max        = 10.0f;
@@ -869,27 +869,24 @@ static void controllerFSM_PushOptiVars(void)
 static _Bool controllerFSM_CheckPower(void)
 {
   if ((Controller_AutoSWR_P_mW_Min > s_controller_adc_fwd_mw) || (s_controller_adc_fwd_mw > Controller_AutoSWR_P_mW_Max)) {
-#if 0
+#if 1
     /* Logging */
-    {
+    if (s_controller_FSM_state > ControllerFsm__startAuto) {
       char      buf[128];
       int32_t   pwr_i;
       uint32_t  pwr_f;
 
       mainCalcFloat2IntFrac(s_controller_adc_fwd_mw, 3, &pwr_i, &pwr_f);
       const int len = snprintf(buf, sizeof(buf) - 1,
-                              "Controller FSM: power= %5ld.%03lu out of [%u .. %u] Watts - stop auto tuner.\r\n",
+                              "Controller FSM: power= %5ld.%03lu out of [%u .. %u] mW - stop auto tuner.\r\n",
                               pwr_i, pwr_f,
                               (uint16_t)Controller_AutoSWR_P_mW_Min, (uint16_t)Controller_AutoSWR_P_mW_Max);
-      interpreterConsolePush(buf, len);
+      interpreterConsolePush(buf, len, 0);
     }
 #endif
 
-    /* Reset SWR start timer */
-    s_controller_swr_tmr = osKernelSysTick();
-
     /* Overdrive or to low energy */
-    s_controller_FSM_state = ControllerFsm__doAdc;
+    s_controller_FSM_state = ControllerFsm__Init;
 
     return true;
   }
@@ -900,7 +897,7 @@ static _Bool controllerFSM_CheckSwrTime(void)
 {
   if (s_controller_adc_swr < Controller_AutoSWR_SWR_Min) {
     /* Logging */
-    {
+    if (s_controller_FSM_state > ControllerFsm__startAuto) {
       char buf[128];
       int32_t   swr_i;
       uint32_t  swr_f;
@@ -913,13 +910,13 @@ static _Bool controllerFSM_CheckSwrTime(void)
     }
 
     /* No need to start */
-    s_controller_FSM_state = ControllerFsm__doAdc;
+    s_controller_FSM_state = ControllerFsm__Init;
 
     return true;
 
   } else if (Controller_AutoSWR_Time_ms_Max > (osKernelSysTick() - s_controller_swr_tmr)) {
     /* Timer has not yet elapsed */
-    s_controller_FSM_state = ControllerFsm__doAdc;
+    s_controller_FSM_state = ControllerFsm__Init;
 
     return true;
   }
@@ -1205,7 +1202,7 @@ static void controllerFSM(void)
   {
 
   case ControllerFsm__NOP:
-  case ControllerFsm__doAdc:
+  case ControllerFsm__Init:
   {
     /* Init SWR compare value */
     s_controller_adc_swr = Controller_AutoSWR_SWR_Init;
@@ -1230,15 +1227,25 @@ static void controllerFSM(void)
     /* Pull global vars */
     controllerFSM_GetGlobalVars();
 
-    break;  // TODO: remove me!
+    // TODO: remove block
+#if 1
+    static uint8_t s_ctr = 0U;
+    if (++s_ctr >= 1U) {
+      s_ctr = 0U;
+      controllerFSM_PushOptiVars();
+    }
+    break;
+#endif
 
     /* Check for security */
-    if (controllerFSM_CheckPower())
+    if (controllerFSM_CheckPower()) {
       break;
+    }
 
     /* Check if auto tuner should start */
-    if (controllerFSM_CheckSwrTime())
+    if (controllerFSM_CheckSwrTime()) {
       break;
+    }
 
     /* Run (V)SWR optimization */
     s_controller_FSM_optiCVH      = ControllerOptiCVH__CV;
@@ -1300,6 +1307,9 @@ static void controllerFSM(void)
       if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Min) {
         /* SWR: we have got it */
         controllerFSM_LogAutoFinished();
+
+        /* Reset SWR start timer */
+        s_controller_swr_tmr = osKernelSysTick();
         break;
       }
 
@@ -1365,6 +1375,9 @@ static void controllerFSM(void)
       if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Min) {
         /* SWR: we have got it */
         controllerFSM_LogAutoFinished();
+
+        /* Reset SWR start timer */
+        s_controller_swr_tmr = osKernelSysTick();
         break;
       }
 
@@ -1409,7 +1422,10 @@ static void controllerFSM(void)
     /* Check if current VSWR is good enough */
     if (s_controller_adc_swr > Controller_AutoSWR_SWR_Min) {
       /* Done - wait for new start */
-      s_controller_FSM_state = ControllerFsm__doAdc;
+      s_controller_FSM_state = ControllerFsm__Init;
+
+      /* Reset SWR start timer */
+      s_controller_swr_tmr = osKernelSysTick();
     }
   }
     break;
@@ -1893,7 +1909,7 @@ static void controllerInit(void)
     memset(&s_msg_in,   0, sizeof(s_msg_in));
     memset(&s_mod_rdy,  0, sizeof(s_mod_rdy));
 
-    s_controller_McuClocking                                  = DefaultMcuClocking_16MHz_MSI;
+    s_controller_McuClocking                                  = DefaultMcuClocking_80MHz_MSI16_PLL;
 
     s_controller_doCycle                                      = 30UL;  // Each 30ms the relays are ready for a new setting
 
