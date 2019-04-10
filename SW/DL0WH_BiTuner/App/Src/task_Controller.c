@@ -1227,16 +1227,6 @@ static void controllerFSM(void)
     /* Pull global vars */
     controllerFSM_GetGlobalVars();
 
-    // TODO: remove block
-#if 1
-    static uint8_t s_ctr = 0U;
-    if (++s_ctr >= 1U) {
-      s_ctr = 0U;
-      controllerFSM_PushOptiVars();
-    }
-    break;
-#endif
-
     /* Check for security */
     if (controllerFSM_CheckPower()) {
       break;
@@ -1247,12 +1237,22 @@ static void controllerFSM(void)
       break;
     }
 
+    // TODO: remove block
+#if 0
+    static uint8_t s_ctr = 0U;
+    if (++s_ctr >= 1U) {
+      s_ctr = 0U;
+      controllerFSM_PushOptiVars();
+    }
+    break;
+#endif
+
     /* Run (V)SWR optimization */
     s_controller_FSM_optiCVH      = ControllerOptiCVH__CV;
     s_controller_FSM_optiLC       = ControllerOptiLC__L;
     s_controller_FSM_optiStrat    = ControllerOptiStrat__Double;
     s_controller_FSM_optiUpDn     = ControllerOptiUpDn__Up;
-    s_controller_FSM_state        = ControllerFsm__findImagZero;
+  //s_controller_FSM_state        = ControllerFsm__findImagZero;
     s_controller_opti_CVHpongCtr  = s_controller_opti_LCpongCtr = s_controller_bad_swr_ctr = 0U;
     s_controller_best_swr         = s_controller_adc_swr = Controller_AutoSWR_SWR_Init;
     s_controller_opti_L           = Controller_L0_nH + Controller_Ls_nH[0];
@@ -1260,11 +1260,8 @@ static void controllerFSM(void)
 
     /* Logging */
     {
-      char buf[128];
-
-      const int len = snprintf(buf, sizeof(buf) - 1,
-          "Controller FSM: ControllerFsm__startAuto - start auto tuner.\r\n");
-      interpreterConsolePush(buf, len, 0);
+      char buf[] = "Controller FSM: ControllerFsm__startAuto - start auto tuner.\r\n";
+      //interpreterConsolePush(buf, strlen(buf), 0);
     }
 
     /* Push opti data to relays */
@@ -1278,8 +1275,9 @@ static void controllerFSM(void)
     controllerFSM_GetGlobalVars();
 
     /* Check for security */
-    if (controllerFSM_CheckPower())
+    if (controllerFSM_CheckPower()) {
       break;
+    }
 
     /* Show current state of optimization */
     controllerFSM_LogState();
