@@ -57,13 +57,49 @@ typedef enum ControllerCmds_ENUM {
 } ControllerCmds_t;
 
 
+
+typedef enum Meas_Percent {
+  P000                                                        = 0U,
+  P025,
+  P050,
+  P075,
+  P100
+} Meas_Percent_t;
+
+typedef struct Meas_Data {
+  uint8_t relayVal[5];
+  float   swr[5];
+} Meas_Data_t;
+
+
+
 typedef enum ControllerFsm_ENUM {
 
   ControllerFsm__NOP                                          = 0U,
   ControllerFsm__Init,
-  ControllerFsm__startAuto,
-  ControllerFsm__findImagZero,
-  ControllerFsm__findMinSwr,
+
+  ControllerFsm__StartAuto,
+
+  ControllerFsm__L_Meas_P000,
+  ControllerFsm__L_Meas_P050,
+  ControllerFsm__L_Meas_P100,
+
+  ControllerFsm__L_Meas_P025,
+  ControllerFsm__L_Meas_P075,
+
+  ControllerFsm__L_Select,
+
+
+  ControllerFsm__C_Meas_P000,
+  ControllerFsm__C_Meas_P050,
+  ControllerFsm__C_Meas_P100,
+
+  ControllerFsm__C_Meas_P025,
+  ControllerFsm__C_Meas_P075,
+
+  ControllerFsm__C_Select,
+
+
   ControllerFsm__done,
 
 } ControllerFsm_t;
@@ -80,21 +116,21 @@ typedef enum ControllerOptiLC_ENUM {
   ControllerOptiLC__L                                         = 0U,
   ControllerOptiLC__C,
 
-} ControllerOptiLC_t;
+} ControllerOptiLC_t_XXX;
 
 typedef enum ControllerOptiStrat_ENUM {
 
   ControllerOptiStrat__Double                                 = 0U,
   ControllerOptiStrat__Half,
 
-} ControllerOptiStrat_t;
+} ControllerOptiStrat_t_XXX;
 
 typedef enum ControllerOptiUpDn_ENUM {
 
   ControllerOptiUpDn__Up                                      = 0U,
   ControllerOptiUpDn__Dn,
 
-} ControllerOptiUpDn_t;
+} ControllerOptiUpDn_t_XXX;
 
 
 typedef struct ControllerMods {
