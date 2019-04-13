@@ -105,8 +105,8 @@ void interpreterConsolePush(const char* buf, int bufLen, _Bool doWait)
 void interpreterPrintHelp(void)
 {
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
-  interpreterConsolePush(interpreterHelpMsg002, strlen(interpreterHelpMsg002), 1);
-  interpreterConsolePush(interpreterHelpMsg003, strlen(interpreterHelpMsg003), 1);
+  interpreterConsolePush(interpreterHelpMsg002, strlen(interpreterHelpMsg002), 0);
+  interpreterConsolePush(interpreterHelpMsg003, strlen(interpreterHelpMsg003), 0);
 
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
   interpreterConsolePush(interpreterHelpMsg111, strlen(interpreterHelpMsg111), 1);
@@ -117,23 +117,23 @@ void interpreterPrintHelp(void)
   interpreterConsolePush(interpreterHelpMsg124, strlen(interpreterHelpMsg124), 1);
   interpreterConsolePush(interpreterHelpMsg125, strlen(interpreterHelpMsg125), 1);
   interpreterConsolePush(interpreterHelpMsg126, strlen(interpreterHelpMsg126), 1);
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 0);
 
   interpreterConsolePush(interpreterHelpMsg131, strlen(interpreterHelpMsg131), 1);
   interpreterConsolePush(interpreterHelpMsg132, strlen(interpreterHelpMsg132), 1);
   interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 1);
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 0);
 
   interpreterConsolePush(interpreterHelpMsg141, strlen(interpreterHelpMsg141), 1);
   interpreterConsolePush(interpreterHelpMsg142, strlen(interpreterHelpMsg142), 1);
   interpreterConsolePush(interpreterHelpMsg143, strlen(interpreterHelpMsg143), 1);
   interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 1);
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 0);
 
 
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
-  interpreterConsolePush(interpreterHelpMsg151, strlen(interpreterHelpMsg151), 1);
-  interpreterConsolePush(interpreterHelpMsg152, strlen(interpreterHelpMsg152), 1);
+  interpreterConsolePush(interpreterHelpMsg151, strlen(interpreterHelpMsg151), 0);
+  interpreterConsolePush(interpreterHelpMsg152, strlen(interpreterHelpMsg152), 0);
 
   interpreterConsolePush(interpreterHelpMsg161, strlen(interpreterHelpMsg161), 1);
   interpreterConsolePush(interpreterHelpMsg162, strlen(interpreterHelpMsg162), 1);
@@ -141,7 +141,7 @@ void interpreterPrintHelp(void)
   interpreterConsolePush(interpreterHelpMsg164, strlen(interpreterHelpMsg164), 1);
   interpreterConsolePush(interpreterHelpMsg165, strlen(interpreterHelpMsg165), 1);
   interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 1);
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 0);
 }
 
 void interpreterShowCrLf(void)
@@ -151,7 +151,7 @@ void interpreterShowCrLf(void)
 
 void interpreterShowCursor(void)
 {
-  interpreterConsolePush("> ", 2UL, 0);
+  interpreterConsolePush("> ", 2, 0);
 }
 
 static void interpreterShowCrLfCursor(void)
@@ -476,11 +476,11 @@ void interpreterGetterTask(void const * argument)
     uint32_t inBufLen;
 
     /* Transfer USB input*/
-    inBufLen = usbPullFromOutQueue(inBuf, 1UL);
+    inBufLen = usbPullFromOutQueue(inBuf, sizeof(inBuf), 0UL);
 
     /* Transfer UART input*/
     if (!inBufLen) {
-      inBufLen = uartRxPullFromQueue(inBuf, 1UL);
+      inBufLen = uartRxPullFromQueue(inBuf, sizeof(inBuf), 0UL);
     }
 
     if (inBufLen) {

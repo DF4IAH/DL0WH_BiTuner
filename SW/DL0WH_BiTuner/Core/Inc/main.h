@@ -108,7 +108,9 @@
 #endif
 
 
-#define BITUNER_CTRL_VERSION                                 20190411UL
+#define BITUNER_CTRL_VERSION                                 20190413UL
+
+#define RELAY_STILL_TIME                                     30UL
 
 
 typedef enum POWERSWITCH_ENUM {

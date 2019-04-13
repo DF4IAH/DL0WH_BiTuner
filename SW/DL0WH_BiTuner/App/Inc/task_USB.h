@@ -39,7 +39,7 @@ typedef enum USB_TO_HOST_EG_ENUM {
 /* Called from the application */
 void usbLogLen(const char* str, int len, _Bool doWait);
 
-uint32_t usbPullFromOutQueue(uint8_t* msgAry, uint32_t waitMs);
+uint32_t usbPullFromOutQueue(uint8_t* msgAry, uint32_t size, uint32_t waitMs);
 
 
 /* Called from the USB CDC backend */

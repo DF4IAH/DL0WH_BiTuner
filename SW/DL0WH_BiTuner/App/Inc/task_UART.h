@@ -52,7 +52,7 @@ typedef enum UART_EG_ENUM {
 
 void uartLogLen(const char* str, int len, _Bool doWait);
 
-uint32_t uartRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs);
+uint32_t uartRxPullFromQueue(uint8_t* msgAry, uint32_t size, uint32_t waitMs);
 
 void uartTxPutterTask(void const * argument);
 void uartTxTaskInit(void);

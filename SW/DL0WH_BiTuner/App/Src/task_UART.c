@@ -108,7 +108,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
   */
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle)
 {
-  return;
 #if 0
   if (UartHandle == &huart4) {
     HAL_CAT_ErrorCallback(UartHandle);
@@ -141,7 +140,7 @@ static void uartHalInit(void)
 
   /* Init UART */
   {
-    hlpuart1.Init.BaudRate                = 9600;
+    hlpuart1.Init.BaudRate                = 38400UL;  //9600UL;
     hlpuart1.Init.WordLength              = UART_WORDLENGTH_8B;
     hlpuart1.Init.StopBits                = UART_STOPBITS_1;
     hlpuart1.Init.Parity                  = UART_PARITY_NONE;
@@ -164,14 +163,16 @@ static void uartHalInit(void)
 
 /* Messaging */
 
-uint32_t uartRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs)
+uint32_t uartRxPullFromQueue(uint8_t* msgAry, uint32_t size, uint32_t waitMs)
 {
   uint32_t len = 0UL;
 
   /* Get semaphore to queue out */
-  osSemaphoreWait(uart_BSemHandle, waitMs);
+  if (osOK != osSemaphoreWait(uart_BSemHandle, 0UL)) {
+    return 0UL;
+  }
 
-  do {
+  while (len < (size - 1UL)) {
     osEvent ev = osMessageGet(uartRxQueueHandle, waitMs);
     if (ev.status == osEventMessage) {
       msgAry[len++] = ev.value.v;
@@ -179,7 +180,8 @@ uint32_t uartRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs)
     } else {
       break;
     }
-  } while (1);
+  }
+  msgAry[len] = 0U;
 
   /* Return semaphore */
   osSemaphoreRelease(uart_BSemHandle);
@@ -193,7 +195,7 @@ uint32_t uartRxPullFromQueue(uint8_t* msgAry, uint32_t waitMs)
 static void uartTxPush(const uint8_t* buf, uint32_t len)
 {
   while (len--) {
-    /* Block on TX queue */
+    /* Do not block on TX queue */
     osMessagePut(uartTxQueueHandle, *(buf++), 0UL);
   }
   osMessagePut(uartTxQueueHandle, 0, 0UL);
@@ -242,7 +244,8 @@ static void uartTxStartDma(const uint8_t* cmdBuf, uint8_t cmdLen)
     xEventGroupWaitBits(uartEventGroupHandle,
         UART_EG__DMA_TX_END,
         UART_EG__DMA_TX_END,
-        0, 1000UL / portTICK_PERIOD_MS);
+        0,
+        portMAX_DELAY);
   }
 
   /* Be sure that DMA engine is really stopped */
@@ -270,10 +273,10 @@ static void uartTxStartDma(const uint8_t* cmdBuf, uint8_t cmdLen)
 
 void uartTxPutterTask(void const * argument)
 {
-  const uint32_t  maxWaitMs   = 25UL;
+  const uint32_t  maxWaitMs   = RELAY_STILL_TIME;
   uint8_t         buf[256];
 
-  const uint32_t  lastBuf     = sizeof(buf) - 1;
+  const uint8_t   lastBuf     = sizeof(buf) - 1;
 
   /* Clear queue */
   while (osMessageGet(uartTxQueueHandle, 1UL).status == osEventMessage) {
@@ -283,10 +286,10 @@ void uartTxPutterTask(void const * argument)
 
   /* TaskLoop */
   for (;;) {
-    uint8_t len = 0U;
+    uint8_t   len     = 0U;
+    uint8_t*  bufPtr  = buf;
 
-    uint8_t* bufPtr = buf;
-    for (uint32_t idx = 0UL; idx < lastBuf; idx++) {
+    for (uint8_t idx = 0U; idx < (lastBuf - 1); idx++) {
       osEvent ev = osMessageGet(uartTxQueueHandle, maxWaitMs);
       if (ev.status == osEventMessage) {
         if (ev.value.v) {
@@ -294,19 +297,15 @@ void uartTxPutterTask(void const * argument)
         }
 
       } else {
-        len = bufPtr - buf;
         break;
       }
     }
+    len = bufPtr - buf;
     buf[len] = 0U;
 
     /* Start DMA TX engine */
     if (len) {
       uartTxStartDma(buf, len);
-
-    } else {
-      /* Delay for the next attempt */
-      osDelay(25UL);
     }
   }
 }
@@ -317,7 +316,7 @@ static void uartTxInit(void)
   uartHalInit();
 
   /* Start putter thread */
-  osThreadDef(uartTxPutterTask, uartTxPutterTask, osPriorityHigh, 0, 128);
+  osThreadDef(uartTxPutterTask, uartTxPutterTask, osPriorityNormal, 0, 128);
   s_uartTxPutterTaskHandle = osThreadCreate(osThread(uartTxPutterTask), NULL);
 }
 

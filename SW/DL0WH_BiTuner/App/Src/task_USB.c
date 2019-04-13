@@ -312,14 +312,14 @@ void usbUsbToHostTaskLoop(void)
 
 /* USB-from-Host */
 
-uint32_t usbPullFromOutQueue(uint8_t* msgAry, uint32_t waitMs)
+uint32_t usbPullFromOutQueue(uint8_t* msgAry, uint32_t size, uint32_t waitMs)
 {
   uint32_t len = 0UL;
 
   /* Get semaphore to queue out */
   osSemaphoreWait(usbFromHost_BSemHandle, waitMs);
 
-  do {
+  while (len < (size - 1)) {
     osEvent ev = osMessageGet(usbFromHostQueueHandle, waitMs);
     if (ev.status == osEventMessage) {
       msgAry[len++] = ev.value.v;
@@ -327,7 +327,8 @@ uint32_t usbPullFromOutQueue(uint8_t* msgAry, uint32_t waitMs)
     } else {
       break;
     }
-  } while (1);
+  };
+  msgAry[len] = 0U;
 
   /* Return semaphore */
   osSemaphoreRelease(usbFromHost_BSemHandle);
