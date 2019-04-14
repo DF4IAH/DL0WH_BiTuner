@@ -75,32 +75,25 @@ typedef struct Meas_Data {
 
 typedef enum ControllerFsm_ENUM {
 
-  ControllerFsm__NOP                                          = 0U,
+  ControllerFsm__NOP                                          = 0x00U,
   ControllerFsm__Init,
-
   ControllerFsm__StartAuto,
 
-  ControllerFsm__L_Meas_P000,
-  ControllerFsm__L_Meas_P050,
+  ControllerFsm__L_Meas_P000                                  = 0x11U,
   ControllerFsm__L_Meas_P100,
-
+  ControllerFsm__L_Meas_P050,
   ControllerFsm__L_Meas_P025,
   ControllerFsm__L_Meas_P075,
-
   ControllerFsm__L_Select,
 
-
-  ControllerFsm__C_Meas_P000,
-  ControllerFsm__C_Meas_P050,
+  ControllerFsm__C_Meas_P000                                  = 0x21U,
   ControllerFsm__C_Meas_P100,
-
+  ControllerFsm__C_Meas_P050,
   ControllerFsm__C_Meas_P025,
   ControllerFsm__C_Meas_P075,
-
   ControllerFsm__C_Select,
 
-
-  ControllerFsm__done,
+  ControllerFsm__done                                         = 0x30U,
 
 } ControllerFsm_t;
 

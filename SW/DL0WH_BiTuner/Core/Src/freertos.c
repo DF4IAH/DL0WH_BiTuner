@@ -591,9 +591,15 @@ static void rtosDefaultMsgProcess(uint32_t msgLen, const uint32_t* msgAry)
 
       switch (mcuClocking) {
       case DefaultMcuClocking_16MHz_MSI:
-        {
-          Again_SystemClock_Config(SYSCLK_CONFIG_16MHz_MSI);
-        }
+      {
+        Again_SystemClock_Config(SYSCLK_CONFIG_16MHz_MSI);
+      }
+        break;
+
+      case DefaultMcuClocking_80MHz_MSI16_PLL:
+      {
+        Again_SystemClock_Config(SYSCLK_CONFIG_80MHz_MSI16_PLL);
+      }
         break;
 
       default: { }
