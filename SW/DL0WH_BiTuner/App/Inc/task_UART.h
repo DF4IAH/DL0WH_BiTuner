@@ -41,8 +41,7 @@ typedef enum UART_EG_ENUM {
   UART_EG__TX_BUF_EMPTY                                       = (1UL <<  0U),
   UART_EG__TX_ECHO_ON                                         = (1UL <<  1U),
 
-  UART_EG__DMA_TX_RUN                                         = (1UL <<  8U),
-  UART_EG__DMA_TX_END                                         = (1UL <<  9U),
+  UART_EG__DMA_TX_RDY                                         = (1UL <<  8U),
 
   UART_EG__DMA_RX_RUN                                         = (1UL << 16U),
   UART_EG__DMA_RX_END                                         = (1UL << 17U),

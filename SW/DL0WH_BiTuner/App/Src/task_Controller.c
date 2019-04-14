@@ -192,16 +192,16 @@ static void controllerGreet(void)
 
   /* usbToHost block */
   {
-    interpreterConsolePush(controllerGreetMsg02, strlen(controllerGreetMsg02), 1);
-    interpreterConsolePush(controllerGreetMsg03, strlen(controllerGreetMsg03), 1);
-    interpreterConsolePush(controllerGreetMsg04, strlen(controllerGreetMsg04), 1);
-    interpreterConsolePush(controllerGreetMsg03, strlen(controllerGreetMsg03), 1);
-    interpreterConsolePush(controllerGreetMsg02, strlen(controllerGreetMsg02), 1);
-    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01), 1);
-    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01), 1);
+    interpreterConsolePush(controllerGreetMsg02, strlen(controllerGreetMsg02), 0);
+    interpreterConsolePush(controllerGreetMsg03, strlen(controllerGreetMsg03), 0);
+    interpreterConsolePush(controllerGreetMsg04, strlen(controllerGreetMsg04), 0);
+    interpreterConsolePush(controllerGreetMsg03, strlen(controllerGreetMsg03), 0);
+    interpreterConsolePush(controllerGreetMsg02, strlen(controllerGreetMsg02), 0);
+    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01), 0);
+    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01), 0);
 
-    interpreterConsolePush(verBuf, strlen(verBuf), 1);
-    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01), 1);
+    interpreterConsolePush(verBuf, strlen(verBuf), 0);
+    interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01), 0);
     interpreterConsolePush(controllerGreetMsg01, strlen(controllerGreetMsg01), 1);
   }
 }
@@ -644,7 +644,7 @@ static void controllerFSM_LogAutoFinished(void)
 static void controllerFSM_LogState(void)
 {
   /* Show current state of optimization */
-  const _Bool     doWait = 1;
+  const _Bool     doWait = 0;
   char            buf[512];
 
 #if 1
@@ -723,41 +723,43 @@ static void controllerFSM_GetGlobalVars(void)
     const float fwdMv = mainCalc_mV_to_mW(s_controller_adc_fwd_mv);
     const float revMv = mainCalc_mV_to_mW(s_controller_adc_rev_mv);
 
-    /* Disabled IRQ section */
-    taskDISABLE_INTERRUPTS();
+    {
+      /* Disabled IRQ section */
+      taskDISABLE_INTERRUPTS();
 
-    s_controller_adc_fwd_mw = fwdMv;
-    s_controller_adc_rev_mw = revMv;
+      s_controller_adc_fwd_mw = fwdMv;
+      s_controller_adc_rev_mw = revMv;
 
-    taskENABLE_INTERRUPTS();
+      taskENABLE_INTERRUPTS();
+    }
   }
 
   /* Logging every 1 sec */
   {
     static uint32_t s_timeLast = 0UL;
     uint32_t l_timeNow = HAL_GetTick();
+    char  dbgBuf[128];
+
     if (s_timeLast + 1000UL > l_timeNow) {
       return;
     }
     s_timeLast = l_timeNow;
 
-#if 1
-    /* Logging */
     {
       int32_t   l_adc_temp_deg_i    = 0L;
       uint32_t  l_adc_temp_deg_f100 = 0UL;
-      char      dbgBuf[128];
       float     s_controller_adc_revint_val;
       float     s_controller_adc_vref_mv;
 
-      /* Disabled IRQ section */
-      taskDISABLE_INTERRUPTS();
+      {
+        /* Disabled IRQ section */
+        taskDISABLE_INTERRUPTS();
 
-      s_controller_adc_revint_val = g_adc_refint_val;
-      s_controller_adc_vref_mv    = g_adc_vref_mv;
+        s_controller_adc_revint_val = g_adc_refint_val;
+        s_controller_adc_vref_mv    = g_adc_vref_mv;
 
-      taskENABLE_INTERRUPTS();
-
+        taskENABLE_INTERRUPTS();
+      }
 
       mainCalcFloat2IntFrac(s_controller_adc_temp_deg, 2, &l_adc_temp_deg_i, &l_adc_temp_deg_f100);
 
@@ -767,27 +769,18 @@ static void controllerFSM_GetGlobalVars(void)
           (int16_t) (s_controller_adc_vref_mv    + 0.5f),
           (int16_t) (s_controller_adc_bat_mv     + 0.5f),
           l_adc_temp_deg_i, l_adc_temp_deg_f100);
-      interpreterConsolePush(dbgBuf, dbgLen, 0);
+      interpreterConsolePush(dbgBuf, dbgLen, 1);
     }
-#endif
 
-#if 1
-    /* Logging */
     {
-      char  dbgBuf[128];
-
       const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
           "ADC2: FWD = %5d mV  (ADC mV = %5d mV)\r\n",
           (int16_t) (s_controller_adc_fwd_mv      + 0.5f),
           (int16_t) (s_controller_adc_fwd_mv_log  + 0.5f));
       interpreterConsolePush(dbgBuf, dbgLen, 0);
     }
-#endif
 
-#if 1
-    /* Logging */
     {
-      char      dbgBuf[128];
       int32_t   l_swr_i;
       uint32_t  l_swr_f100;
 
@@ -800,19 +793,14 @@ static void controllerFSM_GetGlobalVars(void)
           l_swr_i, l_swr_f100);
       interpreterConsolePush(dbgBuf, dbgLen, 0);
     }
-#endif
 
-#if 1
-    /* Logging */
     {
-      char  dbgBuf[128];
-
       const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
           "ADC3: Vdiode = %4d mV\r\n",
           (int16_t) (s_controller_adc_vdiode_mv + 0.5f));
       interpreterConsolePush(dbgBuf, dbgLen, 0);
     }
-#endif
+
     interpreterShowCrLf();
   }
 }
@@ -883,16 +871,10 @@ static _Bool controllerFSM_CheckPower(void)
 
   /* Best SWR */
   if (s_controller_best_swr > s_controller_adc_swr) {
-    s_controller_best_swr   = s_controller_adc_swr;
-    s_controller_best_swr_L = s_controller_RelVal_L_cur;
-    s_controller_best_swr_C = s_controller_RelVal_C_cur;
-  }
-
-  /* Done? */
-  if (Controller_AutoSWR_SWR_Min >= s_controller_adc_swr) {
-    s_controller_FSM_state  = ControllerFsm__done;
-    s_controller_doAdc      = 0;
-    return true;
+    s_controller_best_swr     = s_controller_adc_swr;
+    s_controller_best_swr_CVH = s_controller_FSM_optiCVH;
+    s_controller_best_swr_L   = s_controller_RelVal_L_cur;
+    s_controller_best_swr_C   = s_controller_RelVal_C_cur;
   }
 
   return false;
@@ -902,6 +884,12 @@ static _Bool controllerFSM_CheckSwrTime(void)
 {
   const uint32_t timeNow  = osKernelSysTick();
   const int32_t  timeDiff = timeNow - s_controller_swr_tmr;
+
+  if (Controller_AutoSWR_WaitBeforeStart_ms > timeDiff) {
+    /* Timer has not yet elapsed */
+    s_controller_FSM_state = ControllerFsm__StartAuto;
+    return true;
+  }
 
   if (s_controller_adc_swr < Controller_AutoSWR_SWR_Min) {
     /* Logging */
@@ -919,15 +907,9 @@ static _Bool controllerFSM_CheckSwrTime(void)
 
     /* No need to start */
     s_controller_FSM_state = ControllerFsm__StartAuto;
-
-    return true;
-
-  } else if (Controller_AutoSWR_WaitBeforeStart_ms > timeDiff) {
-    /* Timer has not yet elapsed */
-    s_controller_FSM_state = ControllerFsm__Init;
-
     return true;
   }
+
   return false;
 }
 
@@ -1226,15 +1208,17 @@ static void controllerFSM(void)
     s_controller_swr_tmr      = osKernelSysTick();
     s_controller_RelVal_C_cur = s_controller_RelVal_L_cur = 0U;
     for (uint8_t idx = 0U; idx < 5U; idx++) {
-      s_controller_L_Meas.swr[idx] = 1e6f;
-      s_controller_C_Meas.swr[idx] = 1e6f;
+      s_controller_C_Meas.swr[idx] = s_controller_L_Meas.swr[idx] = 1e6f;
     }
     s_controller_FSM_optiCVH  = ControllerOptiCVH__CV;
     s_controller_best_swr     = 1e6f;
+    s_controller_best_swr_CVH = ControllerOptiCVH__CV;
     s_controller_best_swr_L   = 0U;
     s_controller_best_swr_C   = 0U;
-    s_controller_best_swr_CVH = ControllerOptiCVH__CV;
     //s_controller_opti_CVHpongCtr  = s_controller_opti_LCpongCtr = s_controller_bad_swr_ctr = 0U;
+
+    /* Push opti data to relays */
+    controllerFSM_PushOptiVars();
 
     /* Show current state of optimization */
     controllerFSM_LogState();
@@ -1242,7 +1226,7 @@ static void controllerFSM(void)
     s_controller_FSM_state = ControllerFsm__StartAuto;
 
     /* Do not iterate FSM again */
-    s_controller_doAdc = 0;
+    s_controller_doAdc = 1;
   }
     break;
 
@@ -1259,13 +1243,13 @@ static void controllerFSM(void)
       break;
     }
     /* Check if auto tuner should start */
-    if (controllerFSM_CheckSwrTime()) {
-      break;
-    }
+    //if (controllerFSM_CheckSwrTime()) {  // TODO: enable me!
+    //  break;
+    //}
 
     /* Run (V)SWR optimization */
-    s_controller_FSM_optiCVH      = ControllerOptiCVH__CV;
-    s_controller_FSM_state        = ControllerFsm__L_Meas_P000;
+    s_controller_FSM_optiCVH  = ControllerOptiCVH__CV;
+    s_controller_FSM_state    = ControllerFsm__L_Meas_P000;
 
     s_controller_C_Meas.relayVal[P000] = s_controller_L_Meas.relayVal[P000] = 0x00U;
     s_controller_C_Meas.relayVal[P025] = s_controller_L_Meas.relayVal[P025] = 0x3fU;
@@ -1446,9 +1430,6 @@ static void controllerFSM(void)
 
     /* Prepare next measurement */
     s_controller_FSM_state = ControllerFsm__L_Select;
-
-    /* Show current state of optimization */
-    controllerFSM_LogState();
 
     /* Iterate to next FSM state */
     s_controller_doAdc = 0;

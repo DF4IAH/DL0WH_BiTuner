@@ -778,7 +778,7 @@ void MX_FREERTOS_Init(void) {
 
   /* definition and creation of uartTxQueue */
 /* what about the sizeof here??? cd native code */
-  osMessageQDef(uartTxQueue, 256, uint8_t);
+  osMessageQDef(uartTxQueue, 4096, uint8_t);
   uartTxQueueHandle = osMessageCreate(osMessageQ(uartTxQueue), NULL);
 
   /* definition and creation of uartRxQueue */
@@ -788,7 +788,7 @@ void MX_FREERTOS_Init(void) {
 
   /* definition and creation of catTxQueue */
 /* what about the sizeof here??? cd native code */
-  osMessageQDef(catTxQueue, 256, uint8_t);
+  osMessageQDef(catTxQueue, 64, uint8_t);
   catTxQueueHandle = osMessageCreate(osMessageQ(catTxQueue), NULL);
 
   /* definition and creation of catRxQueue */

@@ -71,8 +71,8 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle)
   }
 
   /* Set flags: DMA complete */
-  xEventGroupSetBitsFromISR(  uartEventGroupHandle, UART_EG__DMA_TX_END, &xHigherPriorityTaskWoken);
-  xEventGroupClearBitsFromISR(uartEventGroupHandle, UART_EG__DMA_TX_RUN);
+  xEventGroupSetBitsFromISR(  uartEventGroupHandle, UART_EG__DMA_TX_RDY, &xHigherPriorityTaskWoken);
+  __ISB();
 
   /* Set flag: buffer empty */
   xEventGroupSetBitsFromISR(  uartEventGroupHandle, UART_EG__TX_BUF_EMPTY, &xHigherPriorityTaskWoken);
@@ -140,7 +140,7 @@ static void uartHalInit(void)
 
   /* Init UART */
   {
-    hlpuart1.Init.BaudRate                = 38400UL;  //9600UL;
+    hlpuart1.Init.BaudRate                = 38400UL;
     hlpuart1.Init.WordLength              = UART_WORDLENGTH_8B;
     hlpuart1.Init.StopBits                = UART_STOPBITS_1;
     hlpuart1.Init.Parity                  = UART_PARITY_NONE;
@@ -194,11 +194,13 @@ uint32_t uartRxPullFromQueue(uint8_t* msgAry, uint32_t size, uint32_t waitMs)
 
 static void uartTxPush(const uint8_t* buf, uint32_t len)
 {
+  xEventGroupClearBits(uartEventGroupHandle, UART_EG__TX_BUF_EMPTY);
+
   while (len--) {
     /* Do not block on TX queue */
-    osMessagePut(uartTxQueueHandle, *(buf++), 0UL);
+    osMessagePut(uartTxQueueHandle, *(buf++), 1UL);
   }
-  osMessagePut(uartTxQueueHandle, 0, 0UL);
+  osMessagePut(uartTxQueueHandle, 0UL, 1UL);
 }
 
 static void uartTxPushWait(const uint8_t* buf, uint32_t len)
@@ -207,7 +209,8 @@ static void uartTxPushWait(const uint8_t* buf, uint32_t len)
   EventBits_t eb = xEventGroupWaitBits(uartEventGroupHandle,
       UART_EG__TX_BUF_EMPTY,
       UART_EG__TX_BUF_EMPTY,
-      0, 300UL / portTICK_PERIOD_MS);  // One buffer w/ 256 bytes @ 9.600 baud
+      pdFALSE,
+      860UL / portTICK_PERIOD_MS);  // One buffer w/ 4096 bytes @ 38.400 baud
 
   if (eb & UART_EG__TX_BUF_EMPTY) {
     uartTxPush(buf, len);
@@ -222,50 +225,43 @@ void uartLogLen(const char* str, int len, _Bool doWait)
   }
 
   if (s_uartTx_enable) {
-    osSemaphoreWait(uart_BSemHandle, 0UL);
+    if (osOK == osSemaphoreWait(uart_BSemHandle, 0UL)) {
+      if (doWait) {
+        uartTxPushWait((uint8_t*)str, len);
 
-    if (doWait) {
-      uartTxPushWait((uint8_t*)str, len);
+      } else {
+        uartTxPush((uint8_t*)str, len);
+      }
 
-    } else {
-      uartTxPush((uint8_t*)str, len);
+      osSemaphoreRelease(uart_BSemHandle);
     }
-
-    osSemaphoreRelease(uart_BSemHandle);
   }
 }
 
 
-static void uartTxStartDma(const uint8_t* cmdBuf, uint8_t cmdLen)
+static void uartTxStartDma(const uint8_t* buf, uint32_t bufLen)
 {
-  /* When TX is running wait for the end of the previous transfer */
-  if (UART_EG__DMA_TX_RUN & xEventGroupGetBits(uartEventGroupHandle)) {
-    /* Block until end of transmission - at max. 1 sec */
-    xEventGroupWaitBits(uartEventGroupHandle,
-        UART_EG__DMA_TX_END,
-        UART_EG__DMA_TX_END,
-        0,
-        portMAX_DELAY);
+  /* Sanity checks */
+  if (!buf || !bufLen || bufLen >= sizeof(g_uartTxDmaBuf)) {
+    return;
   }
+
+  /* Block until end of transmission */
+  xEventGroupWaitBits(uartEventGroupHandle,
+      UART_EG__DMA_TX_RDY,
+      UART_EG__DMA_TX_RDY,
+      pdFALSE,
+      portMAX_DELAY);
 
   /* Be sure that DMA engine is really stopped */
   HAL_UART_AbortTransmit(&hlpuart1);
 
-  {
-    taskDISABLE_INTERRUPTS();
-
-    /* Copy to DMA TX buffer */
-    memcpy((uint8_t*)g_uartTxDmaBuf, cmdBuf, cmdLen);
-    memset((uint8_t*)g_uartTxDmaBuf + cmdLen, 0, sizeof(g_uartTxDmaBuf) - cmdLen);
-
-    taskENABLE_INTERRUPTS();
-  }
-
-  /* Re-set flag for TX */
-  xEventGroupSetBits(uartEventGroupHandle, UART_EG__DMA_TX_RUN);
+  /* Copy to DMA TX buffer */
+  memcpy((uint8_t*)g_uartTxDmaBuf, buf, bufLen);
+  memset((uint8_t*)g_uartTxDmaBuf + bufLen, 0U, sizeof(g_uartTxDmaBuf) - bufLen);
 
   /* Start transmission */
-  if (HAL_OK != HAL_UART_Transmit_DMA(&hlpuart1, (uint8_t*)g_uartTxDmaBuf, cmdLen))
+  if (HAL_OK != HAL_UART_Transmit_DMA(&hlpuart1, (uint8_t*)g_uartTxDmaBuf, bufLen))
   {
     Error_Handler();
   }
@@ -274,22 +270,24 @@ static void uartTxStartDma(const uint8_t* cmdBuf, uint8_t cmdLen)
 void uartTxPutterTask(void const * argument)
 {
   const uint32_t  maxWaitMs   = RELAY_STILL_TIME;
-  uint8_t         buf[256];
+  uint8_t         buf[ sizeof(g_uartTxDmaBuf) ];
 
-  const uint8_t   lastBuf     = sizeof(buf) - 1;
+  const uint8_t   lastBuf     = (uint8_t) (sizeof(buf) - 1);
 
   /* Clear queue */
   while (osMessageGet(uartTxQueueHandle, 1UL).status == osEventMessage) {
   }
+  xEventGroupSetBits(uartEventGroupHandle, UART_EG__DMA_TX_RDY);
   xEventGroupSetBits(uartEventGroupHandle, UART_EG__TX_BUF_EMPTY);
 
 
   /* TaskLoop */
   for (;;) {
-    uint8_t   len     = 0U;
+    uint32_t  len     = 0UL;
     uint8_t*  bufPtr  = buf;
+    memset(buf, 0U, sizeof(buf));
 
-    for (uint8_t idx = 0U; idx < (lastBuf - 1); idx++) {
+    for (uint8_t idx = 0U; idx < lastBuf; idx++) {
       osEvent ev = osMessageGet(uartTxQueueHandle, maxWaitMs);
       if (ev.status == osEventMessage) {
         if (ev.value.v) {
@@ -316,7 +314,7 @@ static void uartTxInit(void)
   uartHalInit();
 
   /* Start putter thread */
-  osThreadDef(uartTxPutterTask, uartTxPutterTask, osPriorityNormal, 0, 128);
+  osThreadDef(uartTxPutterTask, uartTxPutterTask, osPriorityNormal, 0, 256);
   s_uartTxPutterTaskHandle = osThreadCreate(osThread(uartTxPutterTask), NULL);
 }
 

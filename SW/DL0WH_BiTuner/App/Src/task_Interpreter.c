@@ -91,15 +91,13 @@ const char                  interpreterHelpMsg165[]            = "\t\tCV\t\t   C
 
 void interpreterConsolePush(const char* buf, int bufLen, _Bool doWait)
 {
+#if 0
   /* Send to USB */
-  if (true) {
-    usbLogLen(buf, bufLen, doWait);
-  }
+  usbLogLen(buf, bufLen, doWait);
+#endif
 
   /* Send to UART */
-  if (true) {
-    uartLogLen(buf, bufLen, doWait);
-  }
+  uartLogLen(buf, bufLen, doWait);
 }
 
 void interpreterPrintHelp(void)
@@ -108,40 +106,40 @@ void interpreterPrintHelp(void)
   interpreterConsolePush(interpreterHelpMsg002, strlen(interpreterHelpMsg002), 0);
   interpreterConsolePush(interpreterHelpMsg003, strlen(interpreterHelpMsg003), 0);
 
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
-  interpreterConsolePush(interpreterHelpMsg111, strlen(interpreterHelpMsg111), 1);
-  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 1);
-  interpreterConsolePush(interpreterHelpMsg121, strlen(interpreterHelpMsg121), 1);
-  interpreterConsolePush(interpreterHelpMsg122, strlen(interpreterHelpMsg122), 1);
-  interpreterConsolePush(interpreterHelpMsg123, strlen(interpreterHelpMsg123), 1);
-  interpreterConsolePush(interpreterHelpMsg124, strlen(interpreterHelpMsg124), 1);
-  interpreterConsolePush(interpreterHelpMsg125, strlen(interpreterHelpMsg125), 1);
-  interpreterConsolePush(interpreterHelpMsg126, strlen(interpreterHelpMsg126), 1);
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 0);
+  interpreterConsolePush(interpreterHelpMsg111, strlen(interpreterHelpMsg111), 0);
+  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 0);
+  interpreterConsolePush(interpreterHelpMsg121, strlen(interpreterHelpMsg121), 0);
+  interpreterConsolePush(interpreterHelpMsg122, strlen(interpreterHelpMsg122), 0);
+  interpreterConsolePush(interpreterHelpMsg123, strlen(interpreterHelpMsg123), 0);
+  interpreterConsolePush(interpreterHelpMsg124, strlen(interpreterHelpMsg124), 0);
+  interpreterConsolePush(interpreterHelpMsg125, strlen(interpreterHelpMsg125), 0);
+  interpreterConsolePush(interpreterHelpMsg126, strlen(interpreterHelpMsg126), 0);
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 0);
 
-  interpreterConsolePush(interpreterHelpMsg131, strlen(interpreterHelpMsg131), 1);
-  interpreterConsolePush(interpreterHelpMsg132, strlen(interpreterHelpMsg132), 1);
-  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 1);
+  interpreterConsolePush(interpreterHelpMsg131, strlen(interpreterHelpMsg131), 0);
+  interpreterConsolePush(interpreterHelpMsg132, strlen(interpreterHelpMsg132), 0);
+  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 0);
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 0);
 
-  interpreterConsolePush(interpreterHelpMsg141, strlen(interpreterHelpMsg141), 1);
-  interpreterConsolePush(interpreterHelpMsg142, strlen(interpreterHelpMsg142), 1);
-  interpreterConsolePush(interpreterHelpMsg143, strlen(interpreterHelpMsg143), 1);
-  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 1);
+  interpreterConsolePush(interpreterHelpMsg141, strlen(interpreterHelpMsg141), 0);
+  interpreterConsolePush(interpreterHelpMsg142, strlen(interpreterHelpMsg142), 0);
+  interpreterConsolePush(interpreterHelpMsg143, strlen(interpreterHelpMsg143), 0);
+  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 0);
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 0);
 
 
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 0);
   interpreterConsolePush(interpreterHelpMsg151, strlen(interpreterHelpMsg151), 0);
   interpreterConsolePush(interpreterHelpMsg152, strlen(interpreterHelpMsg152), 0);
 
-  interpreterConsolePush(interpreterHelpMsg161, strlen(interpreterHelpMsg161), 1);
-  interpreterConsolePush(interpreterHelpMsg162, strlen(interpreterHelpMsg162), 1);
-  interpreterConsolePush(interpreterHelpMsg163, strlen(interpreterHelpMsg163), 1);
-  interpreterConsolePush(interpreterHelpMsg164, strlen(interpreterHelpMsg164), 1);
-  interpreterConsolePush(interpreterHelpMsg165, strlen(interpreterHelpMsg165), 1);
-  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 1);
-  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 0);
+  interpreterConsolePush(interpreterHelpMsg161, strlen(interpreterHelpMsg161), 0);
+  interpreterConsolePush(interpreterHelpMsg162, strlen(interpreterHelpMsg162), 0);
+  interpreterConsolePush(interpreterHelpMsg163, strlen(interpreterHelpMsg163), 0);
+  interpreterConsolePush(interpreterHelpMsg164, strlen(interpreterHelpMsg164), 0);
+  interpreterConsolePush(interpreterHelpMsg165, strlen(interpreterHelpMsg165), 0);
+  interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 0);
+  interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
 }
 
 void interpreterShowCrLf(void)
