@@ -65,28 +65,29 @@ const char                  interpreterHelpMsg003[]            = "\t============
 const char                  interpreterHelpMsg111[]            =     "\t\t> main commands\r\n";
 const char                  interpreterHelpMsg112[]            =     "\t\t--------------------------------------------------------------------------\r\n";
 
-const char                  interpreterHelpMsg121[]            = "\t\tCxy\t\tC relay x: 1..8, y: 1=SET 0=RESET.\r\n";
-const char                  interpreterHelpMsg122[]            = "\t\tLxy\t\tL relay x: 1..8, y: 1=SET 0=RESET.\r\n";
-const char                  interpreterHelpMsg123[]            = "\t\tCL\t\tSet C at the TRX-side and the L to the antenna side (Gamma).\r\n";
-const char                  interpreterHelpMsg124[]            = "\t\tLC\t\tSet L at the TRX-side and the C to the antenna side (reverted Gamma).\r\n";
-const char                  interpreterHelpMsg125[]            = "\t\tHxxyyzz\t\tHexadecimal entry of the 18 bits of x:[CH,CV], y:[L8-1], z:[C8-1] relays.\r\n";
-const char                  interpreterHelpMsg126[]            = "\t\t?\t\tShow current relay settings and electric values.\r\n";
+const char                  interpreterHelpMsg121[]            = "\t\tAx\t\tAutomatic matching ATU when forward power is 5..15 watts: x=1 enabled, x=0 disabled.\r\n";
+const char                  interpreterHelpMsg122[]            = "\t\tCxy\t\tModify C relay: x=1..8 relay, y=1 SET, y=0 RESET.\r\n";
+const char                  interpreterHelpMsg123[]            = "\t\tLxy\t\tModify L relay: x=1..8 relay, y=1 SET, y=0 RESET.\r\n";
+const char                  interpreterHelpMsg124[]            = "\t\tCL\t\tSwitch C-bank at the TRX-side and L-bank to the antenna side (Gamma).\r\n";
+const char                  interpreterHelpMsg125[]            = "\t\tLC\t\tSwitch L-bank at the TRX-side and C-bank to the antenna side (reverted Gamma).\r\n";
+const char                  interpreterHelpMsg126[]            = "\t\tHxxyyzz\t\tHexadecimal entry: [x1]=LC-mode, [x0]=CL-mode, [y7..y0]=L8..L1 relays, [z7..z0]=C8..C1 relays.\r\n";
+const char                  interpreterHelpMsg127[]            = "\t\t?\t\tShow current relay settings and electrical values.\r\n";
 
-const char                  interpreterHelpMsg131[]            = "\t\tMG\t\tMeasuremnet OpAmp gain:   0..256\r\n";
-const char                  interpreterHelpMsg132[]            = "\t\tMO\t\tMeasuremnet OpAmp offset: 0..256\r\n";
+const char                  interpreterHelpMsg131[]            = "\t\tMG\t\tMeasuremnet OpAmp:   gain=0..256 value.\r\n";
+const char                  interpreterHelpMsg132[]            = "\t\tMO\t\tMeasuremnet OpAmp: offset=0..256 value.\r\n";
 
 const char                  interpreterHelpMsg141[]            = "\t\tC\t\tClear screen.\r\n";
-const char                  interpreterHelpMsg142[]            = "\t\tHELP\t\tPrint this list of commands.\r\n";
-const char                  interpreterHelpMsg143[]            = "\t\tRESTART\t\tRestart this device.\r\n";
+const char                  interpreterHelpMsg142[]            = "\t\tHELP\t\tPrint this help.\r\n";
+const char                  interpreterHelpMsg143[]            = "\t\tRESTART\t\tRestart device.\r\n";
 
 const char                  interpreterHelpMsg151[]            =     "\t\t> additional DJ0ABR compatible commands\r\n";
 const char                  interpreterHelpMsg152[]            =     "\t\t--------------------------------------------------------------------------\r\n";
 
 const char                  interpreterHelpMsg161[]            = "\t\tKxyz\t\tShort form for setting the C, L, CV and CH relays.\r\n";
-const char                  interpreterHelpMsg162[]            = "\t\tHx\t\t1: LC mode, 0: CL mode.\r\n";
-const char                  interpreterHelpMsg163[]            = "\t\tVx\t\t1: CL mode, 0: LC mode.\r\n";
-const char                  interpreterHelpMsg164[]            = "\t\tCH\t\t   LC mode.\r\n";
-const char                  interpreterHelpMsg165[]            = "\t\tCV\t\t   CL mode.\r\n";
+const char                  interpreterHelpMsg162[]            = "\t\tHx\t\tSwitch to 1=LC mode, 0=CL mode.\r\n";
+const char                  interpreterHelpMsg163[]            = "\t\tVx\t\tSwitch to 1=CL mode, 0=LC mode.\r\n";
+const char                  interpreterHelpMsg164[]            = "\t\tCH\t\tSwitch to   LC mode.\r\n";
+const char                  interpreterHelpMsg165[]            = "\t\tCV\t\tSwitch to   CL mode.\r\n";
 
 
 void interpreterConsolePush(const char* buf, int bufLen, _Bool doWait)
@@ -115,6 +116,7 @@ void interpreterPrintHelp(void)
   interpreterConsolePush(interpreterHelpMsg124, strlen(interpreterHelpMsg124), 0);
   interpreterConsolePush(interpreterHelpMsg125, strlen(interpreterHelpMsg125), 0);
   interpreterConsolePush(interpreterHelpMsg126, strlen(interpreterHelpMsg126), 0);
+  interpreterConsolePush(interpreterHelpMsg127, strlen(interpreterHelpMsg127), 0);
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 0);
 
   interpreterConsolePush(interpreterHelpMsg131, strlen(interpreterHelpMsg131), 0);
@@ -300,7 +302,16 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
 
 
   /* List of string patterns to compare */
-  if (!strncmp("C", cb, 1) && (1UL == len)) {
+  if (!strncmp("A", cb, 1) && (2UL == len)) {
+    /* Set capacitance */
+    uint8_t valAuto = *(cb + 1) > '0' ?  1U : 0U;
+    if (0U <= valAuto && valAuto <= 1U) {
+      uint32_t cmd[2];
+      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgController__SetVar06_A);
+      cmd[1] = (uint32_t)valAuto << 24U;
+      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+    }
+  } else if (!strncmp("C", cb, 1) && (1UL == len)) {
     interpreterClearScreen();
     interpreterShowCursor();
 

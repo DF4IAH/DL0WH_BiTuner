@@ -108,7 +108,7 @@
 #endif
 
 
-#define BITUNER_CTRL_VERSION                                 20190414UL
+#define BITUNER_CTRL_VERSION                                 20190416UL
 
 #define RELAY_STILL_TIME                                     30UL
 

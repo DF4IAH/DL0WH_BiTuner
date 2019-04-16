@@ -136,9 +136,11 @@ void MX_FREERTOS_Init(void);
 uint32_t crcCalc(const uint32_t* ptr, uint32_t len)
 {
 #if 0
-  return HAL_CRC_Calculate(&hcrc, (uint32_t*) ptr, len);
+    return HAL_CRC_Calculate(&hcrc, (uint32_t*) ptr, len);
 #else
-  return 0UL;
+    const char msg[] = "*** CRC requested but CRC unit is not enabled ***\r\n";
+    interpreterConsolePush(msg, strlen(msg), 1);
+    return 0UL;
 #endif
 }
 
@@ -346,12 +348,6 @@ int main(void)
   /* USER CODE BEGIN 1 */
   /* Check if ARM core is already in reset state */
   if (!(RCC->CSR & 0xff000000UL)) {
-    #if 0
-    __HAL_RCC_GPIOC_CLK_ENABLE();
-    __HAL_RCC_GPIOF_CLK_ENABLE();
-    __NOP();
-    #endif
-
     /* Turn off battery charger of Vbat */
     HAL_PWREx_DisableBatteryCharging();
 
@@ -644,40 +640,8 @@ void  vApplicationIdleHook(void)
 }
 #endif
 
-#if 0
-void PreSleepProcessing(uint32_t *ulExpectedIdleTime)
-{
-#if 0
-  HAL_SuspendTick();
-#endif
-  g_rtc_ssr_last = RTC->SSR;
-}
-
-void PostSleepProcessing(uint32_t *ulExpectedIdleTime)
-{
-#if 0
-  volatile uint32_t l_rtc_ssr_now = RTC->SSR;
-  volatile uint32_t l_rtc_sub1024 = (l_rtc_ssr_now >= g_rtc_ssr_last) ?  (l_rtc_ssr_now - g_rtc_ssr_last) : (1024UL - (g_rtc_ssr_last - l_rtc_ssr_now));
-  volatile uint32_t l_millis = (l_rtc_sub1024 * 1000UL) / 1024UL;
-
-  if (l_millis <= *ulExpectedIdleTime) {
-    uwTick += l_millis;
-  }
-  HAL_ResumeTick();
-#endif
-}
-#endif
-
 void vApplicationMallocFailedHook(void)
 {
-#if 0
-  char dbgBuf[128];
-
-  const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
-      "***ERROR: Out of memory  vApplicationMallocFailedHook(): file %s on line %d\r\n", __FILE__, __LINE__);
-  interpreterConsolePush(dbgBuf, dbgLen);
-#endif
-
   configASSERT(0);
 }
 
@@ -714,14 +678,6 @@ void _Error_Handler(char *file, int line)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-#if 0
-  char dbgBuf[128];
-
-  const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
-      "***ERROR: ERROR-HANDLER  Wrong parameters value  _Error_Handler(): file %s on line %d\r\n", file, line);
-  interpreterConsolePush(dbgBuf, dbgLen);
-#endif
-
   configASSERT(0);
   /* USER CODE END Error_Handler_Debug */
 }
@@ -739,14 +695,6 @@ void assert_failed(uint8_t* file, uint32_t line)
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-#if 0
-  char dbgBuf[128];
-
-  const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
-      "***ERROR: ERROR-HANDLER  Wrong parameters value  assert_failed(): file %s on line %ld\r\n", file, line);
-  interpreterConsolePush(dbgBuf, dbgLen);
-#endif
-
   configASSERT(0);
   /* USER CODE END 6 */
 }

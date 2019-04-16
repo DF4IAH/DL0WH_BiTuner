@@ -26,7 +26,7 @@
 #include "task_Interpreter.h"
 
 
-#define I2C1_BUS_ADDR_SCAN
+//#define I2C1_BUS_ADDR_SCAN
 
 #ifdef I2C1_BUS_ADDR_SCAN
 # include "bus_i2c.h"
@@ -141,6 +141,7 @@ static float                  s_controller_adc_fwd_mw           = 0.0f;
 static float                  s_controller_adc_rev_mw           = 0.0f;
 
 static _Bool                  s_controller_doAdc                = 0;
+static _Bool                  s_controller_doAutoMatching       = 0;
 static uint32_t               s_controller_doCycle              = 0UL;
 
 static DefaultMcuClocking_t   s_controller_McuClocking          = DefaultMcuClocking_80MHz_MSI16_PLL;
@@ -357,26 +358,6 @@ uint8_t controllerCalcMatcherPF2C(float pF)
   }
   return valThis;
 }
-
-#if 0
-static void controllerCalcMatcherLcRatio(void)
-{
-  if (!s_controller_xnull_L.empty() && !s_controller_xnull_LC_ratio) {
-    const int   vCnt    = s_controller_xnull_L.size();
-    const float deltaL  = s_controller_xnull_L[vCnt - 1] - s_controller_xnull_L[0];
-    const float deltaC  = s_controller_xnull_C[vCnt - 1] - s_controller_xnull_C[0];
-    char buf[64];
-
-    s_controller_xnull_LC_ratio = (deltaC != 0.0f) ?  deltaL / deltaC : 0.0f;
-
-    const int bufLen = snprintf(buf, sizeof(buf) - 1,
-        "controllerCalcMatcherLcRatio: new xnull_LC_ratio= %f, deltaL= %f, deltaC= %f.\r\n",
-        s_controller_xnull_LC_ratio,
-        deltaL, deltaC);
-    interpreterConsolePush(buf, bufLen);
-  }
-}
-#endif
 
 
 /* Messaging functions */
@@ -909,289 +890,6 @@ static _Bool controllerFSM_CheckSwrStopVal(void)
   return false;
 }
 
-#if 0
-static void controllerFSM_SwitchOverCVH(void)
-{
-  /* Check if another CVH switch over is allowed */
-  if (++s_controller_opti_CVHpongCtr <= Controller_AutoSWR_CVHpong_Max) {
-    s_controller_opti_LCpongCtr = 0U;
-    s_controller_bad_swr_ctr    = 0U;
-
-    /* Logging */
-    {
-      char      buf[128];
-      const int len = snprintf(buf, sizeof(buf) - 1,
-                              "Controller FSM: switch over the constellation to %d (0: CV, 1: CH), CVH pingpong ctr= %u.\r\n",
-                              !s_controller_FSM_optiCVH, s_controller_opti_CVHpongCtr);
-      interpreterConsolePush(buf, len, 0);
-    }
-
-    /* Switch over to opposite CVH constellation */
-    s_controller_FSM_optiCVH      = (s_controller_FSM_optiCVH == ControllerOptiCVH__CV) ?  ControllerOptiCVH__CH : ControllerOptiCVH__CV;
-    if (s_controller_FSM_optiCVH == ControllerOptiCVH__CH) {
-      s_controller_FSM_optiLC     = ControllerOptiLC__C;
-      s_controller_opti_C         = Controller_C0_pF + Controller_Cp_pF[0];
-
-    } else {
-      s_controller_FSM_optiLC     = ControllerOptiLC__L;
-      s_controller_opti_L         = Controller_L0_nH + Controller_Ls_nH[0];
-    }
-
-    s_controller_FSM_optiStrat    = ControllerOptiStrat__Double;
-    s_controller_FSM_optiUpDn     = ControllerOptiUpDn__Up;
-    s_controller_FSM_state        = ControllerFsm__initL;
-
-    /* Erase array for new L/C combinations */
-    s_controller_opti_swr_1st     = Controller_AutoSWR_SWR_Init;
-    s_controller_opti_swr_2nd     = Controller_AutoSWR_SWR_Init;
-
-  } else {
-    /* Exhausted - start over again */
-    s_controller_FSM_state        = ControllerFsm__done;
-  }
-}
-#endif
-
-#if 0
-static void controllerFSM_DoubleStrategy(void)
-{
-  if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
-    //const float delta_L = s_controller_opti_L;
-
-    /* Double L */
-    s_controller_opti_L += s_controller_opti_L;
-
-    #if 0
-    /* Parallel strategy */
-    if (s_controller_xnull_LC_ratio != 0.0f) {
-      s_controller_opti_C += 0.1f * (delta_L / s_controller_xnull_LC_ratio);
-    }
-    #endif
-
-  } else {
-    //const float delta_C = s_controller_opti_C;
-
-    /* Double C */
-    s_controller_opti_C += s_controller_opti_C;
-
-    #if 0
-    /* Parallel strategy */
-    if (s_controller_xnull_LC_ratio != 0.0f) {
-      s_controller_opti_C += 0.1f * (delta_C * s_controller_xnull_LC_ratio);
-    }
-    #endif
-  }
-}
-#endif
-
-#if 0
-static void controllerFSM_HalfStrategy(void)
-{
-  if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
-    //const float lastL = s_controller_opti_L;
-
-    /* Mean L */
-    s_controller_opti_L = (s_controller_opti_swr_1st_L + s_controller_opti_swr_2nd_L) / 2.0f;
-
-    #if 0
-    /* Parallel strategy */
-    if (s_controller_xnull_LC_ratio != 0.0f) {
-      const float deltaL = s_controller_opti_L - lastL;
-
-      s_controller_opti_C *= deltaL / s_controller_xnull_LC_ratio;
-    }
-    #endif
-
-  } else {
-    //const float lastC = s_controller_opti_C;
-
-    /* Mean C */
-    s_controller_opti_C = (s_controller_opti_swr_1st_C + s_controller_opti_swr_2nd_C) / 2.0f;
-
-    #if 0
-    /* Parallel strategy */
-    if (s_controller_xnull_LC_ratio != 0.0f) {
-      const float deltaC = s_controller_opti_C - lastC;
-
-      s_controller_opti_C *= deltaC * s_controller_xnull_LC_ratio;
-    }
-    #endif
-  }
-}
-#endif
-
-#if 0
-static void controllerFSM_ZeroXHalfStrategy(void)
-{
-  if (s_controller_FSM_optiStrat != ControllerOptiStrat__Half) {
-    return;
-  }
-
-  /* Work out the half strategy */
-  controllerFSM_HalfStrategy();
-
-  if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
-    const float L_diff_abs = fabs(s_controller_opti_swr_1st_L - s_controller_opti_swr_2nd_L);
-
-    //printf("controllerFSM_ZeroXHalfStrategy 1: abs(swr_1st_L - swr_2nd_L)=%f\r\n", L_diff_abs);
-    if (L_diff_abs <= Controller_Ls_nH[0]) {
-      #if 0
-      /* First zero X found */
-      s_controller_xnull_L.push_back(s_controller_opti_L);
-      s_controller_xnull_C.push_back(s_controller_opti_C);
-      #endif
-
-      /* Check if optimum found by increase of L */
-      if (s_controller_opti_swr_1st_L > Controller_Ls_nH[0]) {
-        /* Advance L, at least by one step, limiting */
-        const float advanced = s_controller_opti_swr_1st_L * 1.4f + Controller_Ls_nH[0];
-        if (advanced > 2.0f * Controller_Ls_nH[7]) {
-          s_controller_opti_L = controllerCalcMatcherNH2L( controllerCalcMatcherL2nH(advanced) );
-
-        } else {
-          s_controller_opti_L = advanced;
-        }
-
-        /* Next optimize C */
-        s_controller_opti_C         = Controller_C0_pF + Controller_Cp_pF[0];
-        s_controller_opti_LCpongCtr = 0U;
-        s_controller_FSM_optiLC     = ControllerOptiLC__C;
-        s_controller_FSM_optiStrat  = ControllerOptiStrat__Double;
-        s_controller_FSM_optiUpDn   = ControllerOptiUpDn__Up;
-        s_controller_FSM_state      = ControllerFsm__findMinSwr;
-
-        /* Forget this minimum due to C advance */
-        s_controller_adc_swr        = Controller_AutoSWR_SWR_Init;
-
-        /* Erase array for new L/C combinations */
-        s_controller_opti_swr_1st   = Controller_AutoSWR_SWR_Init;
-        s_controller_opti_swr_2nd   = Controller_AutoSWR_SWR_Init;
-
-      } else {
-        /* Switch over to opposite CVH constellation */
-        controllerFSM_SwitchOverCVH();
-      }
-
-    }
-
-  } else {
-    const float C_diff_abs = fabs(s_controller_opti_swr_1st_C - s_controller_opti_swr_2nd_C);
-
-    //printf("controllerFSM_ZeroXHalfStrategy 2: abs(swr_1st_C - swr_2nd_C)=%f\r\n", C_diff_abs);
-    if (C_diff_abs <= Controller_Cp_pF[0]) {
-      #if 0
-      /* First zero X found */
-      s_controller_xnull_C.push_back(s_controller_opti_C);
-      s_controller_xnull_L.push_back(s_controller_opti_L);
-      #endif
-
-      /* Check if optimum found by increase of C */
-      if (s_controller_opti_swr_1st_C > Controller_Cp_pF[0]) {
-        /* Advance C, at least by one step, limiting */
-        const float advanced = s_controller_opti_swr_1st_C * 1.4f + Controller_Cp_pF[0];
-        if (advanced > 2.0f * Controller_Cp_pF[7]) {
-          s_controller_opti_C = controllerCalcMatcherPF2C( controllerCalcMatcherC2pF(advanced) );
-        } else {
-          s_controller_opti_C = advanced;
-        }
-
-        /* Next optimize L */
-        s_controller_opti_L         = Controller_L0_nH + Controller_Ls_nH[0];
-        s_controller_opti_LCpongCtr = 0U;
-        s_controller_FSM_optiLC     = ControllerOptiLC__L;
-        s_controller_FSM_optiStrat  = ControllerOptiStrat__Double;
-        s_controller_FSM_optiUpDn   = ControllerOptiUpDn__Up;
-        s_controller_FSM_state      = ControllerFsm__findMinSwr;
-
-        /* Forget this minimum due to L advance */
-        s_controller_adc_swr        = Controller_AutoSWR_SWR_Init;
-
-        /* Erase array for new L/C combinations */
-        s_controller_opti_swr_1st   = Controller_AutoSWR_SWR_Init;
-        s_controller_opti_swr_2nd   = Controller_AutoSWR_SWR_Init;
-
-      } else {
-        /* Switch over to opposite CVH constellation */
-        controllerFSM_SwitchOverCVH();
-      }
-    }
-  }
-}
-#endif
-
-#if 0
-static void controllerFSM_OptiHalfStrategy(void)
-{
-  if (s_controller_FSM_optiStrat != ControllerOptiStrat__Half) {
-    return;
-  }
-
-  /* Work out the half strategy */
-  controllerFSM_HalfStrategy();
-
-  if (s_controller_FSM_optiLC == ControllerOptiLC__L) {
-    const float L_diff_abs = fabs(s_controller_opti_swr_1st_L - s_controller_opti_swr_2nd_L);
-
-    //printf("controllerFSM_OptiHalfStrategy 1: abs(swr_1st_L - swr_2nd_L)=%f\r\n", L_diff_abs);
-    if (L_diff_abs <= Controller_Ls_nH[0]) {
-      #if 0
-      /* Again, zero X found */
-      s_controller_xnull_L.push_back(s_controller_opti_L);
-      s_controller_xnull_C.push_back(s_controller_opti_C);
-      controllerCalcMatcherLcRatio();
-      #endif
-
-      if (++s_controller_opti_LCpongCtr < Controller_AutoSWR_LCpong_Max) {
-        /* Optimize C, again */
-        s_controller_opti_C         = Controller_C0_pF + Controller_Cp_pF[0];
-        s_controller_FSM_optiLC     = ControllerOptiLC__C;
-        s_controller_FSM_optiStrat  = ControllerOptiStrat__Double;
-        s_controller_FSM_optiUpDn   = ControllerOptiUpDn__Up;
-        s_controller_FSM_state      = ControllerFsm__findMinSwr;
-
-        /* Erase array for new L/C combinations */
-        s_controller_opti_swr_1st   = Controller_AutoSWR_SWR_Init;
-        s_controller_opti_swr_2nd   = Controller_AutoSWR_SWR_Init;
-
-      } else {
-        /* Switch over to opposite CVH constellation */
-        controllerFSM_SwitchOverCVH();
-      }
-    }
-
-  } else {
-    const float C_diff_abs = fabs(s_controller_opti_swr_1st_C - s_controller_opti_swr_2nd_C);
-
-    //printf("controllerFSM_OptiHalfStrategy 2: abs(swr_1st_C - swr_2nd_C)=%f\r\n", C_diff_abs);
-    if (C_diff_abs <= Controller_Cp_pF[0]) {
-      #if 0
-      /* Again, zero X found */
-      s_controller_xnull_L.push_back(s_controller_opti_L);
-      s_controller_xnull_C.push_back(s_controller_opti_C);
-      controllerCalcMatcherLcRatio();
-      #endif
-
-      if (++s_controller_opti_LCpongCtr < Controller_AutoSWR_LCpong_Max) {
-        /* Optimize L, again */
-        s_controller_opti_L         = Controller_L0_nH + Controller_Ls_nH[0];
-        s_controller_FSM_optiLC     = ControllerOptiLC__L;
-        s_controller_FSM_optiStrat  = ControllerOptiStrat__Double;
-        s_controller_FSM_optiUpDn   = ControllerOptiUpDn__Up;
-        s_controller_FSM_state      = ControllerFsm__findMinSwr;
-
-        /* Erase array for new L/C combinations */
-        s_controller_opti_swr_1st   = Controller_AutoSWR_SWR_Init;
-        s_controller_opti_swr_2nd   = Controller_AutoSWR_SWR_Init;
-
-      } else {
-        /* Switch over to opposite CVH constellation */
-        controllerFSM_SwitchOverCVH();
-      }
-    }
-  }
-}
-#endif
-
 static void controllerFSM(void)
 {
   switch (s_controller_FSM_state)
@@ -1202,6 +900,10 @@ static void controllerFSM(void)
   case ControllerFsm__Init:
   {
     s_controller_doAdc = 1;
+
+    if (!s_controller_doAutoMatching) {
+      break;
+    }
 
     /* Init SWR compare value */
     s_controller_swr_tmr                = osKernelSysTick();
@@ -1250,6 +952,11 @@ static void controllerFSM(void)
     controllerFSM_GetGlobalVars();
 
     s_controller_doAdc = 1;
+
+    if (!s_controller_doAutoMatching) {
+      s_controller_FSM_state    = ControllerFsm__Init;
+      break;
+    }
 
     /* Check for security */
     if (controllerFSM_CheckPower()) {
@@ -2184,6 +1891,17 @@ static void controllerSetCLExt(uint32_t relays)
   }
 }
 
+static void controllerSetAuto(uint8_t autoEnable)
+{
+  char strbuf[128];
+
+  s_controller_doAutoMatching = autoEnable ?  1 : 0;
+
+  const int len = snprintf(strbuf, (sizeof(strbuf) - 1), "\r\n*** Auto tuner: %s ***\r\n\r\n", autoEnable ?  "enabled" : "disabled");
+  interpreterConsolePush(strbuf, len, 0);
+  interpreterShowCursor();
+}
+
 static void controllerPrintLC(void)
 {
   /* Disabled IRQ section */
@@ -2457,6 +2175,13 @@ static void controllerMsgProcessor(void)
     {
       const uint32_t relays = s_msg_in.rawAry[1] & 0x03ffffUL;
       controllerSetCLExt(relays);
+    }
+      break;
+
+    case MsgController__SetVar06_A:
+    {
+      const uint8_t autoEnable = (s_msg_in.rawAry[1] & 0x01000000UL) >> 24U;
+      controllerSetAuto(autoEnable);
     }
       break;
 

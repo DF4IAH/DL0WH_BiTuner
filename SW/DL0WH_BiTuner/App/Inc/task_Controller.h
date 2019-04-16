@@ -45,6 +45,7 @@ typedef enum ControllerCmds_ENUM {
   MsgController__SetVar03_CL,
   MsgController__SetVar04_LC,
   MsgController__SetVar05_K,
+  MsgController__SetVar06_A,
 
 //MsgController__GetVar01                                     = 0x81U,
 
