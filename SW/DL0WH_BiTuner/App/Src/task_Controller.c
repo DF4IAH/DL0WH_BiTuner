@@ -718,11 +718,11 @@ static void controllerFSM_GetGlobalVars(void)
     }
   }
 
-#if 0
+#if 1
   /* Logging every 1 sec */
   {
     static uint32_t s_timeLast = 0UL;
-    uint32_t l_timeNow = HAL_GetTick();
+    uint32_t l_timeNow = osKernelSysTick();
     char  dbgBuf[128];
 
     if (s_timeLast + 1000UL > l_timeNow) {
@@ -900,6 +900,9 @@ static void controllerFSM(void)
   case ControllerFsm__Init:
   {
     s_controller_doAdc = 1;
+
+    /* Pull global vars */
+    controllerFSM_GetGlobalVars();
 
     if (!s_controller_doAutoMatching) {
       break;
@@ -2229,6 +2232,7 @@ static void controllerInit(void)
     s_controller_McuClocking                                  = DefaultMcuClocking_80MHz_MSI16_PLL;
 
     s_controller_doCycle                                      = RELAY_STILL_TIME;  // Each 30ms the relays are ready for a new setting
+    s_controller_doAutoMatching                               = 1;
 
     s_mod_start.rtos_Default                                  = 1U;
     s_mod_start.Interpreter                                   = 1U;
@@ -2313,8 +2317,20 @@ static void controllerInit(void)
     }
   }
 
-  /* Set relay state */
-  controllerFSM_PushOptiVars();
+  /* Set relay state - inverted, then normal */
+  {
+    s_controller_RelVal_L_cur = 0xffU;
+    s_controller_RelVal_C_cur = 0xffU;
+    s_controller_FSM_optiCVH  = ControllerOptiCVH__CH;
+    controllerFSM_PushOptiVars();
+
+    osDelay(RELAY_STILL_TIME);
+
+    s_controller_RelVal_L_cur = 0x00U;
+    s_controller_RelVal_C_cur = 0x00U;
+    s_controller_FSM_optiCVH  = ControllerOptiCVH__CV;
+    controllerFSM_PushOptiVars();
+  }
 
   /* Init messages */
   {
