@@ -71,7 +71,8 @@ const char                  interpreterHelpMsg123[]            = "\t\tLxy\t\tMod
 const char                  interpreterHelpMsg124[]            = "\t\tCL\t\tSwitch C-bank at the TRX-side and L-bank to the antenna side (Gamma).\r\n";
 const char                  interpreterHelpMsg125[]            = "\t\tLC\t\tSwitch L-bank at the TRX-side and C-bank to the antenna side (reverted Gamma).\r\n";
 const char                  interpreterHelpMsg126[]            = "\t\tHxxyyzz\t\tHexadecimal entry: [x1]=LC-mode, [x0]=CL-mode, [y7..y0]=L8..L1 relays, [z7..z0]=C8..C1 relays.\r\n";
-const char                  interpreterHelpMsg127[]            = "\t\t?\t\tShow current relay settings and electrical values.\r\n";
+const char                  interpreterHelpMsg127[]            = "\t\tVx\t\tModify verbose bit-field, 1: show ADCs, 0: OFF.\r\n";
+const char                  interpreterHelpMsg128[]            = "\t\t?\t\tShow current relay settings and electrical values.\r\n";
 
 const char                  interpreterHelpMsg131[]            = "\t\tMG\t\tMeasuremnet OpAmp:   gain=0..256 value.\r\n";
 const char                  interpreterHelpMsg132[]            = "\t\tMO\t\tMeasuremnet OpAmp: offset=0..256 value.\r\n";
@@ -117,6 +118,7 @@ void interpreterPrintHelp(void)
   interpreterConsolePush(interpreterHelpMsg125, strlen(interpreterHelpMsg125), 0);
   interpreterConsolePush(interpreterHelpMsg126, strlen(interpreterHelpMsg126), 0);
   interpreterConsolePush(interpreterHelpMsg127, strlen(interpreterHelpMsg127), 0);
+  interpreterConsolePush(interpreterHelpMsg128, strlen(interpreterHelpMsg128), 0);
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 0);
 
   interpreterConsolePush(interpreterHelpMsg131, strlen(interpreterHelpMsg131), 0);
@@ -437,6 +439,15 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc04_Restart);
     controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
+  } else if (!strncmp("V", cb, 1) && (2UL == len)) {
+    /* Set capacitance */
+    uint8_t valVerbose = (*(cb + 1) > '0') && (*(cb + 1) <= '9') ?  (*(cb + 1) - '0') : 0U;
+    if (0U <= valVerbose && valVerbose <= 9U) {
+      uint32_t cmd[2];
+      cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 1U, MsgController__SetVar07_V);
+      cmd[1] = (uint32_t)valVerbose << 24U;
+      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+    }
   } else if (!strncmp("?", cb, 1) && (1UL == len)) {
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
