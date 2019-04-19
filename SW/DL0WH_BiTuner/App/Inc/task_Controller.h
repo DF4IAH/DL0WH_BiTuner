@@ -46,6 +46,7 @@ typedef enum ControllerCmds_ENUM {
   MsgController__SetVar04_LC,
   MsgController__SetVar05_K,
   MsgController__SetVar06_A,
+  MsgController__SetVar07_V,
 
 //MsgController__GetVar01                                     = 0x81U,
 
@@ -105,26 +106,12 @@ typedef enum ControllerOptiCVH_ENUM {
 
 } ControllerOptiCVH_t;
 
-typedef enum ControllerOptiLC_ENUM {
+typedef enum ControllerMonitor_BF {
 
-  ControllerOptiLC__L                                         = 0U,
-  ControllerOptiLC__C,
+  ControllerMon__ShowAdcs                                     = 0x0001UL,
 
-} ControllerOptiLC_t_XXX;
+} ControllerMonitor_BF_t;
 
-typedef enum ControllerOptiStrat_ENUM {
-
-  ControllerOptiStrat__Double                                 = 0U,
-  ControllerOptiStrat__Half,
-
-} ControllerOptiStrat_t_XXX;
-
-typedef enum ControllerOptiUpDn_ENUM {
-
-  ControllerOptiUpDn__Up                                      = 0U,
-  ControllerOptiUpDn__Dn,
-
-} ControllerOptiUpDn_t_XXX;
 
 
 typedef struct ControllerMods {
@@ -157,6 +144,7 @@ typedef struct ControllerMsg2Proc {
   uint8_t                             optAry[CONTROLLER_MSG_Q_LEN << 2];
 
 } ControllerMsg2Proc_t;
+
 
 
 uint32_t controllerCalcMsgHdr(ControllerMsgDestinations_t dst, ControllerMsgDestinations_t src, uint8_t lengthBytes, uint8_t cmd);

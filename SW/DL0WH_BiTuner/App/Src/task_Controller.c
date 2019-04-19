@@ -142,6 +142,7 @@ static float                  s_controller_adc_rev_mw           = 0.0f;
 
 static _Bool                  s_controller_doAdc                = 0;
 static _Bool                  s_controller_doAutoMatching       = 0;
+static ControllerMonitor_BF_t s_controller_verbose_bf           = 0UL;
 static uint32_t               s_controller_doCycle              = 0UL;
 
 static DefaultMcuClocking_t   s_controller_McuClocking          = DefaultMcuClocking_80MHz_MSI16_PLL;
@@ -718,9 +719,8 @@ static void controllerFSM_GetGlobalVars(void)
     }
   }
 
-#if 1
   /* Logging every 1 sec */
-  {
+  if (s_controller_verbose_bf & ControllerMon__ShowAdcs) {
     static uint32_t s_timeLast = 0UL;
     uint32_t l_timeNow = osKernelSysTick();
     char  dbgBuf[128];
@@ -788,7 +788,6 @@ static void controllerFSM_GetGlobalVars(void)
 
     interpreterShowCrLf();
   }
-#endif
 }
 
 static void controllerFSM_PushOptiVars(void)
@@ -1905,6 +1904,11 @@ static void controllerSetAuto(uint8_t autoEnable)
   interpreterShowCursor();
 }
 
+static void controllerSetVerboseMode(uint8_t verboseMode)
+{
+  s_controller_verbose_bf = verboseMode;
+}
+
 static void controllerPrintLC(void)
 {
   /* Disabled IRQ section */
@@ -2185,6 +2189,12 @@ static void controllerMsgProcessor(void)
     {
       const uint8_t autoEnable = (s_msg_in.rawAry[1] & 0x01000000UL) >> 24U;
       controllerSetAuto(autoEnable);
+    }
+
+    case MsgController__SetVar07_V:
+    {
+      const uint8_t verboseMode = (s_msg_in.rawAry[1] & 0x01000000UL) >> 24U;
+      controllerSetVerboseMode(verboseMode);
     }
       break;
 
