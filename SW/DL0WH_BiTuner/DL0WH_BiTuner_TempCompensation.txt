@@ -1,0 +1,46 @@
+=====================================================
+Messblatt Logarithmischer Verstärker - Temperaturgang
+=====================================================
+
+MCU - ID
+	Lot-ID          PBAF69 
+	Wafer           20
+	Pos. X/Y        69/24
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - -
+Temp_C	Diode mV		ADC_mV		mg64 (Gain), mo... (Offset)
+- - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+29.5	698.5			 47mV 		mo139
+29.5	698.5			 95mV		mo138
+29.5	698.5			200mV		mo137
+29.5	698.5			301mV		mo136
+29.5	698.5			400mV		mo135
+29.5	698.5			503mV		mo134
+29.5	698.5			601mV		mo133
+
+35.0	680.0			60mV 		mo136
+
+37.0	675.0			 55mV		mo131
+37.0	675.0			155mV		mo130
+37.0	675.0			230mV		mo129
+37.0	675.0			320mV		mo128
+37.0	675.0			435mV		mo127
+37.0	675.0			520mV		mo126
+
+
+
+Temperaturgang Messdiode
+	Diode:    -3.13 mV/K		Vtemp = 703mV - (Temp  -   30C) * 3.13 mV/K
+					Temp  =  30C  + (703mV - Utemp) / 3.13 mV/K
+
+Temperaturgang LogAmp am ADC Eingang
+	ADC:	-102.66 mV/K	= 32.8 * Delta_diode
+
+Schaltstufen des Digitalen Potentiometers
+	OP ofs:	-100.00 mV/Digit  @ 30C
+
+
+
+<EOF>
