@@ -85,10 +85,8 @@ const char                  interpreterHelpMsg151[]            =     "\t\t> addi
 const char                  interpreterHelpMsg152[]            =     "\t\t--------------------------------------------------------------------------\r\n";
 
 const char                  interpreterHelpMsg161[]            = "\t\tKxyz\t\tShort form for setting the C, L, CV and CH relays.\r\n";
-const char                  interpreterHelpMsg162[]            = "\t\tHx\t\tSwitch to 1=LC mode, 0=CL mode.\r\n";
-const char                  interpreterHelpMsg163[]            = "\t\tVx\t\tSwitch to 1=CL mode, 0=LC mode.\r\n";
-const char                  interpreterHelpMsg164[]            = "\t\tCH\t\tSwitch to   LC mode.\r\n";
-const char                  interpreterHelpMsg165[]            = "\t\tCV\t\tSwitch to   CL mode.\r\n";
+const char                  interpreterHelpMsg162[]            = "\t\tCH\t\tSwitch to   LC mode.\r\n";
+const char                  interpreterHelpMsg163[]            = "\t\tCV\t\tSwitch to   CL mode.\r\n";
 
 
 void interpreterConsolePush(const char* buf, int bufLen, _Bool doWait)
@@ -140,8 +138,6 @@ void interpreterPrintHelp(void)
   interpreterConsolePush(interpreterHelpMsg161, strlen(interpreterHelpMsg161), 0);
   interpreterConsolePush(interpreterHelpMsg162, strlen(interpreterHelpMsg162), 0);
   interpreterConsolePush(interpreterHelpMsg163, strlen(interpreterHelpMsg163), 0);
-  interpreterConsolePush(interpreterHelpMsg164, strlen(interpreterHelpMsg164), 0);
-  interpreterConsolePush(interpreterHelpMsg165, strlen(interpreterHelpMsg165), 0);
   interpreterConsolePush(interpreterHelpMsg112, strlen(interpreterHelpMsg112), 0);
   interpreterConsolePush(interpreterHelpMsg001, strlen(interpreterHelpMsg001), 1);
 }
@@ -355,7 +351,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
       interpreterUnknownCommand();
     }
 
-  } else if ((!strncmp("CL", cb, 2) || !strncmp("V1", cb, 2) || !strncmp("H0", cb, 2) || !strncmp("CV", cb, 2)) && (2UL == len)) {
+  } else if ((!strncmp("CL", cb, 2) || !strncmp("CV", cb, 2)) && (2UL == len)) {
     /* Set configuration to Gamma (CV) */
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__SetVar03_CL);
@@ -364,7 +360,7 @@ static void interpreterDoInterprete(const uint8_t* buf, uint32_t len)
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__CallFunc05_PrintLC);
     controllerMsgPushToInQueue(1, cmd, 10UL);
 
-  } else if ((!strncmp("LC", cb, 2) || !strncmp("H1", cb, 2) || !strncmp("V0", cb, 2) || !strncmp("CH", cb, 2)) && (2UL == len)) {
+  } else if ((!strncmp("LC", cb, 2) || !strncmp("CH", cb, 2)) && (2UL == len)) {
     /* Set configuration to reverted Gamma (CH) */
     uint32_t cmd[1];
     cmd[0] = controllerCalcMsgHdr(Destinations__Controller, Destinations__Interpreter, 0U, MsgController__SetVar04_LC);

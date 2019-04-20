@@ -12,13 +12,30 @@
 #define ADC1_DMA_CHANNELS             3
 #define ADC2_DMA_CHANNELS             1
 
-#define ADC_V_OFFS_VREF_mV          -135.4f
-#define ADC_V_OFFS_BAT_mV             56.0f
-#define ADC_V_OFFS_FWDREV_mV          47.0f
-#define ADC_V_OFFS_VDIODE_mV          56.0f
 
-#define ADC_MUL_BAT                   5.24f
-#define ADC_MUL_TEMP                  1.50f
+#ifdef Lot_PBAF69__Waf_20__Pos_69_24
+/* Special settings */
+
+# define ADC_V_OFFS_VREF_mV          -135.4f
+# define ADC_V_OFFS_BAT_mV             56.0f
+# define ADC_V_OFFS_FWDREV_mV          47.0f
+# define ADC_V_OFFS_VDIODE_mV          56.0f
+
+# define ADC_MUL_BAT                   5.74f //5.24f
+# define ADC_MUL_TEMP                  1.64f
+
+# else
+
+/* Default settings */
+# define ADC_V_OFFS_VREF_mV          -135.4f
+# define ADC_V_OFFS_BAT_mV             56.0f
+# define ADC_V_OFFS_FWDREV_mV          47.0f
+# define ADC_V_OFFS_VDIODE_mV          56.0f
+
+# define ADC_MUL_BAT                   5.24f
+# define ADC_MUL_TEMP                  1.50f
+
+#endif
 
 
 typedef enum ADC_ENUM {

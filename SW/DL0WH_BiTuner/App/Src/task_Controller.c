@@ -2093,11 +2093,15 @@ static void controllerMsgProcessor(void)
 
             /* DigPot. - measurement set gain: 0..256 */
             msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__CallFunc04_DigPot_SetGain);
-            msgAry[msgLen++]  = 68;
+            msgAry[msgLen++]  = 68U;
 
             /* DigPot. - measurement set offset: 0..256 */
             msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__CallFunc05_DigPot_SetOffset);
-            msgAry[msgLen++]  = 140;
+#ifdef Lot_PBAF69__Waf_20__Pos_69_24
+            msgAry[msgLen++]  = 138U;
+#else
+            msgAry[msgLen++]  = 140U;
+#endif
 
             controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
           }
@@ -2190,6 +2194,7 @@ static void controllerMsgProcessor(void)
       const uint8_t autoEnable = (s_msg_in.rawAry[1] & 0x01000000UL) >> 24U;
       controllerSetAuto(autoEnable);
     }
+      break;
 
     case MsgController__SetVar07_V:
     {
@@ -2243,6 +2248,7 @@ static void controllerInit(void)
 
     s_controller_doCycle                                      = RELAY_STILL_TIME;  // Each 30ms the relays are ready for a new setting
     s_controller_doAutoMatching                               = 1;
+    s_controller_verbose_bf                                   = 0UL;
 
     s_mod_start.rtos_Default                                  = 1U;
     s_mod_start.Interpreter                                   = 1U;

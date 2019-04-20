@@ -140,7 +140,7 @@ static void uartHalInit(void)
 
   /* Init UART */
   {
-    hlpuart1.Init.BaudRate                = 38400UL;
+    hlpuart1.Init.BaudRate                = 9600UL;
     hlpuart1.Init.WordLength              = UART_WORDLENGTH_8B;
     hlpuart1.Init.StopBits                = UART_STOPBITS_1;
     hlpuart1.Init.Parity                  = UART_PARITY_NONE;
