@@ -63,8 +63,11 @@ extern float                g_adc_refint_val;
 extern float                g_adc_vref_mv;
 extern float                g_adc_bat_mv;
 extern float                g_adc_temp_deg;
+extern float                g_adc_logamp_ofsMeas_mv;
+extern float                g_adc_fwd_raw_mv;
 extern float                g_adc_fwd_mv_log;
 extern float                g_adc_fwd_mv;
+extern float                g_adc_rev_raw_mv;
 extern float                g_adc_rev_mv_log;
 extern float                g_adc_rev_mv;
 extern float                g_adc_vdiode_mv;
@@ -105,7 +108,7 @@ static ControllerMods_t     s_mod_rdy                         = { 0 };
 
 static const float          Controller_AutoSWR_P_mW_Min       =  5000.0f  / 1000.0f;  // -30 dB coupling
 static const float          Controller_AutoSWR_P_mW_Max       = 15000.0f  / 1000.0f;  // -30 dB coupling
-static const float          Controller_AutoSWR_SWR_Init       = 1e6f;
+static const float          Controller_AutoSWR_SWR_Init       = SWR_MAX;
 static const float          Controller_AutoSWR_SWR_Min        = 1.2f;
 static const float          Controller_AutoSWR_WaitBefore_ms  = 750.0f;
 static const uint8_t        Controller_AutoSWR_CVHpong_Max    = 1U;
@@ -139,6 +142,9 @@ static float                  s_controller_adc_vdiode_mv        = 0.0f;
 static float                  s_controller_adc_swr              = 0.0f;
 static float                  s_controller_adc_fwd_mw           = 0.0f;
 static float                  s_controller_adc_rev_mw           = 0.0f;
+
+static float                  s_controller_cmad_deg             = 0.0f;
+static uint8_t                s_controller_logamp_pot_val       = 0.0f;
 
 static _Bool                  s_controller_doAdc                = 0;
 static _Bool                  s_controller_doAutoMatching       = 0;
@@ -1971,6 +1977,9 @@ static void controllerPrintLC(void)
 static void controllerCyclicTimerEvent(void)
 {
   /* Cyclic jobs to do */
+  //const uint32_t  timeNow = osKernelSysTick();
+  const uint32_t  timeNow   = portGET_RUN_TIME_COUNTER_VALUE();
+  static uint32_t timeLast  = 0UL;
 
   /* Called every 30ms to start the ADCs */
   EventBits_t eb = xEventGroupGetBits(adcEventGroupHandle);
@@ -2013,12 +2022,57 @@ static void controllerCyclicTimerEvent(void)
     controllerFSM();
   } while (!s_controller_doAdc);
 
+  /* Fast path */
+  if (!s_controller_doAdc) {
+    return;
+  }
+
+
   /* Handle serial CAT interface packets */
   {
-    //uint8_t inBuf[256]  = { 0U };
-    //uint8_t inBufLen    = 0U;
-
     // TODO: coding here
+  }
+
+  /* Temperature compensation */
+  if ((((timeNow - timeLast) > 1000000UL) || (timeNow < timeLast)) &&
+        (s_controller_FSM_state <= ControllerFsm__StartAuto)) {
+    /* Each second adjust for temperature changes */
+
+    /* Calculate current temperature at the CMAD6001 diodes */
+    s_controller_cmad_deg = 30.0f + (s_controller_adc_vdiode_mv - CMAD_30DEG_ADC_MV) / CMAD_ADC_MVpDEG;
+
+    /* Adjust DigPoti setting */
+    const float   l_controller_adcMin_mv          = min(g_adc_fwd_raw_mv, g_adc_rev_raw_mv);
+    const uint8_t l_controller_logamp_potLast_val = s_controller_logamp_pot_val;
+
+    /* Check against limits */
+    if (l_controller_adcMin_mv < (-LOGAMP_OFS_MVpPOTVAL)) {
+      /* Step down */
+      --s_controller_logamp_pot_val;
+      g_adc_logamp_ofsMeas_mv += -LOGAMP_OFS_MVpPOTVAL;
+
+    } else if (l_controller_adcMin_mv > (3.0f * -LOGAMP_OFS_MVpPOTVAL)) {
+      /* Step up */
+      ++s_controller_logamp_pot_val;
+      g_adc_logamp_ofsMeas_mv -= -LOGAMP_OFS_MVpPOTVAL;
+    }
+
+    /* Switch DigPoti to new setting */
+    if (s_controller_logamp_pot_val != l_controller_logamp_potLast_val) {
+      uint32_t cmd[2];
+      cmd[0] = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 4U, MsgDefault__CallFunc05_DigPot_SetOffset);
+      cmd[1] = (uint32_t) s_controller_logamp_pot_val;
+      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+
+    } else {
+      /* When no transmission takes place both have nearly same values */
+      if (fabs(g_adc_fwd_raw_mv - g_adc_rev_raw_mv) < 25.0f) {
+        g_adc_logamp_ofsMeas_mv = l_controller_adcMin_mv;
+      }
+    }
+
+    /* Update timestamp */
+    timeLast = timeNow;
   }
 }
 
@@ -2093,15 +2147,11 @@ static void controllerMsgProcessor(void)
 
             /* DigPot. - measurement set gain: 0..256 */
             msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__CallFunc04_DigPot_SetGain);
-            msgAry[msgLen++]  = 68U;
+            msgAry[msgLen++]  = LOGAMP_MUL_POT_VAL;
 
             /* DigPot. - measurement set offset: 0..256 */
             msgAry[msgLen++]  = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 1U, MsgDefault__CallFunc05_DigPot_SetOffset);
-#ifdef Lot_PBAF69__Waf_20__Pos_69_24
-            msgAry[msgLen++]  = 138U;
-#else
-            msgAry[msgLen++]  = 140U;
-#endif
+            msgAry[msgLen++]  = s_controller_logamp_pot_val = LOGAMP_OFS_POT_VAL;
 
             controllerMsgPushToOutQueue(msgLen, msgAry, osWaitForever);
           }

@@ -9,9 +9,11 @@
 #define DEVICE_ADC_H_
 
 
-#define ADC1_DMA_CHANNELS             3
-#define ADC2_DMA_CHANNELS             1
+#define ADC1_DMA_CHANNELS               3
+#define ADC2_DMA_CHANNELS               1
 
+
+#define LOGAMP_MUL_POT_VAL             68U
 
 #ifdef Lot_PBAF69__Waf_20__Pos_69_24
 /* Special settings */
@@ -21,8 +23,15 @@
 # define ADC_V_OFFS_FWDREV_mV          47.0f
 # define ADC_V_OFFS_VDIODE_mV          56.0f
 
-# define ADC_MUL_BAT                   5.74f //5.24f
-# define ADC_MUL_TEMP                  1.64f
+# define ADC_MUL_BAT                    5.74f
+# define ADC_MUL_TEMP                   1.64f
+
+# define CMAD_30DEG_ADC_MV            703.0f
+# define CMAD_ADC_MVpDEG               -3.13f
+
+# define LOGAMP_OFS_MVpDEG           -102.66f
+# define LOGAMP_OFS_POT_VAL           137
+# define LOGAMP_OFS_MVpPOTVAL        -100.00f
 
 # else
 
@@ -32,8 +41,8 @@
 # define ADC_V_OFFS_FWDREV_mV          47.0f
 # define ADC_V_OFFS_VDIODE_mV          56.0f
 
-# define ADC_MUL_BAT                   5.24f
-# define ADC_MUL_TEMP                  1.50f
+# define ADC_MUL_BAT                    5.24f
+# define ADC_MUL_TEMP                   1.50f
 
 #endif
 

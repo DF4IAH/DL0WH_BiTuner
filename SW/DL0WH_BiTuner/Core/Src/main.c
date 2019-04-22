@@ -102,8 +102,11 @@ float                                 g_adc_refint_val        = 0.0f;
 float                                 g_adc_vref_mv           = 0.0f;
 float                                 g_adc_bat_mv            = 0.0f;
 float                                 g_adc_temp_deg          = 0.0f;
+float                                 g_adc_logamp_ofsMeas_mv = 0.0f;
+float                                 g_adc_fwd_raw_mv        = 0.0f;
 float                                 g_adc_fwd_mv_log        = 0.0f;
 float                                 g_adc_fwd_mv            = 0.0f;
+float                                 g_adc_rev_raw_mv        = 0.0f;
 float                                 g_adc_rev_mv_log        = 0.0f;
 float                                 g_adc_rev_mv            = 0.0f;
 float                                 g_adc_vdiode_mv         = 0.0f;
@@ -203,17 +206,25 @@ float mainCalc_fwdRev_mV(float adc_mv, float vdiode_mv)
   return powf(M_E + (0.0f * (vdiode_mv - 500.0f)), adc_mv / 144.0f);
 }
 
-float mainCalc_VSWR(float fwd, float rev)
+float mainCalc_VSWR(float fwd_mv, float rev_mv)
 {
-  if (fwd < 0.0f || rev < 0.0f) {
-    return 1e+9f;
+  /* Sanity check against reversed voltage */
+  if (fwd_mv < 0.0f || rev_mv < 0.0f) {
+    return SWR_MAX;
   }
 
-  if (fwd <= rev) {
-    return 1e+6f;
+  /* Sanity check against wrong connected channels */
+  if (fwd_mv <= rev_mv) {
+    return SWR_MAX;
   }
 
-  return (float) ((fwd + rev) / (fwd - rev));
+  /* To low energy (25mV) for correct calculation? */
+  if (fwd_mv < 25.0f) {
+    return SWR_MAX;
+  }
+
+  /* VSWR calculation */
+  return (float) ((fwd_mv + rev_mv) / (fwd_mv - rev_mv));
 }
 
 float mainCalc_mV_to_mW(float mV)

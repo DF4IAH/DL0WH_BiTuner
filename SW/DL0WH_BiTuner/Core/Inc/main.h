@@ -108,9 +108,11 @@
 #endif
 
 
-#define BITUNER_CTRL_VERSION                                 20190420UL
+#define BITUNER_CTRL_VERSION                                 20190422UL
 
 #define RELAY_STILL_TIME                                     30UL
+
+#define SWR_MAX                                              1e+6
 
 
 typedef enum POWERSWITCH_ENUM {
@@ -153,7 +155,7 @@ void calcStrToUpper(char* inBuf, uint32_t inBufLen);
 uint8_t sel_u8_from_u32(uint32_t in_u32, uint8_t sel);
 void mainCalcFloat2IntFrac(float val, uint8_t fracCnt, int32_t* outInt, uint32_t* outFrac);
 float mainCalc_fwdRev_mV(float adc_mv, float vdiode_mv);
-float mainCalc_VSWR(float fwd, float rev);
+float mainCalc_VSWR(float fwd_mv, float rev_mv);
 float mainCalc_mV_to_mW(float mV);
 void mainPowerSwitchDo(POWERSWITCH_ENUM_t sw, uint8_t enable);
 void mainPowerSwitchInit(void);
