@@ -313,11 +313,11 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
       g_adc_logamp_ofsMeas_mv += l_adc_fwdrev_mv_logCor;
       l_adc_fwdrev_mv_logCor   = 0.1f;
     }
-    g_adc_rev_mv_log = l_adc_fwdrev_mv_logCor;
 
     /* Variant */
     if (g_adc_select_rev) {
       g_adc_rev_raw_mv    = l_adc_fwdrev_raw_mv;
+      g_adc_rev_mv_log    = l_adc_fwdrev_mv_logCor;
       g_adc_rev_mv        = adcCalcFwdRevExp(l_adc_fwdrev_mv_logCor);
       g_adc_swr           = mainCalc_VSWR(g_adc_fwd_mv, g_adc_rev_mv);
 
@@ -328,6 +328,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 
     } else {
       g_adc_fwd_raw_mv    = l_adc_fwdrev_raw_mv;
+      g_adc_fwd_mv_log    = l_adc_fwdrev_mv_logCor;
       g_adc_fwd_mv        = adcCalcFwdRevExp(l_adc_fwdrev_mv_logCor);
 
       /* Turn MUX to the REV side to give enough time */
