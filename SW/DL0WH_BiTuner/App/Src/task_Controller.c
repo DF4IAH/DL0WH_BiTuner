@@ -109,7 +109,8 @@ static ControllerMods_t     s_mod_rdy                         = { 0 };
 static const float          Controller_AutoSWR_P_mW_Min       =  5000.0f  / 1000.0f;  // -30 dB coupling
 static const float          Controller_AutoSWR_P_mW_Max       = 15000.0f  / 1000.0f;  // -30 dB coupling
 static const float          Controller_AutoSWR_SWR_Init       = SWR_MAX;
-static const float          Controller_AutoSWR_SWR_Min        = 1.2f;
+static const float          Controller_AutoSWR_SWR_Course_Min = 1.3f;
+static const float          Controller_AutoSWR_SWR_Fine_Min   = 1.1f;
 static const float          Controller_AutoSWR_WaitBefore_ms  = 750.0f;
 static const uint8_t        Controller_AutoSWR_CVHpong_Max    = 1U;
 static const uint8_t        Controller_AutoSWR_LCpong_Max     = 3U;
@@ -870,6 +871,22 @@ static _Bool controllerFSM_CheckPower(void)
   return false;
 }
 
+static _Bool controllerFSM_CheckSwrCourseStopVal(void)
+{
+  if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Course_Min) {
+    return true;
+  }
+  return false;
+}
+
+static _Bool controllerFSM_CheckSwrFineStopVal(void)
+{
+  if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Fine_Min) {
+    return true;
+  }
+  return false;
+}
+
 static _Bool controllerFSM_CheckSwrTime(void)
 {
   const uint32_t timeNow  = osKernelSysTick();
@@ -880,19 +897,7 @@ static _Bool controllerFSM_CheckSwrTime(void)
     return true;
   }
 
-  if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Min) {
-    /* No need to start */
-    return true;
-  }
-  return false;
-}
-
-static _Bool controllerFSM_CheckSwrStopVal(void)
-{
-  if (s_controller_adc_swr <= Controller_AutoSWR_SWR_Min) {
-    return true;
-  }
-  return false;
+  return controllerFSM_CheckSwrFineStopVal();
 }
 
 static void controllerFSM(void)
@@ -1008,8 +1013,12 @@ static void controllerFSM(void)
       break;
     }
 
-    if (controllerFSM_CheckSwrStopVal()) {
+    if (controllerFSM_CheckSwrFineStopVal()) {
       s_controller_FSM_state = ControllerFsm__done;
+      break;
+    }
+    if (controllerFSM_CheckSwrCourseStopVal()) {
+      s_controller_FSM_state = ControllerFsm__fine_L_minus;
       break;
     }
 
@@ -1049,8 +1058,12 @@ static void controllerFSM(void)
       break;
     }
 
-    if (controllerFSM_CheckSwrStopVal()) {
+    if (controllerFSM_CheckSwrFineStopVal()) {
       s_controller_FSM_state = ControllerFsm__done;
+      break;
+    }
+    if (controllerFSM_CheckSwrCourseStopVal()) {
+      s_controller_FSM_state = ControllerFsm__fine_L_minus;
       break;
     }
 
@@ -1084,8 +1097,12 @@ static void controllerFSM(void)
       break;
     }
 
-    if (controllerFSM_CheckSwrStopVal()) {
+    if (controllerFSM_CheckSwrFineStopVal()) {
       s_controller_FSM_state = ControllerFsm__done;
+      break;
+    }
+    if (controllerFSM_CheckSwrCourseStopVal()) {
+      s_controller_FSM_state = ControllerFsm__fine_L_minus;
       break;
     }
 
@@ -1128,8 +1145,12 @@ static void controllerFSM(void)
       break;
     }
 
-    if (controllerFSM_CheckSwrStopVal()) {
+    if (controllerFSM_CheckSwrFineStopVal()) {
       s_controller_FSM_state = ControllerFsm__done;
+      break;
+    }
+    if (controllerFSM_CheckSwrCourseStopVal()) {
+      s_controller_FSM_state = ControllerFsm__fine_L_minus;
       break;
     }
 
@@ -1163,8 +1184,12 @@ static void controllerFSM(void)
       break;
     }
 
-    if (controllerFSM_CheckSwrStopVal()) {
+    if (controllerFSM_CheckSwrFineStopVal()) {
       s_controller_FSM_state = ControllerFsm__done;
+      break;
+    }
+    if (controllerFSM_CheckSwrCourseStopVal()) {
+      s_controller_FSM_state = ControllerFsm__fine_L_minus;
       break;
     }
 
@@ -1198,8 +1223,12 @@ static void controllerFSM(void)
     }
 
     /* Check for end of ATU optimization */
-    if (controllerFSM_CheckSwrStopVal()) {
+    if (controllerFSM_CheckSwrFineStopVal()) {
       s_controller_FSM_state = ControllerFsm__done;
+      break;
+    }
+    if (controllerFSM_CheckSwrCourseStopVal()) {
+      s_controller_FSM_state = ControllerFsm__fine_L_minus;
       break;
     }
 
@@ -1360,354 +1389,274 @@ static void controllerFSM(void)
 
 
 
-    // XXX: 0x21
-    case ControllerFsm__C_Meas_P000:
+  // XXX: 0x21
+  case ControllerFsm__C_Meas_P000:
+  {
+    /* Pull global vars */
+    controllerFSM_GetGlobalVars();
+
+    /* Do not iterate FSM again */
+    s_controller_doAdc = 1;
+
+    /* Check for security */
+    if (controllerFSM_CheckPower()) {
+      s_controller_FSM_state = ControllerFsm__Init;
+      break;
+    }
+
+    if (controllerFSM_CheckSwrFineStopVal()) {
+      s_controller_FSM_state = ControllerFsm__done;
+      break;
+    }
+    if (controllerFSM_CheckSwrCourseStopVal()) {
+      s_controller_FSM_state = ControllerFsm__fine_L_minus;
+      break;
+    }
+
+    /* Store measured (V)SWR */
+    s_controller_C_Meas.swr[P000] = s_controller_adc_swr;
+
+    /* Prepare next measurement */
+    if (s_controller_C_Meas.swr[P100] == Controller_AutoSWR_SWR_Init) {
+      s_controller_FSM_state = ControllerFsm__C_Meas_P100;
+      s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P100];
+
+    } else {
+      s_controller_FSM_state = ControllerFsm__C_Meas_P050;
+      s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P050];
+    }
+
+    /* Push opti data to relays */
+    controllerFSM_PushOptiVars();
+
+    /* Show current state of optimization */
+    controllerFSM_LogState();
+  }
+    break;
+
+  // XXX: 0x22
+  case ControllerFsm__C_Meas_P100:
+  {
+    /* Pull global vars */
+    controllerFSM_GetGlobalVars();
+
+    /* Do not iterate FSM again */
+    s_controller_doAdc = 1;
+
+    /* Check for security */
+    if (controllerFSM_CheckPower()) {
+      s_controller_FSM_state = ControllerFsm__Init;
+      break;
+    }
+
+    if (controllerFSM_CheckSwrFineStopVal()) {
+      s_controller_FSM_state = ControllerFsm__done;
+      break;
+    }
+    if (controllerFSM_CheckSwrCourseStopVal()) {
+      s_controller_FSM_state = ControllerFsm__fine_L_minus;
+      break;
+    }
+
+    /* Store measured (V)SWR */
+    s_controller_C_Meas.swr[P100] = s_controller_adc_swr;
+
+    /* Prepare next measurement */
+    s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P050];
+    s_controller_FSM_state = ControllerFsm__C_Meas_P050;
+
+    /* Push opti data to relays */
+    controllerFSM_PushOptiVars();
+
+    /* Show current state of optimization */
+    controllerFSM_LogState();
+  }
+    break;
+
+  // XXX: 0x23
+  case ControllerFsm__C_Meas_P050:
+  {
+    /* Pull global vars */
+    controllerFSM_GetGlobalVars();
+
+    /* Do not iterate FSM again */
+    s_controller_doAdc = 1;
+
+    /* Check for security */
+    if (controllerFSM_CheckPower()) {
+      s_controller_FSM_state = ControllerFsm__Init;
+      break;
+    }
+
+    if (controllerFSM_CheckSwrFineStopVal()) {
+      s_controller_FSM_state = ControllerFsm__done;
+      break;
+    }
+    if (controllerFSM_CheckSwrCourseStopVal()) {
+      s_controller_FSM_state = ControllerFsm__fine_L_minus;
+      break;
+    }
+
+    /* Store measured (V)SWR */
+    s_controller_C_Meas.swr[P050] = s_controller_adc_swr;
+
+    /* Calculate P025 and P075 relay values */
     {
-      /* Pull global vars */
-      controllerFSM_GetGlobalVars();
+      const uint8_t delta = s_controller_C_Meas.relayVal[P100] - s_controller_C_Meas.relayVal[P000];
+      s_controller_C_Meas.relayVal[P025] = s_controller_C_Meas.relayVal[P000] + (delta >> 2U);
+      s_controller_C_Meas.relayVal[P075] = s_controller_C_Meas.relayVal[P100] - (delta >> 2U);
+      s_controller_C_Meas.swr[P025] = Controller_AutoSWR_SWR_Init;
+      s_controller_C_Meas.swr[P075] = Controller_AutoSWR_SWR_Init;
+    }
 
-      /* Do not iterate FSM again */
-      s_controller_doAdc = 1;
+    /* Prepare next measurement */
+    s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P025];
+    s_controller_FSM_state    = ControllerFsm__C_Meas_P025;
 
-      /* Check for security */
-      if (controllerFSM_CheckPower()) {
-        s_controller_FSM_state = ControllerFsm__Init;
-        break;
-      }
+    /* Push opti data to relays */
+    controllerFSM_PushOptiVars();
 
-      if (controllerFSM_CheckSwrStopVal()) {
-        s_controller_FSM_state = ControllerFsm__done;
-        break;
-      }
+    /* Show current state of optimization */
+    controllerFSM_LogState();
+  }
+    break;
 
-      /* Store measured (V)SWR */
-      s_controller_C_Meas.swr[P000] = s_controller_adc_swr;
+  // XXX: 0x24
+  case ControllerFsm__C_Meas_P025:
+  {
+    /* Pull global vars */
+    controllerFSM_GetGlobalVars();
 
-      /* Prepare next measurement */
-      if (s_controller_C_Meas.swr[P100] == Controller_AutoSWR_SWR_Init) {
-        s_controller_FSM_state = ControllerFsm__C_Meas_P100;
-        s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P100];
+    /* Do not iterate FSM again */
+    s_controller_doAdc = 1;
+
+    /* Check for security */
+    if (controllerFSM_CheckPower()) {
+      s_controller_FSM_state = ControllerFsm__Init;
+      break;
+    }
+
+    if (controllerFSM_CheckSwrFineStopVal()) {
+      s_controller_FSM_state = ControllerFsm__done;
+      break;
+    }
+    if (controllerFSM_CheckSwrCourseStopVal()) {
+      s_controller_FSM_state = ControllerFsm__fine_L_minus;
+      break;
+    }
+
+    /* Store measured (V)SWR */
+    s_controller_C_Meas.swr[P025] = s_controller_adc_swr;
+
+    /* Prepare next measurement */
+    s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P075];
+    s_controller_FSM_state = ControllerFsm__C_Meas_P075;
+
+    /* Push opti data to relays */
+    controllerFSM_PushOptiVars();
+
+    /* Show current state of optimization */
+    controllerFSM_LogState();
+  }
+    break;
+
+  // XXX: 0x25
+  case ControllerFsm__C_Meas_P075:
+  {
+    /* Pull global vars */
+    controllerFSM_GetGlobalVars();
+
+    /* Do not iterate FSM again */
+    s_controller_doAdc = 1;
+
+    /* Check for security */
+    if (controllerFSM_CheckPower()) {
+      s_controller_FSM_state = ControllerFsm__Init;
+      break;
+    }
+
+    if (controllerFSM_CheckSwrFineStopVal()) {
+      s_controller_FSM_state = ControllerFsm__done;
+      break;
+    }
+    if (controllerFSM_CheckSwrCourseStopVal()) {
+      s_controller_FSM_state = ControllerFsm__fine_L_minus;
+      break;
+    }
+
+    /* Store measured (V)SWR */
+    s_controller_C_Meas.swr[P075] = s_controller_adc_swr;
+
+    /* Prepare next measurement */
+    s_controller_FSM_state = ControllerFsm__C_Select;
+
+    /* Iterate to next FSM state */
+    s_controller_doAdc = 0;
+
+    /* Show current state of optimization */
+    controllerFSM_LogState();
+  }
+    break;
+
+  // XXX: 0x26
+  case ControllerFsm__C_Select:
+  {
+    /* Pull global vars */
+    controllerFSM_GetGlobalVars();
+
+    /* Do not iterate FSM again */
+    s_controller_doAdc = 1;
+
+    /* Check for security */
+    if (controllerFSM_CheckPower()) {
+      s_controller_FSM_state = ControllerFsm__Init;
+      break;
+    }
+
+    if (controllerFSM_CheckSwrFineStopVal()) {
+      s_controller_FSM_state = ControllerFsm__done;
+      break;
+    }
+    if (controllerFSM_CheckSwrCourseStopVal()) {
+      s_controller_FSM_state = ControllerFsm__fine_L_minus;
+      break;
+    }
+
+    /* Check for C value delta */
+    if (s_controller_C_Meas.relayVal[P100] - s_controller_C_Meas.relayVal[P000] <= 2) {
+      /* Delta value too small to process further on C */
+
+      /* Check if another switch to optimizing L is allowed */
+      if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
+        /* Continue with optimizing L */
+        s_controller_FSM_state = ControllerFsm__L_Meas_P000;
+
+        /* Log */
+        {
+          const char buf[] = "!C --> L!\r\n";
+          interpreterConsolePush(buf, strlen(buf), 0);
+        }
 
       } else {
-        s_controller_FSM_state = ControllerFsm__C_Meas_P050;
-        s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P050];
-      }
+        s_controller_opti_LCpongCtr = 0U;
 
-      /* Push opti data to relays */
-      controllerFSM_PushOptiVars();
-
-      /* Show current state of optimization */
-      controllerFSM_LogState();
-    }
-      break;
-
-    // XXX: 0x22
-    case ControllerFsm__C_Meas_P100:
-    {
-      /* Pull global vars */
-      controllerFSM_GetGlobalVars();
-
-      /* Do not iterate FSM again */
-      s_controller_doAdc = 1;
-
-      /* Check for security */
-      if (controllerFSM_CheckPower()) {
-        s_controller_FSM_state = ControllerFsm__Init;
-        break;
-      }
-
-      if (controllerFSM_CheckSwrStopVal()) {
-        s_controller_FSM_state = ControllerFsm__done;
-        break;
-      }
-
-      /* Store measured (V)SWR */
-      s_controller_C_Meas.swr[P100] = s_controller_adc_swr;
-
-      /* Prepare next measurement */
-      s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P050];
-      s_controller_FSM_state = ControllerFsm__C_Meas_P050;
-
-      /* Push opti data to relays */
-      controllerFSM_PushOptiVars();
-
-      /* Show current state of optimization */
-      controllerFSM_LogState();
-    }
-      break;
-
-    // XXX: 0x23
-    case ControllerFsm__C_Meas_P050:
-    {
-      /* Pull global vars */
-      controllerFSM_GetGlobalVars();
-
-      /* Do not iterate FSM again */
-      s_controller_doAdc = 1;
-
-      /* Check for security */
-      if (controllerFSM_CheckPower()) {
-        s_controller_FSM_state = ControllerFsm__Init;
-        break;
-      }
-
-      if (controllerFSM_CheckSwrStopVal()) {
-        s_controller_FSM_state = ControllerFsm__done;
-        break;
-      }
-
-      /* Store measured (V)SWR */
-      s_controller_C_Meas.swr[P050] = s_controller_adc_swr;
-
-      /* Calculate P025 and P075 relay values */
-      {
-        const uint8_t delta = s_controller_C_Meas.relayVal[P100] - s_controller_C_Meas.relayVal[P000];
-        s_controller_C_Meas.relayVal[P025] = s_controller_C_Meas.relayVal[P000] + (delta >> 2U);
-        s_controller_C_Meas.relayVal[P075] = s_controller_C_Meas.relayVal[P100] - (delta >> 2U);
-        s_controller_C_Meas.swr[P025] = Controller_AutoSWR_SWR_Init;
-        s_controller_C_Meas.swr[P075] = Controller_AutoSWR_SWR_Init;
-      }
-
-      /* Prepare next measurement */
-      s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P025];
-      s_controller_FSM_state    = ControllerFsm__C_Meas_P025;
-
-      /* Push opti data to relays */
-      controllerFSM_PushOptiVars();
-
-      /* Show current state of optimization */
-      controllerFSM_LogState();
-    }
-      break;
-
-    // XXX: 0x24
-    case ControllerFsm__C_Meas_P025:
-    {
-      /* Pull global vars */
-      controllerFSM_GetGlobalVars();
-
-      /* Do not iterate FSM again */
-      s_controller_doAdc = 1;
-
-      /* Check for security */
-      if (controllerFSM_CheckPower()) {
-        s_controller_FSM_state = ControllerFsm__Init;
-        break;
-      }
-
-      if (controllerFSM_CheckSwrStopVal()) {
-        s_controller_FSM_state = ControllerFsm__done;
-        break;
-      }
-
-      /* Store measured (V)SWR */
-      s_controller_C_Meas.swr[P025] = s_controller_adc_swr;
-
-      /* Prepare next measurement */
-      s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P075];
-      s_controller_FSM_state = ControllerFsm__C_Meas_P075;
-
-      /* Push opti data to relays */
-      controllerFSM_PushOptiVars();
-
-      /* Show current state of optimization */
-      controllerFSM_LogState();
-    }
-      break;
-
-    // XXX: 0x25
-    case ControllerFsm__C_Meas_P075:
-    {
-      /* Pull global vars */
-      controllerFSM_GetGlobalVars();
-
-      /* Do not iterate FSM again */
-      s_controller_doAdc = 1;
-
-      /* Check for security */
-      if (controllerFSM_CheckPower()) {
-        s_controller_FSM_state = ControllerFsm__Init;
-        break;
-      }
-
-      if (controllerFSM_CheckSwrStopVal()) {
-        s_controller_FSM_state = ControllerFsm__done;
-        break;
-      }
-
-      /* Store measured (V)SWR */
-      s_controller_C_Meas.swr[P075] = s_controller_adc_swr;
-
-      /* Prepare next measurement */
-      s_controller_FSM_state = ControllerFsm__C_Select;
-
-      /* Iterate to next FSM state */
-      s_controller_doAdc = 0;
-
-      /* Show current state of optimization */
-      controllerFSM_LogState();
-    }
-      break;
-
-    // XXX: 0x26
-    case ControllerFsm__C_Select:
-    {
-      /* Pull global vars */
-      controllerFSM_GetGlobalVars();
-
-      /* Do not iterate FSM again */
-      s_controller_doAdc = 1;
-
-      /* Check for security */
-      if (controllerFSM_CheckPower()) {
-        s_controller_FSM_state = ControllerFsm__Init;
-        break;
-      }
-
-      if (controllerFSM_CheckSwrStopVal()) {
-        s_controller_FSM_state = ControllerFsm__done;
-        break;
-      }
-
-      /* Check for C value delta */
-      if (s_controller_C_Meas.relayVal[P100] - s_controller_C_Meas.relayVal[P000] <= 2) {
-        /* Delta value too small to process further on C */
-
-        /* Check if another switch to optimizing L is allowed */
-        if (++s_controller_opti_LCpongCtr <= Controller_AutoSWR_LCpong_Max) {
-          /* Continue with optimizing L */
-          s_controller_FSM_state = ControllerFsm__L_Meas_P000;
+        /* Check if another Gamma switch is allowed */
+        if (++s_controller_opti_CVHpongCtr <= Controller_AutoSWR_CVHpong_Max) {
+          /* Do a Gamma switch */
+          s_controller_FSM_optiCVH = (s_controller_FSM_optiCVH == ControllerOptiCVH__CV) ?  ControllerOptiCVH__CH : ControllerOptiCVH__CV;
 
           /* Log */
           {
-            const char buf[] = "!C --> L!\r\n";
-            interpreterConsolePush(buf, strlen(buf), 0);
+            char buf[128];
+            const int len = snprintf(buf, sizeof(buf) - 1, "!Gamma revert! next: %s\r\n",
+                (s_controller_FSM_optiCVH == ControllerOptiCVH__CV) ?  "CV" : "CH");
+            interpreterConsolePush(buf, len, 0);
           }
 
         } else {
-          s_controller_opti_LCpongCtr = 0U;
-
-          /* Check if another Gamma switch is allowed */
-          if (++s_controller_opti_CVHpongCtr <= Controller_AutoSWR_CVHpong_Max) {
-            /* Do a Gamma switch */
-            s_controller_FSM_optiCVH = (s_controller_FSM_optiCVH == ControllerOptiCVH__CV) ?  ControllerOptiCVH__CH : ControllerOptiCVH__CV;
-
-            /* Log */
-            {
-              char buf[128];
-              const int len = snprintf(buf, sizeof(buf) - 1, "!Gamma revert! next: %s\r\n",
-                  (s_controller_FSM_optiCVH == ControllerOptiCVH__CV) ?  "CV" : "CH");
-              interpreterConsolePush(buf, len, 0);
-            }
-
-          } else {
-            /* All tries exhausted, take best result of all */
-            s_controller_FSM_state = ControllerFsm__done;
-          }
+          /* All tries exhausted, take best result of all */
+          s_controller_FSM_state = ControllerFsm__done;
         }
-
-        /* Push opti data to relays */
-        controllerFSM_PushOptiVars();
-
-        /* Show current state of optimization */
-        controllerFSM_LogState();
-        break;
-      }
-
-      /* Find minimum SWR */
-      const uint8_t bestIdx = controllerGetMinIdxC();
-      int16_t val[5];
-      float   swr[5] = {
-          Controller_AutoSWR_SWR_Init,
-          Controller_AutoSWR_SWR_Init,
-          Controller_AutoSWR_SWR_Init,
-          Controller_AutoSWR_SWR_Init,
-          Controller_AutoSWR_SWR_Init };
-
-      switch (bestIdx) {
-      case P000:
-      {
-        val[P000] = s_controller_C_Meas.relayVal[P000] - (s_controller_C_Meas.relayVal[P025] - s_controller_C_Meas.relayVal[P000]);
-
-        val[P100] = s_controller_C_Meas.relayVal[P025];
-        swr[P100] = s_controller_C_Meas.swr[P025];
-      }
-        break;
-
-      case P025:
-      {
-        val[P000] = s_controller_C_Meas.relayVal[P000];
-        swr[P000] = s_controller_C_Meas.swr[P000];
-
-        val[P100] = s_controller_C_Meas.relayVal[P050];
-        swr[P100] = s_controller_C_Meas.swr[P050];
-      }
-        break;
-
-      case P050:
-      {
-        val[P000] = s_controller_C_Meas.relayVal[P025];
-        swr[P000] = s_controller_C_Meas.swr[P025];
-
-        val[P100] = s_controller_C_Meas.relayVal[P075];
-        swr[P100] = s_controller_C_Meas.swr[P075];
-      }
-        break;
-
-      case P075:
-      {
-        val[P000] = s_controller_C_Meas.relayVal[P050];
-        swr[P000] = s_controller_C_Meas.swr[P050];
-
-        val[P100] = s_controller_C_Meas.relayVal[P100];
-        swr[P100] = s_controller_C_Meas.swr[P100];
-      }
-        break;
-
-      case P100:
-      {
-        val[P000] = s_controller_C_Meas.relayVal[P075];
-        swr[P000] = s_controller_C_Meas.swr[P075];
-
-        val[P100] = s_controller_C_Meas.relayVal[P100] + (s_controller_C_Meas.relayVal[P100] - s_controller_C_Meas.relayVal[P075]);
-      }
-        break;
-
-      default: { }
-      }
-
-
-      if (val[P000] < 0) {
-        val[P000] = 0;
-      }
-
-      if (val[P100] > 255) {
-        val[P100] = 255;
-      }
-
-      /* Calculate new P025, P050 and P075 values */
-      val[P050] = (val[P000] + val[P100]) / 2;
-      val[P025] = (val[P000] + val[P050]) / 2;
-      val[P075] = (val[P050] + val[P100]) / 2;
-
-      /* Store values */
-      for (uint8_t idx = 0U; idx < 5U; idx++) {
-        s_controller_C_Meas.relayVal[idx] = (uint8_t) val[idx];
-        s_controller_C_Meas.swr[idx]      = swr[idx];
-      }
-
-      /* Prepare next measurement */
-      if (s_controller_C_Meas.swr[P000] == Controller_AutoSWR_SWR_Init) {
-        s_controller_FSM_state = ControllerFsm__C_Meas_P000;
-        s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P000];
-
-      } else if (s_controller_C_Meas.swr[P100] == Controller_AutoSWR_SWR_Init) {
-        s_controller_FSM_state = ControllerFsm__C_Meas_P100;
-        s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P100];
-
-      } else {
-        s_controller_FSM_state = ControllerFsm__C_Meas_P050;
-        s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P050];
       }
 
       /* Push opti data to relays */
@@ -1715,9 +1664,137 @@ static void controllerFSM(void)
 
       /* Show current state of optimization */
       controllerFSM_LogState();
+      break;
+    }
+
+    /* Find minimum SWR */
+    const uint8_t bestIdx = controllerGetMinIdxC();
+    int16_t val[5];
+    float   swr[5] = {
+        Controller_AutoSWR_SWR_Init,
+        Controller_AutoSWR_SWR_Init,
+        Controller_AutoSWR_SWR_Init,
+        Controller_AutoSWR_SWR_Init,
+        Controller_AutoSWR_SWR_Init };
+
+    switch (bestIdx) {
+    case P000:
+    {
+      val[P000] = s_controller_C_Meas.relayVal[P000] - (s_controller_C_Meas.relayVal[P025] - s_controller_C_Meas.relayVal[P000]);
+
+      val[P100] = s_controller_C_Meas.relayVal[P025];
+      swr[P100] = s_controller_C_Meas.swr[P025];
     }
       break;
 
+    case P025:
+    {
+      val[P000] = s_controller_C_Meas.relayVal[P000];
+      swr[P000] = s_controller_C_Meas.swr[P000];
+
+      val[P100] = s_controller_C_Meas.relayVal[P050];
+      swr[P100] = s_controller_C_Meas.swr[P050];
+    }
+      break;
+
+    case P050:
+    {
+      val[P000] = s_controller_C_Meas.relayVal[P025];
+      swr[P000] = s_controller_C_Meas.swr[P025];
+
+      val[P100] = s_controller_C_Meas.relayVal[P075];
+      swr[P100] = s_controller_C_Meas.swr[P075];
+    }
+      break;
+
+    case P075:
+    {
+      val[P000] = s_controller_C_Meas.relayVal[P050];
+      swr[P000] = s_controller_C_Meas.swr[P050];
+
+      val[P100] = s_controller_C_Meas.relayVal[P100];
+      swr[P100] = s_controller_C_Meas.swr[P100];
+    }
+      break;
+
+    case P100:
+    {
+      val[P000] = s_controller_C_Meas.relayVal[P075];
+      swr[P000] = s_controller_C_Meas.swr[P075];
+
+      val[P100] = s_controller_C_Meas.relayVal[P100] + (s_controller_C_Meas.relayVal[P100] - s_controller_C_Meas.relayVal[P075]);
+    }
+      break;
+
+    default: { }
+    }
+
+
+    if (val[P000] < 0) {
+      val[P000] = 0;
+    }
+
+    if (val[P100] > 255) {
+      val[P100] = 255;
+    }
+
+    /* Calculate new P025, P050 and P075 values */
+    val[P050] = (val[P000] + val[P100]) / 2;
+    val[P025] = (val[P000] + val[P050]) / 2;
+    val[P075] = (val[P050] + val[P100]) / 2;
+
+    /* Store values */
+    for (uint8_t idx = 0U; idx < 5U; idx++) {
+      s_controller_C_Meas.relayVal[idx] = (uint8_t) val[idx];
+      s_controller_C_Meas.swr[idx]      = swr[idx];
+    }
+
+    /* Prepare next measurement */
+    if (s_controller_C_Meas.swr[P000] == Controller_AutoSWR_SWR_Init) {
+      s_controller_FSM_state = ControllerFsm__C_Meas_P000;
+      s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P000];
+
+    } else if (s_controller_C_Meas.swr[P100] == Controller_AutoSWR_SWR_Init) {
+      s_controller_FSM_state = ControllerFsm__C_Meas_P100;
+      s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P100];
+
+    } else {
+      s_controller_FSM_state = ControllerFsm__C_Meas_P050;
+      s_controller_RelVal_C_cur = s_controller_C_Meas.relayVal[P050];
+    }
+
+    /* Push opti data to relays */
+    controllerFSM_PushOptiVars();
+
+    /* Show current state of optimization */
+    controllerFSM_LogState();
+  }
+    break;
+
+
+  case ControllerFsm__fine_L_minus:
+  {
+
+  }
+    break;
+
+  case ControllerFsm__fine_C_minus:
+  {
+
+  }
+    break;
+
+  case ControllerFsm__fine_L_plus:
+  {
+
+  }
+    break;
+
+  case ControllerFsm__fine_C_plus:
+  {
+
+  }
+    break;
 
 
   case ControllerFsm__done:

@@ -95,7 +95,12 @@ typedef enum ControllerFsm_ENUM {
   ControllerFsm__C_Meas_P075,
   ControllerFsm__C_Select,
 
-  ControllerFsm__done                                         = 0x30U,
+  ControllerFsm__fine_L_minus                                 = 0x31U,
+  ControllerFsm__fine_C_minus,
+  ControllerFsm__fine_L_plus,
+  ControllerFsm__fine_C_plus,
+
+  ControllerFsm__done                                         = 0xf0U,
 
 } ControllerFsm_t;
 
