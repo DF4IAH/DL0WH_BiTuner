@@ -71,6 +71,7 @@ extern float                g_adc_rev_raw_mv;
 extern float                g_adc_rev_mv_log;
 extern float                g_adc_rev_mv;
 extern float                g_adc_vdiode_mv;
+extern float                g_adc_vdiode_temp_deg;
 extern float                g_adc_swr;
 
 
@@ -143,12 +144,12 @@ static float                  s_controller_adc_fwd_mv           = 0.0f;
 static float                  s_controller_adc_rev_mv_log       = 0.0f;
 static float                  s_controller_adc_rev_mv           = 0.0f;
 static float                  s_controller_adc_vdiode_mv        = 0.0f;
+static float                  s_controller_adc_vdiode_temp_deg  = 0.0f;
 static float                  s_controller_adc_swr              = 0.0f;
 static float                  s_controller_adc_swr_previous     = 0.0f;
 static float                  s_controller_adc_fwd_mw           = 0.0f;
 static float                  s_controller_adc_rev_mw           = 0.0f;
 
-static float                  s_controller_cmad_deg             = 0.0f;
 static uint8_t                s_controller_logamp_pot_val       = 0.0f;
 
 static _Bool                  s_controller_doAdc                = 0;
@@ -702,14 +703,15 @@ static void controllerFSM_GetGlobalVars(void)
   {
     taskDISABLE_INTERRUPTS();
 
-    s_controller_adc_bat_mv     = g_adc_bat_mv;
-    s_controller_adc_temp_deg   = g_adc_temp_deg;
-    s_controller_adc_fwd_mv_log = g_adc_fwd_mv_log;
-    s_controller_adc_fwd_mv     = g_adc_fwd_mv;
-    s_controller_adc_rev_mv_log = g_adc_rev_mv_log;
-    s_controller_adc_rev_mv     = g_adc_rev_mv;
-    s_controller_adc_vdiode_mv  = g_adc_vdiode_mv;
-    s_controller_adc_swr        = g_adc_swr;
+    s_controller_adc_bat_mv           = g_adc_bat_mv;
+    s_controller_adc_temp_deg         = g_adc_temp_deg;
+    s_controller_adc_fwd_mv_log       = g_adc_fwd_mv_log;
+    s_controller_adc_fwd_mv           = g_adc_fwd_mv;
+    s_controller_adc_rev_mv_log       = g_adc_rev_mv_log;
+    s_controller_adc_rev_mv           = g_adc_rev_mv;
+    s_controller_adc_vdiode_mv        = g_adc_vdiode_mv;
+    s_controller_adc_vdiode_temp_deg  = g_adc_vdiode_temp_deg;
+    s_controller_adc_swr              = g_adc_swr;
 
     taskENABLE_INTERRUPTS();
   }
@@ -791,9 +793,15 @@ static void controllerFSM_GetGlobalVars(void)
     }
 
     {
+      int32_t   l_adc_vdiode_temp_deg_i    = 0L;
+      uint32_t  l_adc_vdiode_temp_deg_f100 = 0UL;
+
+      mainCalcFloat2IntFrac(s_controller_adc_vdiode_temp_deg, 2, &l_adc_vdiode_temp_deg_i, &l_adc_vdiode_temp_deg_f100);
+
       const int dbgLen = snprintf(dbgBuf, sizeof(dbgBuf) - 1,
-          "ADC3: Vdiode = %4d mV\r\n",
-          (int16_t) (s_controller_adc_vdiode_mv + 0.5f));
+          "ADC3: Vdiode = %4d mV, Temp = %+3ld.%02luC\r\n",
+          (int16_t) (s_controller_adc_vdiode_mv + 0.5f),
+          l_adc_vdiode_temp_deg_i, l_adc_vdiode_temp_deg_f100);
       interpreterConsolePush(dbgBuf, dbgLen, 0);
     }
 
@@ -2414,7 +2422,15 @@ static void controllerCyclicTimerEvent(void)
     /* Each second adjust for temperature changes */
 
     /* Calculate current temperature at the CMAD6001 diodes */
-    s_controller_cmad_deg = 30.0f + (s_controller_adc_vdiode_mv - CMAD_30DEG_ADC_MV) / CMAD_ADC_MVpDEG;
+    s_controller_adc_vdiode_temp_deg = 30.0f + (s_controller_adc_vdiode_mv - CMAD_30DEG_ADC_MV) / CMAD_ADC_MVpDEG;
+    {
+      /* Disabled IRQ section */
+      taskDISABLE_INTERRUPTS();
+
+      g_adc_vdiode_temp_deg = s_controller_adc_vdiode_temp_deg;
+
+      taskENABLE_INTERRUPTS();
+    }
 
     /* Do auto offset calibration only when no signal is on air - let's say FWD and REV voltages are nearly same */
     if (fabs(g_adc_fwd_raw_mv - g_adc_rev_raw_mv) <= Controller_Adc_Ofs_Max_mV) {

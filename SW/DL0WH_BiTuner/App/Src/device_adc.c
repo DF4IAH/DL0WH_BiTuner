@@ -345,6 +345,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     const uint32_t val = HAL_ADC_GetValue(&hadc3);
     const float mean = adcCalcMean(s_adc3_val_mean_diode, sizeof(s_adc3_val_mean_diode) / sizeof(float), val / 16.0f);
     g_adc_vdiode_mv = (mean * g_adc_vref_mv / 4095.0f) + ADC_V_OFFS_VDIODE_mV;
+
     xEventGroupSetBitsFromISR(adcEventGroupHandle, EG_ADC3__CONV_AVAIL_VDIODE, &pxHigherPriorityTaskWoken);
   }
 }

@@ -110,6 +110,7 @@ float                                 g_adc_rev_raw_mv        = 0.0f;
 float                                 g_adc_rev_mv_log        = 0.0f;
 float                                 g_adc_rev_mv            = 0.0f;
 float                                 g_adc_vdiode_mv         = 0.0f;
+float                                 g_adc_vdiode_temp_deg   = 0.0f;
 float                                 g_adc_swr               = 1e+3f;
 _Bool                                 g_adc_select_rev        = 0;
 

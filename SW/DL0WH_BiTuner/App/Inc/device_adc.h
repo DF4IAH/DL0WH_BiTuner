@@ -24,9 +24,9 @@
 # define ADC_V_OFFS_VDIODE_mV          56.0f
 
 # define ADC_MUL_BAT                    5.74f
-# define ADC_MUL_TEMP                   1.64f
+# define ADC_MUL_TEMP                   1.657f
 
-# define CMAD_30DEG_ADC_MV            703.0f
+# define CMAD_30DEG_ADC_MV            688.0f
 # define CMAD_ADC_MVpDEG               -3.13f
 
 # define LOGAMP_OFS_MVpDEG           -102.66f
