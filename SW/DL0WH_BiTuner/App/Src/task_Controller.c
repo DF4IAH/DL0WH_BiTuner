@@ -115,6 +115,7 @@ static const uint8_t        Controller_AutoSWR_Fine_Ctr_Max   = 100U;
 static const float          Controller_AutoSWR_WaitBefore_ms  = 750.0f;
 static const uint8_t        Controller_AutoSWR_CVHpong_Max    = 1U;
 static const uint8_t        Controller_AutoSWR_LCpong_Max     = 3U;
+static const float          Controller_Adc_Ofs_Max_mV         = 10.0f;
 
 static uint32_t             s_controller_swr_tmr              = 0UL;
 static uint8_t              s_controller_fine_ctr             = 0U;
@@ -2415,33 +2416,36 @@ static void controllerCyclicTimerEvent(void)
     /* Calculate current temperature at the CMAD6001 diodes */
     s_controller_cmad_deg = 30.0f + (s_controller_adc_vdiode_mv - CMAD_30DEG_ADC_MV) / CMAD_ADC_MVpDEG;
 
-    /* Adjust DigPoti setting */
-    const float   l_controller_adcMin_mv          = min(g_adc_fwd_raw_mv, g_adc_rev_raw_mv);
-    const uint8_t l_controller_logamp_potLast_val = s_controller_logamp_pot_val;
+    /* Do auto offset calibration only when no signal is on air - let's say FWD and REV voltages are nearly same */
+    if (fabs(g_adc_fwd_raw_mv - g_adc_rev_raw_mv) <= Controller_Adc_Ofs_Max_mV) {
+      /* Adjust DigPoti setting */
+      const float   l_controller_adcMin_mv          = min(g_adc_fwd_raw_mv, g_adc_rev_raw_mv);
+      const uint8_t l_controller_logamp_potLast_val = s_controller_logamp_pot_val;
 
-    /* Check against limits */
-    if (l_controller_adcMin_mv < (-LOGAMP_OFS_MVpPOTVAL)) {
-      /* Step down */
-      --s_controller_logamp_pot_val;
-      g_adc_logamp_ofsMeas_mv += -LOGAMP_OFS_MVpPOTVAL;
+      /* Check against limits */
+      if (l_controller_adcMin_mv < (-LOGAMP_OFS_MVpPOTVAL)) {
+        /* Step down */
+        --s_controller_logamp_pot_val;
+        g_adc_logamp_ofsMeas_mv += -LOGAMP_OFS_MVpPOTVAL;
 
-    } else if (l_controller_adcMin_mv > (3.0f * -LOGAMP_OFS_MVpPOTVAL)) {
-      /* Step up */
-      ++s_controller_logamp_pot_val;
-      g_adc_logamp_ofsMeas_mv -= -LOGAMP_OFS_MVpPOTVAL;
-    }
+      } else if (l_controller_adcMin_mv > (3.0f * -LOGAMP_OFS_MVpPOTVAL)) {
+        /* Step up */
+        ++s_controller_logamp_pot_val;
+        g_adc_logamp_ofsMeas_mv -= -LOGAMP_OFS_MVpPOTVAL;
+      }
 
-    /* Switch DigPoti to new setting */
-    if (s_controller_logamp_pot_val != l_controller_logamp_potLast_val) {
-      uint32_t cmd[2];
-      cmd[0] = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 4U, MsgDefault__CallFunc05_DigPot_SetOffset);
-      cmd[1] = (uint32_t) s_controller_logamp_pot_val;
-      controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
+      /* Switch DigPoti to new setting */
+      if (s_controller_logamp_pot_val != l_controller_logamp_potLast_val) {
+        uint32_t cmd[2];
+        cmd[0] = controllerCalcMsgHdr(Destinations__Rtos_Default, Destinations__Controller, 4U, MsgDefault__CallFunc05_DigPot_SetOffset);
+        cmd[1] = (uint32_t) s_controller_logamp_pot_val;
+        controllerMsgPushToInQueue(sizeof(cmd) / sizeof(int32_t), cmd, 10UL);
 
-    } else {
-      /* When no transmission takes place both have nearly same values */
-      if (fabs(g_adc_fwd_raw_mv - g_adc_rev_raw_mv) < 25.0f) {
-        g_adc_logamp_ofsMeas_mv = l_controller_adcMin_mv;
+      } else {
+        /* When no transmission takes place both have nearly same values */
+        if (fabs(g_adc_fwd_raw_mv - g_adc_rev_raw_mv) < 25.0f) {
+          g_adc_logamp_ofsMeas_mv = l_controller_adcMin_mv;
+        }
       }
     }
 
